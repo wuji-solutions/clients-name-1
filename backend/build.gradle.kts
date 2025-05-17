@@ -29,7 +29,7 @@ dependencies {
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-	testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
