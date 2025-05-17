@@ -14,7 +14,7 @@
         },
         "extraResources": [
             {
-                "from": "backend",
+                "from": "backendJar",
                 "to": "."
             }
         ]
