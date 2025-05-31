@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from 'path';
 import * as isDev from 'electron-is-dev';
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
@@ -9,7 +9,7 @@ let child: ChildProcessWithoutNullStreams;
 
 function createWindow() {
     win = new BrowserWindow({
-        width: 800,
+        width: isDev ? 1200 : 800,
         height: 600,
         webPreferences: {
             nodeIntegration: true,
@@ -18,7 +18,7 @@ function createWindow() {
     
 
     if (isDev) {
-        win.loadURL('http://localhost:3000/index.html');
+        win.loadURL('http://192.168.137.1:3000/');
         const jarPath = path.join(__dirname, '..', 'backendJar/', 'backend.jar') 
         child = require('child_process').spawn('java', ['-jar', jarPath]);
 
@@ -40,8 +40,8 @@ function createWindow() {
         // 'build/index.html'
         win.loadURL(`file://${__dirname}/../index.html`);
         // spawn java child process running backend jar
-        const jarPath = path.join(process.resourcesPath, 'backend.jar');
-        child = require('child_process').spawn( 'java', ['-jar', jarPath, ''] );
+        const jarPath = path.join(__dirname, '..', 'backendJar/', 'backend.jar') 
+        child = require('child_process').spawn('java', ['-jar', jarPath]);
     }
 
     win.on('closed', () => (win = null));
@@ -67,6 +67,29 @@ function createWindow() {
 }
 
 app.on('ready', createWindow);
+
+ipcMain.on('app/quit', () => {
+    if (child) {
+        const kill = require('tree-kill');
+        kill(child.pid);
+    }
+    process.exit();
+});
+
+process.on('exit', () => {
+    if (child) {
+        const kill = require('tree-kill');
+        kill(child.pid);
+    }
+});
+
+process.on('SIGINT', () => {
+    if (child) {
+        const kill = require('tree-kill');
+        kill(child.pid);
+    }
+    process.exit();
+});
 
 app.on('window-all-closed', () => {
     if (child) {
