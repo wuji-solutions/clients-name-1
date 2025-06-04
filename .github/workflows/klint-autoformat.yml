@@ -25,4 +25,4 @@ jobs:
           chmod a+x ktlint
 
       - name: Run ktlint check
-        run: ./ktlint --color --verbose --relative .
+        run: ./ktlint --color --log-level=debug --relative backend
