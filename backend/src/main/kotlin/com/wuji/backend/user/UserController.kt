@@ -6,7 +6,9 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/users")
-class UserController(private val userService: UserService) {
-
-  @GetMapping() fun fetchUsers() = userService.fetchUsers()
+class UserController(
+    private val userService: UserService,
+) {
+    @GetMapping()
+    fun fetchUsers() = userService.fetchUsers()
 }

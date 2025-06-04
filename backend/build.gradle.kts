@@ -54,6 +54,6 @@ tasks.asciidoctor {
 }
 spotless {
 	kotlin {
-		ktfmt().googleStyle()
+		ktlint()
 	}
 }
