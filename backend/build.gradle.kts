@@ -5,6 +5,7 @@ plugins {
 	id("io.spring.dependency-management") version "1.1.7"
 	id("org.graalvm.buildtools.native") version "0.10.6"
 	id("org.asciidoctor.jvm.convert") version "3.3.2"
+	id("com.diffplug.spotless") version "7.0.4"
 }
 
 group = "com.wuji"
@@ -50,4 +51,15 @@ tasks.test {
 tasks.asciidoctor {
 	inputs.dir(project.extra["snippetsDir"]!!)
 	dependsOn(tasks.test)
+}
+spotless {
+	kotlin {
+		ktfmt("0.51").googleStyle().configure {
+			it.setMaxWidth(80)
+			it.setBlockIndent(4)
+			it.setContinuationIndent(4)
+			it.setRemoveUnusedImports(true)
+			it.setManageTrailingCommas(false)
+		}
+	}
 }

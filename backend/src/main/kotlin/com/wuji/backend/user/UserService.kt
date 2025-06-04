@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service
 
 @Service
 class UserService {
-
     fun fetchUsers(): List<User> {
         val user1 = User(1, "Krzysiu")
         val user2 = User(2, "Macius")
