@@ -22,19 +22,6 @@ jobs:
     - name: Grant execute permissions to gradlew
       run: chmod +x ./backend/gradlew
       
-    - name: Run spotlessApply
+    - name: Run spotlessCheck
       working-directory: ./backend
-      run: ./gradlew spotlessApply
-      
-    - name: Commit and push changes
-      run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add .
-          if git diff --cached --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "chore: apply Spotless formatting"
-            git push origin HEAD:${{ github.head_ref }}
-          fi
-  
+      run: ./gradlew spotlessCheck
