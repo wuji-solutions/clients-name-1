@@ -2,15 +2,16 @@ package com.wuji.backend.player.state
 
 import com.wuji.backend.question.PlayerAnswer
 
-data class PlayerState<PlayerStateDetailsT>(
+data class Player<PlayerDetailsT>(
     val index: Int,
     val nickname: String,
-    var details: PlayerStateDetailsT
+    var details: PlayerDetailsT
 )
 
-open class PlayerStateDetails
+open class PlayerDetails
 
-data class QuizPlayerStateDetails(
+data class QuizPlayerDetails(
     val answers: MutableList<PlayerAnswer> = mutableListOf()
-) : PlayerStateDetails()
+) : PlayerDetails()
 
+typealias QuizPlayer = Player<QuizPlayerDetails>

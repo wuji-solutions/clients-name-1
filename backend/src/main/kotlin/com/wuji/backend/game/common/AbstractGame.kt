@@ -1,11 +1,14 @@
 package com.wuji.backend.game.common
 
-abstract class AbstractGame<ConfigT : GameConfig>(
+import com.wuji.backend.player.state.Player
+import com.wuji.backend.player.state.PlayerDetails
+
+abstract class AbstractGame<DetailsT: PlayerDetails, ConfigT : GameConfig>(
     val name: String,
     private val config: ConfigT
 ) {
     private val isRunning: Boolean = false
-    val players: MutableList<String> = mutableListOf()
+    val players: MutableList<Player<DetailsT>> = mutableListOf()
 
     abstract fun start()
     abstract fun stop()

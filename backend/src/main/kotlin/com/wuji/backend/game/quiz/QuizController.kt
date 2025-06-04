@@ -1,6 +1,6 @@
 package com.wuji.backend.game.quiz
 
-import com.wuji.backend.game.common.exception.PlayerNotJoinedException
+import com.wuji.backend.player.state.exception.PlayerNotJoinedException
 import com.wuji.backend.game.quiz.dto.AnswerQuestionRequestDto
 import com.wuji.backend.game.quiz.dto.JoinQuizRequestDto
 import com.wuji.backend.question.Question
@@ -19,8 +19,8 @@ class QuizController(private val quizService: QuizService) {
 
     @PostMapping("/questions/{questionId}")
     fun answerQuestion(@PathVariable questionId: Int, @RequestBody answerDto: AnswerQuestionRequestDto, httpSession: HttpSession): ResponseEntity<Boolean> {
-        val quizPlayerState = httpSession.getAttribute("playerState") ?: throw PlayerNotJoinedException()
-        val correct = quizService.answerQuestion(quizPlayerState, questionId, answerDto.answerId)
+        val quizPlayerState = httpSession.getAttribute("index") ?: throw PlayerNotJoinedException()
+        val correct = quizService.answerQuestion(quizPlayerState as Int, questionId, answerDto.answerId)
 
         return ResponseEntity.ok(correct)
     }
@@ -28,8 +28,8 @@ class QuizController(private val quizService: QuizService) {
     @PostMapping("/join")
     fun joinGame(httpSession: HttpSession, @RequestBody requestDto: JoinQuizRequestDto): ResponseEntity<Any> {
         val nickname = httpSession.getAttribute("nickname") ?: ""
-        val playerState = quizService.joinGame(requestDto.index, nickname)
-        httpSession.setAttribute("playerState", playerState)
+        httpSession.setAttribute("index", requestDto.index)
+        quizService.joinGame(requestDto.index, nickname)
         return ResponseEntity.ok(nickname)
     }
 }
