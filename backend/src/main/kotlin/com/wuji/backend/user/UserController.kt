@@ -9,6 +9,5 @@ import org.springframework.web.bind.annotation.RestController
 class UserController(
     private val userService: UserService,
 ) {
-    @GetMapping()
-    fun fetchUsers() = userService.fetchUsers()
+    @GetMapping() fun fetchUsers() = userService.fetchUsers()
 }

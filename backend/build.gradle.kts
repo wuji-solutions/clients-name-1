@@ -54,6 +54,12 @@ tasks.asciidoctor {
 }
 spotless {
 	kotlin {
-		ktlint()
+		ktfmt("0.51").googleStyle().configure {
+			it.setMaxWidth(80)
+			it.setBlockIndent(4)
+			it.setContinuationIndent(4)
+			it.setRemoveUnusedImports(true)
+			it.setManageTrailingCommas(false)
+		}
 	}
 }
