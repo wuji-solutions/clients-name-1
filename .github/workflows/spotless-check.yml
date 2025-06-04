@@ -21,5 +21,6 @@ jobs:
     - name: Grant execute permissions to gradlew
       run: chmod +x ./backend/gradlew
     - name: Run spotlessCheck
-      run: ./backend/gradlew spotlessCheck 
+      working-directory: ./backend
+      run: ./gradlew spotlessCheck 
   
