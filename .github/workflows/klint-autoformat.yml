@@ -1,0 +1,43 @@
+name: Kotlin Format & Commit
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+
+jobs:
+  format-and-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install ktlint
+        run: |
+          curl -sSLO https://github.com/pinterest/ktlint/releases/download/0.48.2/ktlint
+          chmod a+x ktlint
+
+      - name: Format Kotlin code
+        run: ./ktlint -F .
+
+      - name: Commit and push changes if any
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if [ -n "$(git status --porcelain)" ]; then
+            git add .
+            git commit -m "chore: auto format Kotlin code with ktlint"
+            git push
+          else
+            echo "No changes to commit"
+          fi
