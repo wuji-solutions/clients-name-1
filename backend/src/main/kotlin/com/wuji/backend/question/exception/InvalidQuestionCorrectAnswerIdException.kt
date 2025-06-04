@@ -1,4 +1,4 @@
-package com.wuji.backend.game.common.exception
+package com.wuji.backend.question.exception
 
 class InvalidQuestionCorrectAnswerIdException(
     correctAnswerId: Int

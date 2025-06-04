@@ -1,8 +1,9 @@
 package com.wuji.backend.game.quiz
 
 import com.wuji.backend.game.common.AbstractGame
+import com.wuji.backend.question.Question
 
-class QuizGame(name: String, config: QuizGameConfig): AbstractGame<QuizGameConfig>(name, config) {
+class QuizGame(name: String, config: QuizGameConfig, val questions: List<Question>): AbstractGame<QuizGameConfig>(name, config) {
     override fun start() {
         TODO("Not yet implemented")
     }

@@ -1,8 +1,10 @@
 package com.wuji.backend.configuration
 
-import com.wuji.backend.game.common.Answer
-import com.wuji.backend.game.common.Question
-import com.wuji.backend.game.common.QuestionType
+import com.wuji.backend.game.quiz.QuizGame
+import com.wuji.backend.game.quiz.QuizGameConfig
+import com.wuji.backend.question.Answer
+import com.wuji.backend.question.Question
+import com.wuji.backend.question.QuestionType
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -104,4 +106,11 @@ class TestConfig {
             )
         )
     }
+
+    @Bean
+    fun getQuizGameConfig(): QuizGameConfig = QuizGameConfig(10)
+
+    @Bean
+    fun getQuizGame(config: QuizGameConfig, questions: List<Question>): QuizGame =
+        QuizGame("Quiz Game 123", config, questions)
 }
