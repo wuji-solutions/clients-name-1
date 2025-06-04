@@ -1,5 +1,7 @@
 package com.wuji.backend.game.quiz
 
+import com.wuji.backend.game.common.exception.PlayerNotJoinedException
+import com.wuji.backend.game.quiz.dto.AnswerQuestionRequestDto
 import com.wuji.backend.game.quiz.dto.JoinQuizRequestDto
 import com.wuji.backend.question.Question
 import jakarta.servlet.http.HttpSession
@@ -15,10 +17,10 @@ class QuizController(private val quizService: QuizService) {
         return ResponseEntity.ok(quizService.getNthQuestion(questionId))
     }
 
-    @PostMapping("/questions/{questionId}/{answerId}")
-    fun answerQuestion(@PathVariable questionId: Int, @PathVariable answerId: Int, httpSession: HttpSession): ResponseEntity<Boolean> {
-        val quizPlayerState = httpSession.getAttribute("playerState") ?: ""
-        val correct = quizService.answerQuestion(quizPlayerState, questionId, answerId)
+    @PostMapping("/questions/{questionId}")
+    fun answerQuestion(@PathVariable questionId: Int, @RequestBody answerDto: AnswerQuestionRequestDto, httpSession: HttpSession): ResponseEntity<Boolean> {
+        val quizPlayerState = httpSession.getAttribute("playerState") ?: throw PlayerNotJoinedException()
+        val correct = quizService.answerQuestion(quizPlayerState, questionId, answerDto.answerId)
 
         return ResponseEntity.ok(correct)
     }
