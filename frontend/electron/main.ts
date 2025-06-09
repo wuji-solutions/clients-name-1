@@ -18,7 +18,7 @@ function createWindow() {
     
 
     if (isDev) {
-        win.loadURL('http://192.168.137.1:3000/');
+        win.loadURL('http://localhost:3000/');
         const jarPath = path.join(__dirname, '..', 'backendJar/', 'backend.jar') 
         child = require('child_process').spawn('java', ['-jar', jarPath]);
 
