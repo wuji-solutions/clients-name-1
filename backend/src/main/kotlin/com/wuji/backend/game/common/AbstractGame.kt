@@ -8,7 +8,7 @@ abstract class AbstractGame<DetailsT: PlayerDetails, ConfigT : GameConfig>(
     private val config: ConfigT
 ) {
     private val isRunning: Boolean = false
-    val players: MutableList<Player<DetailsT>> = mutableListOf()
+    val players: MutableSet<Player<DetailsT>> = mutableSetOf()
 
     abstract fun start()
     abstract fun stop()

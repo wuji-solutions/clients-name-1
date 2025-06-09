@@ -12,4 +12,6 @@ class PlayerService {
         if (index !is Int) throw IllegalArgumentException("Index ucznia powinien byc numerem")
         return Player(index, nickname as String, details)
     }
+
+
 }

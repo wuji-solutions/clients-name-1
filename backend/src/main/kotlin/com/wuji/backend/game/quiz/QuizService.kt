@@ -8,6 +8,7 @@ import com.wuji.backend.player.state.PlayerService
 import com.wuji.backend.player.state.QuizPlayer
 import com.wuji.backend.player.state.QuizPlayerDetails
 import com.wuji.backend.player.state.exception.PlayerNotFoundException
+import com.wuji.backend.question.Answer
 import com.wuji.backend.util.ext.getOrThrow
 import org.springframework.stereotype.Service
 
@@ -19,6 +20,13 @@ class QuizService(
     fun joinGame(index: Any, nickname: Any): Player<QuizPlayerDetails> {
         return playerService.createPlayer(index, nickname, QuizPlayerDetails())
             .also { player -> quizGame.players.add(player) }
+    }
+
+    fun getAnswers(playerIndex: Int): List<PlayerAnswer> {
+        return quizGame.players
+            .find { player -> player.index == playerIndex }
+            ?.details
+            ?.answers ?: emptyList()
     }
 
     fun getNthQuestion(n: Int) = quizGame.questions.getOrThrow(n) { QuestionIndexOutOfBoundsException(n, quizGame.questions.size) }
