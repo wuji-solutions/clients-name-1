@@ -54,11 +54,10 @@ function Configurations() {
 
             </InstructionContainer>
             <ModeContainer>
-
+                <ButtonCustom onClick={() => navigate('/quiz')}>Zacznij grę</ButtonCustom>
             </ModeContainer>
             <OptionsContainer>
-
-                    <ButtonCustom onClick={() => navigate('/')}>Powrót</ButtonCustom>
+                <ButtonCustom onClick={() => navigate('/')}>Powrót</ButtonCustom>
             </OptionsContainer>
         </Container>
     );
