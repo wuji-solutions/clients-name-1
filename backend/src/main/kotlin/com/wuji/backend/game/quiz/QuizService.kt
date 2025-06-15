@@ -1,5 +1,6 @@
 package com.wuji.backend.game.quiz
 
+import com.wuji.backend.events.SSEService
 import com.wuji.backend.question.PlayerAnswer
 import com.wuji.backend.question.Question
 import com.wuji.backend.game.quiz.exception.QuestionIndexOutOfBoundsException
@@ -14,11 +15,13 @@ import org.springframework.stereotype.Service
 @Service
 class QuizService(
     private val quizGame: QuizGame,
-    private val playerService: PlayerService
+    private val playerService: PlayerService,
+    private val sseService: SSEService
 ) {
     fun joinGame(index: Any, nickname: Any): Player<QuizPlayerDetails> {
         return playerService.createPlayer(index, nickname, QuizPlayerDetails())
             .also { player -> quizGame.players.add(player) }
+            .also { sseService.sendEvent(quizGame.players) }
     }
 
     fun getNthQuestion(n: Int) = quizGame.questions.getOrThrow(n) { QuestionIndexOutOfBoundsException(n, quizGame.questions.size) }
