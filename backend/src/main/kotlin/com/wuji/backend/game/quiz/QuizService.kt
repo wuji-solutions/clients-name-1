@@ -1,5 +1,6 @@
 package com.wuji.backend.game.quiz
 
+import com.wuji.backend.events.SSEService
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.common.GameService
 import com.wuji.backend.player.state.PlayerService
@@ -11,7 +12,8 @@ import org.springframework.stereotype.Service
 @Service
 class QuizService(
     private val gameRegistry: GameRegistry,
-    private val playerService: PlayerService
+    private val playerService: PlayerService,
+    private val sseService: SSEService
 ) : GameService {
 
     private val quizGame: QuizGame
@@ -20,6 +22,7 @@ class QuizService(
     override fun joinGame(index: Any, nickname: Any): QuizPlayer {
         return playerService.createPlayer(index, nickname, QuizPlayerDetails())
             .also { player -> quizGame.players.add(player) }
+            .also { sseService.sendEvent(quizGame.players) }
     }
 
     fun createGame(name: String, config: QuizGameConfig, questions: List<Question>) {
