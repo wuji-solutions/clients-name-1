@@ -1,19 +1,26 @@
 package com.wuji.backend.game.quiz
 
 import com.wuji.backend.game.common.AbstractGame
+import com.wuji.backend.player.state.QuizPlayer
 import com.wuji.backend.player.state.QuizPlayerDetails
-import com.wuji.backend.question.Question
+import com.wuji.backend.player.state.exception.PlayerNotFoundException
+import com.wuji.backend.question.common.Question
 
-class QuizGame(name: String, config: QuizGameConfig, val questions: List<Question>): AbstractGame<QuizPlayerDetails, QuizGameConfig>(name, config) {
+class QuizGame(name: String, config: QuizGameConfig, val questions: List<Question>) :
+    AbstractGame<QuizPlayerDetails, QuizGameConfig>(name, config) {
     override fun start() {
-        TODO("Not yet implemented")
+        isRunning = true
     }
 
     override fun stop() {
-        TODO("Not yet implemented")
+        isRunning = false
     }
 
     override fun getRaport(): String {
         TODO("Not yet implemented")
+    }
+
+    fun findPlayerByIndex(index: Int): QuizPlayer {
+        return players.find { player -> player.index == index } ?: throw PlayerNotFoundException(index)
     }
 }

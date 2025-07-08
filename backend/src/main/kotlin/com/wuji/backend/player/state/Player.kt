@@ -1,6 +1,6 @@
 package com.wuji.backend.player.state
 
-import com.wuji.backend.question.PlayerAnswer
+import com.wuji.backend.question.common.PlayerAnswer
 
 data class Player<PlayerDetailsT>(
     val index: Int,

@@ -1,14 +1,17 @@
-package com.wuji.backend.question
+package com.wuji.backend.question.common
 
-import com.wuji.backend.question.exception.InvalidQuestionCorrectAnswerIdException
+import com.wuji.backend.question.common.exception.InvalidQuestionCorrectAnswerIdException
 
 data class Question(
+    val id: Int,
+    val category: String,
     val type: QuestionType,
     val task: String,
     val answers: List<Answer>,
     val correctAnswerId: Int
 ) {
-    val correctAnswer = answers.find { it.id == correctAnswerId } ?: throw InvalidQuestionCorrectAnswerIdException(correctAnswerId)
+    val correctAnswer =
+        answers.find { it.id == correctAnswerId } ?: throw InvalidQuestionCorrectAnswerIdException(correctAnswerId)
 
     fun isCorrectAnswerId(answerId: Int) = correctAnswerId == answerId
 }

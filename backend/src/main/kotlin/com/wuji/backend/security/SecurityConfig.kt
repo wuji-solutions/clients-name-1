@@ -6,8 +6,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.authentication.AnonymousAuthenticationFilter
-
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 
 
 @Configuration
@@ -23,7 +22,12 @@ class SecurityConfig {
             }
             .anonymous(Customizer.withDefaults())
             .formLogin { it.disable() }
-            .addFilterBefore(ParticipantRegistrationFilter(), AnonymousAuthenticationFilter::class.java)
+            .authorizeHttpRequests {
+                it
+                    .requestMatchers(AntPathRequestMatcher("/games/*/join", "POST")).permitAll()
+                    .requestMatchers(AntPathRequestMatcher("/games/*/**")).hasAuthority("JOINED")
+                    .anyRequest().denyAll()
+            }
 
         return http.build()
     }

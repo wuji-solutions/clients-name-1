@@ -1,35 +1,43 @@
 package com.wuji.backend.game.quiz
 
-import com.wuji.backend.player.state.exception.PlayerNotJoinedException
-import com.wuji.backend.game.quiz.dto.AnswerQuestionRequestDto
-import com.wuji.backend.game.quiz.dto.JoinQuizRequestDto
-import com.wuji.backend.question.Question
-import jakarta.servlet.http.HttpSession
+import com.wuji.backend.game.common.GameController
+import com.wuji.backend.game.common.dto.JoinGameRequestDto
+import com.wuji.backend.game.quiz.dto.QuizGameCreateRequestDto
+import com.wuji.backend.player.auth.PlayerAuthService
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.security.core.Authentication
+import org.springframework.validation.annotation.Validated
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
+@Validated
 @RequestMapping("/games/quiz")
-class QuizController(private val quizService: QuizService) {
+class QuizController(private val quizService: QuizService, private val playerAuthService: PlayerAuthService) :
+    GameController {
 
-    @GetMapping("/questions/{questionId}")
-    fun getQuestion(@PathVariable questionId: Int): ResponseEntity<Question> {
-        return ResponseEntity.ok(quizService.getNthQuestion(questionId))
-    }
-
-    @PostMapping("/questions/{questionId}")
-    fun answerQuestion(@PathVariable questionId: Int, @RequestBody answerDto: AnswerQuestionRequestDto, httpSession: HttpSession): ResponseEntity<Boolean> {
-        val quizPlayerState = httpSession.getAttribute("index") ?: throw PlayerNotJoinedException()
-        val correct = quizService.answerQuestion(quizPlayerState as Int, questionId, answerDto.answerId)
-
-        return ResponseEntity.ok(correct)
+    @PostMapping("/create")
+    fun createGame(
+        @Valid @RequestBody requestDto: QuizGameCreateRequestDto,
+        authentication: Authentication,
+    ): ResponseEntity<Any> {
+        quizService.createGame()
+        return ResponseEntity.ok().build()
     }
 
     @PostMapping("/join")
-    fun joinGame(httpSession: HttpSession, @RequestBody requestDto: JoinQuizRequestDto): ResponseEntity<Any> {
-        val nickname = httpSession.getAttribute("nickname") ?: ""
-        httpSession.setAttribute("index", requestDto.index)
-        quizService.joinGame(requestDto.index, nickname)
-        return ResponseEntity.ok(nickname)
+    override fun joinGame(
+        @Valid @RequestBody requestDto: JoinGameRequestDto,
+        request: HttpServletRequest
+    ): ResponseEntity<Any> {
+        val participant = playerAuthService.authenticate(requestDto.index, request)
+        quizService.joinGame(participant.index, participant.nickname)
+        
+        return ResponseEntity.ok(participant.nickname)
     }
+
 }
