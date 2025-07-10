@@ -18,7 +18,7 @@ class AdminController(
     private val quizService: QuizService
 ) {
 
-    @PostMapping("/create/quiz")
+    @PostMapping("/quiz")
     fun createQuizGame(
         @Valid @RequestBody requestDto: QuizGameCreateRequestDto,
         authentication: Authentication?,

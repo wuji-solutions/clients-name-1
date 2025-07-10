@@ -1,3 +1,7 @@
 package com.wuji.backend.player.state.exception
 
-class PlayerNotFoundException(index: Int): IllegalArgumentException("Nie znaleziono gracza o indexie ucznia $index.")
+import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.ResponseStatus
+
+@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+class PlayerNotFoundException(index: Int) : RuntimeException("Nie znaleziono gracza o indexie ucznia $index.")

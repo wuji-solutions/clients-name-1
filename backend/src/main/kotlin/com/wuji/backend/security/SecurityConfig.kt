@@ -6,13 +6,18 @@ import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.access.AccessDeniedHandler
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 
 
 @Configuration
 @EnableMethodSecurity
-class SecurityConfig {
+class SecurityConfig(
+    private val customAccessDeniedHandler: AccessDeniedHandler,
+    private val customAuthenticationEntryPoint: AuthenticationEntryPoint
+) {
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
@@ -23,6 +28,11 @@ class SecurityConfig {
             }
             .anonymous(Customizer.withDefaults())
             .formLogin { it.disable() }
+            .exceptionHandling {
+                it
+                    .accessDeniedHandler(customAccessDeniedHandler)
+                    .authenticationEntryPoint(customAuthenticationEntryPoint)
+            }
             .authorizeHttpRequests {
                 it
                     .requestMatchers(AntPathRequestMatcher("/games/*/join", "POST")).permitAll()

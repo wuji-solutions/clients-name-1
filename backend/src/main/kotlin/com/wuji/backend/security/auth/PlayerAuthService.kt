@@ -1,4 +1,4 @@
-package com.wuji.backend.player.auth
+package com.wuji.backend.security.auth
 
 import com.wuji.backend.player.NicknameGenerator
 import jakarta.servlet.http.HttpServletRequest

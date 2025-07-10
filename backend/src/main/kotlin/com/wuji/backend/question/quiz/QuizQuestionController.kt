@@ -2,8 +2,8 @@ package com.wuji.backend.question.quiz
 
 import com.wuji.backend.game.common.dto.QuestionResponseDto
 import com.wuji.backend.game.quiz.dto.AnswerQuestionRequestDto
-import com.wuji.backend.player.auth.Participant
 import com.wuji.backend.question.common.QuestionController
+import com.wuji.backend.security.auth.Participant
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication

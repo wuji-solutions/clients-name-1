@@ -3,8 +3,8 @@ package com.wuji.backend.game.quiz
 import com.wuji.backend.game.GameType
 import com.wuji.backend.game.common.GameController
 import com.wuji.backend.game.common.dto.JoinGameRequestDto
-import com.wuji.backend.player.auth.PlayerAuthService
 import com.wuji.backend.security.RequiresGame
+import com.wuji.backend.security.auth.PlayerAuthService
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
