@@ -1,29 +1,32 @@
 package com.wuji.backend.game.quiz
 
+import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.common.GameService
 import com.wuji.backend.player.state.PlayerService
 import com.wuji.backend.player.state.QuizPlayer
 import com.wuji.backend.player.state.QuizPlayerDetails
-import com.wuji.backend.question.quiz.QuizQuestionService
+import com.wuji.backend.question.common.Question
 import org.springframework.stereotype.Service
 
 @Service
 class QuizService(
-    private val quizGame: QuizGame,
-    private val playerService: PlayerService,
-    private val questionService: QuizQuestionService
+    private val gameRegistry: GameRegistry,
+    private val playerService: PlayerService
 ) : GameService {
+
+    private val quizGame: QuizGame
+        get() = gameRegistry.getAs(QuizGame::class.java) // TODO: Right now it casts it making it another object...
+
     override fun joinGame(index: Any, nickname: Any): QuizPlayer {
         return playerService.createPlayer(index, nickname, QuizPlayerDetails())
             .also { player -> quizGame.players.add(player) }
     }
 
-    override fun createGame() {
-        TODO("Not yet implemented")
+    fun createGame(name: String, config: QuizGameConfig, questions: List<Question>) {
+        gameRegistry.register(QuizGame(name, config, questions))
     }
 
     override fun startGame() {
-        questionService.game = quizGame
         quizGame.start()
     }
 

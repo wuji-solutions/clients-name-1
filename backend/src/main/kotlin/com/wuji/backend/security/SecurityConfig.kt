@@ -1,4 +1,5 @@
 package com.wuji.backend.security
+
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.Customizer
@@ -26,6 +27,7 @@ class SecurityConfig {
                 it
                     .requestMatchers(AntPathRequestMatcher("/games/*/join", "POST")).permitAll()
                     .requestMatchers(AntPathRequestMatcher("/games/*/**")).hasAuthority("JOINED")
+                    .requestMatchers(AntPathRequestMatcher("/manage/**")).permitAll() // TODO: For now lets let everyone
                     .anyRequest().denyAll()
             }
 

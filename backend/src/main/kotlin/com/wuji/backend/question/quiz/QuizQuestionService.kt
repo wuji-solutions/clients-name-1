@@ -1,5 +1,6 @@
 package com.wuji.backend.question.quiz
 
+import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.quiz.QuizGame
 import com.wuji.backend.game.quiz.exception.QuestionIndexOutOfBoundsException
 import com.wuji.backend.player.state.QuizPlayer
@@ -11,7 +12,12 @@ import com.wuji.backend.util.ext.toQuestionDto
 import org.springframework.stereotype.Service
 
 @Service
-class QuizQuestionService(var game: QuizGame) : QuestionService {
+class QuizQuestionService(
+    val gameRegistry: GameRegistry
+) : QuestionService {
+
+    private val game: QuizGame
+        get() = gameRegistry.getAs(QuizGame::class.java)
 
     override fun getAnswers(playerIndex: Int): List<PlayerAnswer> {
         return game.players
