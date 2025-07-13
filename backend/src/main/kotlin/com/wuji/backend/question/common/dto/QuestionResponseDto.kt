@@ -1,4 +1,4 @@
-package com.wuji.backend.game.common.dto
+package com.wuji.backend.question.common.dto
 
 import com.wuji.backend.question.common.Answer
 import com.wuji.backend.question.common.QuestionType

@@ -1,4 +1,4 @@
-package com.wuji.backend.game.quiz.exception
+package com.wuji.backend.game.common.exception
 
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ResponseStatus

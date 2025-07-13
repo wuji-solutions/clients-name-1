@@ -5,10 +5,12 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.access.AccessDeniedHandler
+import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 
 
@@ -35,12 +37,18 @@ class SecurityConfig(
             }
             .authorizeHttpRequests {
                 it
+                    .requestMatchers(AntPathRequestMatcher("/manage/**")).permitLocalhost()
                     .requestMatchers(AntPathRequestMatcher("/games/*/join", "POST")).permitAll()
                     .requestMatchers(AntPathRequestMatcher("/games/*/**")).hasAuthority("JOINED")
-                    .requestMatchers(AntPathRequestMatcher("/manage/**")).permitAll() // TODO: For now lets let everyone
+                    .requestMatchers(AntPathRequestMatcher("/swagger-ui/**")).permitLocalhost()
+                    .requestMatchers(AntPathRequestMatcher("/v3/api-docs/**")).permitLocalhost()
                     .anyRequest().denyAll()
             }
 
         return http.build()
+    }
+
+    fun AuthorizeHttpRequestsConfigurer<*>.AuthorizedUrl.permitLocalhost(): AuthorizeHttpRequestsConfigurer<*>.AuthorizationManagerRequestMatcherRegistry {
+        return this.access(WebExpressionAuthorizationManager("hasIpAddress('127.0.0.1') or hasIpAddress('::1')"))
     }
 }

@@ -16,7 +16,6 @@ class GlobalExceptionHandler {
         request: HttpServletRequest,
         ex: Exception
     ): ResponseEntity<ErrorResponse> {
-        println("Caught exception: ${ex.javaClass.name} -> ${ex.message}")
         val responseStatus =
             ex.javaClass.getAnnotation(ResponseStatus::class.java)?.value ?: HttpStatus.INTERNAL_SERVER_ERROR
         val errorResponse = BasicErrorResponse(responseStatus.value(), ex.localizedMessage, LocalDateTime.now())

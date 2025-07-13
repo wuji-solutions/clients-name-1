@@ -10,9 +10,14 @@ abstract class AbstractGame<DetailsT : PlayerDetails, ConfigT : GameConfig>(
     private val config: ConfigT
 ) {
     var isRunning: Boolean = false
+    var isFinished: Boolean = false
+
+    // TODO: Add constraint to make sure its impossible for isRunning = true && isFinished = true
     val players: MutableSet<Player<DetailsT>> = mutableSetOf()
 
     abstract fun start()
+    abstract fun pause()
+    abstract fun resume()
     abstract fun stop()
     abstract fun getRaport(): String
 }

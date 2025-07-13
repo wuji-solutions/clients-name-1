@@ -2,13 +2,14 @@ package com.wuji.backend.game
 
 import com.wuji.backend.game.common.AbstractGame
 import com.wuji.backend.game.common.GameConfig
-import com.wuji.backend.game.quiz.exception.GameNotCreatedYetException
+import com.wuji.backend.game.common.exception.GameNotCreatedYetException
+import com.wuji.backend.game.common.exception.IncorrectGameTypeException
 import com.wuji.backend.player.state.PlayerDetails
 import org.springframework.stereotype.Component
 
 @Component
 class GameRegistry {
-    private var _game: AbstractGame<*, *>? = null
+    private var _game: AbstractGame<out PlayerDetails, out GameConfig>? = null
     private var _gameType: GameType? = null
 
     val game: AbstractGame<out PlayerDetails, out GameConfig>
@@ -17,12 +18,12 @@ class GameRegistry {
     val gameType: GameType
         get() = _gameType ?: throw GameNotCreatedYetException()
 
-    fun register(game: AbstractGame<*, *>) {
+    fun register(game: AbstractGame<out PlayerDetails, out GameConfig>) {
         this._game = game
         this._gameType = game.gameType
     }
 
-    fun <T : AbstractGame<*, *>> getAs(clazz: Class<T>): T {
-        return clazz.cast(game) ?: throw IllegalStateException("Game is not of expected type")
+    fun <T : AbstractGame<out PlayerDetails, out GameConfig>> getAs(clazz: Class<T>): T {
+        return clazz.cast(game) ?: throw IncorrectGameTypeException(gameType, clazz)
     }
 }

@@ -2,13 +2,13 @@ package com.wuji.backend.security
 
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.GameType
+import com.wuji.backend.game.common.exception.GameIncorrectIsRunningException
+import com.wuji.backend.game.common.exception.IncorrectGameTypeException
 import org.aspectj.lang.JoinPoint
 import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.annotation.Before
 import org.aspectj.lang.reflect.MethodSignature
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
-import org.springframework.web.server.ResponseStatusException
 
 @Aspect
 @Component
@@ -22,11 +22,32 @@ class GameValidationAspect(
         val currentType = gameRegistry.gameType
 
         if (currentType != requiredType) {
-            throw ResponseStatusException(
-                HttpStatus.FORBIDDEN,
-                "Requires game type: $requiredType (Current: $currentType)"
-            )
+            throw IncorrectGameTypeException(gameRegistry.gameType, requiredType.gameClass())
         }
+    }
+
+    @Before("@within(com.wuji.backend.security.RunningGame) || @annotation(com.wuji.backend.security.RunningGame)")
+    fun validateGameIsRunning(joinPoint: JoinPoint) {
+        val isRunning = joinPoint.getIsRunning()
+        if (gameRegistry.game.isRunning == isRunning) {
+            throw GameIncorrectIsRunningException(gameRegistry.game.isRunning, isRunning)
+        }
+    }
+
+    private fun JoinPoint.getIsRunning(): Boolean {
+        val method = (signature as MethodSignature).method
+
+        method.getAnnotation(RunningGame::class.java)?.let {
+            return it.isRunning
+        }
+
+        val targetClass = target.javaClass
+        targetClass.getAnnotation(RunningGame::class.java)?.let {
+            return it.isRunning
+        }
+
+        throw IllegalStateException("Missing @RunningGame annotation on method or class")
+
     }
 
     private fun getRequiredGameType(joinPoint: JoinPoint): GameType {
@@ -49,3 +70,7 @@ class GameValidationAspect(
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class RequiresGame(val gametype: GameType)
+
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class RunningGame(val isRunning: Boolean)

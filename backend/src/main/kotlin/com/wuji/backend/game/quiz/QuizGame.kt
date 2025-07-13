@@ -13,6 +13,16 @@ class QuizGame(name: String, config: QuizGameConfig, val questions: List<Questio
         isRunning = true
     }
 
+    override fun pause() {
+        println(isRunning)
+        isRunning = false
+        println("Game paused")
+    }
+
+    override fun resume() {
+        isRunning = true
+    }
+
     override fun stop() {
         isRunning = false
     }

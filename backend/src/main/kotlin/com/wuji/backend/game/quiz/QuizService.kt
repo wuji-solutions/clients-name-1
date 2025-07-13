@@ -15,7 +15,7 @@ class QuizService(
 ) : GameService {
 
     private val quizGame: QuizGame
-        get() = gameRegistry.getAs(QuizGame::class.java) // TODO: Right now it casts it making it another object...
+        get() = gameRegistry.getAs(QuizGame::class.java)
 
     override fun joinGame(index: Any, nickname: Any): QuizPlayer {
         return playerService.createPlayer(index, nickname, QuizPlayerDetails())
