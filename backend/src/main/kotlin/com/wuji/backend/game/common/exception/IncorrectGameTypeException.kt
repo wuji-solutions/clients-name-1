@@ -11,4 +11,6 @@ import org.springframework.web.bind.annotation.ResponseStatus
 class IncorrectGameTypeException(
     expected: GameType,
     actual: Class<out AbstractGame<out PlayerDetails, out GameConfig>>,
-) : IllegalArgumentException("Niepoprawny rodzaj gry. Oczekiwany: $expected, przekazany: $actual")
+) :
+    IllegalArgumentException(
+        "Niepoprawny rodzaj gry. Oczekiwany: $expected, przekazany: $actual")

@@ -12,9 +12,7 @@ import com.wuji.backend.util.ext.toQuestionDto
 import org.springframework.stereotype.Service
 
 @Service
-class QuizQuestionService(
-    val gameRegistry: GameRegistry
-) : QuestionService {
+class QuizQuestionService(val gameRegistry: GameRegistry) : QuestionService {
 
     private val game: QuizGame
         get() = gameRegistry.getAs(QuizGame::class.java)
@@ -26,9 +24,14 @@ class QuizQuestionService(
             ?.answers ?: emptyList()
     }
 
-    fun getQuestion(questionId: Int) = getQuestionById(questionId).toQuestionDto()
+    fun getQuestion(questionId: Int) =
+        getQuestionById(questionId).toQuestionDto()
 
-    override fun answerQuestion(playerIndex: Int, questionId: Int, answerId: Int): Boolean {
+    override fun answerQuestion(
+        playerIndex: Int,
+        questionId: Int,
+        answerId: Int
+    ): Boolean {
         val question = getQuestionById(questionId)
         val player = game.findPlayerByIndex(playerIndex)
 
@@ -42,17 +45,21 @@ class QuizQuestionService(
     }
 
     private fun QuizPlayer.alreadyAnswered(questionId: Int) =
-        details.answers.find { answer -> answer.question.id == questionId } != null
+        details.answers.find { answer -> answer.question.id == questionId } !=
+            null
 
-    private fun getQuestionById(n: Int) = game.questions
-        .find { question -> question.id == n }
-        ?: throw QuestionNotFoundException(n)
+    private fun getQuestionById(n: Int) =
+        game.questions.find { question -> question.id == n }
+            ?: throw QuestionNotFoundException(n)
 
-    private fun updatePlayerState(player: QuizPlayer, question: Question, answerId: Int) {
+    private fun updatePlayerState(
+        player: QuizPlayer,
+        question: Question,
+        answerId: Int
+    ) {
         // Should it actually be there? Maybe move it somewhere else
         val playerAnswer = PlayerAnswer(question, answerId)
 
         player.details.answers.add(playerAnswer)
     }
-
 }

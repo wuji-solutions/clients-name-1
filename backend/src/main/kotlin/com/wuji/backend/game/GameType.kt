@@ -10,7 +10,8 @@ enum class GameType {
     EXAM,
     BOARD;
 
-    fun gameClass(): Class<out AbstractGame<out PlayerDetails, out GameConfig>> {
+    fun gameClass():
+        Class<out AbstractGame<out PlayerDetails, out GameConfig>> {
         return when (this) {
             QUIZ -> QuizGame::class.java
             EXAM -> TODO()

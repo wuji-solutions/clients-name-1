@@ -1,12 +1,12 @@
 package com.wuji.backend.error
 
+import java.time.LocalDateTime
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
 import org.springframework.http.ProblemDetail
 import org.springframework.web.ErrorResponse
-import java.time.LocalDateTime
 
-data class BasicErrorResponse (
+data class BasicErrorResponse(
     val status: Int,
     val message: String?,
     val timestamp: LocalDateTime = LocalDateTime.now(),
@@ -14,9 +14,10 @@ data class BasicErrorResponse (
     override fun getStatusCode(): HttpStatusCode = HttpStatus.valueOf(status)
 
     override fun getBody(): ProblemDetail {
-        val detail = ProblemDetail.forStatusAndDetail(HttpStatus.valueOf(status), message)
+        val detail =
+            ProblemDetail.forStatusAndDetail(
+                HttpStatus.valueOf(status), message)
         detail.setProperty("timestamp", timestamp)
         return detail
     }
-
 }

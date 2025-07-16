@@ -13,25 +13,28 @@ import org.springframework.stereotype.Component
 
 @Aspect
 @Component
-class GameValidationAspect(
-    private val gameRegistry: GameRegistry
-) {
+class GameValidationAspect(private val gameRegistry: GameRegistry) {
 
-    @Before("@within(com.wuji.backend.security.RequiresGame) || @annotation(com.wuji.backend.security.RequiresGame)")
+    @Before(
+        "@within(com.wuji.backend.security.RequiresGame) || @annotation(com.wuji.backend.security.RequiresGame)")
     fun validateGameType(joinPoint: JoinPoint) {
         val requiredType = getRequiredGameType(joinPoint)
         val currentType = gameRegistry.gameType
 
         if (currentType != requiredType) {
-            throw IncorrectGameTypeException(gameRegistry.gameType, requiredType.gameClass())
+            throw IncorrectGameTypeException(
+                gameRegistry.gameType, requiredType.gameClass())
         }
     }
 
-    @Before("@within(com.wuji.backend.security.AnyGameState) || @annotation(com.wuji.backend.security.AnyGameState)")
+    @Before(
+        "@within(com.wuji.backend.security.AnyGameState) || @annotation(com.wuji.backend.security.AnyGameState)")
     fun validateGameIsRunning(joinPoint: JoinPoint) {
         val acceptableStates = joinPoint.getAcceptableStates()
         if (gameRegistry.game.gameState in acceptableStates) {
-            throw GameInIncorrectStateException(acceptableStates.joinToString("|"), gameRegistry.game.gameState.name)
+            throw GameInIncorrectStateException(
+                acceptableStates.joinToString("|"),
+                gameRegistry.game.gameState.name)
         }
     }
 
@@ -47,8 +50,8 @@ class GameValidationAspect(
             return it.states
         }
 
-        throw IllegalStateException("Missing @RunningGame annotation on method or class")
-
+        throw IllegalStateException(
+            "Missing @RunningGame annotation on method or class")
     }
 
     private fun getRequiredGameType(joinPoint: JoinPoint): GameType {
@@ -63,10 +66,10 @@ class GameValidationAspect(
             return it.gametype
         }
 
-        throw IllegalStateException("Missing @RequiresGame annotation on method or class")
+        throw IllegalStateException(
+            "Missing @RequiresGame annotation on method or class")
     }
 }
-
 
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)

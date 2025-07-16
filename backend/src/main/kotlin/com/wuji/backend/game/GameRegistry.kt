@@ -23,7 +23,10 @@ class GameRegistry {
         this._gameType = game.gameType
     }
 
-    fun <T : AbstractGame<out PlayerDetails, out GameConfig>> getAs(clazz: Class<T>): T {
-        return clazz.cast(game) ?: throw IncorrectGameTypeException(gameType, clazz)
+    fun <T : AbstractGame<out PlayerDetails, out GameConfig>> getAs(
+        clazz: Class<T>
+    ): T {
+        return clazz.cast(game)
+            ?: throw IncorrectGameTypeException(gameType, clazz)
     }
 }

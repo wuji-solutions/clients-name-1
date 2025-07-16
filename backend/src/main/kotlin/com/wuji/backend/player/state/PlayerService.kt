@@ -9,7 +9,8 @@ class PlayerService {
         nickname: Any,
         details: T
     ): Player<T> {
-        if (index !is Int) throw IllegalArgumentException("Index ucznia powinien byc numerem")
+        if (index !is Int)
+            throw IllegalArgumentException("Index ucznia powinien byc numerem")
         return Player(index, nickname as String, details)
     }
 }

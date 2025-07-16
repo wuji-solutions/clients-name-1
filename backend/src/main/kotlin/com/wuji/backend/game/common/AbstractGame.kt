@@ -15,9 +15,13 @@ abstract class AbstractGame<DetailsT : PlayerDetails, ConfigT : GameConfig>(
     val players: MutableSet<Player<DetailsT>> = mutableSetOf()
 
     abstract fun start()
+
     abstract fun pause()
+
     abstract fun resume()
+
     abstract fun finish()
+
     abstract fun getRaport(): String
 }
 

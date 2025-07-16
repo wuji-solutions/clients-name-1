@@ -11,12 +11,16 @@ import org.springframework.security.web.access.AccessDeniedHandler
 @Configuration
 class SecurityBeansConfig {
     @Bean
-    fun customAccessDeniedHandler(objectMapper: ObjectMapper): AccessDeniedHandler {
+    fun customAccessDeniedHandler(
+        objectMapper: ObjectMapper
+    ): AccessDeniedHandler {
         return CustomAccessDeniedHandler(objectMapper)
     }
 
     @Bean
-    fun customAuthenticationEntryPoint(objectMapper: ObjectMapper): AuthenticationEntryPoint {
+    fun customAuthenticationEntryPoint(
+        objectMapper: ObjectMapper
+    ): AuthenticationEntryPoint {
         return CustomAuthenticationEntryPoint(objectMapper)
     }
 }

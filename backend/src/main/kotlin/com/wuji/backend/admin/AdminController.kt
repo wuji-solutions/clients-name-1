@@ -26,7 +26,8 @@ class AdminController(
     fun createQuizGame(
         @Valid @RequestBody requestDto: QuizGameCreateRequestDto
     ): ResponseEntity<Nothing> {
-        quizService.createGame(requestDto.name, requestDto.config, requestDto.questions)
+        quizService.createGame(
+            requestDto.name, requestDto.config, requestDto.questions)
         return ResponseEntity.ok().build()
     }
 

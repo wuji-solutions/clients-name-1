@@ -13,7 +13,6 @@ import org.springframework.security.web.access.AccessDeniedHandler
 import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 
-
 @Configuration
 @EnableMethodSecurity
 class SecurityConfig(
@@ -31,24 +30,33 @@ class SecurityConfig(
             .anonymous(Customizer.withDefaults())
             .formLogin { it.disable() }
             .exceptionHandling {
-                it
-                    .accessDeniedHandler(customAccessDeniedHandler)
+                it.accessDeniedHandler(customAccessDeniedHandler)
                     .authenticationEntryPoint(customAuthenticationEntryPoint)
             }
             .authorizeHttpRequests {
-                it
-                    .requestMatchers(AntPathRequestMatcher("/manage/**")).permitLocalhost()
-                    .requestMatchers(AntPathRequestMatcher("/games/*/join", "POST")).permitAll()
-                    .requestMatchers(AntPathRequestMatcher("/games/*/**")).hasAuthority("JOINED")
-                    .requestMatchers(AntPathRequestMatcher("/swagger-ui/**")).permitLocalhost()
-                    .requestMatchers(AntPathRequestMatcher("/v3/api-docs/**")).permitLocalhost()
-                    .anyRequest().denyAll()
+                it.requestMatchers(AntPathRequestMatcher("/manage/**"))
+                    .permitLocalhost()
+                    .requestMatchers(
+                        AntPathRequestMatcher("/games/*/join", "POST"))
+                    .permitAll()
+                    .requestMatchers(AntPathRequestMatcher("/games/*/**"))
+                    .hasAuthority("JOINED")
+                    .requestMatchers(AntPathRequestMatcher("/swagger-ui/**"))
+                    .permitLocalhost()
+                    .requestMatchers(AntPathRequestMatcher("/v3/api-docs/**"))
+                    .permitLocalhost()
+                    .anyRequest()
+                    .denyAll()
             }
 
         return http.build()
     }
 
-    fun AuthorizeHttpRequestsConfigurer<*>.AuthorizedUrl.permitLocalhost(): AuthorizeHttpRequestsConfigurer<*>.AuthorizationManagerRequestMatcherRegistry {
-        return this.access(WebExpressionAuthorizationManager("hasIpAddress('127.0.0.1') or hasIpAddress('::1')"))
+    fun AuthorizeHttpRequestsConfigurer<*>.AuthorizedUrl.permitLocalhost():
+        AuthorizeHttpRequestsConfigurer<
+            *>.AuthorizationManagerRequestMatcherRegistry {
+        return this.access(
+            WebExpressionAuthorizationManager(
+                "hasIpAddress('127.0.0.1') or hasIpAddress('::1')"))
     }
 }

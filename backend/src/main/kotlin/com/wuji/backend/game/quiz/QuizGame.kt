@@ -8,8 +8,13 @@ import com.wuji.backend.player.state.QuizPlayerDetails
 import com.wuji.backend.player.state.exception.PlayerNotFoundException
 import com.wuji.backend.question.common.Question
 
-class QuizGame(name: String, config: QuizGameConfig, val questions: List<Question>) :
-    AbstractGame<QuizPlayerDetails, QuizGameConfig>(name, GameType.QUIZ, config) {
+class QuizGame(
+    name: String,
+    config: QuizGameConfig,
+    val questions: List<Question>
+) :
+    AbstractGame<QuizPlayerDetails, QuizGameConfig>(
+        name, GameType.QUIZ, config) {
     override fun start() {
         gameState = GameState.RUNNING
     }
@@ -33,6 +38,8 @@ class QuizGame(name: String, config: QuizGameConfig, val questions: List<Questio
 
     fun findPlayerByIndex(index: Int): QuizPlayer {
         return players.find { player -> player.index == index }
-            ?: throw PlayerNotFoundException(index).also { println("Player not found: $players") }
+            ?: throw PlayerNotFoundException(index).also {
+                println("Player not found: $players")
+            }
     }
 }

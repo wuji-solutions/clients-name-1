@@ -11,7 +11,8 @@ data class Question(
     val correctAnswerId: Int
 ) {
     val correctAnswer =
-        answers.find { it.id == correctAnswerId } ?: throw InvalidQuestionCorrectAnswerIdException(correctAnswerId)
+        answers.find { it.id == correctAnswerId }
+            ?: throw InvalidQuestionCorrectAnswerIdException(correctAnswerId)
 
     fun isCorrectAnswerId(answerId: Int) = correctAnswerId == answerId
 }

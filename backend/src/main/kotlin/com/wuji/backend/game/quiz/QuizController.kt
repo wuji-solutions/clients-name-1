@@ -28,10 +28,10 @@ class QuizController(
         @Valid @RequestBody requestDto: JoinGameRequestDto,
         request: HttpServletRequest
     ): ResponseEntity<Any> {
-        val participant = playerAuthService.authenticate(requestDto.index, request)
+        val participant =
+            playerAuthService.authenticate(requestDto.index, request)
         quizService.joinGame(participant.index, participant.nickname)
 
         return ResponseEntity.ok(participant.nickname)
     }
-
 }

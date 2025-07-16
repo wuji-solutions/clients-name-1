@@ -20,12 +20,17 @@ class QuizService(
         get() = gameRegistry.getAs(QuizGame::class.java)
 
     override fun joinGame(index: Any, nickname: Any): QuizPlayer {
-        return playerService.createPlayer(index, nickname, QuizPlayerDetails())
+        return playerService
+            .createPlayer(index, nickname, QuizPlayerDetails())
             .also { player -> quizGame.players.add(player) }
             .also { sseService.sendEvent(quizGame.players) }
     }
 
-    fun createGame(name: String, config: QuizGameConfig, questions: List<Question>) {
+    fun createGame(
+        name: String,
+        config: QuizGameConfig,
+        questions: List<Question>
+    ) {
         gameRegistry.register(QuizGame(name, config, questions))
     }
 

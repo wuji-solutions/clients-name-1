@@ -20,7 +20,9 @@ class QuizQuestionController(
 ) : QuestionController {
 
     @GetMapping("/{questionId}")
-    fun getQuestion(@PathVariable questionId: Int): ResponseEntity<QuestionResponseDto> {
+    fun getQuestion(
+        @PathVariable questionId: Int
+    ): ResponseEntity<QuestionResponseDto> {
         return ResponseEntity.ok(questionService.getQuestion(questionId))
     }
 
@@ -31,7 +33,9 @@ class QuizQuestionController(
         auth: Authentication
     ): ResponseEntity<Boolean> {
         val index = (auth.principal as Participant).index
-        val correct = questionService.answerQuestion(index, questionId, answerDto.answerId)
+        val correct =
+            questionService.answerQuestion(
+                index, questionId, answerDto.answerId)
 
         return ResponseEntity.ok(correct)
     }
