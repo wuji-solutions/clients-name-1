@@ -2,7 +2,7 @@ package com.wuji.backend.question.quiz
 
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.quiz.QuizGame
-import com.wuji.backend.game.quiz.exception.QuestionIndexOutOfBoundsException
+import com.wuji.backend.game.quiz.exception.QuestionNotFoundException
 import com.wuji.backend.player.state.QuizPlayer
 import com.wuji.backend.question.common.PlayerAnswer
 import com.wuji.backend.question.common.Question
@@ -46,7 +46,7 @@ class QuizQuestionService(
 
     private fun getQuestionById(n: Int) = game.questions
         .find { question -> question.id == n }
-        ?: throw QuestionIndexOutOfBoundsException(n, game.questions.size)
+        ?: throw QuestionNotFoundException(n)
 
     private fun updatePlayerState(player: QuizPlayer, question: Question, answerId: Int) {
         // Should it actually be there? Maybe move it somewhere else
