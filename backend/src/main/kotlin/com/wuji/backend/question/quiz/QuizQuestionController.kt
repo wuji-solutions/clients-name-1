@@ -3,7 +3,7 @@ package com.wuji.backend.question.quiz
 import com.wuji.backend.game.quiz.dto.AnswerQuestionRequestDto
 import com.wuji.backend.question.common.QuestionController
 import com.wuji.backend.question.common.dto.QuestionResponseDto
-import com.wuji.backend.security.RunningGame
+import com.wuji.backend.security.GameRunning
 import com.wuji.backend.security.auth.Participant
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @Validated
-@RunningGame(isRunning = true)
+@GameRunning
 @RequestMapping("/games/quiz/questions")
 class QuizQuestionController(
     private val questionService: QuizQuestionService,

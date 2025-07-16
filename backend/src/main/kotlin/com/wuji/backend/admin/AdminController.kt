@@ -3,7 +3,9 @@ package com.wuji.backend.admin
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.quiz.QuizService
 import com.wuji.backend.game.quiz.dto.QuizGameCreateRequestDto
-import com.wuji.backend.security.RunningGame
+import com.wuji.backend.security.GameCreated
+import com.wuji.backend.security.GamePaused
+import com.wuji.backend.security.GameRunning
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
@@ -28,21 +30,21 @@ class AdminController(
         return ResponseEntity.ok().build()
     }
 
-    @RunningGame(isRunning = true)
+    @GameCreated
     @PostMapping("/start")
     fun startGame(): ResponseEntity<Nothing> {
         gameRegistry.game.start()
         return ResponseEntity.ok().build()
     }
 
-    @RunningGame(isRunning = true)
+    @GameRunning
     @PostMapping("/pause")
     fun pauseGame(): ResponseEntity<Nothing> {
         gameRegistry.game.pause()
         return ResponseEntity.ok().build()
     }
 
-    @RunningGame(isRunning = false)
+    @GamePaused
     @PostMapping("/resume")
     fun resumeGame(): ResponseEntity<Nothing> {
         gameRegistry.game.resume()

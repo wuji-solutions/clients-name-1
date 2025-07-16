@@ -2,7 +2,8 @@ package com.wuji.backend.security
 
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.GameType
-import com.wuji.backend.game.common.exception.GameIncorrectIsRunningException
+import com.wuji.backend.game.common.GameState
+import com.wuji.backend.game.common.exception.GameInIncorrectStateException
 import com.wuji.backend.game.common.exception.IncorrectGameTypeException
 import org.aspectj.lang.JoinPoint
 import org.aspectj.lang.annotation.Aspect
@@ -26,24 +27,24 @@ class GameValidationAspect(
         }
     }
 
-    @Before("@within(com.wuji.backend.security.RunningGame) || @annotation(com.wuji.backend.security.RunningGame)")
+    @Before("@within(com.wuji.backend.security.AnyGameState) || @annotation(com.wuji.backend.security.AnyGameState)")
     fun validateGameIsRunning(joinPoint: JoinPoint) {
-        val isRunning = joinPoint.getIsRunning()
-        if (gameRegistry.game.isRunning == isRunning) {
-            throw GameIncorrectIsRunningException(gameRegistry.game.isRunning, isRunning)
+        val acceptableStates = joinPoint.getAcceptableStates()
+        if (gameRegistry.game.gameState in acceptableStates) {
+            throw GameInIncorrectStateException(acceptableStates.joinToString("|"), gameRegistry.game.gameState.name)
         }
     }
 
-    private fun JoinPoint.getIsRunning(): Boolean {
+    private fun JoinPoint.getAcceptableStates(): Array<GameState> {
         val method = (signature as MethodSignature).method
 
-        method.getAnnotation(RunningGame::class.java)?.let {
-            return it.isRunning
+        method.getAnnotation(AnyGameState::class.java)?.let {
+            return it.states
         }
 
         val targetClass = target.javaClass
-        targetClass.getAnnotation(RunningGame::class.java)?.let {
-            return it.isRunning
+        targetClass.getAnnotation(AnyGameState::class.java)?.let {
+            return it.states
         }
 
         throw IllegalStateException("Missing @RunningGame annotation on method or class")
@@ -73,4 +74,24 @@ annotation class RequiresGame(val gametype: GameType)
 
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class RunningGame(val isRunning: Boolean)
+annotation class AnyGameState(val states: Array<GameState>)
+
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+@AnyGameState([GameState.CREATED])
+annotation class GameCreated
+
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+@AnyGameState([GameState.RUNNING])
+annotation class GameRunning
+
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+@AnyGameState([GameState.PAUSED])
+annotation class GamePaused
+
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+@AnyGameState([GameState.FINISHED])
+annotation class GameFinished
