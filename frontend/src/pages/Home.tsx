@@ -2,7 +2,7 @@ import React from 'react';
 import { styled } from 'styled-components';
 import theme from '../common/theme';
 import { useNavigate } from "react-router-dom";
-import ButtonCustom from '../components/Button';
+import { ButtonCustom } from '../components/Button';
 
 const Container = styled.div({
     backgroundColor: theme.palette.main.background,
