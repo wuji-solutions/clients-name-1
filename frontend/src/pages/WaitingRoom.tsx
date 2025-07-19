@@ -3,6 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 import theme from "../common/theme";
 import { ButtonCustom } from "../components/Button";
+import UserList from "../components/UserList";
+import { useAppContext } from "../providers/AppContextProvider";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { BACKEND_ENDPOINT_EXTERNAL } from "../common/config";
+import { CustomTextInput } from "../components/Fields";
 
 const Container = styled.div({
   backgroundColor: theme.palette.main.background,
@@ -12,21 +18,76 @@ const Container = styled.div({
   flexDirection: "row",
 });
 
+const QRContainer = styled.div({
+  margin: "auto",
+});
+
+const ActionButtonContainer = styled.div({
+  marginTop: "auto",
+  marginBottom: "20px",
+  marginRight: "40px",
+  display: "flex",
+  flexDirection: "column",
+  gap: "10px",
+});
+
+const UserInputContainer = styled.div({
+  display: "flex",
+  flexDirection: "column",
+  margin: "auto",
+  gap: "60px",
+  width: "80vw",
+});
+
 function WaitingRoom() {
+  const { user, username, setUsername } = useAppContext();
   const navigate = useNavigate();
+
+  const joinGame = () => {
+    axios.post(BACKEND_ENDPOINT_EXTERNAL + "/games/quiz/join", { index: 2 })
+      .then((response) => {
+        setUsername(response.data);
+      }).catch((error) => console.log(error));
+  };
+
+  if (!user) return <></>;
+
+  if (user === "user") {
+    return (
+      <Container>
+        {!username
+          ? (
+            <UserInputContainer>
+              <CustomTextInput placeholder="Podaj numer z dziennika / numer grupy" />
+              <ButtonCustom onClick={() => joinGame()}>
+                Dołącz do gry
+              </ButtonCustom>
+            </UserInputContainer>
+          )
+          : (
+            <UserInputContainer>
+              <h4>Witaj {username}!</h4>
+              Czekaj na rozpoczęcie rozgrywki
+            </UserInputContainer>
+          )}
+      </Container>
+    );
+  }
 
   return (
     <Container>
-      <div
-        style={{
-          backgroundColor: "white",
-          padding: "16px",
-          width: "fit-content",
-        }}
-      >
-        <QRCode value="http://192.168.137.1:3000" />
-        <ButtonCustom onClick={() => navigate("/konfiguracja")}>Powrót</ButtonCustom>
-      </div>
+      <UserList user={user} />
+      <QRContainer>
+        <QRCode value="http://192.168.137.1:3000/waiting-room" />
+      </QRContainer>
+      <ActionButtonContainer>
+        <ButtonCustom>
+          Zacznij grę
+        </ButtonCustom>
+        <ButtonCustom onClick={() => navigate("/konfiguracja")}>
+          Powrót
+        </ButtonCustom>
+      </ActionButtonContainer>
     </Container>
   );
 }

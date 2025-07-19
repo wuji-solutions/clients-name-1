@@ -32,6 +32,7 @@
         "@types/node": "^16.18.126",
         "@types/react": "^19.1.4",
         "@types/react-dom": "^19.1.5",
+        "axios": "^1.10.0",
         "electron-devtools-installer": "^4.0.0",
         "electron-is-dev": "^3.0.1",
         "electron-reload": "^2.0.0-alpha.1",

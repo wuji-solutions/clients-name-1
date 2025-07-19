@@ -1,9 +1,14 @@
 const theme = {
     palette: {
         main: {
-            background: '#FFF1C2',
-            button: '#1a3cf9',
-            primary: '#1a3cf9',
+            background: '#F8FAFC',
+            panel: '#FFFFFF',
+            primary: '#3B82F6',
+            secondary: '#64748B',
+            accent: '#FACC15',
+            success: '#22C55E',
+            error: '#EF4444',
+            additional: '#A855F7',
         }
     }
 }
