@@ -44,7 +44,7 @@ function WaitingRoom() {
   const navigate = useNavigate();
 
   const joinGame = () => {
-    axios.post(BACKEND_ENDPOINT_EXTERNAL + "/games/quiz/join", { index: 2 })
+    axios.post(BACKEND_ENDPOINT_EXTERNAL + "/games/quiz/join", { index: 2 }, {withCredentials: true})
       .then((response) => {
         setUsername(response.data);
       }).catch((error) => console.log(error));
