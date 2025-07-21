@@ -9,7 +9,7 @@ sealed class ReportRow {
     abstract val player: Player<out PlayerDetails>
     abstract val playerAnswer: PlayerAnswer
 
-    abstract fun toCsvRow(): String
+    abstract fun toCSV(): String
 }
 
 data class QuizReportRow(
@@ -17,7 +17,7 @@ data class QuizReportRow(
     override val playerAnswer: PlayerAnswer,
     val answerTimeInMilliseconds: Long,
 ) : ReportRow() {
-    override fun toCsvRow(): String {
+    override fun toCSV(): String {
         TODO("Not implemented yet")
     }
 }
