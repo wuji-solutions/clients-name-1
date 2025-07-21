@@ -13,17 +13,23 @@ class GameServiceDelegate(
     private val quizService: QuizService,
     private val gameRegistry: GameRegistry
 ) : GameService {
-    private val services = mapOf(
-        GameType.QUIZ to quizService,
-//        GameType.EXAM to examService,
-//        GameType.BOARD to boardService
-    )
+    private val services =
+        mapOf(
+            GameType.QUIZ to quizService,
+            //        GameType.EXAM to examService,
+            //        GameType.BOARD to boardService
+        )
 
     private val currentService: GameService
-        get() = services[gameRegistry.gameType]
-            ?: throw IllegalStateException("Unknown game type: ${gameRegistry.gameType}")
+        get() =
+            services[gameRegistry.gameType]
+                ?: throw IllegalStateException(
+                    "Unknown game type: ${gameRegistry.gameType}")
 
-    override fun joinGame(index: Any, nickname: Any): Player<out PlayerDetails> {
+    override fun joinGame(
+        index: Any,
+        nickname: Any
+    ): Player<out PlayerDetails> {
         return currentService.joinGame(index, nickname)
     }
 

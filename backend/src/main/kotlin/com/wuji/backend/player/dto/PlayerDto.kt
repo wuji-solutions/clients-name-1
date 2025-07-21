@@ -9,10 +9,7 @@ data class PlayerDto(
 ) {
     companion object {
         fun Player<out PlayerDetails>.toDto(): PlayerDto {
-            return PlayerDto(
-                index = index,
-                nickname = nickname
-            )
+            return PlayerDto(index = index, nickname = nickname)
         }
     }
 }

@@ -31,7 +31,6 @@ class QuizService(
     override fun listPlayers(): List<PlayerDto> =
         gameRegistry.game.players.map { player -> player.toDto() }
 
-
     fun createGame(
         name: String,
         config: QuizGameConfig,
