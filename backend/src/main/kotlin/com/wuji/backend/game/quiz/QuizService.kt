@@ -3,6 +3,8 @@ package com.wuji.backend.game.quiz
 import com.wuji.backend.events.SSEService
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.common.GameService
+import com.wuji.backend.player.dto.PlayerDto
+import com.wuji.backend.player.dto.PlayerDto.Companion.toDto
 import com.wuji.backend.player.state.PlayerService
 import com.wuji.backend.player.state.QuizPlayer
 import com.wuji.backend.player.state.QuizPlayerDetails
@@ -25,6 +27,10 @@ class QuizService(
             .also { player -> quizGame.players.add(player) }
             .also { sseService.sendEvent(quizGame.players) }
     }
+
+    override fun listPlayers(): List<PlayerDto> =
+        gameRegistry.game.players.map { player -> player.toDto() }
+
 
     fun createGame(
         name: String,

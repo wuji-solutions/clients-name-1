@@ -1,25 +1,25 @@
 package com.wuji.backend.admin
 
 import com.wuji.backend.game.GameRegistry
+import com.wuji.backend.game.common.GameServiceDelegate
 import com.wuji.backend.game.quiz.QuizService
 import com.wuji.backend.game.quiz.dto.QuizGameCreateRequestDto
+import com.wuji.backend.player.dto.PlayerDto
 import com.wuji.backend.security.GameCreated
 import com.wuji.backend.security.GamePaused
 import com.wuji.backend.security.GameRunning
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @Validated
 @RequestMapping("/manage")
 class AdminController(
     private val gameRegistry: GameRegistry,
-    private val quizService: QuizService
+    private val quizService: QuizService,
+    private val gameServiceDelegate: GameServiceDelegate
 ) {
 
     @PostMapping("/quiz")
@@ -27,8 +27,14 @@ class AdminController(
         @Valid @RequestBody requestDto: QuizGameCreateRequestDto
     ): ResponseEntity<Nothing> {
         quizService.createGame(
-            requestDto.name, requestDto.config, requestDto.questions)
+            requestDto.name, requestDto.config, requestDto.questions
+        )
         return ResponseEntity.ok().build()
+    }
+
+    @GetMapping("/players")
+    fun listPlayers(): List<PlayerDto> {
+        return gameServiceDelegate.listPlayers()
     }
 
     @GameCreated

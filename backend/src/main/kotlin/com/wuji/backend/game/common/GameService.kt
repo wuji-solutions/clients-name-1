@@ -1,5 +1,6 @@
 package com.wuji.backend.game.common
 
+import com.wuji.backend.player.dto.PlayerDto
 import com.wuji.backend.player.state.Player
 import com.wuji.backend.player.state.PlayerDetails
 
@@ -9,6 +10,8 @@ interface GameService {
     // Not sure if this is relevant as this 'GameService' is pretty much admin-only other than
     // joining game
     fun joinGame(index: Any, nickname: Any): Player<out PlayerDetails>
+
+    fun listPlayers(): List<PlayerDto>
 
     fun startGame()
 
