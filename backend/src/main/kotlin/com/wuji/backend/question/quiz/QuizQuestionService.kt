@@ -48,6 +48,7 @@ class QuizQuestionService(
         player.details.answers.add(playerAnswer)
 
         updateReport(player, playerAnswer)
+        // TODO: we should probably update the counter based on internal gamestate instead of questionId that we get from a request
         updateCounter(questionId)
 
         return question.isCorrectAnswerId(answerId)
