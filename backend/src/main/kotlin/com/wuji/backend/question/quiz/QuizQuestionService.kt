@@ -70,6 +70,6 @@ class QuizQuestionService(
 
     private fun updateCounter(questionId: Int) {
         questionCounterService.updateCounter(
-            gameRegistry.gameReport?.countAnswersPerQuestion(questionId) ?: -1)
+            gameRegistry.gameReport.countAnswersPerQuestion(questionId))
     }
 }
