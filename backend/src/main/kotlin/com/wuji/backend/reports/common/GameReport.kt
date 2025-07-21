@@ -4,11 +4,10 @@ import java.time.LocalDateTime
 
 abstract class GameReport<ReportT : ReportRow> {
     val gameStartDateTime: LocalDateTime = LocalDateTime.now()
-    private val rows = ArrayList<ReportT>()
+    val rows = ArrayList<ReportT>()
 
     abstract fun toCSV()
-
-    fun addRow(row: ReportT) {
-        rows.add(row)
+    fun countAnswersPerQuestion(questionId: Int): Int {
+        return rows.count{ it.playerAnswer.question.id == questionId }
     }
 }

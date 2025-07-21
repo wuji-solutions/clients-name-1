@@ -1,5 +1,6 @@
 package com.wuji.backend.question.quiz
 
+import com.wuji.backend.events.quiz.SSEQuizAnswerCounterService
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.quiz.QuizGame
 import com.wuji.backend.game.quiz.exception.QuestionNotFoundException
@@ -13,7 +14,7 @@ import com.wuji.backend.util.ext.toQuestionDto
 import org.springframework.stereotype.Service
 
 @Service
-class QuizQuestionService(val gameRegistry: GameRegistry) : QuestionService {
+class QuizQuestionService(val gameRegistry: GameRegistry, private val questionCounterService: SSEQuizAnswerCounterService) : QuestionService {
 
     private val game: QuizGame
         get() = gameRegistry.getAs(QuizGame::class.java)
@@ -44,6 +45,7 @@ class QuizQuestionService(val gameRegistry: GameRegistry) : QuestionService {
         player.details.answers.add(playerAnswer)
 
         updateReport(player, playerAnswer)
+        updateCounter(questionId)
 
         return question.isCorrectAnswerId(answerId)
     }
@@ -60,6 +62,9 @@ class QuizQuestionService(val gameRegistry: GameRegistry) : QuestionService {
         // TODO update answerTimeInMilliseconds according to internal game timer, when it's built
         val row = QuizReportRow(player, playerAnswer, 0)
         val report = gameRegistry.gameReport as QuizGameReport
-        report.addRow(row)
+        report.rows.add(row)
+    }
+    private fun updateCounter(questionId: Int) {
+        questionCounterService.updateCounter(gameRegistry.gameReport?.countAnswersPerQuestion(questionId) ?: -1)
     }
 }

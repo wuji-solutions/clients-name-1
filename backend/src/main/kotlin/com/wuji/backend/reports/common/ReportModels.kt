@@ -7,13 +7,14 @@ import com.wuji.backend.question.common.PlayerAnswer
 
 sealed class ReportRow {
     abstract val player: Player<out PlayerDetails>
+    abstract val playerAnswer: PlayerAnswer
 
     abstract fun toCsvRow(): String
 }
 
 data class QuizReportRow(
     override val player: QuizPlayer,
-    val playerAnswer: PlayerAnswer,
+    override val playerAnswer: PlayerAnswer,
     val answerTimeInMilliseconds: Long,
 ) : ReportRow() {
     override fun toCsvRow(): String {
