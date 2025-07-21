@@ -7,7 +7,8 @@ abstract class GameReport<ReportT : ReportRow> {
     val rows = ArrayList<ReportT>()
 
     abstract fun toCSV()
+
     fun countAnswersPerQuestion(questionId: Int): Int {
-        return rows.count{ it.playerAnswer.question.id == questionId }
+        return rows.count { it.playerAnswer.question.id == questionId }
     }
 }

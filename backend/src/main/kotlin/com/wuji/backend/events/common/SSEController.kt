@@ -11,5 +11,4 @@ class SSEController(private val sseUsersService: SSEUsersService) {
     fun streamEvents(): SseEmitter {
         return sseUsersService.addEmitter()
     }
-
 }

@@ -14,7 +14,10 @@ import com.wuji.backend.util.ext.toQuestionDto
 import org.springframework.stereotype.Service
 
 @Service
-class QuizQuestionService(val gameRegistry: GameRegistry, private val questionCounterService: SSEQuizAnswerCounterService) : QuestionService {
+class QuizQuestionService(
+    val gameRegistry: GameRegistry,
+    private val questionCounterService: SSEQuizAnswerCounterService
+) : QuestionService {
 
     private val game: QuizGame
         get() = gameRegistry.getAs(QuizGame::class.java)
@@ -64,7 +67,9 @@ class QuizQuestionService(val gameRegistry: GameRegistry, private val questionCo
         val report = gameRegistry.gameReport as QuizGameReport
         report.rows.add(row)
     }
+
     private fun updateCounter(questionId: Int) {
-        questionCounterService.updateCounter(gameRegistry.gameReport?.countAnswersPerQuestion(questionId) ?: -1)
+        questionCounterService.updateCounter(
+            gameRegistry.gameReport?.countAnswersPerQuestion(questionId) ?: -1)
     }
 }

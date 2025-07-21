@@ -36,5 +36,5 @@ open class SSEService {
         emitters.removeAll(deadEmitters)
     }
 }
-@Service
-class SSEUsersService: SSEService()
+
+@Service class SSEUsersService : SSEService()
