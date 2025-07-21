@@ -15,6 +15,9 @@ class QuizGame(
 ) :
     AbstractGame<QuizPlayerDetails, QuizGameConfig>(
         name, GameType.QUIZ, config) {
+    var askedQuestions: MutableList<Question> = mutableListOf()
+        private set
+
     override fun start() {
         gameState = GameState.RUNNING
     }
@@ -42,4 +45,6 @@ class QuizGame(
                 println("Player not found: $players")
             }
     }
+
+    fun currentQuestion(): Question = askedQuestions.last()
 }

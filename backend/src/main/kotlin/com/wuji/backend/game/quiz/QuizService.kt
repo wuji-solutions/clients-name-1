@@ -34,6 +34,8 @@ class QuizService(
         gameRegistry.register(QuizGame(name, config, questions))
     }
 
+    fun currentQuestion(): Question = quizGame.currentQuestion()
+
     override fun startGame() {
         quizGame.start()
     }
