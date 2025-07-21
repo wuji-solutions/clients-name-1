@@ -7,6 +7,7 @@ import com.wuji.backend.player.state.PlayerService
 import com.wuji.backend.player.state.QuizPlayer
 import com.wuji.backend.player.state.QuizPlayerDetails
 import com.wuji.backend.question.common.Question
+import com.wuji.backend.reports.QuizGameReport
 import org.springframework.stereotype.Service
 
 @Service
@@ -31,7 +32,8 @@ class QuizService(
         config: QuizGameConfig,
         questions: List<Question>
     ) {
-        gameRegistry.register(QuizGame(name, config, questions))
+        gameRegistry.register(
+            QuizGame(name, config, questions), QuizGameReport())
     }
 
     override fun startGame() {
@@ -50,7 +52,7 @@ class QuizService(
         TODO("Not yet implemented")
     }
 
-    override fun getRaport(): String {
+    override fun getReport(): String {
         TODO("Not yet implemented")
     }
 }

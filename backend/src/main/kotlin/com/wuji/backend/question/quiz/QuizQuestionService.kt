@@ -5,9 +5,10 @@ import com.wuji.backend.game.quiz.QuizGame
 import com.wuji.backend.game.quiz.exception.QuestionNotFoundException
 import com.wuji.backend.player.state.QuizPlayer
 import com.wuji.backend.question.common.PlayerAnswer
-import com.wuji.backend.question.common.Question
 import com.wuji.backend.question.common.QuestionService
 import com.wuji.backend.question.common.exception.QuestionAlreadyAnsweredException
+import com.wuji.backend.reports.QuizGameReport
+import com.wuji.backend.reports.common.QuizReportRow
 import com.wuji.backend.util.ext.toQuestionDto
 import org.springframework.stereotype.Service
 
@@ -39,7 +40,10 @@ class QuizQuestionService(val gameRegistry: GameRegistry) : QuestionService {
             throw QuestionAlreadyAnsweredException(questionId)
         }
 
-        updatePlayerState(player, question, answerId)
+        val playerAnswer = PlayerAnswer(question, answerId)
+        player.details.answers.add(playerAnswer)
+
+        updateReport(player, playerAnswer)
 
         return question.isCorrectAnswerId(answerId)
     }
@@ -52,14 +56,10 @@ class QuizQuestionService(val gameRegistry: GameRegistry) : QuestionService {
         game.questions.find { question -> question.id == n }
             ?: throw QuestionNotFoundException(n)
 
-    private fun updatePlayerState(
-        player: QuizPlayer,
-        question: Question,
-        answerId: Int
-    ) {
-        // Should it actually be there? Maybe move it somewhere else
-        val playerAnswer = PlayerAnswer(question, answerId)
-
-        player.details.answers.add(playerAnswer)
+    private fun updateReport(player: QuizPlayer, playerAnswer: PlayerAnswer) {
+        // TODO update answerTimeInMilliseconds according to internal game timer, when it's built
+        val row = QuizReportRow(player, playerAnswer, 0)
+        val report = gameRegistry.gameReport as QuizGameReport
+        report.addRow(row)
     }
 }
