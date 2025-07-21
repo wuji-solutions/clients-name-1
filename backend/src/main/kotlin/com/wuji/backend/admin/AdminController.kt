@@ -32,8 +32,8 @@ class AdminController(
     }
 
     @GetMapping("/players")
-    fun listPlayers(): List<PlayerDto> {
-        return gameServiceDelegate.listPlayers()
+    fun listPlayers(): ResponseEntity<List<PlayerDto>> {
+        return ResponseEntity.ok(gameServiceDelegate.listPlayers())
     }
 
     @GameCreated
