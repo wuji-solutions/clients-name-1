@@ -49,8 +49,7 @@ class QuizQuestionService(val gameRegistry: GameRegistry) : QuestionService {
             null
 
     private fun getQuestionById(n: Int) =
-        game.questions.find { question -> question.id == n }
-            ?: throw QuestionNotFoundException(n)
+        game.questionDispenser.getQuestionByIndex(n)
 
     private fun updatePlayerState(
         player: QuizPlayer,
