@@ -3,6 +3,7 @@ package com.wuji.backend.question.quiz
 import com.wuji.backend.events.quiz.SSEQuizAnswerCounterService
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.quiz.QuizGame
+import com.wuji.backend.game.quiz.QuizService
 import com.wuji.backend.game.quiz.exception.QuestionNotFoundException
 import com.wuji.backend.player.state.QuizPlayer
 import com.wuji.backend.question.common.PlayerAnswer
@@ -16,7 +17,8 @@ import org.springframework.stereotype.Service
 @Service
 class QuizQuestionService(
     val gameRegistry: GameRegistry,
-    private val questionCounterService: SSEQuizAnswerCounterService
+    private val questionCounterService: SSEQuizAnswerCounterService,
+    private val quizService: QuizService
 ) : QuestionService {
 
     private val game: QuizGame
@@ -48,8 +50,7 @@ class QuizQuestionService(
         player.details.answers.add(playerAnswer)
 
         updateReport(player, playerAnswer)
-        // TODO: we should probably update the counter based on internal gamestate instead of questionId that we get from a request
-        updateCounter(questionId)
+        updateCounter(quizService.currentQuestion().id)
 
         return question.isCorrectAnswerId(answerId)
     }
