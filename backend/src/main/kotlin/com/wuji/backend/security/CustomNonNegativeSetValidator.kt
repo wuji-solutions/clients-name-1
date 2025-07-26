@@ -10,7 +10,7 @@ import kotlin.reflect.KClass
 @Retention(AnnotationRetention.RUNTIME)
 @Constraint(validatedBy = [NonNegativeSetValidator::class])
 annotation class NonNegativeElements(
-    val message: String = "Wszystkie identyfikatory muszą być nieujemne",
+    val message: String = "Wszystkie elementy muszą być nieujemne",
     val groups: Array<KClass<*>> = [],
     val payload: Array<KClass<out Payload>> = []
 )

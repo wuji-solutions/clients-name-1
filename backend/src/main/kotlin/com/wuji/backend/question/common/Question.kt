@@ -10,7 +10,7 @@ data class Question(
 ) {
     val correctAnswers = answers.filter { it.id in correctAnswerIds }
 
-    fun isCorrectAnswerId(answerIds: Set<Int>) =
+    fun areCorrectAnswerIds(answerIds: Set<Int>) =
         correctAnswers.equals(answerIds)
 }
 
@@ -25,5 +25,5 @@ data class PlayerAnswer(
     val selectedIds: Set<Int>,
     val answerTimeInMilliseconds: Int
 ) {
-    val isCorrect = question.isCorrectAnswerId(selectedIds)
+    val isCorrect = question.areCorrectAnswerIds(selectedIds)
 }

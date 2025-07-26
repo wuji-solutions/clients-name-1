@@ -9,16 +9,7 @@ abstract class GameStats {
         fun countPlayersAnsweredForQuestion(
             game: AbstractGame<out PlayerDetails, out GameConfig>,
             questionId: Int
-        ): Int {
-            var counter = 0
-            for (player in game.players) {
-                if (player.details.answers.any {
-                    it.question.id == questionId
-                }) {
-                    counter++
-                }
-            }
-            return counter
-        }
+        ): Int =
+            game.players.count { player -> player.alreadyAnswered(questionId) }
     }
 }

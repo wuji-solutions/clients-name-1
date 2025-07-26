@@ -4,7 +4,6 @@ import com.wuji.backend.events.quiz.SSEQuizService
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.quiz.QuizGame
 import com.wuji.backend.game.quiz.exception.QuestionNotFoundException
-import com.wuji.backend.player.state.QuizPlayer
 import com.wuji.backend.question.common.PlayerAnswer
 import com.wuji.backend.question.common.QuestionService
 import com.wuji.backend.question.common.exception.QuestionAlreadyAnsweredException
@@ -46,12 +45,8 @@ class QuizQuestionService(
         val playerAnswer = PlayerAnswer(question, answerIds, 0)
         player.details.answers.add(playerAnswer)
         updatePlayersAnsweredCounter(questionId)
-        return question.isCorrectAnswerId(answerIds)
+        return question.areCorrectAnswerIds(answerIds)
     }
-
-    private fun QuizPlayer.alreadyAnswered(questionId: Int) =
-        details.answers.find { answer -> answer.question.id == questionId } !=
-            null
 
     private fun getQuestionById(n: Int) =
         game.questions.find { question -> question.id == n }

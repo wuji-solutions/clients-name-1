@@ -7,7 +7,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
 
 @RestController
 @RequestMapping("/sse")
-class SSEController(private val sseUsersService: SSEUsersService) {
+class SSEAdminController(private val sseUsersService: SSEUsersService) {
 
     @GetMapping("/users", produces = ["text/event-stream"])
     fun streamEvents(): SseEmitter {
