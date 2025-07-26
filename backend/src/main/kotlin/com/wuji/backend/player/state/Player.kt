@@ -8,10 +8,10 @@ data class Player<PlayerDetailsT>(
     var details: PlayerDetailsT
 )
 
-open class PlayerDetails
-
-data class QuizPlayerDetails(
+open class PlayerDetails(
     val answers: MutableList<PlayerAnswer> = mutableListOf()
-) : PlayerDetails()
+)
+
+typealias QuizPlayerDetails = PlayerDetails
 
 typealias QuizPlayer = Player<QuizPlayerDetails>

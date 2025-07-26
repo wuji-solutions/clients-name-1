@@ -4,8 +4,8 @@ import com.wuji.backend.events.common.SSEService
 import org.springframework.stereotype.Service
 
 @Service
-class SSEQuizAnswerCounterService : SSEService() {
-    fun updateCounter(playersAnsweredCount: Int) {
+class SSEQuizService : SSEService() {
+    fun sendPlayersAnsweredCounter(playersAnsweredCount: Int) {
         sendEvent(playersAnsweredCount)
     }
 }

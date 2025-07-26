@@ -35,7 +35,7 @@ class QuizQuestionController(
         val index = (auth.principal as Participant).index
         val correct =
             questionService.answerQuestion(
-                index, questionId, answerDto.answerId)
+                index, questionId, answerDto.answerIds)
 
         return ResponseEntity.ok(correct)
     }
