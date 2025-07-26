@@ -16,8 +16,8 @@ class GlobalExceptionHandler {
         request: HttpServletRequest,
         ex: Exception
     ): ResponseEntity<ErrorResponse> {
-        val contentType = request.getHeader("Accept") ?: ""
-        if (contentType.contains("text/event-stream")) {
+        if (request.getHeader("Accept")?.contains("text/event-stream") ==
+            true) {
             // For SSE requests, just complete without a response body
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
         }
