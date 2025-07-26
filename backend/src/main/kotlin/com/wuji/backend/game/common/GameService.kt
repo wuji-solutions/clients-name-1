@@ -21,5 +21,5 @@ interface GameService {
 
     fun stopGame()
 
-    fun getRaport(): String
+    fun getReport(): String
 }
