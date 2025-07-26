@@ -35,7 +35,7 @@ class QuizGame(
         gameState = GameState.FINISHED
     }
 
-    override fun getRaport(): String {
+    override fun getReport(): String {
         TODO("Not yet implemented")
     }
 

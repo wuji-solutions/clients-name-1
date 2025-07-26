@@ -18,7 +18,9 @@ class GameRegistry {
     val gameType: GameType
         get() = _gameType ?: throw GameNotCreatedYetException()
 
-    fun register(game: AbstractGame<out PlayerDetails, out GameConfig>) {
+    fun register(
+        game: AbstractGame<out PlayerDetails, out GameConfig>,
+    ) {
         this._game = game
         this._gameType = game.gameType
     }

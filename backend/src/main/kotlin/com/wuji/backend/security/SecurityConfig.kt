@@ -45,6 +45,10 @@ class SecurityConfig(
                     .permitLocalhost()
                     .requestMatchers(AntPathRequestMatcher("/v3/api-docs/**"))
                     .permitLocalhost()
+                    .requestMatchers("/sse/*")
+                    .permitLocalhost()
+                    .requestMatchers("/sse/*/*")
+                    .hasAuthority("JOINED")
                     .anyRequest()
                     .denyAll()
             }

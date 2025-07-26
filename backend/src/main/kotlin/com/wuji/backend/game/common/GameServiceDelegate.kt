@@ -53,7 +53,7 @@ class GameServiceDelegate(
         currentService.stopGame()
     }
 
-    override fun getRaport(): String {
-        return currentService.getRaport()
+    override fun getReport(): String {
+        return currentService.getReport()
     }
 }
