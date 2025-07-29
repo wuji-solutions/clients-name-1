@@ -27,7 +27,7 @@ function createWindow() {
     } else {
         win.loadURL(`file://${__dirname}/../index.html`);
 
-        const binaryName = process.platform === 'win32' ? 'backend.exe' : 'myserver';
+        const binaryName = process.platform === 'win32' ? 'backend.exe' : 'backend';
         const backendPath = path.join(process.resourcesPath, 'backend', binaryName);
 
         child = require('child_process').spawn(backendPath);    
