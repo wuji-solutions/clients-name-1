@@ -2,6 +2,7 @@ package com.wuji.backend.game.quiz
 
 import com.wuji.backend.events.common.SSEUsersService
 import com.wuji.backend.game.GameRegistry
+import com.wuji.backend.game.QuizConfig
 import com.wuji.backend.game.common.GameService
 import com.wuji.backend.player.dto.PlayerDto
 import com.wuji.backend.player.dto.PlayerDto.Companion.toDto
@@ -33,7 +34,7 @@ class QuizService(
 
     fun createGame(
         name: String,
-        config: QuizGameConfig,
+        config: QuizConfig,
         questions: List<Question>
     ) {
         gameRegistry.register(QuizGame(name, config, questions))

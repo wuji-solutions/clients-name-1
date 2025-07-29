@@ -1,5 +1,6 @@
 package com.wuji.backend.game.common
 
+import com.wuji.backend.game.GameConfig
 import com.wuji.backend.game.GameType
 import com.wuji.backend.player.state.Player
 import com.wuji.backend.player.state.PlayerDetails
@@ -24,5 +25,3 @@ abstract class AbstractGame<DetailsT : PlayerDetails, ConfigT : GameConfig>(
 
     abstract fun getReport(): String
 }
-
-open class GameConfig
