@@ -14,8 +14,8 @@
         },
         "extraResources": [
             {
-                "from": "backendJar",
-                "to": "."
+                "from": "backend",
+                "to": "backend"
             }
         ]
     },
@@ -48,9 +48,12 @@
         "eject": "react-scripts eject",
         "pretty": "prettier --write \"./**/*.{js,jsx,json,ts,tsx}\"",
         "postinstall": "electron-builder install-app-deps",
-        "electron:dev": "concurrently \"cross-env BROWSER=none yarn start\" \"wait-on http://localhost:3000 && tsc -p electron -w\" \"wait-on http://localhost:3000 && tsc -p electron && electron .\"",
-        "electron:build": "yarn build && tsc -p electron && electron-builder"
-    },
+        "electron:dev": "yarn build-backend:dev && yarn copy-backend:dev &&concurrently \"cross-env BROWSER=none yarn start\" \"wait-on http://localhost:3000 && tsc -p electron -w\" \"wait-on http://localhost:3000 && tsc -p electron && electron .\"",
+        "build-backend": "cd ../backend && ./gradlew nativeCompile",
+        "build-backend:dev": "cd ../backend && ./gradlew bootJar",
+        "copy-backend": "node backend/copy-backend.js",
+        "copy-backend:dev": "node backend/copy-backend-dev.js",
+        "electron:build": "yarn build-backend && yarn copy-backend && yarn build && tsc -p electron && electron-builder"    },
     "eslintConfig": {
         "extends": [
             "react-app",
