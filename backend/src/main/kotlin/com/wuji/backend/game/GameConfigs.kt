@@ -14,19 +14,18 @@ data class ExamConfig(
     val requiredQuestionCount: Int,
     val randomizeQuestions: Boolean,
     val enforceDifficultyBalance: Boolean,
-    val selectedQuestionIds: List<String>?, // only if !randomizeQuestions
+    val selectedQuestionIds: List<String>?,
     val cheatingPolicy: CheatingPolicy,
     val pointsPerDifficulty: Map<DifficultyLevel, Int>,
     val allowGoingBack: Boolean
 ) : GameConfig() {
     init {
-        if (!randomizeQuestions && selectedQuestionIds == null) {
-            throw IllegalArgumentException(
-                "Lista selectedQuestionIds musi być podana, jeśli randomizeQuestions jest ustawione na false")
+        require(randomizeQuestions || selectedQuestionIds != null) {
+            "Lista selectedQuestionIds musi być podana, jeśli randomizeQuestions jest ustawione na false"
         }
-        if (randomizeQuestions && selectedQuestionIds != null) {
-            throw IllegalArgumentException(
-                "Lista selectedQuestionIds musi być pusta (null), jeśli randomizeQuestions jest ustawione na true")
+
+        require(!randomizeQuestions || selectedQuestionIds == null) {
+            "Lista selectedQuestionIds musi być pusta (null), jeśli randomizeQuestions jest ustawione na true"
         }
     }
 }
