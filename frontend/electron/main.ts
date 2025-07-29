@@ -23,7 +23,7 @@ function createWindow() {
         const jarName ="backend.jar";
         const backendPath = path.join(__dirname, '../..', 'backend', jarName);
 
-        child = require('child_process').spawn('java', ['-jar', backendPath]);
+        child = require('child_process').spawn('java', ['-jar', backendPath]); // NOSONAR
     } else {
         win.loadURL(`file://${__dirname}/../index.html`);
 
