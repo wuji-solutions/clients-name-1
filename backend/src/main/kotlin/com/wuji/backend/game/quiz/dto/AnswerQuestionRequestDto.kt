@@ -1,8 +1,8 @@
 package com.wuji.backend.game.quiz.dto
 
-import jakarta.validation.constraints.Min
+import com.wuji.backend.security.NonNegativeElements
 
 data class AnswerQuestionRequestDto(
-    @field:Min(0, message = "Id odpowiedzi na pytanie musi byc nieujemny")
-    val answerId: Int
+    @field:NonNegativeElements(message = "Id odpowiedzi muszą być nieujemne")
+    val answerIds: Set<Int>,
 )

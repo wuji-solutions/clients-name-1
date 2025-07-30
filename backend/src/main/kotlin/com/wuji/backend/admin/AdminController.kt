@@ -1,25 +1,27 @@
 package com.wuji.backend.admin
 
 import com.wuji.backend.game.GameRegistry
+import com.wuji.backend.game.common.GameServiceDelegate
 import com.wuji.backend.game.quiz.QuizService
 import com.wuji.backend.game.quiz.dto.QuizGameCreateRequestDto
+import com.wuji.backend.player.dto.PlayerDto
+import com.wuji.backend.question.common.dto.QuestionResponseDto
 import com.wuji.backend.security.GameCreated
 import com.wuji.backend.security.GamePaused
 import com.wuji.backend.security.GameRunning
+import com.wuji.backend.util.ext.toQuestionDto
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @Validated
 @RequestMapping("/manage")
 class AdminController(
     private val gameRegistry: GameRegistry,
-    private val quizService: QuizService
+    private val quizService: QuizService,
+    private val gameServiceDelegate: GameServiceDelegate
 ) {
 
     @PostMapping("/quiz")
@@ -29,6 +31,16 @@ class AdminController(
         quizService.createGame(
             requestDto.name, requestDto.config, requestDto.questions)
         return ResponseEntity.ok().build()
+    }
+
+    @GetMapping("/quiz/current-question")
+    fun getCurrentQuestion(): ResponseEntity<QuestionResponseDto> {
+        return ResponseEntity.ok(quizService.currentQuestion().toQuestionDto())
+    }
+
+    @GetMapping("/players")
+    fun listPlayers(): ResponseEntity<List<PlayerDto>> {
+        return ResponseEntity.ok(gameServiceDelegate.listPlayers())
     }
 
     @GameCreated

@@ -1,5 +1,6 @@
 package com.wuji.backend.game.common
 
+import com.wuji.backend.player.dto.PlayerDto
 import com.wuji.backend.player.state.Player
 import com.wuji.backend.player.state.PlayerDetails
 
@@ -10,6 +11,8 @@ interface GameService {
     // joining game
     fun joinGame(index: Any, nickname: Any): Player<out PlayerDetails>
 
+    fun listPlayers(): List<PlayerDto>
+
     fun startGame()
 
     fun pauseGame()
@@ -18,5 +21,5 @@ interface GameService {
 
     fun stopGame()
 
-    fun getRaport(): String
+    fun getReport(): String
 }
