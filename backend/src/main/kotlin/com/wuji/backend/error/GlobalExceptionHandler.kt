@@ -16,6 +16,11 @@ class GlobalExceptionHandler {
         request: HttpServletRequest,
         ex: Exception
     ): ResponseEntity<ErrorResponse> {
+        if (request.getHeader("Accept")?.contains("text/event-stream") ==
+            true) {
+            // For SSE requests, just complete without a response body
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+        }
         val responseStatus =
             ex.javaClass.getAnnotation(ResponseStatus::class.java)?.value
                 ?: HttpStatus.INTERNAL_SERVER_ERROR

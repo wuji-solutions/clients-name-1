@@ -1,11 +1,10 @@
-package com.wuji.backend.events
+package com.wuji.backend.events.common
 
 import java.util.concurrent.CopyOnWriteArrayList
 import org.springframework.stereotype.Service
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
 
-@Service
-class SSEService {
+open class SSEService {
     private val emitters = CopyOnWriteArrayList<SseEmitter>()
 
     fun addEmitter(): SseEmitter {
@@ -15,7 +14,10 @@ class SSEService {
 
         emitter.onCompletion { emitters.remove(emitter) }
         emitter.onTimeout { emitters.remove(emitter) }
-        emitter.onError { emitters.remove(emitter) }
+        emitter.onError {
+            emitters.remove(emitter)
+            emitter.completeWithError(it)
+        }
 
         return emitter
     }
@@ -34,3 +36,5 @@ class SSEService {
         emitters.removeAll(deadEmitters)
     }
 }
+
+@Service class SSEUsersService : SSEService()

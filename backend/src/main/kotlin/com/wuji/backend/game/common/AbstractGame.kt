@@ -22,7 +22,7 @@ abstract class AbstractGame<DetailsT : PlayerDetails, ConfigT : GameConfig>(
 
     abstract fun finish()
 
-    abstract fun getRaport(): String
+    abstract fun getReport(): String
 }
 
 open class GameConfig

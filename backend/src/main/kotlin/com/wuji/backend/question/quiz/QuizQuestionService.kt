@@ -1,18 +1,21 @@
 package com.wuji.backend.question.quiz
 
+import com.wuji.backend.events.quiz.SSEQuizService
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.quiz.QuizGame
 import com.wuji.backend.game.quiz.exception.QuestionNotFoundException
-import com.wuji.backend.player.state.QuizPlayer
 import com.wuji.backend.question.common.PlayerAnswer
-import com.wuji.backend.question.common.Question
 import com.wuji.backend.question.common.QuestionService
 import com.wuji.backend.question.common.exception.QuestionAlreadyAnsweredException
+import com.wuji.backend.reports.common.GameStats
 import com.wuji.backend.util.ext.toQuestionDto
 import org.springframework.stereotype.Service
 
 @Service
-class QuizQuestionService(val gameRegistry: GameRegistry) : QuestionService {
+class QuizQuestionService(
+    val gameRegistry: GameRegistry,
+    private val questionCounterService: SSEQuizService,
+) : QuestionService {
 
     private val game: QuizGame
         get() = gameRegistry.getAs(QuizGame::class.java)
@@ -30,7 +33,7 @@ class QuizQuestionService(val gameRegistry: GameRegistry) : QuestionService {
     override fun answerQuestion(
         playerIndex: Int,
         questionId: Int,
-        answerId: Int
+        answerIds: Set<Int>
     ): Boolean {
         val question = getQuestionById(questionId)
         val player = game.findPlayerByIndex(playerIndex)
@@ -38,27 +41,18 @@ class QuizQuestionService(val gameRegistry: GameRegistry) : QuestionService {
         if (player.alreadyAnswered(questionId)) {
             throw QuestionAlreadyAnsweredException(questionId)
         }
-
-        updatePlayerState(player, question, answerId)
-
-        return question.isCorrectAnswerId(answerId)
+        // TODO update answerTimeInMilliseconds according to internal game timer, when it's built
+        val playerAnswer = PlayerAnswer(question, answerIds, 0)
+        player.details.answers.add(playerAnswer)
+        updatePlayersAnsweredCounter(questionId)
+        return question.areCorrectAnswerIds(answerIds)
     }
-
-    private fun QuizPlayer.alreadyAnswered(questionId: Int) =
-        details.answers.find { answer -> answer.question.id == questionId } !=
-            null
 
     private fun getQuestionById(n: Int) =
         game.questionDispenser.getQuestionByIndex(n)
 
-    private fun updatePlayerState(
-        player: QuizPlayer,
-        question: Question,
-        answerId: Int
-    ) {
-        // Should it actually be there? Maybe move it somewhere else
-        val playerAnswer = PlayerAnswer(question, answerId)
-
-        player.details.answers.add(playerAnswer)
+    private fun updatePlayersAnsweredCounter(questionId: Int) {
+        questionCounterService.sendPlayersAnsweredCounter(
+            GameStats.countPlayersAnsweredForQuestion(game, questionId))
     }
 }

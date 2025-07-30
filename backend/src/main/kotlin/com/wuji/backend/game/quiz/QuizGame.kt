@@ -18,6 +18,9 @@ class QuizGame(
         name, GameType.QUIZ, config) {
 
     val questionDispenser = QuestionDispenser(questions)
+    var askedQuestions: MutableList<Question> = mutableListOf()
+        private set
+
     override fun start() {
         gameState = GameState.RUNNING
     }
@@ -35,7 +38,7 @@ class QuizGame(
         gameState = GameState.FINISHED
     }
 
-    override fun getRaport(): String {
+    override fun getReport(): String {
         TODO("Not yet implemented")
     }
 
@@ -45,4 +48,6 @@ class QuizGame(
                 println("Player not found: $players")
             }
     }
+
+    fun currentQuestion(): Question = askedQuestions.last()
 }

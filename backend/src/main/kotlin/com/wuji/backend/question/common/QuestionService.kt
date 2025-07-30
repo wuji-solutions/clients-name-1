@@ -6,6 +6,6 @@ interface QuestionService {
     fun answerQuestion(
         playerIndex: Int,
         questionId: Int,
-        answerId: Int
+        answerIds: Set<Int>
     ): Boolean
 }
