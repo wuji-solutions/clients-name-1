@@ -1,7 +1,6 @@
 import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from "react";
 
 interface AppContextType {
-  theme: string;
   user: string | null;
   username: string | null;
   setUsername: React.Dispatch<React.SetStateAction<string|null>>;
@@ -9,7 +8,6 @@ interface AppContextType {
 
 const AppContext = createContext<AppContextType>({
   user: null,
-  theme: "light",
   username: null,
   setUsername: () => {},
 });
@@ -19,7 +17,6 @@ interface AppProviderProps {
 }
 
 export const AppProvider = ({ children }: AppProviderProps) => {
-  const [theme, setTheme] = useState("light");
   const [user, setUser] = useState<string|null>(null);
   const [username, setUsername] = useState<string|null>(null);
 
@@ -34,10 +31,9 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 
   const value = useMemo(() => ({
     user,
-    theme,
     username,
     setUsername
-  }), [user, theme, username, setUsername]);
+  }), [user, username, setUsername]);
 
   return (
     <AppContext.Provider value={value}>

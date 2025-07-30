@@ -5,7 +5,6 @@ import theme from "../common/theme";
 import { ButtonCustom } from "../components/Button";
 import UserList from "../components/UserList";
 import { useAppContext } from "../providers/AppContextProvider";
-import { useEffect, useState } from "react";
 import axios from "axios";
 import { BACKEND_ENDPOINT_EXTERNAL } from "../common/config";
 import { CustomTextInput } from "../components/Fields";

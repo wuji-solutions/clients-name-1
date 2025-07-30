@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  font-family: 'Verdana';
+  font-family: 'Verdana, sans-serif';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -13,9 +13,9 @@ code {
 #root {
   width: 100vw;
   height: 100vh;
-  font-family: 'Verdana';
+  font-family: 'Verdana, sans-serif';
 }
 
 button {
-  font-family: 'Verdana';
+  font-family: 'Verdana, sans-serif';
 }
