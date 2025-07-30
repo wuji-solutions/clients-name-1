@@ -1,7 +1,6 @@
 package com.wuji.backend.game.quiz
 
 import com.wuji.backend.game.GameType
-import com.wuji.backend.game.QuizConfig
 import com.wuji.backend.game.common.AbstractGame
 import com.wuji.backend.game.common.GameState
 import com.wuji.backend.player.state.QuizPlayer

@@ -2,7 +2,6 @@ package com.wuji.backend.game.quiz
 
 import com.wuji.backend.events.common.SSEUsersService
 import com.wuji.backend.game.GameRegistry
-import com.wuji.backend.game.QuizConfig
 import com.wuji.backend.game.common.GameService
 import com.wuji.backend.player.dto.PlayerDto
 import com.wuji.backend.player.dto.PlayerDto.Companion.toDto
@@ -38,6 +37,7 @@ class QuizService(
         questions: List<Question>
     ) {
         gameRegistry.register(QuizGame(name, config, questions))
+        println("Registered a game with config ${config.questionFilePath}")
     }
 
     fun currentQuestion(): Question = quizGame.currentQuestion()

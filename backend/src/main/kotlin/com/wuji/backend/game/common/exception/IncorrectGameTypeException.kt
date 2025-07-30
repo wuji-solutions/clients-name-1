@@ -1,8 +1,8 @@
 package com.wuji.backend.game.common.exception
 
-import com.wuji.backend.game.GameConfig
 import com.wuji.backend.game.GameType
 import com.wuji.backend.game.common.AbstractGame
+import com.wuji.backend.game.common.GameConfig
 import com.wuji.backend.player.state.PlayerDetails
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ResponseStatus

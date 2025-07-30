@@ -1,6 +1,7 @@
 package com.wuji.backend.game
 
 import com.wuji.backend.game.common.AbstractGame
+import com.wuji.backend.game.common.GameConfig
 import com.wuji.backend.game.common.exception.GameNotCreatedYetException
 import com.wuji.backend.game.common.exception.IncorrectGameTypeException
 import com.wuji.backend.player.state.PlayerDetails
