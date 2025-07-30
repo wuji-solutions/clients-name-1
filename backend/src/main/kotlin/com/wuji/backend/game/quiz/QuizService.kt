@@ -1,8 +1,10 @@
 package com.wuji.backend.game.quiz
 
-import com.wuji.backend.events.SSEService
+import com.wuji.backend.events.common.SSEUsersService
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.common.GameService
+import com.wuji.backend.player.dto.PlayerDto
+import com.wuji.backend.player.dto.PlayerDto.Companion.toDto
 import com.wuji.backend.player.state.PlayerService
 import com.wuji.backend.player.state.QuizPlayer
 import com.wuji.backend.player.state.QuizPlayerDetails
@@ -13,7 +15,7 @@ import org.springframework.stereotype.Service
 class QuizService(
     private val gameRegistry: GameRegistry,
     private val playerService: PlayerService,
-    private val sseService: SSEService
+    private val sseService: SSEUsersService
 ) : GameService {
 
     private val quizGame: QuizGame
@@ -26,6 +28,9 @@ class QuizService(
             .also { sseService.sendEvent(quizGame.players) }
     }
 
+    override fun listPlayers(): List<PlayerDto> =
+        gameRegistry.game.players.map { player -> player.toDto() }
+
     fun createGame(
         name: String,
         config: QuizGameConfig,
@@ -33,6 +38,8 @@ class QuizService(
     ) {
         gameRegistry.register(QuizGame(name, config, questions))
     }
+
+    fun currentQuestion(): Question = quizGame.currentQuestion()
 
     override fun startGame() {
         quizGame.start()
@@ -50,7 +57,7 @@ class QuizService(
         TODO("Not yet implemented")
     }
 
-    override fun getRaport(): String {
+    override fun getReport(): String {
         TODO("Not yet implemented")
     }
 }
