@@ -7,7 +7,7 @@ import com.wuji.backend.player.state.PlayerDetails
 abstract class AbstractGame<DetailsT : PlayerDetails, ConfigT : GameConfig>(
     val name: String,
     val gameType: GameType,
-    val config: ConfigT
+    protected val config: ConfigT
 ) {
     var gameState: GameState = GameState.CREATED
 
