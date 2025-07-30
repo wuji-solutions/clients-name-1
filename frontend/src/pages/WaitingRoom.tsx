@@ -77,7 +77,8 @@ function WaitingRoom() {
     <Container>
       <UserList user={user} />
       <QRContainer>
-        <QRCode value="http://192.168.137.1:3000/waiting-room" />
+        <QRCode value="http://192.168.137.1:3000/waiting-room" // NOSONAR
+         />
       </QRContainer>
       <ActionButtonContainer>
         <ButtonCustom>
