@@ -32,7 +32,8 @@ class SecurityConfig(
     private final val joinedAuthorized =
         listOf(
             AntPathRequestMatcher("/sse/*/*"),
-            AntPathRequestMatcher("/games/*/**"))
+            AntPathRequestMatcher("/games/*/**")
+        )
 
     @Bean
     fun securityFilterChain(
@@ -41,7 +42,6 @@ class SecurityConfig(
     ): SecurityFilterChain {
         http
             .csrf { it.disable() }
-            .cors { it.configurationSource(corsConfigurationSource) }
             .sessionManagement { sm ->
                 sm.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
             }
@@ -63,18 +63,19 @@ class SecurityConfig(
     }
 
     fun AuthorizeHttpRequestsConfigurer<*>.AuthorizedUrl.permitLocalhost():
-        AuthorizeHttpRequestsConfigurer<
-            *>.AuthorizationManagerRequestMatcherRegistry {
+            AuthorizeHttpRequestsConfigurer<
+                    *>.AuthorizationManagerRequestMatcherRegistry {
         return this.access(
             WebExpressionAuthorizationManager(
-                "hasIpAddress('127.0.0.1') or hasIpAddress('::1')"))
+                "hasIpAddress('127.0.0.1') or hasIpAddress('::1')"
+            )
+        )
     }
 
     fun AuthorizeHttpRequestsConfigurer<
-        *>.AuthorizationManagerRequestMatcherRegistry
-        .authorizeLocalhostPaths():
-        AuthorizeHttpRequestsConfigurer<
-            *>.AuthorizationManagerRequestMatcherRegistry {
+            *>.AuthorizationManagerRequestMatcherRegistry.authorizeLocalhostPaths():
+            AuthorizeHttpRequestsConfigurer<
+                    *>.AuthorizationManagerRequestMatcherRegistry {
         return this.also {
             localhostAuthorized.forEach { matcher ->
                 this.requestMatchers(matcher).permitLocalhost()
@@ -83,10 +84,9 @@ class SecurityConfig(
     }
 
     fun AuthorizeHttpRequestsConfigurer<
-        *>.AuthorizationManagerRequestMatcherRegistry
-        .authorizeJoinedPaths():
-        AuthorizeHttpRequestsConfigurer<
-            *>.AuthorizationManagerRequestMatcherRegistry {
+            *>.AuthorizationManagerRequestMatcherRegistry.authorizeJoinedPaths():
+            AuthorizeHttpRequestsConfigurer<
+                    *>.AuthorizationManagerRequestMatcherRegistry {
         return this.also {
             joinedAuthorized.forEach { matcher ->
                 this.requestMatchers(matcher).hasAuthority("JOINED")
@@ -95,10 +95,9 @@ class SecurityConfig(
     }
 
     fun AuthorizeHttpRequestsConfigurer<
-        *>.AuthorizationManagerRequestMatcherRegistry
-        .enablePublicPaths():
-        AuthorizeHttpRequestsConfigurer<
-            *>.AuthorizationManagerRequestMatcherRegistry {
+            *>.AuthorizationManagerRequestMatcherRegistry.enablePublicPaths():
+            AuthorizeHttpRequestsConfigurer<
+                    *>.AuthorizationManagerRequestMatcherRegistry {
         return this.also {
             requestMatchers(AntPathRequestMatcher("/games/*/join", "POST"))
         }
