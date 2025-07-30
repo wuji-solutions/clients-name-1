@@ -26,8 +26,11 @@ class SecurityConfig(
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
         val configuration = CorsConfiguration()
-        configuration.allowedOrigins = listOf("http://localhost:3000", "http://192.168.137.1:3000") // NOSONAR
-        configuration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
+        configuration.allowedOrigins =
+            listOf(
+                "http://localhost:3000", "http://192.168.137.1:3000") // NOSONAR
+        configuration.allowedMethods =
+            listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
         configuration.allowedHeaders = listOf("*")
         configuration.allowCredentials = true
 
@@ -40,7 +43,7 @@ class SecurityConfig(
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
             .csrf { it.disable() }
-            .cors { }
+            .cors {}
             .sessionManagement { sm ->
                 sm.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
             }
@@ -62,7 +65,7 @@ class SecurityConfig(
                     .permitLocalhost()
                     .requestMatchers(AntPathRequestMatcher("/v3/api-docs/**"))
                     .permitLocalhost()
-                    .requestMatchers("/sse/*"
+                    .requestMatchers("/sse/*")
                     .permitLocalhost()
                     .requestMatchers("/sse/*/*")
                     .hasAuthority("JOINED")
