@@ -23,7 +23,4 @@ class SecurityBeansConfig {
     ): AuthenticationEntryPoint {
         return CustomAuthenticationEntryPoint(objectMapper)
     }
-//
-//    @Bean
-//    w
 }
