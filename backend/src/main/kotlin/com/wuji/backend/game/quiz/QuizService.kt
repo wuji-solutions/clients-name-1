@@ -37,7 +37,6 @@ class QuizService(
         questions: List<Question>
     ) {
         gameRegistry.register(QuizGame(name, config, questions))
-        println("Registered a game with config ${config.questionFilePath}")
     }
 
     fun currentQuestion(): Question = quizGame.currentQuestion()
