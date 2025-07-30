@@ -75,7 +75,7 @@ class SecurityConfig(
         AuthorizeHttpRequestsConfigurer<
             *>.AuthorizationManagerRequestMatcherRegistry {
         return this.also {
-            localhostAuthorized.forEach { matcher ->
+            (localhostAuthorized + joinedAuthorized).forEach { matcher ->
                 this.requestMatchers(matcher).permitLocalhost()
             }
         }
