@@ -3,7 +3,7 @@ package com.wuji.backend.game.dispenser
 import com.wuji.backend.game.quiz.exception.QuestionNotFoundException
 import com.wuji.backend.question.common.Question
 
-class QuestionDispenser(
+class QuestionDispenserPrototypeIgnoreForNow(
     private val questions: List<Question>
 ) {
     private val questionOrder : MutableMap<Int, MutableList<Int>> = mutableMapOf()

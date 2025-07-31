@@ -6,6 +6,6 @@ class QuizDispenser(questions: MutableList<Question>) : GameDispenser {
     override val dispensers: Map<Int, Dispenser> = mapOf(0 to Dispenser(questions))
 
     override fun getQuestionFromDispenser(id: Int): Question {
-        return dispensers[id]?.nextQuestion() ?: throw NoSuchElementException("Brak dispensora o id=$id")
+        return dispensers[id]?.nextQuestion() ?: throw NoSuchElementException("Brak dispensera o id=$id")
     }
 }
