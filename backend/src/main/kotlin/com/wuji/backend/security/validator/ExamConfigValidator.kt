@@ -10,7 +10,6 @@ class ExamConfigValidator :
         dto: ExamConfigGameCreateRequestDto,
         context: ConstraintValidatorContext
     ): Boolean {
-        // Jeśli losowanie jest wyłączone, muszą być podane konkretne ID pytań
         if (!dto.randomizeQuestions && dto.selectedQuestionIds.isEmpty()) {
             context.disableDefaultConstraintViolation()
             context
@@ -21,7 +20,6 @@ class ExamConfigValidator :
             return false
         }
 
-        // Jeśli losowanie jest włączone, lista ID powinna być pusta
         if (dto.randomizeQuestions && dto.selectedQuestionIds.isNotEmpty()) {
             context.disableDefaultConstraintViolation()
             context
