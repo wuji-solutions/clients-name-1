@@ -23,7 +23,7 @@ class QuizQuestionController(
     fun getQuestion(
         @PathVariable questionId: Int
     ): ResponseEntity<QuestionResponseDto> {
-        return ResponseEntity.ok(questionService.getQuestion(questionId))
+        return ResponseEntity.ok(questionService.getQuestion())
     }
 
     @PostMapping("/{questionId}/answer")

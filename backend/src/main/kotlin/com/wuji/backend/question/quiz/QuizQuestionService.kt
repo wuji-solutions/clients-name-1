@@ -3,7 +3,6 @@ package com.wuji.backend.question.quiz
 import com.wuji.backend.events.quiz.SSEQuizService
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.quiz.QuizGame
-import com.wuji.backend.game.quiz.exception.QuestionNotFoundException
 import com.wuji.backend.question.common.PlayerAnswer
 import com.wuji.backend.question.common.QuestionService
 import com.wuji.backend.question.common.exception.QuestionAlreadyAnsweredException
@@ -27,15 +26,15 @@ class QuizQuestionService(
             ?.answers ?: emptyList()
     }
 
-    fun getQuestion(questionId: Int) =
-        getQuestionById(questionId).toQuestionDto()
+    fun getQuestion() =
+        getNextQuestion().toQuestionDto()
 
     override fun answerQuestion(
         playerIndex: Int,
         questionId: Int,
         answerIds: Set<Int>
     ): Boolean {
-        val question = getQuestionById(questionId)
+        val question = getNextQuestion()
         val player = game.findPlayerByIndex(playerIndex)
 
         if (player.alreadyAnswered(questionId)) {
@@ -48,8 +47,8 @@ class QuizQuestionService(
         return question.areCorrectAnswerIds(answerIds)
     }
 
-    private fun getQuestionById(n: Int) =
-        game.questionDispenser.getQuestionByIndex(n)
+    private fun getNextQuestion() =
+        game.questionDispenser.getQuestionFromDispenser()
 
     private fun updatePlayersAnsweredCounter(questionId: Int) {
         questionCounterService.sendPlayersAnsweredCounter(

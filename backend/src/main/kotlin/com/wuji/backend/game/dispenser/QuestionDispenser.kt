@@ -20,7 +20,7 @@ class QuestionDispenser(
 
     fun getQuestionByIndex(index: Int): Question {
         if (index !in 0..questions.size) {
-            throw QuestionNotFoundException(index)
+            throw QuestionNotFoundException()
         }
         return questions[index]
     }

@@ -7,7 +7,7 @@ import com.wuji.backend.player.state.QuizPlayer
 import com.wuji.backend.player.state.QuizPlayerDetails
 import com.wuji.backend.player.state.exception.PlayerNotFoundException
 import com.wuji.backend.question.common.Question
-import com.wuji.backend.game.dispenser.QuestionDispenser
+import com.wuji.backend.game.dispenser.QuizDispenser
 
 class QuizGame(
     name: String,
@@ -17,7 +17,7 @@ class QuizGame(
     AbstractGame<QuizPlayerDetails, QuizGameConfig>(
         name, GameType.QUIZ, config) {
 
-    val questionDispenser = QuestionDispenser(questions)
+    val questionDispenser = QuizDispenser(questions.toMutableList())
     var askedQuestions: MutableList<Question> = mutableListOf()
         private set
 
