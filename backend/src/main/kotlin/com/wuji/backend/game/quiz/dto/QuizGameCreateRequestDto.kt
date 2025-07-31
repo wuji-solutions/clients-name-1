@@ -1,10 +1,10 @@
 package com.wuji.backend.game.quiz.dto
 
-import com.wuji.backend.game.quiz.QuizConfig
 import com.wuji.backend.question.common.Question
+import jakarta.validation.Valid
 
 data class QuizGameCreateRequestDto(
     val name: String,
-    val config: QuizConfig,
+    @field:Valid val config: QuizConfigGameCreateRequestDto,
     val questions: List<Question>
 )

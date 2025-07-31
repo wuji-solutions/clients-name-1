@@ -13,18 +13,4 @@ data class ExamConfig(
     val notifyTeacherOnCheating: Boolean,
     val pointsPerDifficulty: Map<DifficultyLevel, Int>,
     val allowGoingBack: Boolean,
-) : GameConfig() {
-    init {
-        require(randomizeQuestions || selectedQuestionIds.isNotEmpty()) {
-            "Lista wybranych pytań musi być podana, jeśli losowe pytania nie są ustawione"
-        }
-
-        require(!randomizeQuestions || selectedQuestionIds.isEmpty()) {
-            "Lista wybranych pytań musi być pusta, jeśli losowe pytania są ustawione"
-        }
-
-        require(requiredQuestionCount > 0) {
-            "Liczba wymaganych pytań do odpowiedzenia musi być dodatnia"
-        }
-    }
-}
+) : GameConfig()
