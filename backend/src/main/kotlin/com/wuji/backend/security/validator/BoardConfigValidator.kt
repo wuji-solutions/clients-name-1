@@ -14,8 +14,7 @@ class BoardConfigValidator :
             context.disableDefaultConstraintViolation()
             context
                 .buildConstraintViolationWithTemplate(
-                    "Punkty za pytania w zależności od trudności muszą być nieujemne"
-                )
+                    "Punkty za pytania w zależności od trudności muszą być nieujemne")
                 .addPropertyNode("pointsPerDifficulty")
                 .addConstraintViolation()
             return false
@@ -25,8 +24,7 @@ class BoardConfigValidator :
             context.disableDefaultConstraintViolation()
             context
                 .buildConstraintViolationWithTemplate(
-                    "Liczba poprawnych odpowiedzi potrzeba do awansu musi być dodatnia"
-                )
+                    "Liczba poprawnych odpowiedzi potrzeba do awansu musi być dodatnia")
                 .addPropertyNode("rankingPromotionRules")
                 .addConstraintViolation()
             return false

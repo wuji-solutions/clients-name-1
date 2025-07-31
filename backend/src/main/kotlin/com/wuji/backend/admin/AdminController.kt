@@ -32,8 +32,7 @@ class AdminController(
         quizService.createGame(
             requestDto.name,
             requestDto.config.toQuizConfig(),
-            requestDto.questions
-        )
+            requestDto.questions)
         return ResponseEntity.ok().build()
     }
 

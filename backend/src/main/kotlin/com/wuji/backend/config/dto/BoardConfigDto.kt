@@ -19,6 +19,5 @@ fun BoardConfigDto.toBoardConfig(): BoardConfig {
         questionDurationSeconds = questionDurationSeconds,
         endImmediatelyAfterTime = endImmediatelyAfterTime,
         pointsPerDifficulty = pointsPerDifficulty,
-        rankingPromotionRules = rankingPromotionRules
-    )
+        rankingPromotionRules = rankingPromotionRules)
 }

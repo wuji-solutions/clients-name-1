@@ -13,5 +13,4 @@ class IncorrectGameTypeException(
     actual: Class<out AbstractGame<out PlayerDetails, out GameConfig>>,
 ) :
     IllegalArgumentException(
-        "Niepoprawny rodzaj gry. Oczekiwany: $expected, przekazany: $actual"
-    )
+        "Niepoprawny rodzaj gry. Oczekiwany: $expected, przekazany: $actual")

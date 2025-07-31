@@ -14,8 +14,7 @@ class ExamConfigValidator :
             context.disableDefaultConstraintViolation()
             context
                 .buildConstraintViolationWithTemplate(
-                    "Lista wybranych pytań musi być podana, jeśli losowe pytania nie są ustawione"
-                )
+                    "Lista wybranych pytań musi być podana, jeśli losowe pytania nie są ustawione")
                 .addPropertyNode("selectedQuestionIds")
                 .addConstraintViolation()
             return false
@@ -25,8 +24,7 @@ class ExamConfigValidator :
             context.disableDefaultConstraintViolation()
             context
                 .buildConstraintViolationWithTemplate(
-                    "Lista wybranych pytań musi być pusta, jeśli losowe pytania są ustawione"
-                )
+                    "Lista wybranych pytań musi być pusta, jeśli losowe pytania są ustawione")
                 .addPropertyNode("selectedQuestionIds")
                 .addConstraintViolation()
             return false

@@ -9,8 +9,7 @@ import jakarta.validation.constraints.Min
 data class ExamConfigDto(
     @field:Min(
         1,
-        message = "Liczba wymaganych pytań do odpowiedzenia musi być dodatnia"
-    )
+        message = "Liczba wymaganych pytań do odpowiedzenia musi być dodatnia")
     val requiredQuestionCount: Int,
     val randomizeQuestions: Boolean,
     val enforceDifficultyBalance: Boolean,
