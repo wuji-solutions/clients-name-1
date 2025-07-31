@@ -18,33 +18,35 @@ function createWindow() {
     
 
     if (isDev) {
-        win.loadURL('http://localhost:3000/');
-        const jarPath = path.join(__dirname, '..', 'backendJar/', 'backend.jar') 
-        child = require('child_process').spawn('java', ['-jar', jarPath]);
+        win.loadURL('http://localhost:3000/index.html');
 
-        child.stdout.on('data', (data) => {
-        console.log(`[JAR STDOUT]: ${data}`);
-        });
-        child.stderr.on('data', (data) => {
-            console.error(`[JAR STDERR]: ${data}`);
-        });
-        child.on('error', (err) => {
-            console.error('Failed to start subprocess:', err);
-        });
-        child.on('exit', (code) => {
-            console.log(`JAR exited with code ${code}`);
-        });
+        const jarName ="backend.jar";
+        const backendPath = path.join(__dirname, '../..', 'backend', jarName);
 
-
+        child = require('child_process').spawn('java', ['-jar', backendPath]); // NOSONAR
     } else {
-        // 'build/index.html'
         win.loadURL(`file://${__dirname}/../index.html`);
-        // spawn java child process running backend jar
-        const jarPath = path.join(__dirname, '..', 'backendJar/', 'backend.jar') 
-        child = require('child_process').spawn('java', ['-jar', jarPath]);
+
+        const binaryName = process.platform === 'win32' ? 'backend.exe' : 'backend';
+        const backendPath = path.join(process.resourcesPath, 'backend', binaryName);
+
+        child = require('child_process').spawn(backendPath);
     }
 
     win.on('closed', () => (win = null));
+
+    child.stdout.on('data', (data) => {
+        console.log(`[BACKEND STDOUT]: ${data}`);
+    });
+    child.stderr.on('data', (data) => {
+        console.error(`[BACKEND STDERR]: ${data}`);
+    });
+    child.on('error', (err) => {
+        console.error('Failed to start backend subprocess:', err);
+    });
+    child.on('exit', (code) => {
+        console.log(`Backend exited with code ${code}`);
+    });
 
     // Hot Reloading
     if (isDev) {
