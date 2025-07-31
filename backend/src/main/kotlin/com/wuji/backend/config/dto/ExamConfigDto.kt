@@ -1,13 +1,12 @@
-package com.wuji.backend.game.exam.dto
+package com.wuji.backend.config.dto
 
-import com.wuji.backend.game.common.DifficultyLevel
-import com.wuji.backend.game.common.dto.ConfigGameCreateRequestDto
-import com.wuji.backend.game.exam.ExamConfig
+import com.wuji.backend.config.DifficultyLevel
+import com.wuji.backend.config.ExamConfig
 import com.wuji.backend.security.validator.ValidExamConfig
 import jakarta.validation.constraints.Min
 
 @ValidExamConfig
-data class ExamConfigGameCreateRequestDto(
+data class ExamConfigDto(
     @field:Min(
         1,
         message = "Liczba wymaganych pytań do odpowiedzenia musi być dodatnia")
@@ -20,10 +19,14 @@ data class ExamConfigGameCreateRequestDto(
     val notifyTeacherOnCheating: Boolean,
     val pointsPerDifficulty: Map<DifficultyLevel, Int>,
     val allowGoingBack: Boolean,
-) : ConfigGameCreateRequestDto()
+) : GameConfigDto()
 
-fun ExamConfigGameCreateRequestDto.toExamConfig(): ExamConfig {
+fun ExamConfigDto.toExamConfig(): ExamConfig {
     return ExamConfig(
+        totalDurationMinutes = totalDurationMinutes,
+        questionFilePath = questionFilePath,
+        questionDurationSeconds = questionDurationSeconds,
+        endImmediatelyAfterTime = endImmediatelyAfterTime,
         requiredQuestionCount = requiredQuestionCount,
         randomizeQuestions = randomizeQuestions,
         enforceDifficultyBalance = enforceDifficultyBalance,

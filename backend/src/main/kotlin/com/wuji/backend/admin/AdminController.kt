@@ -1,10 +1,10 @@
 package com.wuji.backend.admin
 
+import com.wuji.backend.config.dto.toQuizConfig
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.common.GameServiceDelegate
 import com.wuji.backend.game.quiz.QuizService
 import com.wuji.backend.game.quiz.dto.QuizGameCreateRequestDto
-import com.wuji.backend.game.quiz.dto.toQuizConfig
 import com.wuji.backend.player.dto.PlayerDto
 import com.wuji.backend.question.common.dto.QuestionResponseDto
 import com.wuji.backend.security.GameCreated

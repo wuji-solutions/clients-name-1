@@ -1,13 +1,13 @@
 package com.wuji.backend.security.validator
 
-import com.wuji.backend.game.board.dto.BoardConfigGameCreateRequestDto
+import com.wuji.backend.config.dto.BoardConfigDto
 import jakarta.validation.ConstraintValidator
 import jakarta.validation.ConstraintValidatorContext
 
 class BoardConfigValidator :
-    ConstraintValidator<ValidBoardConfig, BoardConfigGameCreateRequestDto> {
+    ConstraintValidator<ValidBoardConfig, BoardConfigDto> {
     override fun isValid(
-        dto: BoardConfigGameCreateRequestDto,
+        dto: BoardConfigDto,
         context: ConstraintValidatorContext
     ): Boolean {
         if (dto.pointsPerDifficulty.any { it.value < 0 }) {
