@@ -1,20 +1,21 @@
 package com.wuji.backend.security.validator
 
-import com.wuji.backend.game.board.dto.BoardConfigGameCreateRequestDto
+import com.wuji.backend.config.dto.BoardConfigDto
 import jakarta.validation.ConstraintValidator
 import jakarta.validation.ConstraintValidatorContext
 
 class BoardConfigValidator :
-    ConstraintValidator<ValidBoardConfig, BoardConfigGameCreateRequestDto> {
+    ConstraintValidator<ValidBoardConfig, BoardConfigDto> {
     override fun isValid(
-        dto: BoardConfigGameCreateRequestDto,
+        dto: BoardConfigDto,
         context: ConstraintValidatorContext
     ): Boolean {
         if (dto.pointsPerDifficulty.any { it.value < 0 }) {
             context.disableDefaultConstraintViolation()
             context
                 .buildConstraintViolationWithTemplate(
-                    "Punkty za pytania w zależności od trudności muszą być nieujemne")
+                    "Punkty za pytania w zależności od trudności muszą być nieujemne"
+                )
                 .addPropertyNode("pointsPerDifficulty")
                 .addConstraintViolation()
             return false
@@ -24,7 +25,8 @@ class BoardConfigValidator :
             context.disableDefaultConstraintViolation()
             context
                 .buildConstraintViolationWithTemplate(
-                    "Liczba poprawnych odpowiedzi potrzeba do awansu musi być dodatnia")
+                    "Liczba poprawnych odpowiedzi potrzeba do awansu musi być dodatnia"
+                )
                 .addPropertyNode("rankingPromotionRules")
                 .addConstraintViolation()
             return false

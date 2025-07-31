@@ -1,5 +1,6 @@
 package com.wuji.backend.game.quiz
 
+import com.wuji.backend.config.QuizConfig
 import com.wuji.backend.events.common.SSEUsersService
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.common.GameService

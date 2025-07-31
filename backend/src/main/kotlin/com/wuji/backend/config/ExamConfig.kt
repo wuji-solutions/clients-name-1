@@ -1,9 +1,10 @@
-package com.wuji.backend.game.exam
-
-import com.wuji.backend.game.common.DifficultyLevel
-import com.wuji.backend.game.common.GameConfig
+package com.wuji.backend.config
 
 data class ExamConfig(
+    override val totalDurationMinutes: Int,
+    override val endImmediatelyAfterTime: Boolean,
+    override val questionFilePath: String,
+    override val questionDurationSeconds: Int,
     val requiredQuestionCount: Int,
     val randomizeQuestions: Boolean,
     val enforceDifficultyBalance: Boolean,

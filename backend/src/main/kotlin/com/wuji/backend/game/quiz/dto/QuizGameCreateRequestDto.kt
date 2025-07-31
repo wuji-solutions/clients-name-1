@@ -1,5 +1,6 @@
 package com.wuji.backend.game.quiz.dto
 
+import com.wuji.backend.config.dto.QuizConfigGameCreateRequestDto
 import com.wuji.backend.question.common.Question
 import jakarta.validation.Valid
 
