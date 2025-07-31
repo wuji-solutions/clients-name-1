@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
 import * as isDev from 'electron-is-dev';
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
@@ -9,7 +9,7 @@ let child: ChildProcessWithoutNullStreams;
 
 function createWindow() {
     win = new BrowserWindow({
-        width: isDev ? 1200 : 800,
+        width: 800,
         height: 600,
         webPreferences: {
             nodeIntegration: true,
@@ -34,6 +34,19 @@ function createWindow() {
     }
 
     win.on('closed', () => (win = null));
+    
+    child.stdout.on('data', (data) => {
+        console.log(`[BACKEND STDOUT]: ${data}`);
+    });
+    child.stderr.on('data', (data) => {
+        console.error(`[BACKEND STDERR]: ${data}`);
+    });
+    child.on('error', (err) => {
+        console.error('Failed to start backend subprocess:', err);
+    });
+    child.on('exit', (code) => {
+        console.log(`Backend exited with code ${code}`);
+    });
 
     child.stdout.on('data', (data) => {
         console.log(`[BACKEND STDOUT]: ${data}`);
@@ -69,29 +82,6 @@ function createWindow() {
 }
 
 app.on('ready', createWindow);
-
-ipcMain.on('app/quit', () => {
-    if (child) {
-        const kill = require('tree-kill');
-        kill(child.pid);
-    }
-    process.exit();
-});
-
-process.on('exit', () => {
-    if (child) {
-        const kill = require('tree-kill');
-        kill(child.pid);
-    }
-});
-
-process.on('SIGINT', () => {
-    if (child) {
-        const kill = require('tree-kill');
-        kill(child.pid);
-    }
-    process.exit();
-});
 
 app.on('window-all-closed', () => {
     if (child) {
