@@ -15,17 +15,16 @@ function createWindow() {
             nodeIntegration: true,
         },
     });
-    
 
     if (isDev) {
-        win.loadURL('http://localhost:3000/index.html');
+        win.loadURL('http://localhost:3000');
 
-        const jarName ="backend.jar";
+        const jarName = 'backend.jar';
         const backendPath = path.join(__dirname, '../..', 'backend', jarName);
 
         child = require('child_process').spawn('java', ['-jar', backendPath]); // NOSONAR
     } else {
-        win.loadURL(`file://${__dirname}/../index.html`);
+        win.loadURL(`file://${__dirname}/../index.html`); // potentially doesnt work xpp
 
         const binaryName = process.platform === 'win32' ? 'backend.exe' : 'backend';
         const backendPath = path.join(process.resourcesPath, 'backend', binaryName);
