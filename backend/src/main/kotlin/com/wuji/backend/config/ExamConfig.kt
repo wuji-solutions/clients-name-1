@@ -14,4 +14,4 @@ data class ExamConfig(
     val notifyTeacherOnCheating: Boolean,
     val pointsPerDifficulty: Map<DifficultyLevel, Int>,
     val allowGoingBack: Boolean,
-) : GameConfig()
+) : GameConfig

@@ -1,10 +1,10 @@
 package com.wuji.backend.config
 
-abstract class GameConfig {
-    abstract val totalDurationMinutes: Int
-    abstract val endImmediatelyAfterTime: Boolean
-    abstract val questionFilePath: String
-    abstract val questionDurationSeconds: Int
+interface GameConfig {
+    val totalDurationMinutes: Int
+    val endImmediatelyAfterTime: Boolean
+    val questionFilePath: String
+    val questionDurationSeconds: Int
 }
 
 enum class DifficultyLevel {

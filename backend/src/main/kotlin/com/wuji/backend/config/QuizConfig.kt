@@ -5,4 +5,4 @@ data class QuizConfig(
     override val endImmediatelyAfterTime: Boolean,
     override val questionFilePath: String,
     override val questionDurationSeconds: Int,
-) : GameConfig()
+) : GameConfig

@@ -7,7 +7,7 @@ data class BoardConfig(
     override val questionDurationSeconds: Int,
     val pointsPerDifficulty: Map<DifficultyLevel, Int>,
     val rankingPromotionRules: Map<CategoryName, MinCorrectAnswers>
-) : GameConfig()
+) : GameConfig
 
 typealias CategoryName = String
 
