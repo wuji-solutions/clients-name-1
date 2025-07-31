@@ -1,5 +1,6 @@
 package com.wuji.backend.admin
 
+import com.wuji.backend.config.dto.toQuizConfig
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.common.GameServiceDelegate
 import com.wuji.backend.game.quiz.QuizService
@@ -29,7 +30,9 @@ class AdminController(
         @Valid @RequestBody requestDto: QuizGameCreateRequestDto
     ): ResponseEntity<Nothing> {
         quizService.createGame(
-            requestDto.name, requestDto.config, requestDto.questions)
+            requestDto.name,
+            requestDto.config.toQuizConfig(),
+            requestDto.questions)
         return ResponseEntity.ok().build()
     }
 

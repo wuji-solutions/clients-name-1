@@ -1,5 +1,6 @@
 package com.wuji.backend.game.quiz
 
+import com.wuji.backend.config.QuizConfig
 import com.wuji.backend.game.GameType
 import com.wuji.backend.game.common.AbstractGame
 import com.wuji.backend.game.common.GameState
@@ -10,11 +11,9 @@ import com.wuji.backend.question.common.Question
 
 class QuizGame(
     name: String,
-    config: QuizGameConfig,
+    config: QuizConfig,
     val questions: List<Question>
-) :
-    AbstractGame<QuizPlayerDetails, QuizGameConfig>(
-        name, GameType.QUIZ, config) {
+) : AbstractGame<QuizPlayerDetails, QuizConfig>(name, GameType.QUIZ, config) {
     var askedQuestions: MutableList<Question> = mutableListOf()
         private set
 

@@ -1,4 +1,4 @@
-package com.wuji.backend.security
+package com.wuji.backend.security.validator
 
 import jakarta.validation.Constraint
 import jakarta.validation.ConstraintValidator
