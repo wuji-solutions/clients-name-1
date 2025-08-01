@@ -49,7 +49,7 @@ open class SSEService {
 
 @Service
 class SSEUsersService : SSEService() {
-    fun sendPlayersList(data: Set<Player<PlayerDetails>>) {
+    fun sendPlayers(data: Collection<Player<PlayerDetails>>) {
         sendEvent("users", data)
     }
 }
