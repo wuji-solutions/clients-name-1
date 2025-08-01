@@ -20,8 +20,7 @@ class QuizQuestionController(
 ) : QuestionController {
 
     @GetMapping("/current")
-    fun getQuestion(
-    ): ResponseEntity<QuestionResponseDto> {
+    fun getQuestion(): ResponseEntity<QuestionResponseDto> {
         return ResponseEntity.ok(questionService.getQuestion())
     }
 
@@ -31,9 +30,7 @@ class QuizQuestionController(
         auth: Authentication
     ): ResponseEntity<Boolean> {
         val index = (auth.principal as Participant).index
-        val correct =
-            questionService.answerQuestion(
-                index, answerDto.answerIds)
+        val correct = questionService.answerQuestion(index, answerDto.answerIds)
 
         return ResponseEntity.ok(correct)
     }
