@@ -9,6 +9,9 @@ data class Player<PlayerDetailsT : PlayerDetails>(
 ) {
     fun alreadyAnswered(questionId: Int) =
         details.answers.any { answer -> answer.question.id == questionId }
+
+    fun answerForQuestion(questionId: Int) =
+        details.answers.first { answer -> answer.question.id == questionId }
 }
 
 open class PlayerDetails(

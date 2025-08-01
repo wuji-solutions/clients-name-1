@@ -1,6 +1,7 @@
 package com.wuji.backend.question.quiz
 
 import com.wuji.backend.game.quiz.dto.AnswerQuestionRequestDto
+import com.wuji.backend.game.quiz.dto.AnswersPerQuestionDto
 import com.wuji.backend.question.common.QuestionController
 import com.wuji.backend.question.common.dto.QuestionResponseDto
 import com.wuji.backend.security.GameRunning
@@ -38,5 +39,11 @@ class QuizQuestionController(
     @PostMapping("/next")
     fun nextQuestion(): ResponseEntity<QuestionResponseDto> {
         return ResponseEntity.ok(questionService.getNextQuestion())
+    }
+
+    @PostMapping("/end")
+    fun endQuestion(): ResponseEntity<AnswersPerQuestionDto> {
+        questionService.endQuestion()
+        return ResponseEntity.ok(questionService.getAnswersPerQuestion())
     }
 }

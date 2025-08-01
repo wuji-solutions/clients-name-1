@@ -3,9 +3,12 @@ package com.wuji.backend.question.quiz
 import com.wuji.backend.events.quiz.SSEQuizService
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.quiz.QuizGame
+import com.wuji.backend.game.quiz.dto.AnswerCountDto
+import com.wuji.backend.game.quiz.dto.AnswersPerQuestionDto
 import com.wuji.backend.question.common.PlayerAnswer
 import com.wuji.backend.question.common.QuestionService
 import com.wuji.backend.question.common.dto.QuestionResponseDto
+import com.wuji.backend.question.common.dto.toAnswerDto
 import com.wuji.backend.question.common.exception.QuestionAlreadyAnsweredException
 import com.wuji.backend.reports.common.GameStats
 import com.wuji.backend.util.ext.toQuestionDto
@@ -14,7 +17,7 @@ import org.springframework.stereotype.Service
 @Service
 class QuizQuestionService(
     val gameRegistry: GameRegistry,
-    private val questionCounterService: SSEQuizService,
+    private val sSEQuizService: SSEQuizService,
 ) : QuestionService {
 
     private val game: QuizGame
@@ -47,14 +50,34 @@ class QuizQuestionService(
     }
 
     fun getNextQuestion(): QuestionResponseDto {
+        sSEQuizService.sendNextQuestion()
         return game.questionDispenser.moveNextQuestion().toQuestionDto()
+    }
+
+    fun endQuestion() {
+        gameRegistry.game.pause()
+    }
+
+    fun getAnswersPerQuestion(): AnswersPerQuestionDto {
+        val answerCountList = mutableListOf<AnswerCountDto>()
+        for (answer in getCurrentQuestion().answers) {
+            val answerCount =
+                gameRegistry.game.players.count {
+                    answer.id in
+                        it.answerForQuestion(getCurrentQuestion().id)
+                            .selectedIds
+                }
+            answerCountList.add(
+                AnswerCountDto(answer.toAnswerDto(), answerCount))
+        }
+        return AnswersPerQuestionDto(answerCountList)
     }
 
     private fun getCurrentQuestion() =
         game.questionDispenser.getCurrentQuestion()
 
     private fun updatePlayersAnsweredCounter(questionId: Int) {
-        questionCounterService.sendPlayersAnsweredCounter(
+        sSEQuizService.sendPlayersAnsweredCounter(
             GameStats.countPlayersAnsweredForQuestion(game, questionId))
     }
 }
