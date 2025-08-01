@@ -27,8 +27,7 @@ class QuizQuestionService(
             ?.answers ?: emptyList()
     }
 
-    fun getQuestion() =
-        getCurrentQuestion().toQuestionDto()
+    fun getQuestion() = getCurrentQuestion().toQuestionDto()
 
     override fun answerQuestion(
         playerIndex: Int,
@@ -51,7 +50,8 @@ class QuizQuestionService(
         return game.questionDispenser.moveNextQuestion().toQuestionDto()
     }
 
-    private fun getCurrentQuestion() = game.questionDispenser.getCurrentQuestion()
+    private fun getCurrentQuestion() =
+        game.questionDispenser.getCurrentQuestion()
 
     private fun updatePlayersAnsweredCounter(questionId: Int) {
         questionCounterService.sendPlayersAnsweredCounter(
