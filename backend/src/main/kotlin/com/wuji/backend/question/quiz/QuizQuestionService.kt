@@ -48,8 +48,7 @@ class QuizQuestionService(
     }
 
     fun getNextQuestion(): QuestionResponseDto {
-        game.questionDispenser.getQuestionFromDispenser()
-        return game.questionDispenser.getCurrentQuestion().toQuestionDto()
+        return game.questionDispenser.moveNextQuestion().toQuestionDto()
     }
 
     private fun getCurrentQuestion() = game.questionDispenser.getCurrentQuestion()
