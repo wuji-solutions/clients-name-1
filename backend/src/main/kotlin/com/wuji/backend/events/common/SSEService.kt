@@ -50,6 +50,6 @@ open class SSEService {
 @Service
 class SSEUsersService : SSEService() {
     fun sendPlayers(data: Collection<Player<PlayerDetails>>) {
-        sendEvent("users", data)
+        sendEvent(PLAYERS_CHANNEL, data)
     }
 }
