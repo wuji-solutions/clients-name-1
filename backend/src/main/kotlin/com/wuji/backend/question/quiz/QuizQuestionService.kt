@@ -34,7 +34,7 @@ class QuizQuestionService(
         questionId: Int,
         answerIds: Set<Int>
     ): Boolean {
-        val question = getNextQuestion()
+        val question = getCurrentQuestion()
         val player = game.findPlayerByIndex(playerIndex)
 
         if (player.alreadyAnswered(questionId)) {
@@ -47,8 +47,8 @@ class QuizQuestionService(
         return question.areCorrectAnswerIds(answerIds)
     }
 
-    private fun getNextQuestion() =
-        game.questionDispenser.getQuestionFromDispenser()
+    fun getNextQuestion() =
+        game.questionDispenser.getQuestionFromDispenser().toQuestionDto()
 
     private fun getCurrentQuestion() = game.questionDispenser.getCurrentQuestion()
 
