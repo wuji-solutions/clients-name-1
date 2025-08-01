@@ -13,6 +13,9 @@ class Dispenser (
         return questions.removeFirst()
     }
     fun currentQuestion(): Question {
+        if (questions.isEmpty()) {
+            throw QuestionNotFoundException()
+        }
         return questions.first()
     }
 }

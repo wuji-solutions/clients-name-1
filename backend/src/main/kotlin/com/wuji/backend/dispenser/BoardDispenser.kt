@@ -11,8 +11,10 @@ class BoardDispenser(categories : List<String>, questions : List<Question>) : Ga
         }
     }
 
-    override fun getQuestionFromDispenser(id: Int): Question {
-        return dispensers[id]?.nextQuestion() ?: throw NoSuchElementException("Brak dispensera o id=$id")
+    override fun moveNextQuestion(id: Int): Question {
+        val dispenser = dispensers[id] ?: throw NoSuchElementException("Brak dispenser o id=$id")
+        dispenser.nextQuestion()
+        return dispenser.currentQuestion()
     }
 
     override fun getCurrentQuestion(id: Int): Question {
