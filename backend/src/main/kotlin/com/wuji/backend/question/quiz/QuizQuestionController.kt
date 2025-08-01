@@ -19,24 +19,24 @@ class QuizQuestionController(
     private val questionService: QuizQuestionService,
 ) : QuestionController {
 
-    @GetMapping("/{questionId}")
-    fun getQuestion(
-        @PathVariable questionId: Int
-    ): ResponseEntity<QuestionResponseDto> {
-        return ResponseEntity.ok(questionService.getQuestion(questionId))
+    @GetMapping("/current")
+    fun getQuestion(): ResponseEntity<QuestionResponseDto> {
+        return ResponseEntity.ok(questionService.getQuestion())
     }
 
-    @PostMapping("/{questionId}/answer")
+    @PostMapping("/answer")
     fun answerQuestion(
-        @PathVariable questionId: Int,
         @Valid @RequestBody answerDto: AnswerQuestionRequestDto,
         auth: Authentication
     ): ResponseEntity<Boolean> {
         val index = (auth.principal as Participant).index
-        val correct =
-            questionService.answerQuestion(
-                index, questionId, answerDto.answerIds)
+        val correct = questionService.answerQuestion(index, answerDto.answerIds)
 
         return ResponseEntity.ok(correct)
+    }
+
+    @PostMapping("/next")
+    fun nextQuestion(): ResponseEntity<QuestionResponseDto> {
+        return ResponseEntity.ok(questionService.getNextQuestion())
     }
 }
