@@ -7,7 +7,7 @@ import com.wuji.backend.player.state.QuizPlayer
 import com.wuji.backend.player.state.QuizPlayerDetails
 import com.wuji.backend.player.state.exception.PlayerNotFoundException
 import com.wuji.backend.question.common.Question
-import com.wuji.backend.game.dispenser.QuizDispenser
+import com.wuji.backend.dispenser.QuizDispenser
 
 class QuizGame(
     name: String,

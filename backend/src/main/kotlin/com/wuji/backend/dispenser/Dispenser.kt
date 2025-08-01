@@ -1,4 +1,4 @@
-package com.wuji.backend.game.dispenser
+package com.wuji.backend.dispenser
 
 import com.wuji.backend.game.quiz.exception.QuestionNotFoundException
 import com.wuji.backend.question.common.Question
@@ -11,5 +11,8 @@ class Dispenser (
             throw QuestionNotFoundException()
         }
         return questions.removeFirst()
+    }
+    fun currentQuestion(): Question {
+        return questions.first()
     }
 }

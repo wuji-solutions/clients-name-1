@@ -1,4 +1,4 @@
-package com.wuji.backend.game.dispenser
+package com.wuji.backend.dispenser
 
 import com.wuji.backend.question.common.Question
 
@@ -13,5 +13,9 @@ class BoardDispenser(categories : List<String>, questions : List<Question>) : Ga
 
     override fun getQuestionFromDispenser(id: Int): Question {
         return dispensers[id]?.nextQuestion() ?: throw NoSuchElementException("Brak dispensera o id=$id")
+    }
+
+    override fun getCurrentQuestion(id: Int): Question {
+        return dispensers[id]?.currentQuestion() ?: throw NoSuchElementException("Brak dispenser o id=$id")
     }
 }

@@ -1,4 +1,4 @@
-package com.wuji.backend.game.dispenser
+package com.wuji.backend.dispenser
 
 import com.wuji.backend.question.common.Question
 
@@ -6,4 +6,5 @@ interface GameDispenser {
     val dispensers: Map<Int, Dispenser>
 
     fun getQuestionFromDispenser(id: Int = 0): Question
+    fun getCurrentQuestion(id: Int = 0): Question
 }
