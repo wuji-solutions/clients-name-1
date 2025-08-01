@@ -47,21 +47,21 @@ class AdminController(
     @GameCreated
     @PostMapping("/start")
     fun startGame(): ResponseEntity<Nothing> {
-        quizService.startGame()
+        gameServiceDelegate.startGame()
         return ResponseEntity.ok().build()
     }
 
     @GameRunning
     @PostMapping("/pause")
     fun pauseGame(): ResponseEntity<Nothing> {
-        quizService.pauseGame()
+        gameServiceDelegate.pauseGame()
         return ResponseEntity.ok().build()
     }
 
     @GamePaused
     @PostMapping("/resume")
     fun resumeGame(): ResponseEntity<Nothing> {
-        quizService.resumeGame()
+        gameServiceDelegate.resumeGame()
         return ResponseEntity.ok().build()
     }
 }
