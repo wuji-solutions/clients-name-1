@@ -2,7 +2,7 @@ package com.wuji.backend.config.dto
 
 import com.wuji.backend.config.QuizConfig
 
-data class QuizConfigDto(val nothing: Nothing) : GameConfigDto()
+typealias QuizConfigDto = GameConfigDto
 
 fun QuizConfigDto.toQuizConfig(): QuizConfig {
     return QuizConfig(

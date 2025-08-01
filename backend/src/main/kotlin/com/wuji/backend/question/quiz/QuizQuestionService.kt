@@ -5,6 +5,7 @@ import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.quiz.QuizGame
 import com.wuji.backend.question.common.PlayerAnswer
 import com.wuji.backend.question.common.QuestionService
+import com.wuji.backend.question.common.dto.QuestionResponseDto
 import com.wuji.backend.question.common.exception.QuestionAlreadyAnsweredException
 import com.wuji.backend.reports.common.GameStats
 import com.wuji.backend.util.ext.toQuestionDto
@@ -31,24 +32,25 @@ class QuizQuestionService(
 
     override fun answerQuestion(
         playerIndex: Int,
-        questionId: Int,
         answerIds: Set<Int>
     ): Boolean {
         val question = getCurrentQuestion()
         val player = game.findPlayerByIndex(playerIndex)
 
-        if (player.alreadyAnswered(questionId)) {
-            throw QuestionAlreadyAnsweredException(questionId)
+        if (player.alreadyAnswered(question.id)) {
+            throw QuestionAlreadyAnsweredException(question.id)
         }
         // TODO update answerTimeInMilliseconds according to internal game timer, when it's built
         val playerAnswer = PlayerAnswer(question, answerIds, 0)
         player.details.answers.add(playerAnswer)
-        updatePlayersAnsweredCounter(questionId)
+        updatePlayersAnsweredCounter(question.id)
         return question.areCorrectAnswerIds(answerIds)
     }
 
-    fun getNextQuestion() =
-        game.questionDispenser.getQuestionFromDispenser().toQuestionDto()
+    fun getNextQuestion(): QuestionResponseDto {
+        game.questionDispenser.getQuestionFromDispenser()
+        return game.questionDispenser.getCurrentQuestion().toQuestionDto()
+    }
 
     private fun getCurrentQuestion() = game.questionDispenser.getCurrentQuestion()
 
