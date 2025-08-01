@@ -3,6 +3,7 @@ package com.wuji.backend.question.quiz
 import com.wuji.backend.events.quiz.SSEQuizService
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.quiz.QuizGame
+import com.wuji.backend.game.quiz.QuizService
 import com.wuji.backend.question.common.PlayerAnswer
 import com.wuji.backend.question.common.QuestionService
 import com.wuji.backend.question.common.dto.AnswerCountDto
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service
 class QuizQuestionService(
     val gameRegistry: GameRegistry,
     private val sSEQuizService: SSEQuizService,
+    private val quizService: QuizService,
 ) : QuestionService {
 
     private val game: QuizGame
@@ -55,7 +57,7 @@ class QuizQuestionService(
     }
 
     fun endQuestion() {
-        gameRegistry.game.pause()
+        quizService.pauseGame()
     }
 
     fun getAnswersPerQuestion(): AnswersPerQuestionDto {
