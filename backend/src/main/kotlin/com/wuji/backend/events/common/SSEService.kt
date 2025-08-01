@@ -9,13 +9,15 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
 
 open class SSEService {
 
-    private val emitterMap =
+    private val channelToEmitters =
         ConcurrentHashMap<String, CopyOnWriteArrayList<SseEmitter>>()
 
     fun addEmitter(channel: String): SseEmitter {
         val emitter = SseEmitter(Long.MAX_VALUE)
         val emitters =
-            emitterMap.computeIfAbsent(channel) { CopyOnWriteArrayList() }
+            channelToEmitters.computeIfAbsent(channel) {
+                CopyOnWriteArrayList()
+            }
 
         emitters.add(emitter)
 
@@ -30,7 +32,7 @@ open class SSEService {
     }
 
     fun sendEvent(channel: String, data: Any) {
-        val emitters = emitterMap[channel] ?: return
+        val emitters = channelToEmitters[channel] ?: return
         val deadEmitters = mutableListOf<SseEmitter>()
 
         emitters.forEach { emitter ->
