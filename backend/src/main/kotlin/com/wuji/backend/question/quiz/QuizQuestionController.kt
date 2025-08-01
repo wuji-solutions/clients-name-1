@@ -41,9 +41,7 @@ class QuizQuestionController(
     }
 
     @PostMapping("/next")
-    fun nextQuestion(
-        @PathVariable questionId: Int,
-    ): ResponseEntity<QuestionResponseDto> {
+    fun nextQuestion(): ResponseEntity<QuestionResponseDto> {
         return ResponseEntity.ok(questionService.getNextQuestion())
     }
 }
