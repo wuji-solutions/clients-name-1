@@ -15,8 +15,7 @@ class QuizGame(
     config: QuizConfig,
     val questions: List<Question>
 ) :
-    AbstractGame<QuizPlayerDetails, QuizGameConfig>(
-        name, GameType.QUIZ, config) {
+    AbstractGame<QuizPlayerDetails, QuizConfig>(name, GameType.QUIZ, config) {
 
     val questionDispenser = QuizDispenser(questions.toMutableList())
 
