@@ -26,7 +26,7 @@ class QuizService(
         return playerService
             .createPlayer(index, nickname, QuizPlayerDetails())
             .also { player -> quizGame.players.add(player) }
-            .also { sseService.sendEvent(quizGame.players) }
+            .also { sseService.sendPlayers(quizGame.players) }
     }
 
     override fun listPlayers(): List<PlayerDto> =

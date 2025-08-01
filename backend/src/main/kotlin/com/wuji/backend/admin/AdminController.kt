@@ -1,7 +1,6 @@
 package com.wuji.backend.admin
 
 import com.wuji.backend.config.dto.toQuizConfig
-import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.common.GameServiceDelegate
 import com.wuji.backend.game.quiz.QuizService
 import com.wuji.backend.game.quiz.dto.QuizGameCreateRequestDto
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.*
 @Validated
 @RequestMapping("/manage")
 class AdminController(
-    private val gameRegistry: GameRegistry,
     private val quizService: QuizService,
     private val gameServiceDelegate: GameServiceDelegate
 ) {
@@ -49,21 +47,21 @@ class AdminController(
     @GameCreated
     @PostMapping("/start")
     fun startGame(): ResponseEntity<Nothing> {
-        gameRegistry.game.start()
+        gameServiceDelegate.startGame()
         return ResponseEntity.ok().build()
     }
 
     @GameRunning
     @PostMapping("/pause")
     fun pauseGame(): ResponseEntity<Nothing> {
-        gameRegistry.game.pause()
+        gameServiceDelegate.pauseGame()
         return ResponseEntity.ok().build()
     }
 
     @GamePaused
     @PostMapping("/resume")
     fun resumeGame(): ResponseEntity<Nothing> {
-        gameRegistry.game.resume()
+        gameServiceDelegate.resumeGame()
         return ResponseEntity.ok().build()
     }
 }
