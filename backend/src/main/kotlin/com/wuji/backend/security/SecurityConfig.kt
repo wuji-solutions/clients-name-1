@@ -52,9 +52,9 @@ class SecurityConfig(
                     .authenticationEntryPoint(customAuthenticationEntryPoint)
             }
             .authorizeHttpRequests {
-                it.authorizeLocalhostPaths()
+                it.enablePublicPaths()
                     .authorizeJoinedPaths()
-                    .enablePublicPaths()
+                    .authorizeLocalhostPaths()
                     .anyRequest()
                     .denyAll()
             }
@@ -77,7 +77,7 @@ class SecurityConfig(
             *>.AuthorizationManagerRequestMatcherRegistry {
         return this.also {
             (localhostAuthorized + joinedAuthorized).forEach { matcher ->
-                this.requestMatchers(matcher).permitLocalhost()
+                requestMatchers(matcher).permitLocalhost()
             }
         }
     }
@@ -89,7 +89,7 @@ class SecurityConfig(
             *>.AuthorizationManagerRequestMatcherRegistry {
         return this.also {
             joinedAuthorized.forEach { matcher ->
-                this.requestMatchers(matcher).hasAuthority("JOINED")
+                requestMatchers(matcher).hasAuthority("JOINED")
             }
         }
     }
@@ -101,6 +101,7 @@ class SecurityConfig(
             *>.AuthorizationManagerRequestMatcherRegistry {
         return this.also {
             requestMatchers(AntPathRequestMatcher("/games/*/join", "POST"))
+                .permitAll()
         }
     }
 }
