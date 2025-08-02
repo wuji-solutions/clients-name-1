@@ -6,13 +6,9 @@ import com.wuji.backend.game.quiz.QuizGame
 import com.wuji.backend.game.quiz.QuizService
 import com.wuji.backend.question.common.PlayerAnswer
 import com.wuji.backend.question.common.QuestionService
-import com.wuji.backend.question.common.dto.AnswerCountDto
-import com.wuji.backend.question.common.dto.AnswersPerQuestionDto
-import com.wuji.backend.question.common.dto.QuestionResponseDto
-import com.wuji.backend.question.common.dto.toDetailedAnswerDto
+import com.wuji.backend.question.common.dto.*
 import com.wuji.backend.question.common.exception.QuestionAlreadyAnsweredException
 import com.wuji.backend.reports.common.GameStats
-import com.wuji.backend.util.ext.toQuestionDto
 import org.springframework.stereotype.Service
 
 @Service
@@ -51,7 +47,7 @@ class QuizQuestionService(
         return question.areCorrectAnswerIds(answerIds)
     }
 
-    fun getNextQuestion(): QuestionResponseDto {
+    fun getNextQuestion(): QuestionDto {
         sSEQuizService.sendNextQuestion()
         return game.questionDispenser.moveNextQuestion().toQuestionDto()
     }
