@@ -101,6 +101,7 @@ class SecurityConfig(
             *>.AuthorizationManagerRequestMatcherRegistry {
         return this.also {
             requestMatchers(AntPathRequestMatcher("/games/*/join", "POST"))
+                .permitAll()
         }
     }
 }
