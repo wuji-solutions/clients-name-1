@@ -2,6 +2,7 @@ package com.wuji.backend.question.quiz
 
 import com.wuji.backend.game.quiz.dto.AnswerQuestionRequestDto
 import com.wuji.backend.question.common.QuestionController
+import com.wuji.backend.question.common.dto.AnswersPerQuestionDto
 import com.wuji.backend.question.common.dto.QuestionResponseDto
 import com.wuji.backend.security.GameRunning
 import com.wuji.backend.security.auth.Participant
@@ -19,24 +20,30 @@ class QuizQuestionController(
     private val questionService: QuizQuestionService,
 ) : QuestionController {
 
-    @GetMapping("/{questionId}")
-    fun getQuestion(
-        @PathVariable questionId: Int
-    ): ResponseEntity<QuestionResponseDto> {
-        return ResponseEntity.ok(questionService.getQuestion(questionId))
+    @GetMapping("/current")
+    fun getQuestion(): ResponseEntity<QuestionResponseDto> {
+        return ResponseEntity.ok(questionService.getQuestion())
     }
 
-    @PostMapping("/{questionId}/answer")
+    @PostMapping("/answer")
     fun answerQuestion(
-        @PathVariable questionId: Int,
         @Valid @RequestBody answerDto: AnswerQuestionRequestDto,
         auth: Authentication
     ): ResponseEntity<Boolean> {
         val index = (auth.principal as Participant).index
-        val correct =
-            questionService.answerQuestion(
-                index, questionId, answerDto.answerIds)
+        val correct = questionService.answerQuestion(index, answerDto.answerIds)
 
         return ResponseEntity.ok(correct)
+    }
+
+    @PostMapping("/next")
+    fun nextQuestion(): ResponseEntity<QuestionResponseDto> {
+        return ResponseEntity.ok(questionService.getNextQuestion())
+    }
+
+    @PostMapping("/end")
+    fun endQuestion(): ResponseEntity<AnswersPerQuestionDto> {
+        questionService.endQuestion()
+        return ResponseEntity.ok(questionService.getAnswersPerQuestion())
     }
 }
