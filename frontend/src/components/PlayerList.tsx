@@ -93,7 +93,7 @@ const addPlayers = (
   }
 };
 
-function UserList({ user }: { readonly user: string }) {
+function PlayerList({ user }: { readonly user: string }) {
   const [players, setPlayers] = useState<Player[]>([]);
   const [newPlayers, setNewPlayers] = useState<Set<string>>(new Set());
 
@@ -135,4 +135,4 @@ function UserList({ user }: { readonly user: string }) {
   );
 }
 
-export default UserList;
+export default PlayerList;

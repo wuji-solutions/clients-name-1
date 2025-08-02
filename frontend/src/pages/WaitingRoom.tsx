@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 import theme from "../common/theme";
 import { ButtonCustom } from "../components/Button";
-import UserList from "../components/UserList";
+import PlayerList from "../components/PlayerList";
 import { useAppContext } from "../providers/AppContextProvider";
 import axios from "axios";
 import { BACKEND_ENDPOINT_EXTERNAL } from "../common/config";
@@ -43,7 +43,9 @@ function WaitingRoom() {
   const navigate = useNavigate();
 
   const joinGame = () => {
-    axios.post(BACKEND_ENDPOINT_EXTERNAL + "/games/quiz/join", { index: 2 }, {withCredentials: true})
+    axios.post(BACKEND_ENDPOINT_EXTERNAL + "/games/quiz/join", { index: 2 }, {
+      withCredentials: true,
+    })
       .then((response) => {
         setUsername(response.data);
       }).catch((error) => console.log(error));
@@ -75,10 +77,10 @@ function WaitingRoom() {
 
   return (
     <Container>
-      <UserList user={user} />
+      <PlayerList user={user} />
       <QRContainer>
-        <QRCode value="http://192.168.137.1:3000/waiting-room" // NOSONAR
-         />
+        <QRCode value={BACKEND_ENDPOINT_EXTERNAL + "/waiting-room"} // NOSONAR
+        />
       </QRContainer>
       <ActionButtonContainer>
         <ButtonCustom>

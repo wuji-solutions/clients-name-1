@@ -8,6 +8,7 @@ import axios from "axios";
 import { BACKEND_ENDPOINT } from "../common/config";
 import { TEST_QUIZ } from "../common/test";
 import { useAppContext } from "../providers/AppContextProvider";
+import AccessRestricted from "../components/AccessRestricted";
 
 const Container = styled.div({
   backgroundColor: theme.palette.main.background,
@@ -119,7 +120,7 @@ function Configurations() {
   const [mode, setMode] = useState<string | null>(null);
 
   const startLobby = () => {
-    axios.post(BACKEND_ENDPOINT + "/manage/quiz", TEST_QUIZ, {
+    axios.post(BACKEND_ENDPOINT + "/manage/" + mode, TEST_QUIZ, {
       headers: { "Content-Type": "application/json" },
     }).then((response) => {
       console.log(response);
@@ -128,13 +129,9 @@ function Configurations() {
     }).catch((error) => console.log(error));
   };
 
-  if (user === "user") {
+  if (user == "user") {
     return (
-      <Container>
-        <h2 style={{ margin: "auto" }}>
-          Widok przeznaczony tylko dla nauczyciela
-        </h2>
-      </Container>
+      <AccessRestricted />
     );
   }
 
@@ -153,13 +150,13 @@ function Configurations() {
           Wybierz tryb rozgrywki
         </ModeHeader>
         <ModeContent>
-          <ButtonChoose active={mode == "Quiz"} onClick={() => setMode("Quiz")}>
+          <ButtonChoose active={mode == "quiz"} onClick={() => setMode("quiz")}>
             Quiz
           </ButtonChoose>
-          <ButtonChoose active={mode == "Test"} onClick={() => setMode("Test")}>
+          <ButtonChoose active={mode == "test"} onClick={() => setMode("test")}>
             Sprawdzian
           </ButtonChoose>
-          <ButtonChoose active={mode == "Game"} onClick={() => setMode("Game")}>
+          <ButtonChoose active={mode == "game"} onClick={() => setMode("game")}>
             Plansza
           </ButtonChoose>
         </ModeContent>

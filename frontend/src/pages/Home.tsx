@@ -4,6 +4,7 @@ import theme from "../common/theme";
 import { useNavigate } from "react-router-dom";
 import { ButtonCustom } from "../components/Button";
 import { useAppContext } from "../providers/AppContextProvider";
+import AccessRestricted from "../components/AccessRestricted";
 
 const Container = styled.div({
   backgroundColor: theme.palette.main.background,
@@ -44,11 +45,7 @@ function Home() {
 
   if (user === "user") {
     return (
-      <Container>
-        <h2 style={{ margin: "auto" }}>
-          Widok przeznaczony tylko dla nauczyciela
-        </h2>
-      </Container>
+      <AccessRestricted />
     );
   }
 
