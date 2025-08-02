@@ -1,6 +1,5 @@
 package com.wuji.backend.question.common.dto
 
-import com.wuji.backend.question.common.Answer
 import com.wuji.backend.question.common.QuestionType
 
 data class QuestionResponseDto(
@@ -8,5 +7,5 @@ data class QuestionResponseDto(
     val category: String,
     val type: QuestionType,
     val task: String,
-    val answers: List<Answer>
+    val answers: List<AnswerDto>
 )
