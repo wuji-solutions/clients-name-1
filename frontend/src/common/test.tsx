@@ -1,7 +1,10 @@
 export const TEST_QUIZ = {
   "name": "Quiz testowy 1",
   "config": {
-    "numberOfQuestions": 1,
+    "totalDurationMinutes": 10,
+    "endImmediatelyAfterTime": false,
+    "questionFilePath": "questions.json",
+    "questionDurationSeconds": 30,
   },
   "questions": [
     {
@@ -15,7 +18,20 @@ export const TEST_QUIZ = {
         { "id": 2, "content": "7" },
         { "id": 3, "content": "15" },
       ],
-      "correctAnswerId": 1,
+      "correctAnswerIds": [1],
+    },
+    {
+      "id": 2,
+      "category": "M2tematyka",
+      "type": "TEXT",
+      "task": "2 + 3 =",
+      "answers": [
+        { "id": 0, "content": "1" },
+        { "id": 1, "content": "4" },
+        { "id": 2, "content": "7" },
+        { "id": 3, "content": "15" },
+      ],
+      "correctAnswerIds": [1],
     },
   ],
 };
