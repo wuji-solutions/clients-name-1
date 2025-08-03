@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @Validated
+@GameRunning
 @RequestMapping("/games/quiz/questions")
 class QuizQuestionController(
     private val questionService: QuizQuestionService,
@@ -26,7 +27,6 @@ class QuizQuestionController(
         return ResponseEntity.ok(questionService.getQuestion())
     }
 
-    @GameRunning
     @PostMapping("/answer")
     fun answerQuestion(
         @Valid @RequestBody answerDto: AnswerQuestionRequestDto,
