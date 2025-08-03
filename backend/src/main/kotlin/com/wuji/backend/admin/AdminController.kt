@@ -58,7 +58,6 @@ class AdminController(
         return ResponseEntity.ok().build()
     }
 
-    @GamePaused
     @PostMapping("/finish")
     fun finishGame(): ResponseEntity<Nothing> {
         gameServiceDelegate.finishGame()
