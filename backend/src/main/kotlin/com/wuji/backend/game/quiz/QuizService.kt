@@ -47,7 +47,7 @@ class QuizService(
     }
 
     override fun pauseGame() {
-        TODO("Not yet implemented")
+        quizGame.pause()
     }
 
     override fun resumeGame() {
