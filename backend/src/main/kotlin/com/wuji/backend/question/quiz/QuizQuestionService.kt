@@ -8,6 +8,7 @@ import com.wuji.backend.question.common.PlayerAnswer
 import com.wuji.backend.question.common.QuestionService
 import com.wuji.backend.question.common.dto.AnswerCountDto
 import com.wuji.backend.question.common.dto.AnswersPerQuestionDto
+import com.wuji.backend.question.common.dto.QuestionAlreadyAnsweredResponseDto
 import com.wuji.backend.question.common.dto.QuestionResponseDto
 import com.wuji.backend.question.common.dto.toAnswerDto
 import com.wuji.backend.question.common.exception.QuestionAlreadyAnsweredException
@@ -60,15 +61,30 @@ class QuizQuestionService(
         quizService.pauseGame()
     }
 
+    fun alreadyAnswered(
+        questionId: Int,
+        playerIndex: Int
+    ): QuestionAlreadyAnsweredResponseDto {
+        val player = game.findPlayerByIndex(playerIndex)
+        val answerIds =
+            if (player.alreadyAnswered(questionId))
+                player.answerForQuestion(questionId).selectedIds
+            else emptySet()
+        return QuestionAlreadyAnsweredResponseDto(
+            player.alreadyAnswered(questionId), answerIds)
+    }
+
     fun getAnswersPerQuestion(): AnswersPerQuestionDto {
         val answerCountList = mutableListOf<AnswerCountDto>()
+        val currentQuestion = getCurrentQuestion()
         for (answer in getCurrentQuestion().answers) {
             val answerCount =
-                gameRegistry.game.players.count {
-                    answer.id in
-                        it.answerForQuestion(getCurrentQuestion().id)
-                            .selectedIds
-                }
+                gameRegistry.game.players
+                    .filter { it.alreadyAnswered(currentQuestion.id) }
+                    .count {
+                        answer.id in
+                            it.answerForQuestion(currentQuestion.id).selectedIds
+                    }
             answerCountList.add(
                 AnswerCountDto(answer.toAnswerDto(), answerCount))
         }

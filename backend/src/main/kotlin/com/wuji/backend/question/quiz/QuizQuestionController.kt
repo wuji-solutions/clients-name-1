@@ -3,6 +3,8 @@ package com.wuji.backend.question.quiz
 import com.wuji.backend.game.quiz.dto.AnswerQuestionRequestDto
 import com.wuji.backend.question.common.QuestionController
 import com.wuji.backend.question.common.dto.AnswersPerQuestionDto
+import com.wuji.backend.question.common.dto.QuestionAlreadyAnsweredRequestDto
+import com.wuji.backend.question.common.dto.QuestionAlreadyAnsweredResponseDto
 import com.wuji.backend.question.common.dto.QuestionResponseDto
 import com.wuji.backend.security.GameRunning
 import com.wuji.backend.security.auth.Participant
@@ -14,7 +16,6 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @Validated
-@GameRunning
 @RequestMapping("/games/quiz/questions")
 class QuizQuestionController(
     private val questionService: QuizQuestionService,
@@ -25,6 +26,7 @@ class QuizQuestionController(
         return ResponseEntity.ok(questionService.getQuestion())
     }
 
+    @GameRunning
     @PostMapping("/answer")
     fun answerQuestion(
         @Valid @RequestBody answerDto: AnswerQuestionRequestDto,
@@ -45,5 +47,15 @@ class QuizQuestionController(
     fun endQuestion(): ResponseEntity<AnswersPerQuestionDto> {
         questionService.endQuestion()
         return ResponseEntity.ok(questionService.getAnswersPerQuestion())
+    }
+
+    @GetMapping("/already-answered")
+    fun getQuestion(
+        @Valid @RequestBody questionDto: QuestionAlreadyAnsweredRequestDto,
+        auth: Authentication
+    ): ResponseEntity<QuestionAlreadyAnsweredResponseDto> {
+        val index = (auth.principal as Participant).index
+        return ResponseEntity.ok(
+            questionService.alreadyAnswered(questionDto.questionId, index))
     }
 }

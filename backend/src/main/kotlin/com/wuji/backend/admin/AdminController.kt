@@ -5,11 +5,9 @@ import com.wuji.backend.game.common.GameServiceDelegate
 import com.wuji.backend.game.quiz.QuizService
 import com.wuji.backend.game.quiz.dto.QuizGameCreateRequestDto
 import com.wuji.backend.player.dto.PlayerDto
-import com.wuji.backend.question.common.dto.QuestionResponseDto
 import com.wuji.backend.security.GameCreated
 import com.wuji.backend.security.GamePaused
 import com.wuji.backend.security.GameRunning
-import com.wuji.backend.util.ext.toQuestionDto
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
@@ -32,11 +30,6 @@ class AdminController(
             requestDto.config.toQuizConfig(),
             requestDto.questions)
         return ResponseEntity.ok().build()
-    }
-
-    @GetMapping("/quiz/current-question")
-    fun getCurrentQuestion(): ResponseEntity<QuestionResponseDto> {
-        return ResponseEntity.ok(quizService.currentQuestion().toQuestionDto())
     }
 
     @GetMapping("/players")
@@ -62,6 +55,13 @@ class AdminController(
     @PostMapping("/resume")
     fun resumeGame(): ResponseEntity<Nothing> {
         gameServiceDelegate.resumeGame()
+        return ResponseEntity.ok().build()
+    }
+
+    @GamePaused
+    @PostMapping("/finish")
+    fun finishGame(): ResponseEntity<Nothing> {
+        gameServiceDelegate.finishGame()
         return ResponseEntity.ok().build()
     }
 }
