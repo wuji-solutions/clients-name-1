@@ -4,19 +4,16 @@ import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 import theme from "../common/theme";
 import { ButtonChoose, ButtonCustom } from "../components/Button";
-import axios from "axios";
-import { BACKEND_ENDPOINT } from "../common/config";
 import { TEST_QUIZ } from "../common/test";
 import { useAppContext } from "../providers/AppContextProvider";
 import AccessRestricted from "../components/AccessRestricted";
+import { service } from "../service/service";
 
 const Container = styled.div({
-  backgroundColor: theme.palette.main.background,
   width: "100%",
   height: "100%",
   display: "flex",
   flexDirection: "row",
-  color: "#fff",
 });
 
 const InstructionContainer = styled.div({
@@ -35,7 +32,6 @@ const InstructionHeader = styled.div({
   textAlign: "center",
   alignContent: "center",
   borderRadius: "5px",
-  color: "#fff",
 });
 
 const InstructionContent = styled.div({
@@ -63,7 +59,6 @@ const ModeHeader = styled.div({
   textAlign: "center",
   alignContent: "center",
   borderRadius: "5px",
-  color: "#fff",
 });
 
 const ModeContent = styled.div({
@@ -83,7 +78,6 @@ const OptionsContainer = styled.div({
 });
 
 const FileSelector = styled.div({
-  color: "#fff",
   background: "#3377FF",
   opacity: "85%",
   border: "1px solid #000",
@@ -120,9 +114,8 @@ function Configurations() {
   const [mode, setMode] = useState<string | null>(null);
 
   const startLobby = () => {
-    axios.post(BACKEND_ENDPOINT + "/manage/" + mode, TEST_QUIZ, {
-      headers: { "Content-Type": "application/json" },
-    }).then((response) => {
+    if (!mode) return;
+    service.startLobby(mode, { ...TEST_QUIZ }).then((response) => {
       console.log(response);
       console.log("Successfully created new game");
       navigate("/waiting-room");
@@ -130,9 +123,7 @@ function Configurations() {
   };
 
   if (user == "user") {
-    return (
-      <AccessRestricted />
-    );
+    return <AccessRestricted />;
   }
 
   return (

@@ -67,6 +67,7 @@ const addPlayers = (
 ) => {
   try {
     const data: Player[] = JSON.parse(event.data);
+    console.log(data)
 
     const currentNicknames = new Set(players.map((p) => p.nickname));
     const addedPlayers = data.filter((p) => !currentNicknames.has(p.nickname));
@@ -100,8 +101,8 @@ function PlayerList({ user }: { readonly user: string }) {
   useEffect(() => {
     const eventSource = new EventSource(
       user === "admin"
-        ? BACKEND_ENDPOINT + "/sse"
-        : BACKEND_ENDPOINT_EXTERNAL + "/sse",
+        ? BACKEND_ENDPOINT + "/sse/users"
+        : BACKEND_ENDPOINT_EXTERNAL + "/sse/users",
     );
 
     eventSource.onmessage = (event) => {

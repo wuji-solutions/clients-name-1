@@ -7,7 +7,6 @@ import { useAppContext } from "../providers/AppContextProvider";
 import AccessRestricted from "../components/AccessRestricted";
 
 const Container = styled.div({
-  backgroundColor: theme.palette.main.background,
   width: "100%",
   height: "100%",
   display: "flex",
