@@ -85,7 +85,7 @@ class QuizQuestionService(
     fun getAnswersPerQuestion(): AnswersPerQuestionDto {
         val answerCountList = mutableListOf<AnswerCountDto>()
         val currentQuestion = getCurrentQuestion()
-        for (answer in getCurrentQuestion().answers) {
+        for (answer in currentQuestion.answers) {
             val answerCount =
                 gameRegistry.game.players
                     .filter { it.alreadyAnswered(currentQuestion.id) }
