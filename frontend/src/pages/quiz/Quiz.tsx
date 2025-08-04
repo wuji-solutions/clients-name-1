@@ -4,7 +4,7 @@ import {
   BACKEND_ENDPOINT,
   BACKEND_ENDPOINT_EXTERNAL,
 } from "../../common/config";
-import { Question } from "../../common/types";
+import { Question, QuestionStats } from "../../common/types";
 import { ButtonCustom } from "../../components/Button";
 import { useAppContext } from "../../providers/AppContextProvider";
 import { service } from "../../service/service";
@@ -66,33 +66,43 @@ const AnswerGrid = styled.div(() => ({
 }));
 
 const AnswerCard = styled.div<{ backgroundcolor: string; isselected: boolean }>(
-  ({ backgroundcolor, isselected }) => ({
-    borderRadius: "20px",
-    minHeight: "25px",
-    width: "10em",
-    maxWidth: "500px",
-    margin: "auto",
-    padding: "20px",
-    backgroundColor: isselected
-      ? darkenColor(backgroundcolor, 0.2)
-      : backgroundcolor,
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-    transition: "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
-    cursor: "pointer",
-    transform: isselected ? "none" : "translateY(5px)",
-    h2: {
-      margin: 0,
-      fontSize: "1rem",
-    },
-    userSelect: "none",
-    "-webkit-user-select": "none",
-    "-moz-user-select": "none",
-    "-ms-user-select": "none",
-    "-webkit-touch-callout": "none",
-    outline: "none",
-    WebkitTapHighlightColor: "transparent",
-  }),
+  ({ backgroundcolor, isselected }) => {
+    const base = backgroundcolor;
+    const gradient = isselected
+      ? `linear-gradient(135deg, ${darkenColor(base, 0.2)}, ${darkenColor(base, 0.35)})`
+      : `linear-gradient(135deg, ${base}, ${darkenColor(base, 0.15)})`;
+
+    return {
+      borderRadius: "20px",
+      minHeight: "25px",
+      width: "10em",
+      maxWidth: "500px",
+      margin: "auto",
+      padding: "20px",
+      background: gradient, // use 'background', not 'backgroundColor'
+      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+      border: `2px solid ${darkenColor(base, 0.5)}`,
+      transition: "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
+      cursor: "pointer",
+      transform: isselected ? "none" : "translateY(5px)",
+      userSelect: "none",
+      "-webkit-user-select": "none",
+      "-moz-user-select": "none",
+      "-ms-user-select": "none",
+      "-webkit-touch-callout": "none",
+      outline: "none",
+      WebkitTapHighlightColor: "transparent",
+
+      // Nested styles for h2
+      "& h2": {
+        margin: 0,
+        fontSize: "1rem",
+      },
+    };
+  }
 );
+
+
 
 const colorPalette = [
   "#FF6B6B",
@@ -105,30 +115,14 @@ const colorPalette = [
   "#FF69B4",
 ];
 
-const darkenColor = (color: string, percent: number) => {
-  const f = parseInt(color.slice(1), 16);
-  const t = percent * 255;
-  const R = f >> 16;
-  const G = (f >> 8) & 0x00ff;
-  const B = f & 0x0000ff;
-
-  const newR = Math.max(0, Math.round(R - t));
-  const newG = Math.max(0, Math.round(G - t));
-  const newB = Math.max(0, Math.round(B - t));
-
-  return (
-    "#" +
-    (
-      0x1000000 +
-      newR * 0x10000 +
-      newG * 0x100 +
-      newB
-    )
-      .toString(16)
-      .slice(1)
-      .padStart(6, "0")
-  );
-};
+function darkenColor(hex: string, amount: number): string {
+  const num = parseInt(hex.slice(1), 16);
+  const amt = Math.round(255 * amount);
+  const R = Math.max(0, (num >> 16) - amt);
+  const G = Math.max(0, ((num >> 8) & 0x00ff) - amt);
+  const B = Math.max(0, (num & 0x0000ff) - amt);
+  return `rgb(${R}, ${G}, ${B})`;
+}
 
 const setQuestion = (
   user: string,
@@ -139,6 +133,55 @@ const setQuestion = (
   ).catch((error) => console.log(error));
 };
 
+const AnswerProgressBar = ({
+  label,
+  count,
+  total,
+  color,
+}: {
+  label: string;
+  count: number;
+  total: number;
+  color: string;
+}) => {
+  const percent = total > 0 ? Math.round((count / total) * 100) : 0;
+
+  return (
+    <div style={{ width: "100%", maxWidth: "500px", margin: "auto" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          fontSize: "0.9rem",
+          marginBottom: "5px",
+          marginTop: "10px",
+        }}
+      >
+        <span>{label}</span>
+        <span>{percent}% ({count})</span>
+      </div>
+      <div
+        style={{
+          width: "100%",
+          height: "20px",
+          backgroundColor: "#f0f0f0",
+          borderRadius: "10px",
+          overflow: "hidden",
+        }}
+      >
+        <div
+          style={{
+            width: `${percent}%`,
+            height: "100%",
+            backgroundColor: color,
+            transition: "width 0.3s ease-in-out",
+          }}
+        />
+      </div>
+    </div>
+  );
+};
+
 function Quiz() {
   const { user, username } = useAppContext();
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
@@ -147,7 +190,9 @@ function Quiz() {
   const [sendingAnswer, setSendingAnswer] = useState<boolean>(false);
   const [questionAnswered, setQuestionAnswered] = useState<boolean>(false);
   const [questionEnded, setQuestionEnded] = useState<boolean>(false);
-  const [questionStats, setQuestionStats] = useState(null);
+  const [questionStats, setQuestionStats] = useState<QuestionStats | null>(
+    null,
+  );
 
   useEffect(() => {
     const eventSource = new EventSource(
@@ -231,6 +276,8 @@ function Quiz() {
     }).catch((error) => console.error(error));
   };
 
+  if (!user) return <>View not allowed</>;
+
   if (user === "user") {
     return (
       <Container>
@@ -270,18 +317,44 @@ function Quiz() {
             <QuestionTask>{currentQuestion.task}</QuestionTask>
             <h3>Ilość odpowiedzi: {answerCount}</h3>
           </QuestionHeader>
-          <AnswerGrid>
-            {currentQuestion.answers.map((answer, index) => (
-              <AnswerCard
-                key={index}
-                isselected={false}
-                backgroundcolor={colorPalette[index % colorPalette.length]}
-                style={{ cursor: "default" }}
-              >
-                <h2>{answer.content}</h2>
-              </AnswerCard>
-            ))}
-          </AnswerGrid>
+          {!questionStats
+            ? (
+              <AnswerGrid>
+                {currentQuestion.answers.map((answer, index) => (
+                  <AnswerCard
+                    key={index}
+                    isselected={false}
+                    backgroundcolor={colorPalette[index % colorPalette.length]}
+                    style={{ cursor: "default" }}
+                  >
+                    <h2>{answer.content}</h2>
+                  </AnswerCard>
+                ))}
+              </AnswerGrid>
+            )
+            : (
+              <AnswerGrid>
+                {questionStats.answers.map((answer, index) => (
+                  <div key={index}>
+                    <AnswerProgressBar
+                      label={answer.answer.content}
+                      count={answer.count}
+                      total={answerCount}
+                      color={colorPalette[index % colorPalette.length]} // change the color to green/red based on correctness
+                    />
+                    <AnswerCard
+                      isselected={true}
+                      backgroundcolor={colorPalette[
+                        index % colorPalette.length
+                      ]}
+                      style={{ cursor: "default", marginTop: "10px" }}
+                    >
+                      <h2>{answer.answer.content}</h2>
+                    </AnswerCard>
+                  </div>
+                ))}
+              </AnswerGrid>
+            )}
           {!questionEnded && (
             <ButtonCustom onClick={() => handleEndCurrentQuestion()}>
               Zakończ pytanie

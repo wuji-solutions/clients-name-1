@@ -19,7 +19,7 @@ body {
   text-shadow: 2px 2px 4px #000000;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-image: url('../src/resources/bgrnd.png');
+  background-image: url('../src/resources/bckgrnd.png');
 }
 
 code {
