@@ -8,10 +8,11 @@ data class Question(
     val answers: List<Answer>,
     val correctAnswerIds: Set<Int>
 ) {
-    val correctAnswers = answers.filter { it.id in correctAnswerIds }
+    private val correctAnswers = answers.filter { it.id in correctAnswerIds }
 
-    fun areCorrectAnswerIds(answerIds: Set<Int>) =
-        correctAnswers.equals(answerIds)
+    fun areCorrectAnswerIds(answerIds: Set<Int>) = correctAnswerIds == answerIds
+
+    fun inCorrectAnswerIds(answerId: Int) = answerId in correctAnswerIds
 }
 
 enum class QuestionType {
