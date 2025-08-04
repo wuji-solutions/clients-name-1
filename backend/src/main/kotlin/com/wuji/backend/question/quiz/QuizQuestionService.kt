@@ -11,6 +11,7 @@ import com.wuji.backend.question.common.dto.AnswersPerQuestionDto
 import com.wuji.backend.question.common.dto.QuestionAlreadyAnsweredResponseDto
 import com.wuji.backend.question.common.dto.QuestionResponseDto
 import com.wuji.backend.question.common.dto.toAnswerDto
+import com.wuji.backend.question.common.exception.InvalidQuestionIdException
 import com.wuji.backend.question.common.exception.QuestionAlreadyAnsweredException
 import com.wuji.backend.reports.common.GameStats
 import com.wuji.backend.util.ext.toQuestionDto
@@ -44,6 +45,13 @@ class QuizQuestionService(
 
         if (player.alreadyAnswered(question.id)) {
             throw QuestionAlreadyAnsweredException(question.id)
+        }
+        val invalidQuestionId =
+            answerIds.find { answerId ->
+                question.answers.none { it.id == answerId }
+            }
+        if (invalidQuestionId != null) {
+            throw InvalidQuestionIdException(invalidQuestionId)
         }
         // TODO update answerTimeInMilliseconds according to internal game timer, when it's built
         val playerAnswer = PlayerAnswer(question, answerIds, 0)
