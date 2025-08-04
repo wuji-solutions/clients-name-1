@@ -3,7 +3,7 @@ package com.wuji.backend.question.quiz
 import com.wuji.backend.game.quiz.dto.AnswerQuestionRequestDto
 import com.wuji.backend.question.common.QuestionController
 import com.wuji.backend.question.common.dto.AnswersPerQuestionDto
-import com.wuji.backend.question.common.dto.QuestionResponseDto
+import com.wuji.backend.question.common.dto.QuestionDto
 import com.wuji.backend.security.GameRunning
 import com.wuji.backend.security.auth.Participant
 import jakarta.validation.Valid
@@ -21,7 +21,7 @@ class QuizQuestionController(
 ) : QuestionController {
 
     @GetMapping("/current")
-    fun getQuestion(): ResponseEntity<QuestionResponseDto> {
+    fun getQuestion(): ResponseEntity<QuestionDto> {
         return ResponseEntity.ok(questionService.getQuestion())
     }
 
@@ -37,7 +37,7 @@ class QuizQuestionController(
     }
 
     @PostMapping("/next")
-    fun nextQuestion(): ResponseEntity<QuestionResponseDto> {
+    fun nextQuestion(): ResponseEntity<QuestionDto> {
         return ResponseEntity.ok(questionService.getNextQuestion())
     }
 
