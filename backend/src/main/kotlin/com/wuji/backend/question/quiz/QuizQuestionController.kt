@@ -50,7 +50,7 @@ class QuizQuestionController(
     }
 
     @GetMapping("/already-answered")
-    fun getQuestion(
+    fun alreadyAnswered(
         @Valid @RequestBody questionDto: QuestionAlreadyAnsweredRequestDto,
         auth: Authentication
     ): ResponseEntity<QuestionAlreadyAnsweredResponseDto> {
