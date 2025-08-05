@@ -9,8 +9,9 @@ import com.wuji.backend.question.common.QuestionService
 import com.wuji.backend.question.common.dto.AnswerCountDto
 import com.wuji.backend.question.common.dto.AnswersPerQuestionDto
 import com.wuji.backend.question.common.dto.QuestionAlreadyAnsweredResponseDto
-import com.wuji.backend.question.common.dto.QuestionResponseDto
-import com.wuji.backend.question.common.dto.toAnswerDto
+import com.wuji.backend.question.common.dto.QuestionDto
+import com.wuji.backend.question.common.dto.toDetailedAnswerDto
+import com.wuji.backend.question.common.dto.toQuestionDto
 import com.wuji.backend.question.common.exception.InvalidQuestionIdException
 import com.wuji.backend.question.common.exception.QuestionAlreadyAnsweredException
 import com.wuji.backend.reports.common.GameStats
@@ -87,7 +88,7 @@ class QuizQuestionService(
         for (answer in currentQuestion.answers) {
             val answerCount =
                 gameRegistry.game.players
-                    .filter { it.alreadyAnswered(currentQuestion.id)  }
+                    .filter { it.alreadyAnswered(currentQuestion.id) }
                     .count {
                         answer.id in
                             it.answerForQuestion(currentQuestion.id).selectedIds
@@ -95,7 +96,7 @@ class QuizQuestionService(
             answerCountList.add(
                 AnswerCountDto(
                     answer.toDetailedAnswerDto(
-                        question.inCorrectAnswerIds(answer.id)),
+                        currentQuestion.inCorrectAnswerIds(answer.id)),
                     answerCount))
         }
         return AnswersPerQuestionDto(answerCountList)
