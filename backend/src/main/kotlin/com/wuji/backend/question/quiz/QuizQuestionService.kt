@@ -69,7 +69,7 @@ class QuizQuestionService(
         quizService.pauseGame()
     }
 
-    fun alreadyAnswered(
+    fun playerAlreadyAnswered(
         questionId: Int,
         playerIndex: Int
     ): QuestionAlreadyAnsweredResponseDto {
@@ -88,7 +88,7 @@ class QuizQuestionService(
         for (answer in currentQuestion.answers) {
             val answerCount =
                 gameRegistry.game.players
-                    .filter { it.alreadyAnswered(currentQuestion.id) }
+                    .filter { it.alreadyAnswered(currentQuestion.id)  }
                     .count {
                         answer.id in
                             it.answerForQuestion(currentQuestion.id).selectedIds
