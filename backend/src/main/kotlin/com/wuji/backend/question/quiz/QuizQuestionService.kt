@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service
 @Service
 class QuizQuestionService(
     val gameRegistry: GameRegistry,
-    private val sSEQuizService: SSEQuizService,
+    private val sseQuizService: SSEQuizService,
     private val quizService: QuizService,
 ) : QuestionService {
 
@@ -61,8 +61,9 @@ class QuizQuestionService(
     }
 
     fun getNextQuestion(): QuestionDto {
-        sSEQuizService.sendNextQuestion()
-        return game.questionDispenser.moveNextQuestion().toQuestionDto()
+        val nextQuestion = game.questionDispenser.moveNextQuestion()
+        sseQuizService.sendNextQuestion()
+        return nextQuestion.toQuestionDto()
     }
 
     fun endQuestion() {
@@ -106,7 +107,7 @@ class QuizQuestionService(
         game.questionDispenser.getCurrentQuestion()
 
     private fun updatePlayersAnsweredCounter(questionId: Int) {
-        sSEQuizService.sendPlayersAnsweredCounter(
+        sseQuizService.sendPlayersAnsweredCounter(
             GameStats.countPlayersAnsweredForQuestion(game, questionId))
     }
 }
