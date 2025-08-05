@@ -2,9 +2,12 @@ package com.wuji.backend.question.quiz
 
 import com.wuji.backend.game.quiz.dto.AnswerQuestionRequestDto
 import com.wuji.backend.question.common.QuestionController
-import com.wuji.backend.question.common.dto.QuestionResponseDto
+import com.wuji.backend.question.common.dto.AnswersPerQuestionDto
+import com.wuji.backend.question.common.dto.QuestionAlreadyAnsweredRequestDto
+import com.wuji.backend.question.common.dto.QuestionAlreadyAnsweredResponseDto
+import com.wuji.backend.question.common.dto.QuestionDto
 import com.wuji.backend.security.GameRunning
-import com.wuji.backend.security.auth.Participant
+import com.wuji.backend.security.auth.playerIndex
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
@@ -20,7 +23,7 @@ class QuizQuestionController(
 ) : QuestionController {
 
     @GetMapping("/current")
-    fun getQuestion(): ResponseEntity<QuestionResponseDto> {
+    fun getQuestion(): ResponseEntity<QuestionDto> {
         return ResponseEntity.ok(questionService.getQuestion())
     }
 
@@ -29,14 +32,31 @@ class QuizQuestionController(
         @Valid @RequestBody answerDto: AnswerQuestionRequestDto,
         auth: Authentication
     ): ResponseEntity<Boolean> {
-        val index = (auth.principal as Participant).index
+        val index = auth.playerIndex()
         val correct = questionService.answerQuestion(index, answerDto.answerIds)
 
         return ResponseEntity.ok(correct)
     }
 
     @PostMapping("/next")
-    fun nextQuestion(): ResponseEntity<QuestionResponseDto> {
+    fun nextQuestion(): ResponseEntity<QuestionDto> {
         return ResponseEntity.ok(questionService.getNextQuestion())
+    }
+
+    @PostMapping("/end")
+    fun endQuestion(): ResponseEntity<AnswersPerQuestionDto> {
+        questionService.endQuestion()
+        return ResponseEntity.ok(questionService.getAnswersPerQuestion())
+    }
+
+    @GetMapping("/already-answered")
+    fun playerAlreadyAnswered(
+        @Valid @RequestBody questionDto: QuestionAlreadyAnsweredRequestDto,
+        auth: Authentication
+    ): ResponseEntity<QuestionAlreadyAnsweredResponseDto> {
+        val index = auth.playerIndex()
+        return ResponseEntity.ok(
+            questionService.playerAlreadyAnswered(
+                questionDto.questionId, index))
     }
 }

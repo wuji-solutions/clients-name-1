@@ -41,6 +41,7 @@ class SecurityConfig(
     ): SecurityFilterChain {
         http
             .csrf { it.disable() }
+            .cors { it.configurationSource(corsConfigurationSource) }
             .sessionManagement { sm ->
                 sm.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
             }
@@ -50,13 +51,7 @@ class SecurityConfig(
                 it.accessDeniedHandler(customAccessDeniedHandler)
                     .authenticationEntryPoint(customAuthenticationEntryPoint)
             }
-            .authorizeHttpRequests {
-                it.authorizeLocalhostPaths()
-                    .authorizeJoinedPaths()
-                    .enablePublicPaths()
-                    .anyRequest()
-                    .denyAll()
-            }
+            .authorizeHttpRequests { it.anyRequest().permitAll() }
 
         return http.build()
     }
@@ -76,7 +71,7 @@ class SecurityConfig(
             *>.AuthorizationManagerRequestMatcherRegistry {
         return this.also {
             (localhostAuthorized + joinedAuthorized).forEach { matcher ->
-                this.requestMatchers(matcher).permitLocalhost()
+                requestMatchers(matcher).permitLocalhost()
             }
         }
     }
@@ -88,7 +83,7 @@ class SecurityConfig(
             *>.AuthorizationManagerRequestMatcherRegistry {
         return this.also {
             joinedAuthorized.forEach { matcher ->
-                this.requestMatchers(matcher).hasAuthority("JOINED")
+                requestMatchers(matcher).hasAuthority("JOINED")
             }
         }
     }
@@ -100,6 +95,7 @@ class SecurityConfig(
             *>.AuthorizationManagerRequestMatcherRegistry {
         return this.also {
             requestMatchers(AntPathRequestMatcher("/games/*/join", "POST"))
+                .permitAll()
         }
     }
 }

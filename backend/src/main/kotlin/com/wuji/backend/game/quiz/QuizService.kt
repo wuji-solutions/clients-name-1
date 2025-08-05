@@ -2,6 +2,7 @@ package com.wuji.backend.game.quiz
 
 import com.wuji.backend.config.QuizConfig
 import com.wuji.backend.events.common.SSEUsersService
+import com.wuji.backend.events.quiz.SSEQuizService
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.common.GameService
 import com.wuji.backend.player.dto.PlayerDto
@@ -16,7 +17,8 @@ import org.springframework.stereotype.Service
 class QuizService(
     private val gameRegistry: GameRegistry,
     private val playerService: PlayerService,
-    private val sseService: SSEUsersService
+    private val sseService: SSEUsersService,
+    private val sseQuizService: SSEQuizService
 ) : GameService {
 
     private val quizGame: QuizGame
@@ -26,7 +28,7 @@ class QuizService(
         return playerService
             .createPlayer(index, nickname, QuizPlayerDetails())
             .also { player -> quizGame.players.add(player) }
-            .also { sseService.sendEvent(quizGame.players) }
+            .also { sseService.sendPlayers(quizGame.players) }
     }
 
     override fun listPlayers(): List<PlayerDto> =
@@ -40,22 +42,21 @@ class QuizService(
         gameRegistry.register(QuizGame(name, config, questions))
     }
 
-    fun currentQuestion(): Question = quizGame.currentQuestion()
-
     override fun startGame() {
         quizGame.start()
+        sseQuizService.sendQuizStart()
     }
 
     override fun pauseGame() {
-        TODO("Not yet implemented")
+        quizGame.pause()
     }
 
     override fun resumeGame() {
-        TODO("Not yet implemented")
+        quizGame.resume()
     }
 
-    override fun stopGame() {
-        TODO("Not yet implemented")
+    override fun finishGame() {
+        quizGame.finish()
     }
 
     override fun getReport(): String {

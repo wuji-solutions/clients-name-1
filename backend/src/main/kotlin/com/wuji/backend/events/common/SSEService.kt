@@ -1,14 +1,25 @@
 package com.wuji.backend.events.common
 
+import com.wuji.backend.events.common.dto.PlayerListEvent
+import com.wuji.backend.events.common.dto.SSEEvent
+import com.wuji.backend.player.state.Player
+import com.wuji.backend.player.state.PlayerDetails
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 import org.springframework.stereotype.Service
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
 
 open class SSEService {
-    private val emitters = CopyOnWriteArrayList<SseEmitter>()
 
-    fun addEmitter(): SseEmitter {
+    private val channelToEmitters =
+        ConcurrentHashMap<String, CopyOnWriteArrayList<SseEmitter>>()
+
+    fun addEmitter(channel: String): SseEmitter {
         val emitter = SseEmitter(Long.MAX_VALUE)
+        val emitters =
+            channelToEmitters.computeIfAbsent(channel) {
+                CopyOnWriteArrayList()
+            }
 
         emitters.add(emitter)
 
@@ -22,13 +33,15 @@ open class SSEService {
         return emitter
     }
 
-    fun sendEvent(data: Any) {
+    fun sendEvent(channel: String, sseEvent: SSEEvent) {
+        val emitters = channelToEmitters[channel] ?: return
         val deadEmitters = mutableListOf<SseEmitter>()
 
         emitters.forEach { emitter ->
             try {
-                emitter.send(SseEmitter.event().data(data))
-            } catch (ex: Exception) {
+                emitter.send(
+                    SseEmitter.event().name(sseEvent.name).data(sseEvent.data))
+            } catch (_: Exception) {
                 deadEmitters.add(emitter)
             }
         }
@@ -37,4 +50,9 @@ open class SSEService {
     }
 }
 
-@Service class SSEUsersService : SSEService()
+@Service
+class SSEUsersService : SSEService() {
+    fun sendPlayers(data: Collection<Player<PlayerDetails>>) {
+        sendEvent(PLAYER_LIST_CHANNEL, PlayerListEvent(data))
+    }
+}

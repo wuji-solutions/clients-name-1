@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from 'path';
 import * as isDev from 'electron-is-dev';
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
@@ -9,32 +9,31 @@ let child: ChildProcessWithoutNullStreams;
 
 function createWindow() {
     win = new BrowserWindow({
-        width: 800,
+        width: isDev ? 1200 : 800,
         height: 600,
         webPreferences: {
             nodeIntegration: true,
         },
     });
-    
 
     if (isDev) {
-        win.loadURL('http://localhost:3000/index.html');
-        
-        const jarName ="backend.jar";
+        win.loadURL('http://localhost:3000');
+
+        const jarName = 'backend.jar';
         const backendPath = path.join(__dirname, '../..', 'backend', jarName);
 
         child = require('child_process').spawn('java', ['-jar', backendPath]); // NOSONAR
     } else {
-        win.loadURL(`file://${__dirname}/../index.html`);
+        win.loadURL(`file://${__dirname}/../index.html`); // potentially doesnt work xpp
 
         const binaryName = process.platform === 'win32' ? 'backend.exe' : 'backend';
         const backendPath = path.join(process.resourcesPath, 'backend', binaryName);
 
-        child = require('child_process').spawn(backendPath);    
+        child = require('child_process').spawn(backendPath);
     }
 
     win.on('closed', () => (win = null));
-    
+
     child.stdout.on('data', (data) => {
         console.log(`[BACKEND STDOUT]: ${data}`);
     });
@@ -69,6 +68,29 @@ function createWindow() {
 }
 
 app.on('ready', createWindow);
+
+ipcMain.on('app/quit', () => {
+    if (child) {
+        const kill = require('tree-kill');
+        kill(child.pid);
+    }
+    process.exit();
+});
+
+process.on('exit', () => {
+    if (child) {
+        const kill = require('tree-kill');
+        kill(child.pid);
+    }
+});
+
+process.on('SIGINT', () => {
+    if (child) {
+        const kill = require('tree-kill');
+        kill(child.pid);
+    }
+    process.exit();
+});
 
 app.on('window-all-closed', () => {
     if (child) {

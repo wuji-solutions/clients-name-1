@@ -19,7 +19,7 @@ interface GameService {
 
     fun resumeGame()
 
-    fun stopGame()
+    fun finishGame()
 
     fun getReport(): String
 }

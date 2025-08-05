@@ -3,6 +3,7 @@ package com.wuji.backend.security.auth
 import com.wuji.backend.player.NicknameGenerator
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.Authentication
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
@@ -37,3 +38,5 @@ class PlayerAuthService {
 }
 
 data class Participant(val index: Int, val nickname: String)
+
+fun Authentication.playerIndex() = (this.principal as Participant).index

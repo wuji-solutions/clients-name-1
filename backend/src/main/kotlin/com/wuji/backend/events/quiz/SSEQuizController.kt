@@ -9,7 +9,12 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
 @RequestMapping("/sse/quiz")
 class SSEQuizController(private val sseService: SSEQuizService) {
     @GetMapping("/answer-counter", produces = ["text/event-stream"])
-    fun streamEvents(): SseEmitter {
-        return sseService.addEmitter()
+    fun answerCounter(): SseEmitter {
+        return sseService.addAnswerCounterEmitter()
+    }
+
+    @GetMapping("/events", produces = ["text/event-stream"])
+    fun nextQuestion(): SseEmitter {
+        return sseService.addEventsEmitter()
     }
 }
