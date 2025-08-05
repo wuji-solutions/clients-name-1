@@ -23,7 +23,7 @@ class QuizQuestionController(
 ) : QuestionController {
 
     @GetMapping("/current")
-    fun getQuestion(): ResponseEntity<QuestionResponseDto> {
+    fun getQuestion(): ResponseEntity<QuestionDto> {
         return ResponseEntity.ok(questionService.getQuestion())
     }
 
@@ -39,7 +39,7 @@ class QuizQuestionController(
     }
 
     @PostMapping("/next")
-    fun nextQuestion(): ResponseEntity<QuestionResponseDto> {
+    fun nextQuestion(): ResponseEntity<QuestionDto> {
         return ResponseEntity.ok(questionService.getNextQuestion())
     }
 
