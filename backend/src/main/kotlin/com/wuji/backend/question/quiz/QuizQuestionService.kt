@@ -6,7 +6,13 @@ import com.wuji.backend.game.quiz.QuizGame
 import com.wuji.backend.game.quiz.QuizService
 import com.wuji.backend.question.common.PlayerAnswer
 import com.wuji.backend.question.common.QuestionService
-import com.wuji.backend.question.common.dto.*
+import com.wuji.backend.question.common.dto.AnswerCountDto
+import com.wuji.backend.question.common.dto.AnswersPerQuestionDto
+import com.wuji.backend.question.common.dto.QuestionAlreadyAnsweredResponseDto
+import com.wuji.backend.question.common.dto.QuestionDto
+import com.wuji.backend.question.common.dto.toDetailedAnswerDto
+import com.wuji.backend.question.common.dto.toQuestionDto
+import com.wuji.backend.question.common.exception.InvalidQuestionIdException
 import com.wuji.backend.question.common.exception.QuestionAlreadyAnsweredException
 import com.wuji.backend.reports.common.GameStats
 import org.springframework.stereotype.Service
@@ -40,6 +46,13 @@ class QuizQuestionService(
         if (player.alreadyAnswered(question.id)) {
             throw QuestionAlreadyAnsweredException(question.id)
         }
+        val invalidQuestionId =
+            answerIds.find { answerId ->
+                question.answers.none { it.id == answerId }
+            }
+        if (invalidQuestionId != null) {
+            throw InvalidQuestionIdException(invalidQuestionId)
+        }
         // TODO update answerTimeInMilliseconds according to internal game timer, when it's built
         val playerAnswer = PlayerAnswer(question, answerIds, 0)
         player.details.answers.add(playerAnswer)
@@ -56,18 +69,34 @@ class QuizQuestionService(
         quizService.pauseGame()
     }
 
+    fun playerAlreadyAnswered(
+        questionId: Int,
+        playerIndex: Int
+    ): QuestionAlreadyAnsweredResponseDto {
+        val player = game.findPlayerByIndex(playerIndex)
+        val answerIds =
+            if (player.alreadyAnswered(questionId))
+                player.answerForQuestion(questionId).selectedIds
+            else emptySet()
+        return QuestionAlreadyAnsweredResponseDto(
+            player.alreadyAnswered(questionId), answerIds)
+    }
+
     fun getAnswersPerQuestion(): AnswersPerQuestionDto {
         val answerCountList = mutableListOf<AnswerCountDto>()
-        val question = getCurrentQuestion()
-        for (answer in question.answers) {
+        val currentQuestion = getCurrentQuestion()
+        for (answer in currentQuestion.answers) {
             val answerCount =
-                gameRegistry.game.players.count {
-                    answer.id in it.answerForQuestion(question.id).selectedIds
-                }
+                gameRegistry.game.players
+                    .filter { it.alreadyAnswered(currentQuestion.id) }
+                    .count {
+                        answer.id in
+                            it.answerForQuestion(currentQuestion.id).selectedIds
+                    }
             answerCountList.add(
                 AnswerCountDto(
                     answer.toDetailedAnswerDto(
-                        question.inCorrectAnswerIds(answer.id)),
+                        currentQuestion.inCorrectAnswerIds(answer.id)),
                     answerCount))
         }
         return AnswersPerQuestionDto(answerCountList)

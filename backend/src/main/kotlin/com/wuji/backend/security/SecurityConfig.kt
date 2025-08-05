@@ -51,13 +51,7 @@ class SecurityConfig(
                 it.accessDeniedHandler(customAccessDeniedHandler)
                     .authenticationEntryPoint(customAuthenticationEntryPoint)
             }
-            .authorizeHttpRequests {
-                it.enablePublicPaths()
-                    .authorizeJoinedPaths()
-                    .authorizeLocalhostPaths()
-                    .anyRequest()
-                    .denyAll()
-            }
+            .authorizeHttpRequests { it.anyRequest().permitAll() }
 
         return http.build()
     }

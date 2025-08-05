@@ -5,8 +5,6 @@ import com.wuji.backend.game.common.GameServiceDelegate
 import com.wuji.backend.game.quiz.QuizService
 import com.wuji.backend.game.quiz.dto.QuizGameCreateRequestDto
 import com.wuji.backend.player.dto.PlayerDto
-import com.wuji.backend.question.common.dto.QuestionDto
-import com.wuji.backend.question.common.dto.toQuestionDto
 import com.wuji.backend.security.GameCreated
 import com.wuji.backend.security.GamePaused
 import com.wuji.backend.security.GameRunning
@@ -34,11 +32,6 @@ class AdminController(
         return ResponseEntity.ok().build()
     }
 
-    @GetMapping("/quiz/current-question")
-    fun getCurrentQuestion(): ResponseEntity<QuestionDto> {
-        return ResponseEntity.ok(quizService.currentQuestion().toQuestionDto())
-    }
-
     @GetMapping("/players")
     fun listPlayers(): ResponseEntity<List<PlayerDto>> {
         return ResponseEntity.ok(gameServiceDelegate.listPlayers())
@@ -62,6 +55,12 @@ class AdminController(
     @PostMapping("/resume")
     fun resumeGame(): ResponseEntity<Nothing> {
         gameServiceDelegate.resumeGame()
+        return ResponseEntity.ok().build()
+    }
+
+    @PostMapping("/finish")
+    fun finishGame(): ResponseEntity<Nothing> {
+        gameServiceDelegate.finishGame()
         return ResponseEntity.ok().build()
     }
 }
