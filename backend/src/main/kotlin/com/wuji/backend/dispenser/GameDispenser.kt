@@ -6,8 +6,9 @@ abstract class GameDispenser {
     abstract val dispensers: Map<Int, Dispenser>
 
     open fun moveNextQuestion(id: Int = 0): Question {
-        val dispenser = dispensers[id]
-            ?: throw NoSuchElementException("Brak dispenser o id=$id")
+        val dispenser =
+            dispensers[id]
+                ?: throw NoSuchElementException("Brak dispenser o id=$id")
         dispenser.nextQuestion()
         return dispenser.currentQuestion()
     }
