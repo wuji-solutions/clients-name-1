@@ -49,8 +49,8 @@ class GameServiceDelegate(
         currentService.resumeGame()
     }
 
-    override fun stopGame() {
-        currentService.stopGame()
+    override fun finishGame() {
+        currentService.finishGame()
     }
 
     override fun getReport(): String {

@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpServletRequest
 import java.time.LocalDateTime
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.ErrorResponse
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
@@ -15,7 +14,7 @@ class GlobalExceptionHandler {
     fun handleException(
         request: HttpServletRequest,
         ex: Exception
-    ): ResponseEntity<ErrorResponse> {
+    ): ResponseEntity<BasicErrorResponse> {
         if (request.getHeader("Accept")?.contains("text/event-stream") ==
             true) {
             // For SSE requests, just complete without a response body
