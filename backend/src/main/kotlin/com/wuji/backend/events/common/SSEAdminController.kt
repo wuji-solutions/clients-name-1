@@ -11,6 +11,6 @@ class SSEAdminController(private val sseUsersService: SSEUsersService) {
 
     @GetMapping("/users", produces = ["text/event-stream"])
     fun streamEvents(): SseEmitter {
-        return sseUsersService.addEmitter(PLAYERS_CHANNEL)
+        return sseUsersService.addEmitter(PLAYER_LIST_CHANNEL)
     }
 }
