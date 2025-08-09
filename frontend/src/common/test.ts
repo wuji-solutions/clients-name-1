@@ -26,12 +26,12 @@ export const TEST_QUIZ = {
       "type": "TEXT",
       "task": "2 + 3 =",
       "answers": [
-        { "id": 0, "content": "1" },
-        { "id": 1, "content": "4" },
-        { "id": 2, "content": "7" },
-        { "id": 3, "content": "15" },
+        { "id": 0, "content": "5" },
+        { "id": 1, "content": "-5" },
+        { "id": 2, "content": "∫5x^18" },
+        { "id": 3, "content": "whatever man" },
       ],
-      "correctAnswerIds": [1],
+      "correctAnswerIds": [0],
     },
   ],
 };

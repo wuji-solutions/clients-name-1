@@ -2,21 +2,24 @@ import { styled } from 'styled-components';
 import theme from '../common/theme';
 
 export const ButtonCustom = styled.button({
-    width: '230px',
-    height: '40px',
+    width: '250px',
+    minHeight: '50px',
     marginLeft: 'auto',
     marginRight: 'auto',
-    background: theme.palette.main.primary,
+    background: theme.palette.button.primary,
     color: '#FFF',
     border: '1px solid #000',
-    borderRadius: '20px',
-    boxShadow: '0 3px 4px 0 rgba(0,0,0,0.24),0 4px 12px 0 rgba(0,0,0,0.19)',
+    borderRadius: '7px',
+    boxShadow: '0 3px 4px 0 rgba(0,0,0,10)',
     '&:hover': {
-        boxShadow: '0 6px 8px 0 rgba(0,0,0,0.24),0 9px 25px 0 rgba(0,0,0,0.19)'
+        // boxShadow: '0 6px 8px 0 rgba(0,0,0,0.24),0 9px 25px 0 rgba(0,0,0,0.19)'
+        zoom: 1.025,
     },
     '-webkit-transition-duration': '0.2s',
     transitionDuration: '0.2s',
-    padding: '5px',
+    padding: '7px',
+    fontSize: '20px',
+    fontWeight: '700'
 })
 
 interface ButtonChoseProps {

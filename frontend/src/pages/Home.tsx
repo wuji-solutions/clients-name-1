@@ -7,7 +7,6 @@ import { useAppContext } from "../providers/AppContextProvider";
 import AccessRestricted from "../components/AccessRestricted";
 
 const Container = styled.div({
-  backgroundColor: theme.palette.main.background,
   width: "100%",
   height: "100%",
   display: "flex",
@@ -54,7 +53,7 @@ function Home() {
       <Logo>LOGO</Logo>
       <OptionContainer>
         <ButtonCustom onClick={() => navigate("/konfiguracja")}>
-          Zacznij rozgrywkę
+          Rozpocznij
         </ButtonCustom>
         <ButtonCustom>Raporty</ButtonCustom>
         <ButtonCustom>Wyjdź</ButtonCustom>
