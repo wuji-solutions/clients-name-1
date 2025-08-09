@@ -1,4 +1,3 @@
-// sseManager.ts
 import { SSEDelegate } from './SSEDelegate';
 
 type Channel = {

@@ -1,4 +1,3 @@
-// SSEProvider.tsx
 import React, { createContext, useContext, useEffect, useRef } from 'react';
 import { SSEManager } from '../delegate/SSEManager';
 

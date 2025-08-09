@@ -192,8 +192,8 @@ const AnswerProgressBar = ({
 };
 
 function Quiz() {
-  const { user, username } = useAppContext();
-  const delegate = useSSEChannel(
+  const { user } = useAppContext();
+  const eventsDelegate = useSSEChannel(
     `${
       user === "admin" ? BACKEND_ENDPOINT : BACKEND_ENDPOINT_EXTERNAL
     }/sse/quiz/events`,
@@ -214,7 +214,7 @@ function Quiz() {
   );
 
   useEffect(() => {
-    const unsubscribe = delegate.on("next-question", () => {
+    const unsubscribe = eventsDelegate.on("next-question", () => {
       if (!user) return;
       setQuestion(user, setCurrentQuestion);
       setSelectedAnswers([]);
@@ -350,7 +350,7 @@ function Quiz() {
                       total={answerCount}
                       color={answer.answer.isCorrect
                         ? theme.palette.main.success
-                        : theme.palette.main.error} // change the color to green/red based on correctness
+                        : theme.palette.main.error}
                     />
                     <AnswerCard
                       isselected={answer.answer.isCorrect

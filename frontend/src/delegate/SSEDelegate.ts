@@ -23,9 +23,9 @@ export class SSEDelegate {
     delegate(eventName: string, data: any, rawEvent?: MessageEvent) {
         const set = this.handlers.get(eventName);
         if (!set) return;
-        for (const h of Array.from(set)) {
+        for (const handler of Array.from(set)) {
             try {
-                h(data, rawEvent);
+                handler(data, rawEvent);
             } catch (err) {
                 console.error('SSE handler threw', err);
             }
