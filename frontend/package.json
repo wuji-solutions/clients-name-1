@@ -36,6 +36,7 @@
         "electron-devtools-installer": "^4.0.0",
         "electron-is-dev": "^3.0.1",
         "electron-reload": "^2.0.0-alpha.1",
+        "js-cookie": "^3.0.5",
         "react": "^19.1.0",
         "react-dom": "^19.1.0",
         "react-dropzone": "^14.3.8",
@@ -58,7 +59,8 @@
         "build-backend:dev": "cd ../backend && ./gradlew bootJar",
         "copy-backend": "cross-env NODE_ENV=development node backend/copy-backend.js",
         "copy-backend:dev": "cross-env NODE_ENV=development node backend/copy-backend.js",
-        "electron:build": "yarn build-backend && yarn copy-backend && yarn build && tsc -p electron && electron-builder"    },
+        "electron:build": "yarn build-backend && yarn copy-backend && yarn build && tsc -p electron && electron-builder"
+    },
     "eslintConfig": {
         "extends": [
             "react-app",
@@ -78,6 +80,7 @@
         ]
     },
     "devDependencies": {
+        "@types/js-cookie": "^3.0.6",
         "concurrently": "^9.1.2",
         "cross-env": "^7.0.3",
         "electron": "^36.2.1",

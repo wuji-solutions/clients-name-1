@@ -9,6 +9,10 @@ const theme = {
             success: '#22C55E',
             error: '#EF4444',
             additional: '#A855F7',
+        },
+        button: {
+            primary: '#2d2e30',
+            background: 'secondary',
         }
     }
 }
