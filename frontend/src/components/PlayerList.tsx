@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BACKEND_ENDPOINT, BACKEND_ENDPOINT_EXTERNAL } from "../common/config";
 import { styled } from "styled-components";
+import { useSSEChannel } from "../providers/SSEProvider";
 
 const Contaier = styled.div({
   marginTop: "auto",
@@ -60,14 +61,14 @@ type Player = {
 };
 
 const addPlayers = (
-  event: MessageEvent<any>,
+  event: Player[],
   players: Player[],
   setPlayers: React.Dispatch<React.SetStateAction<Player[]>>,
   setNewPlayers: React.Dispatch<React.SetStateAction<Set<string>>>,
 ) => {
   try {
-    const data: Player[] = JSON.parse(event.data);
-    console.log(data)
+    const data: Player[] = event;
+    console.log(data);
 
     const currentNicknames = new Set(players.map((p) => p.nickname));
     const addedPlayers = data.filter((p) => !currentNicknames.has(p.nickname));
@@ -97,27 +98,14 @@ const addPlayers = (
 function PlayerList({ user }: { readonly user: string }) {
   const [players, setPlayers] = useState<Player[]>([]);
   const [newPlayers, setNewPlayers] = useState<Set<string>>(new Set());
+  const delegate = useSSEChannel(`${BACKEND_ENDPOINT}/sse/users`);
 
   useEffect(() => {
-    const eventSource = new EventSource(
-      user === "admin"
-        ? BACKEND_ENDPOINT + "/sse/users"
-        : BACKEND_ENDPOINT_EXTERNAL + "/sse/users",
-    );
-
-    eventSource.onmessage = (event) => {
-      addPlayers(event, players, setPlayers, setNewPlayers);
-    };
-
-    eventSource.onerror = (error) => {
-      console.error("SSE error: ", error);
-      eventSource.close();
-    };
-
-    return () => {
-      eventSource.close();
-    };
-  }, [players, user]);
+    const unsubscribe = delegate.on("player-list", (data) => {
+      addPlayers(data, players, setPlayers, setNewPlayers);
+    });
+    return unsubscribe;
+  }, [delegate]);
 
   return (
     <Contaier>

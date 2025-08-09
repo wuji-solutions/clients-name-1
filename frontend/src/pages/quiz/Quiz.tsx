@@ -7,7 +7,9 @@ import {
 import { Question, QuestionStats } from "../../common/types";
 import { ButtonCustom } from "../../components/Button";
 import { useAppContext } from "../../providers/AppContextProvider";
+import { useSSEChannel } from "../../providers/SSEProvider";
 import { service } from "../../service/service";
+import theme from "../../common/theme";
 
 const Container = styled.div(() => ({
   width: "90%",
@@ -25,7 +27,7 @@ const QuestionHeader = styled.div(() => ({
   margin: "auto",
   display: "flex",
   flexDirection: "column",
-  gap: "40px",
+  gap: "15px",
 }));
 
 const QuestionCategory = styled.span(() => ({
@@ -44,6 +46,14 @@ const AnswerContainer = styled.div(() => ({
   display: "flex",
   flexDirection: "column",
   textAlign: "center",
+}));
+
+const AnsweredContainer = styled.div(() => ({
+  display: "flex",
+  flexDirection: "column",
+  textAlign: "center",
+  justifyContent: "center",
+  height: '100vh',
 }));
 
 const AnswerHeader = styled.h1(() => ({
@@ -69,7 +79,9 @@ const AnswerCard = styled.div<{ backgroundcolor: string; isselected: boolean }>(
   ({ backgroundcolor, isselected }) => {
     const base = backgroundcolor;
     const gradient = isselected
-      ? `linear-gradient(135deg, ${darkenColor(base, 0.2)}, ${darkenColor(base, 0.35)})`
+      ? `linear-gradient(135deg, ${darkenColor(base, 0.2)}, ${
+        darkenColor(base, 0.35)
+      })`
       : `linear-gradient(135deg, ${base}, ${darkenColor(base, 0.15)})`;
 
     return {
@@ -79,8 +91,8 @@ const AnswerCard = styled.div<{ backgroundcolor: string; isselected: boolean }>(
       maxWidth: "500px",
       margin: "auto",
       padding: "20px",
-      background: gradient, // use 'background', not 'backgroundColor'
-      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+      background: gradient,
+      boxShadow: `0 4px 1px 0 ${darkenColor(base, 0.6)}`,
       border: `2px solid ${darkenColor(base, 0.5)}`,
       transition: "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
       cursor: "pointer",
@@ -93,16 +105,13 @@ const AnswerCard = styled.div<{ backgroundcolor: string; isselected: boolean }>(
       outline: "none",
       WebkitTapHighlightColor: "transparent",
 
-      // Nested styles for h2
       "& h2": {
         margin: 0,
         fontSize: "1rem",
       },
     };
-  }
+  },
 );
-
-
 
 const colorPalette = [
   "#FF6B6B",
@@ -134,12 +143,10 @@ const setQuestion = (
 };
 
 const AnswerProgressBar = ({
-  label,
   count,
   total,
   color,
 }: {
-  label: string;
   count: number;
   total: number;
   color: string;
@@ -157,7 +164,7 @@ const AnswerProgressBar = ({
           marginTop: "10px",
         }}
       >
-        <span>{label}</span>
+        <span>Odpowiedziało osób:</span>
         <span>{percent}% ({count})</span>
       </div>
       <div
@@ -165,6 +172,8 @@ const AnswerProgressBar = ({
           width: "100%",
           height: "20px",
           backgroundColor: "#f0f0f0",
+          border: `1px solid #000`,
+          boxShadow: "0 2px 2px 0 rgba(0,0,0,10)",
           borderRadius: "10px",
           overflow: "hidden",
         }}
@@ -184,6 +193,16 @@ const AnswerProgressBar = ({
 
 function Quiz() {
   const { user, username } = useAppContext();
+  const delegate = useSSEChannel(
+    `${
+      user === "admin" ? BACKEND_ENDPOINT : BACKEND_ENDPOINT_EXTERNAL
+    }/sse/quiz/events`,
+    { withCredentials: true },
+  );
+  const counterDelegate = useSSEChannel(
+    `${BACKEND_ENDPOINT}/sse/quiz/answer-counter`,
+    { withCredentials: true },
+  );
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
   const [selectedAnswers, setSelectedAnswers] = useState<Array<string>>([]);
   const [answerCount, setAnswerCount] = useState<number>(0);
@@ -195,48 +214,25 @@ function Quiz() {
   );
 
   useEffect(() => {
-    const eventSource = new EventSource(
-      user === "admin"
-        ? BACKEND_ENDPOINT + "/sse/quiz/next-question"
-        : BACKEND_ENDPOINT_EXTERNAL + "/sse/quiz/next-question",
-    );
-
-    eventSource.onmessage = (_) => {
+    const unsubscribe = delegate.on("next-question", () => {
       if (!user) return;
       setQuestion(user, setCurrentQuestion);
+      setSelectedAnswers([]);
       setAnswerCount(0);
       setQuestionAnswered(false);
       setQuestionEnded(false);
-    };
-
-    eventSource.onerror = (error) => {
-      console.error("SSE error: ", error);
-      eventSource.close();
-    };
-
-    return () => {
-      eventSource.close();
-    };
+      setQuestionStats(null);
+    });
+    return unsubscribe;
   }, [user]);
 
   useEffect(() => {
-    if (user != "admin") return;
-    const eventSource = new EventSource(
-      BACKEND_ENDPOINT + "/sse/quiz/answer-counter",
-    );
-
-    eventSource.onmessage = (event) => {
-      setAnswerCount(event.data);
-    };
-
-    eventSource.onerror = (error) => {
-      console.error("SSE error: ", error);
-      eventSource.close();
-    };
-
-    return () => {
-      eventSource.close();
-    };
+    if (user !== "admin") return;
+    const unsubscribe = counterDelegate.on("answer-counter", (data) => {
+      console.log(data);
+      setAnswerCount(data);
+    });
+    return unsubscribe;
   }, [user]);
 
   useEffect(() => {
@@ -276,33 +272,50 @@ function Quiz() {
     }).catch((error) => console.error(error));
   };
 
+  const handleNextQuestion = () => {
+    service.nextQuestion();
+  };
+
   if (!user) return <>View not allowed</>;
 
   if (user === "user") {
     return (
       <Container>
         {currentQuestion && (
-          <AnswerContainer>
-            <AnswerHeader>Udziel odpowiedzi na pytanie z ekranu</AnswerHeader>
-            <AnswerColumn>
-              {currentQuestion.answers.map((answer, index) => (
-                <AnswerCard
-                  key={index}
-                  isselected={selectedAnswers.includes(answer.id)}
-                  backgroundcolor={colorPalette[index % colorPalette.length]}
-                  onClick={() => handleAnswerSelected(answer.id)}
+          !questionAnswered
+            ? (
+              <AnswerContainer>
+                <AnswerHeader>
+                  Udziel odpowiedzi na pytanie z ekranu
+                </AnswerHeader>
+                <AnswerColumn>
+                  {currentQuestion.answers.map((answer, index) => (
+                    <AnswerCard
+                      key={index}
+                      isselected={selectedAnswers.includes(answer.id)}
+                      backgroundcolor={colorPalette[
+                        index % colorPalette.length
+                      ]}
+                      onClick={() => handleAnswerSelected(answer.id)}
+                    >
+                      <h2>{answer.content}</h2>
+                    </AnswerCard>
+                  ))}
+                </AnswerColumn>
+
+                <ButtonCustom
+                  disabled={sendingAnswer}
+                  onClick={() => handleAnswerSent()}
                 >
-                  <h2>{answer.content}</h2>
-                </AnswerCard>
-              ))}
-            </AnswerColumn>
-            <ButtonCustom
-              disabled={sendingAnswer}
-              onClick={() => handleAnswerSent()}
-            >
-              Wyślij odpowiedź
-            </ButtonCustom>
-          </AnswerContainer>
+                  Wyślij odpowiedź
+                </ButtonCustom>
+              </AnswerContainer>
+            )
+            : (
+              <AnsweredContainer>
+                <AnswerHeader>Udzieliłeś już odpowiedzi</AnswerHeader>
+              </AnsweredContainer>
+            )
         )}
       </Container>
     );
@@ -337,13 +350,16 @@ function Quiz() {
                 {questionStats.answers.map((answer, index) => (
                   <div key={index}>
                     <AnswerProgressBar
-                      label={answer.answer.content}
                       count={answer.count}
                       total={answerCount}
-                      color={colorPalette[index % colorPalette.length]} // change the color to green/red based on correctness
+                      color={answer.answer.isCorrect
+                        ? theme.palette.main.success
+                        : theme.palette.main.error} // change the color to green/red based on correctness
                     />
                     <AnswerCard
-                      isselected={true}
+                      isselected={answer.answer.isCorrect
+                        ? answer.answer.isCorrect
+                        : false}
                       backgroundcolor={colorPalette[
                         index % colorPalette.length
                       ]}
@@ -361,7 +377,9 @@ function Quiz() {
             </ButtonCustom>
           )}
           {questionEnded && (
-            <ButtonCustom>Przejdź do kolejnego pytania</ButtonCustom>
+            <ButtonCustom onClick={() => handleNextQuestion()}>
+              Przejdź do kolejnego pytania
+            </ButtonCustom>
           )}
         </QuestionContainer>
       )}

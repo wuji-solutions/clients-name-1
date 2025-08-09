@@ -40,10 +40,11 @@ const sendAnswer = (answers: Array<number>, mode: string) => {
 };
 
 const endQuestion = (mode: string = 'quiz') => {
-    return axios.post(
-        BACKEND_ENDPOINT + `/games/${mode}/questions/end`,
-        {}
-    );
+    return axios.post(BACKEND_ENDPOINT + `/games/${mode}/questions/end`, {});
+};
+
+const nextQuestion = (mode: string = 'quiz') => {
+    return axios.post(BACKEND_ENDPOINT + `/games/${mode}/questions/next`, {});
 };
 
 export const service = {
@@ -53,4 +54,5 @@ export const service = {
     getCurrentQuestion: getCurrentQuestion,
     sendAnswer: sendAnswer,
     endQuestion: endQuestion,
+    nextQuestion: nextQuestion,
 };

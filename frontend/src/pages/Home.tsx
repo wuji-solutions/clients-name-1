@@ -53,7 +53,7 @@ function Home() {
       <Logo>LOGO</Logo>
       <OptionContainer>
         <ButtonCustom onClick={() => navigate("/konfiguracja")}>
-          Zacznij rozgrywkę
+          Rozpocznij
         </ButtonCustom>
         <ButtonCustom>Raporty</ButtonCustom>
         <ButtonCustom>Wyjdź</ButtonCustom>

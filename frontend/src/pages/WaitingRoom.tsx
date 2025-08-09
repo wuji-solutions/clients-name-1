@@ -9,6 +9,8 @@ import { useAppContext } from "../providers/AppContextProvider";
 import { CustomTextInput } from "../components/Fields";
 import "../service/service";
 import { service } from "../service/service";
+import { useSSEChannel } from "../providers/SSEProvider";
+import { BACKEND_ENDPOINT, BACKEND_ENDPOINT_EXTERNAL } from "../common/config";
 
 const Container = styled.div({
   width: "100%",
@@ -19,6 +21,10 @@ const Container = styled.div({
 
 const QRContainer = styled.div({
   margin: "auto",
+  background: theme.palette.main.background,
+  padding: "25px",
+  borderRadius: "5px",
+  border: "5px solid #000",
 });
 
 const ActionButtonContainer = styled.div({
@@ -28,6 +34,7 @@ const ActionButtonContainer = styled.div({
   display: "flex",
   flexDirection: "column",
   gap: "10px",
+  width: "30%",
 });
 
 const UserInputContainer = styled.div({
@@ -40,22 +47,34 @@ const UserInputContainer = styled.div({
 
 function WaitingRoom() {
   const { user, username, setUsername } = useAppContext();
+  const delegate = useSSEChannel(
+    `${
+      user === "admin" ? BACKEND_ENDPOINT : BACKEND_ENDPOINT_EXTERNAL
+    }/sse/quiz/events`,
+  ); // change this to select a different mode based on some state
   const [identificator, setIdentificator] = useState<number | null>(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const unsubscribe = delegate.on('game-start', () => {
+      // Add some sort of timer? Like a count down before the game actually starts
+      navigate("/gra/quiz"); // change this to select a different mode based on some state
+    });
+    return unsubscribe;
+  });
 
   const joinGame = () => {
     if (!identificator) return;
     service.joinGame(identificator).then((response) => {
       setUsername(response.data);
-      sessionStorage.setItem('username', response.data);
-      sessionStorage.setItem('userindex', identificator.toString());
+      sessionStorage.setItem("username", response.data);
+      sessionStorage.setItem("userindex", identificator.toString());
     }).catch((error) => console.log(error));
   };
 
   const startGame = () => {
     service.startGame().then((response) => {
       console.log(response);
-      navigate("/gra/quiz") // change this to select a different mode based on some state
     }).catch((
       error,
     ) => console.log(error));

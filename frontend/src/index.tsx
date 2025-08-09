@@ -7,6 +7,7 @@ import Configurations from "./pages/Configurations";
 import WaitingRoom from "./pages/WaitingRoom";
 import { AppProvider } from "./providers/AppContextProvider";
 import Quiz from "./pages/quiz/Quiz";
+import { SSEProvider } from "./providers/SSEProvider";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement,
@@ -14,14 +15,16 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <AppProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/konfiguracja" element={<Configurations />} />
-          <Route path="/waiting-room" element={<WaitingRoom />} />
-          <Route path="/gra/quiz" element={<Quiz />} />
-        </Routes>
-      </Router>
+      <SSEProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/konfiguracja" element={<Configurations />} />
+            <Route path="/waiting-room" element={<WaitingRoom />} />
+            <Route path="/gra/quiz" element={<Quiz />} />
+          </Routes>
+        </Router>
+      </SSEProvider>
     </AppProvider>
   </React.StrictMode>,
 );
