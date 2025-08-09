@@ -73,8 +73,8 @@ function WaitingRoom() {
   };
 
   const startGame = () => {
-    service.startGame().then((response) => {
-      console.log(response);
+    service.startGame().then(() => {
+      console.log('Game successfully started');
     }).catch((
       error,
     ) => console.log(error));

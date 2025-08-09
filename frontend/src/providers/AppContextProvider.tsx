@@ -39,7 +39,6 @@ export const AppProvider = ({ children }: AppProviderProps) => {
     } else {
       setUser("user");
     }
-    console.log(window.location.hostname);
   }, []);
 
   useEffect(() => {

@@ -68,7 +68,6 @@ const addPlayers = (
 ) => {
   try {
     const data: Player[] = event;
-    console.log(data);
 
     const currentNicknames = new Set(players.map((p) => p.nickname));
     const addedPlayers = data.filter((p) => !currentNicknames.has(p.nickname));

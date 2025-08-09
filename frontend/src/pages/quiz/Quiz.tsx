@@ -229,7 +229,6 @@ function Quiz() {
   useEffect(() => {
     if (user !== "admin") return;
     const unsubscribe = counterDelegate.on("answer-counter", (data) => {
-      console.log(data);
       setAnswerCount(data);
     });
     return unsubscribe;
@@ -241,9 +240,7 @@ function Quiz() {
   }, [user]);
 
   const handleAnswerSelected = (id: string) => {
-    console.log(id);
     setSelectedAnswers((prevState) => {
-      console.log(prevState);
       const answers = [...prevState];
       if (answers.includes(id)) {
         return answers.filter((answer) => answer !== id);
@@ -266,7 +263,6 @@ function Quiz() {
 
   const handleEndCurrentQuestion = () => {
     service.endQuestion().then((response) => {
-      console.log(response.data);
       setQuestionStats(response.data);
       setQuestionEnded(true);
     }).catch((error) => console.error(error));

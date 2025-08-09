@@ -69,10 +69,10 @@ class SecurityConfig(
         WebExpressionAuthorizationManager(args.joinToString(separator = " or "))
 
     fun AuthorizeHttpRequestsConfigurer<
-            *>.AuthorizationManagerRequestMatcherRegistry
-            .authorizeLocalhostPaths():
-            AuthorizeHttpRequestsConfigurer<
-                    *>.AuthorizationManagerRequestMatcherRegistry {
+        *>.AuthorizationManagerRequestMatcherRegistry
+        .authorizeLocalhostPaths():
+        AuthorizeHttpRequestsConfigurer<
+            *>.AuthorizationManagerRequestMatcherRegistry {
         return apply {
             localhostAuthorized.forEach { matcher ->
                 requestMatchers(matcher)
@@ -82,10 +82,10 @@ class SecurityConfig(
     }
 
     fun AuthorizeHttpRequestsConfigurer<
-            *>.AuthorizationManagerRequestMatcherRegistry
-            .authorizeJoinedPaths():
-            AuthorizeHttpRequestsConfigurer<
-                    *>.AuthorizationManagerRequestMatcherRegistry {
+        *>.AuthorizationManagerRequestMatcherRegistry
+        .authorizeJoinedPaths():
+        AuthorizeHttpRequestsConfigurer<
+            *>.AuthorizationManagerRequestMatcherRegistry {
         return apply {
             joinedAuthorized.forEach { matcher ->
                 requestMatchers(matcher)
@@ -96,10 +96,10 @@ class SecurityConfig(
     }
 
     fun AuthorizeHttpRequestsConfigurer<
-            *>.AuthorizationManagerRequestMatcherRegistry
-            .enablePublicPaths():
-            AuthorizeHttpRequestsConfigurer<
-                    *>.AuthorizationManagerRequestMatcherRegistry {
+        *>.AuthorizationManagerRequestMatcherRegistry
+        .enablePublicPaths():
+        AuthorizeHttpRequestsConfigurer<
+            *>.AuthorizationManagerRequestMatcherRegistry {
         return apply {
             publicAuthorized.forEach { matcher ->
                 requestMatchers(matcher).permitAll()
