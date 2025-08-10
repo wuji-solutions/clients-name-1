@@ -13,12 +13,13 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 @SpringBootTest
 @AutoConfigureMockMvc
 class RoleValidationAspectTest(@Autowired val mockMvc: MockMvc) {
+    private val url = "/admin-test"
 
     @Test
     fun `allows localhost with ipv4`() {
         mockMvc
             .perform(
-                MockMvcRequestBuilders.get("/admin-test").with { req ->
+                MockMvcRequestBuilders.get(url).with { req ->
                     req.remoteAddr = "127.0.0.1"
                     req
                 })
@@ -30,7 +31,7 @@ class RoleValidationAspectTest(@Autowired val mockMvc: MockMvc) {
     fun `allows localhost with ipv6`() {
         mockMvc
             .perform(
-                MockMvcRequestBuilders.get("/admin-test").with { req ->
+                MockMvcRequestBuilders.get(url).with { req ->
                     req.remoteAddr = "::1"
                     req
                 })
@@ -42,9 +43,9 @@ class RoleValidationAspectTest(@Autowired val mockMvc: MockMvc) {
     fun `forbids external user`() {
         mockMvc
             .perform(
-                MockMvcRequestBuilders.get("/admin-test")
+                MockMvcRequestBuilders.get(url)
                     .with { req ->
-                        req.remoteAddr = "192.168.0.50"
+                        req.remoteAddr = "192.0.2.69"
                         req
                     }
                     .with(user("testuser")))
