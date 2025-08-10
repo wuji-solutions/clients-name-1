@@ -54,8 +54,6 @@ class SecurityConfig(
                 it.enablePublicPaths()
                     .authorizeJoinedPaths()
                     .authorizeLocalhost()
-                    .anyRequest()
-                    .denyAll()
             }
 
         return http.build()

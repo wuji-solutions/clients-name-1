@@ -8,6 +8,7 @@ import com.wuji.backend.player.dto.PlayerDto
 import com.wuji.backend.security.GameCreated
 import com.wuji.backend.security.GamePaused
 import com.wuji.backend.security.GameRunning
+import com.wuji.backend.security.IsAdmin
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @Validated
+@IsAdmin
 @RequestMapping("/manage")
 class AdminController(
     private val quizService: QuizService,
