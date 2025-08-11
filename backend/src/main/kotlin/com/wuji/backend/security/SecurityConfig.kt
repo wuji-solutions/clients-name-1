@@ -34,6 +34,13 @@ class SecurityConfig(
             AntPathRequestMatcher("/sse/*/*"),
             AntPathRequestMatcher("/games/*/**"))
 
+    private final val publicAuthorized =
+        listOf(AntPathRequestMatcher("/games/*/join", "POST"))
+
+    private final val isLocalHostString =
+        "hasIpAddress('127.0.0.1') or hasIpAddress('::1')"
+    private final val isJoinedString = "hasAuthority('JOINED')"
+
     @Bean
     fun securityFilterChain(
         http: HttpSecurity,
@@ -51,27 +58,31 @@ class SecurityConfig(
                 it.accessDeniedHandler(customAccessDeniedHandler)
                     .authenticationEntryPoint(customAuthenticationEntryPoint)
             }
-            .authorizeHttpRequests { it.anyRequest().permitAll() }
+            .authorizeHttpRequests {
+                it.enablePublicPaths()
+                    .authorizeJoinedPaths()
+                    .authorizeLocalhostPaths()
+                    .anyRequest()
+                    .denyAll()
+            }
 
         return http.build()
     }
 
-    fun AuthorizeHttpRequestsConfigurer<*>.AuthorizedUrl.permitLocalhost():
-        AuthorizeHttpRequestsConfigurer<
-            *>.AuthorizationManagerRequestMatcherRegistry {
-        return this.access(
-            WebExpressionAuthorizationManager(
-                "hasIpAddress('127.0.0.1') or hasIpAddress('::1')"))
-    }
+    private fun expressionMatcher(
+        vararg args: String
+    ): WebExpressionAuthorizationManager =
+        WebExpressionAuthorizationManager(args.joinToString(separator = " or "))
 
     fun AuthorizeHttpRequestsConfigurer<
         *>.AuthorizationManagerRequestMatcherRegistry
         .authorizeLocalhostPaths():
         AuthorizeHttpRequestsConfigurer<
             *>.AuthorizationManagerRequestMatcherRegistry {
-        return this.also {
-            (localhostAuthorized + joinedAuthorized).forEach { matcher ->
-                requestMatchers(matcher).permitLocalhost()
+        return apply {
+            localhostAuthorized.forEach { matcher ->
+                requestMatchers(matcher)
+                    .access(expressionMatcher(isLocalHostString))
             }
         }
     }
@@ -81,9 +92,11 @@ class SecurityConfig(
         .authorizeJoinedPaths():
         AuthorizeHttpRequestsConfigurer<
             *>.AuthorizationManagerRequestMatcherRegistry {
-        return this.also {
+        return apply {
             joinedAuthorized.forEach { matcher ->
-                requestMatchers(matcher).hasAuthority("JOINED")
+                requestMatchers(matcher)
+                    .access(
+                        expressionMatcher(isLocalHostString, isJoinedString))
             }
         }
     }
@@ -93,9 +106,10 @@ class SecurityConfig(
         .enablePublicPaths():
         AuthorizeHttpRequestsConfigurer<
             *>.AuthorizationManagerRequestMatcherRegistry {
-        return this.also {
-            requestMatchers(AntPathRequestMatcher("/games/*/join", "POST"))
-                .permitAll()
+        return apply {
+            publicAuthorized.forEach { matcher ->
+                requestMatchers(matcher).permitAll()
+            }
         }
     }
 }
