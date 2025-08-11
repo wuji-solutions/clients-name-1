@@ -37,7 +37,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-aop")
-	implementation("jakarta.xml.bind:jakarta.xml.bind-api:4.0.0")
 	implementation("org.glassfish.jaxb:jaxb-runtime:4.0.4")
 }
 
