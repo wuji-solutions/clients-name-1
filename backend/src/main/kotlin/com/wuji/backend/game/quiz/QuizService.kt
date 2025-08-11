@@ -5,6 +5,7 @@ import com.wuji.backend.events.common.SSEUsersService
 import com.wuji.backend.events.quiz.SSEQuizService
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.common.GameService
+import com.wuji.backend.game.quiz.dto.QuizSummaryResponseDto
 import com.wuji.backend.player.dto.PlayerDto
 import com.wuji.backend.player.dto.PlayerDto.Companion.toDto
 import com.wuji.backend.player.state.PlayerService
@@ -57,8 +58,14 @@ class QuizService(
 
     override fun finishGame() {
         quizGame.finish()
+        sseQuizService.sendQuizFinish()
     }
 
+    fun getGameSummary(): QuizSummaryResponseDto {
+    return QuizSummaryResponseDto(
+        questionsToSummary = TODO()
+    )
+    }
     override fun getReport(): String {
         TODO("Not yet implemented")
     }

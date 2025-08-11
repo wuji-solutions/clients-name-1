@@ -3,12 +3,14 @@ package com.wuji.backend.game.quiz
 import com.wuji.backend.game.GameType
 import com.wuji.backend.game.common.GameController
 import com.wuji.backend.game.common.dto.JoinGameRequestDto
+import com.wuji.backend.game.quiz.dto.QuizSummaryResponseDto
 import com.wuji.backend.security.RequiresGame
 import com.wuji.backend.security.auth.PlayerAuthService
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -34,4 +36,12 @@ class QuizController(
 
         return ResponseEntity.ok(participant.nickname)
     }
+
+    @GetMapping("/summarize")
+    fun summarizeGame(): ResponseEntity<QuizSummaryResponseDto> {
+
+
+        return ResponseEntity.ok(quizService.getGameSummary())
+    }
+
 }

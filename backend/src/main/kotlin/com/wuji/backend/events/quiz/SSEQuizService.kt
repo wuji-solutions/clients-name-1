@@ -3,6 +3,7 @@ package com.wuji.backend.events.quiz
 import com.wuji.backend.events.common.ANSWER_COUNTER_CHANNEL
 import com.wuji.backend.events.common.QUIZ_EVENTS_CHANNEL
 import com.wuji.backend.events.common.SSEService
+import com.wuji.backend.events.common.dto.GameFinishEvent
 import com.wuji.backend.events.common.dto.GameStartEvent
 import com.wuji.backend.events.quiz.dto.AnswerCounterEvent
 import com.wuji.backend.events.quiz.dto.NextQuestionEvent
@@ -31,4 +32,7 @@ class SSEQuizService : SSEService() {
     fun sendQuizStart() {
         sendEvent(QUIZ_EVENTS_CHANNEL, GameStartEvent())
     }
+        fun sendQuizFinish() {
+            sendEvent(QUIZ_EVENTS_CHANNEL, GameFinishEvent())
+        }
 }
