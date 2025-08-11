@@ -68,7 +68,7 @@ class QuizQuestionService(
     }
 
     fun askedQuestions() = game.askedQuestions
-    
+
     fun endQuestion() {
         quizService.pauseGame()
     }
