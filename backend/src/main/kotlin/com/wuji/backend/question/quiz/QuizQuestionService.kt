@@ -61,7 +61,6 @@ class QuizQuestionService(
     }
 
     fun getNextQuestion(): QuestionDto {
-        game.askedQuestions.add(game.questionDispenser.getCurrentQuestion())
         val nextQuestion = game.questionDispenser.moveNextQuestion()
         sseQuizService.sendNextQuestion()
         return nextQuestion.toQuestionDto()
@@ -70,6 +69,7 @@ class QuizQuestionService(
     fun askedQuestions() = game.askedQuestions
 
     fun endQuestion() {
+        game.askedQuestions.add(getCurrentQuestion())
         quizService.pauseGame()
     }
 
