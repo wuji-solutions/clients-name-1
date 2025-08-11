@@ -1,5 +1,8 @@
 package com.wuji.backend.security
 
+import com.wuji.backend.EXTERNAL_IP
+import com.wuji.backend.LOCALHOST_IPV4
+import com.wuji.backend.LOCALHOST_IPV6
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -20,7 +23,7 @@ class RoleValidationAspectTest(@Autowired val mockMvc: MockMvc) {
         mockMvc
             .perform(
                 MockMvcRequestBuilders.get(url).with { req ->
-                    req.remoteAddr = "127.0.0.1"
+                    req.remoteAddr = LOCALHOST_IPV4
                     req
                 })
             .andExpect { status().isOk }
@@ -32,7 +35,7 @@ class RoleValidationAspectTest(@Autowired val mockMvc: MockMvc) {
         mockMvc
             .perform(
                 MockMvcRequestBuilders.get(url).with { req ->
-                    req.remoteAddr = "::1"
+                    req.remoteAddr = LOCALHOST_IPV6
                     req
                 })
             .andExpect { status().isOk }
@@ -45,7 +48,7 @@ class RoleValidationAspectTest(@Autowired val mockMvc: MockMvc) {
             .perform(
                 MockMvcRequestBuilders.get(url)
                     .with { req ->
-                        req.remoteAddr = "192.0.2.69"
+                        req.remoteAddr = EXTERNAL_IP
                         req
                     }
                     .with(user("testuser")))
