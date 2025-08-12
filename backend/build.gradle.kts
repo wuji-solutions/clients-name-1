@@ -35,7 +35,7 @@ dependencies {
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.0")
     implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("org.springframework.security:spring-security-test:6.5.2")
+    implementation("org.springframework.security:spring-security-test")
 
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-aop")
