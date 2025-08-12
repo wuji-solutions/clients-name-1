@@ -25,25 +25,17 @@ class SecurityConfig(
     private val customAuthenticationEntryPoint: AuthenticationEntryPoint
 ) {
 
-    private val localhostAuthorized = listOf(
-        AntPathRequestMatcher("/manage/**"),
-        AntPathRequestMatcher("/v3/api-docs/**"),
-        AntPathRequestMatcher("/swagger-ui/**"),
-        AntPathRequestMatcher("/sse/*")
-    )
+    private final val joinedAuthorized =
+        listOf(
+            AntPathRequestMatcher("/sse/*/*"),
+            AntPathRequestMatcher("/games/*/**"))
 
-    private val joinedAuthorized = listOf(
-        AntPathRequestMatcher("/answer"),
-        AntPathRequestMatcher("/sse/*/*"),
-        AntPathRequestMatcher("/games/*/**")
-    )
+    private final val publicAuthorized =
+        listOf(AntPathRequestMatcher("/games/*/join", "POST"))
 
-    private val publicAuthorized = listOf(
-        AntPathRequestMatcher("/games/*/join", "POST")
-    )
-
-    private val isLocalHostString = "hasIpAddress('127.0.0.1') or hasIpAddress('::1')"
-    private val isJoinedString = "hasAuthority('JOINED')"
+    private final val isLocalHostString =
+        "hasIpAddress('127.0.0.1') or hasIpAddress('::1')"
+    private final val isJoinedString = "hasAuthority('JOINED')"
 
     @Bean
     fun securityFilterChain(
@@ -75,39 +67,46 @@ class SecurityConfig(
             .authorizeHttpRequests {
                 it.enablePublicPaths()
                     .authorizeJoinedPaths()
-                    .authorizeLocalhostPaths()
-                    .anyRequest()
-                    .denyAll()
+                    .authorizeLocalhost()
             }
 
         return http.build()
     }
 
-    private fun expressionMatcher(vararg args: String): WebExpressionAuthorizationManager =
+    private fun expressionMatcher(
+        vararg args: String
+    ): WebExpressionAuthorizationManager =
         WebExpressionAuthorizationManager(args.joinToString(separator = " or "))
 
-    fun AuthorizeHttpRequestsConfigurer<*>.AuthorizationManagerRequestMatcherRegistry
-            .authorizeLocalhostPaths(): AuthorizeHttpRequestsConfigurer<*>.AuthorizationManagerRequestMatcherRegistry {
+    fun AuthorizeHttpRequestsConfigurer<
+        *>.AuthorizationManagerRequestMatcherRegistry
+        .authorizeLocalhost():
+        AuthorizeHttpRequestsConfigurer<
+            *>.AuthorizationManagerRequestMatcherRegistry {
         return apply {
-            localhostAuthorized.forEach { matcher ->
-                requestMatchers(matcher)
-                    .access(expressionMatcher(isLocalHostString))
-            }
+            anyRequest().access(expressionMatcher(isLocalHostString))
         }
     }
 
-    fun AuthorizeHttpRequestsConfigurer<*>.AuthorizationManagerRequestMatcherRegistry
-            .authorizeJoinedPaths(): AuthorizeHttpRequestsConfigurer<*>.AuthorizationManagerRequestMatcherRegistry {
+    fun AuthorizeHttpRequestsConfigurer<
+        *>.AuthorizationManagerRequestMatcherRegistry
+        .authorizeJoinedPaths():
+        AuthorizeHttpRequestsConfigurer<
+            *>.AuthorizationManagerRequestMatcherRegistry {
         return apply {
             joinedAuthorized.forEach { matcher ->
                 requestMatchers(matcher)
-                    .access(expressionMatcher(isLocalHostString, isJoinedString))
+                    .access(
+                        expressionMatcher(isLocalHostString, isJoinedString))
             }
         }
     }
 
-    fun AuthorizeHttpRequestsConfigurer<*>.AuthorizationManagerRequestMatcherRegistry
-            .enablePublicPaths(): AuthorizeHttpRequestsConfigurer<*>.AuthorizationManagerRequestMatcherRegistry {
+    fun AuthorizeHttpRequestsConfigurer<
+        *>.AuthorizationManagerRequestMatcherRegistry
+        .enablePublicPaths():
+        AuthorizeHttpRequestsConfigurer<
+            *>.AuthorizationManagerRequestMatcherRegistry {
         return apply {
             publicAuthorized.forEach { matcher ->
                 requestMatchers(matcher).permitAll()
