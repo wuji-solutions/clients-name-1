@@ -4,6 +4,7 @@ import com.wuji.backend.game.GameType
 import com.wuji.backend.game.common.GameController
 import com.wuji.backend.game.common.dto.JoinGameRequestDto
 import com.wuji.backend.game.quiz.dto.QuizSummaryResponseDto
+import com.wuji.backend.security.IsAdmin
 import com.wuji.backend.security.RequiresGame
 import com.wuji.backend.security.auth.PlayerAuthService
 import jakarta.servlet.http.HttpServletRequest
@@ -37,6 +38,7 @@ class QuizController(
         return ResponseEntity.ok(participant.nickname)
     }
 
+    @IsAdmin
     @GetMapping("/summarize")
     fun summarizeGame(): ResponseEntity<QuizSummaryResponseDto> {
         return ResponseEntity.ok(quizService.getGameSummary())

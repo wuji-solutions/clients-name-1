@@ -163,15 +163,14 @@ class QuizServiceTest {
         every { quizGame.askedQuestions } returns mutableListOf(question)
 
         mockkObject(GameStats)
-        every {
-            GameStats.countCorrectIncorrectAnswersForQuestion(any(), any())
-        } returns Pair(5, 3)
+        every { GameStats.countCorrectIncorrectAnswers(any(), any()) } returns
+            Pair(5, 3)
 
         val dto = quizService.getGameSummary()
 
         assertEquals(1, dto.questions.size)
-        assertEquals(5, dto.questions[0].correctAnswers)
-        assertEquals(3, dto.questions[0].incorrectAnswers)
+        assertEquals(5, dto.questions[0].correctAnswersCount)
+        assertEquals(3, dto.questions[0].incorrectAnswersCount)
 
         unmockkObject(GameStats)
     }

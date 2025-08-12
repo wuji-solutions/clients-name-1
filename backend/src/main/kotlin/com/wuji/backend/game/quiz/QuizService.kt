@@ -14,7 +14,7 @@ import com.wuji.backend.player.state.QuizPlayer
 import com.wuji.backend.player.state.QuizPlayerDetails
 import com.wuji.backend.question.common.Question
 import com.wuji.backend.question.common.dto.toQuestionDto
-import com.wuji.backend.reports.common.GameStats.Companion.countCorrectIncorrectAnswersForQuestion
+import com.wuji.backend.reports.common.GameStats.Companion.countCorrectIncorrectAnswers
 import org.springframework.stereotype.Service
 
 @Service
@@ -69,8 +69,7 @@ class QuizService(
             quizGame.askedQuestions
                 .map { question ->
                     val (correct, incorrect) =
-                        countCorrectIncorrectAnswersForQuestion(
-                            quizGame, question.id)
+                        countCorrectIncorrectAnswers(quizGame, question.id)
                     QuestionWithSummaryDto(
                         question.toQuestionDto(), correct, incorrect)
                 }

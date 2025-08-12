@@ -6,6 +6,6 @@ data class QuizSummaryResponseDto(val questions: List<QuestionWithSummaryDto>)
 
 data class QuestionWithSummaryDto(
     val question: QuestionDto,
-    val correctAnswers: Int,
-    val incorrectAnswers: Int
+    val correctAnswersCount: Int,
+    val incorrectAnswersCount: Int
 )

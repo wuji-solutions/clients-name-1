@@ -12,7 +12,7 @@ abstract class GameStats {
         ): Int =
             game.players.count { player -> player.alreadyAnswered(questionId) }
 
-        fun countCorrectIncorrectAnswersForQuestion(
+        fun countCorrectIncorrectAnswers(
             game: AbstractGame<out PlayerDetails, out GameConfig>,
             questionId: Int
         ): Pair<Int, Int> {
