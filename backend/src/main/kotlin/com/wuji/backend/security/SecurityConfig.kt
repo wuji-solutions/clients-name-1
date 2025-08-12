@@ -21,14 +21,6 @@ class SecurityConfig(
     private val customAuthenticationEntryPoint: AuthenticationEntryPoint
 ) {
 
-    private final val localhostAuthorized =
-        listOf(
-            AntPathRequestMatcher("/manage/**"),
-            AntPathRequestMatcher("/v3/api-docs/**"),
-            AntPathRequestMatcher("/swagger-ui/**"),
-            AntPathRequestMatcher("/sse/*"),
-        )
-
     private final val joinedAuthorized =
         listOf(
             AntPathRequestMatcher("/sse/*/*"),
@@ -61,9 +53,7 @@ class SecurityConfig(
             .authorizeHttpRequests {
                 it.enablePublicPaths()
                     .authorizeJoinedPaths()
-                    .authorizeLocalhostPaths()
-                    .anyRequest()
-                    .denyAll()
+                    .authorizeLocalhost()
             }
 
         return http.build()
@@ -76,14 +66,11 @@ class SecurityConfig(
 
     fun AuthorizeHttpRequestsConfigurer<
         *>.AuthorizationManagerRequestMatcherRegistry
-        .authorizeLocalhostPaths():
+        .authorizeLocalhost():
         AuthorizeHttpRequestsConfigurer<
             *>.AuthorizationManagerRequestMatcherRegistry {
         return apply {
-            localhostAuthorized.forEach { matcher ->
-                requestMatchers(matcher)
-                    .access(expressionMatcher(isLocalHostString))
-            }
+            anyRequest().access(expressionMatcher(isLocalHostString))
         }
     }
 
