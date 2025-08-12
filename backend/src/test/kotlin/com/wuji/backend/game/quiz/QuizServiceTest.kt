@@ -14,9 +14,9 @@ import com.wuji.backend.question.common.Question
 import com.wuji.backend.question.common.QuestionType
 import com.wuji.backend.reports.common.GameStats
 import io.mockk.*
-import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import org.junit.jupiter.api.BeforeEach
 
 class QuizServiceTest {
 
@@ -35,7 +35,9 @@ class QuizServiceTest {
             every { askedQuestions } returns mutableListOf()
         }
 
-        quizService = QuizService(gameRegistry, playerService, sseUsersService, sseQuizService)
+        quizService =
+            QuizService(
+                gameRegistry, playerService, sseUsersService, sseQuizService)
 
         every { gameRegistry.getAs(QuizGame::class.java) } returns quizGame
         every { gameRegistry.game } returns quizGame
@@ -45,25 +47,29 @@ class QuizServiceTest {
     fun `joinGame should create player, add to game and send players event`() {
         val playerNickname = "Alice"
         val playerIndex = 420
-        val player = mockk<QuizPlayer> {
-            every { nickname } returns playerNickname
-            every { index } returns playerIndex
-        }
+        val player =
+            mockk<QuizPlayer> {
+                every { nickname } returns playerNickname
+                every { index } returns playerIndex
+            }
         every { playerService.createPlayer(any(), any(), any()) } returns player
 
         quizService.joinGame(playerIndex, playerNickname)
 
-        verify { playerService.createPlayer(playerIndex, playerNickname, any()) }
+        verify {
+            playerService.createPlayer(playerIndex, playerNickname, any())
+        }
         verify { sseUsersService.sendPlayers(match { it.contains(player) }) }
         assert(player in quizGame.players)
     }
 
     @Test
     fun `listPlayers should return mapped player DTOs`() {
-        val player = mockk<QuizPlayer> {
-            every { nickname } returns "John"
-            every { index } returns 420
-        }
+        val player =
+            mockk<QuizPlayer> {
+                every { nickname } returns "John"
+                every { index } returns 420
+            }
 
         every { quizGame.players } returns mutableSetOf(player)
 
@@ -82,9 +88,8 @@ class QuizServiceTest {
         quizService.createGame("test", config, questions)
 
         verify {
-            gameRegistry.register(match {
-                it.name == "test" && it.gameType == GameType.QUIZ
-            })
+            gameRegistry.register(
+                match { it.name == "test" && it.gameType == GameType.QUIZ })
         }
     }
 
@@ -132,19 +137,21 @@ class QuizServiceTest {
 
     @Test
     fun `getGameSummary should return questions with correct and incorrect counts`() {
-        val answer = mockk<Answer> {
-            every { id } returns 1
-            every { content } returns "content"
-        }
+        val answer =
+            mockk<Answer> {
+                every { id } returns 1
+                every { content } returns "content"
+            }
 
-        val question = mockk<Question> {
-            every { id } returns 1
-            every { category } returns "category"
-            every { type } returns QuestionType.TEXT
-            every { task } returns "task"
-            every {answers} returns listOf(answer)
-            every {correctAnswerIds} returns mutableSetOf(answer.id)
-        }
+        val question =
+            mockk<Question> {
+                every { id } returns 1
+                every { category } returns "category"
+                every { type } returns QuestionType.TEXT
+                every { task } returns "task"
+                every { answers } returns listOf(answer)
+                every { correctAnswerIds } returns mutableSetOf(answer.id)
+            }
 
         val player = mockk<QuizPlayer>()
         every { player.alreadyAnswered(question.id) } returns true
@@ -156,7 +163,9 @@ class QuizServiceTest {
         every { quizGame.askedQuestions } returns mutableListOf(question)
 
         mockkObject(GameStats)
-        every { GameStats.countCorrectIncorrectAnswersForQuestion(any(), any()) } returns Pair(5, 3)
+        every {
+            GameStats.countCorrectIncorrectAnswersForQuestion(any(), any())
+        } returns Pair(5, 3)
 
         val dto = quizService.getGameSummary()
 
@@ -166,5 +175,4 @@ class QuizServiceTest {
 
         unmockkObject(GameStats)
     }
-
 }
