@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 @SpringBootTest
 @AutoConfigureMockMvc
 class SecurityConfigTest(@Autowired val mockMvc: MockMvc) {
+    private val JOINED_URL_2 = "/games/hello/world"
 
     @Test
     fun `should allow localhost without JOINED`() {
@@ -85,7 +86,7 @@ class SecurityConfigTest(@Autowired val mockMvc: MockMvc) {
     fun `should allow JOINED for games path`() {
         mockMvc
             .perform(
-                MockMvcRequestBuilders.get("/games/hello/world")
+                MockMvcRequestBuilders.get(JOINED_URL_2)
                     .with(
                         SecurityMockMvcRequestPostProcessors.user("testuser")
                             .authorities(SimpleGrantedAuthority("JOINED")))
@@ -101,7 +102,7 @@ class SecurityConfigTest(@Autowired val mockMvc: MockMvc) {
     fun `should allow localhost for games path`() {
         mockMvc
             .perform(
-                MockMvcRequestBuilders.get("/games/hello/world").with { req ->
+                MockMvcRequestBuilders.get(JOINED_URL_2).with { req ->
                     req.remoteAddr = LOCALHOST_IPV4
                     req
                 })
@@ -113,12 +114,28 @@ class SecurityConfigTest(@Autowired val mockMvc: MockMvc) {
     fun `should deny games path without JOINED and not localhost`() {
         mockMvc
             .perform(
-                MockMvcRequestBuilders.get("/games/hello/world")
+                MockMvcRequestBuilders.get(JOINED_URL_2)
                     .with(SecurityMockMvcRequestPostProcessors.user("testuser"))
                     .with { req ->
                         req.remoteAddr = EXTERNAL_IP
                         req
                     })
             .andExpect(status().isForbidden)
+    }
+
+    @Test
+    fun `should allow joined user for extended games path`() {
+        mockMvc
+            .perform(
+                MockMvcRequestBuilders.get("/games/hello/world/123")
+                    .with(
+                        SecurityMockMvcRequestPostProcessors.user("testuser")
+                            .authorities(SimpleGrantedAuthority("JOINED")))
+                    .with { req ->
+                        req.remoteAddr = EXTERNAL_IP
+                        req
+                    })
+            .andExpect(status().isOk)
+            .andExpect(content().string("Hello Joined3"))
     }
 }
