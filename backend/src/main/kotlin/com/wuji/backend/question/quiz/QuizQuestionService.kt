@@ -70,6 +70,7 @@ class QuizQuestionService(
 
     fun endQuestion() {
         game.askedQuestions.add(getCurrentQuestion())
+        sseQuizService.sendEndQuestion()
         quizService.pauseGame()
     }
 

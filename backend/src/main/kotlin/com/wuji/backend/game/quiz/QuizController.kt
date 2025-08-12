@@ -39,9 +39,6 @@ class QuizController(
 
     @GetMapping("/summarize")
     fun summarizeGame(): ResponseEntity<QuizSummaryResponseDto> {
-
-
         return ResponseEntity.ok(quizService.getGameSummary())
     }
-
 }

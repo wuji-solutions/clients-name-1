@@ -5,6 +5,7 @@ import com.wuji.backend.events.common.SSEUsersService
 import com.wuji.backend.events.quiz.SSEQuizService
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.common.GameService
+import com.wuji.backend.game.quiz.dto.QuestionWithSummaryDto
 import com.wuji.backend.game.quiz.dto.QuizSummaryResponseDto
 import com.wuji.backend.player.dto.PlayerDto
 import com.wuji.backend.player.dto.PlayerDto.Companion.toDto
@@ -12,6 +13,8 @@ import com.wuji.backend.player.state.PlayerService
 import com.wuji.backend.player.state.QuizPlayer
 import com.wuji.backend.player.state.QuizPlayerDetails
 import com.wuji.backend.question.common.Question
+import com.wuji.backend.question.common.dto.toQuestionDto
+import com.wuji.backend.reports.common.GameStats.Companion.countCorrectIncorrectAnswersForQuestion
 import org.springframework.stereotype.Service
 
 @Service
@@ -19,7 +22,7 @@ class QuizService(
     private val gameRegistry: GameRegistry,
     private val playerService: PlayerService,
     private val sseService: SSEUsersService,
-    private val sseQuizService: SSEQuizService
+    private val sseQuizService: SSEQuizService,
 ) : GameService {
 
     private val quizGame: QuizGame
@@ -62,10 +65,20 @@ class QuizService(
     }
 
     fun getGameSummary(): QuizSummaryResponseDto {
-    return QuizSummaryResponseDto(
-        questionsToSummary = TODO()
-    )
+        val questionsWithSummary: List<QuestionWithSummaryDto> =
+            quizGame.askedQuestions
+                .map { question ->
+                    val (correct, incorrect) =
+                        countCorrectIncorrectAnswersForQuestion(
+                            quizGame, question.id)
+                    QuestionWithSummaryDto(
+                        question.toQuestionDto(), correct, incorrect)
+                }
+                .toList()
+
+        return QuizSummaryResponseDto(questionsWithSummary)
     }
+
     override fun getReport(): String {
         TODO("Not yet implemented")
     }

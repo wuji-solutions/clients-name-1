@@ -1,13 +1,11 @@
 package com.wuji.backend.game.quiz.dto
 
-data class QuizSummaryResponseDto(
-    val questionsToSummary: Map<QuestionId, QuestionSummaryDto>
-)
+import com.wuji.backend.question.common.dto.QuestionDto
 
+data class QuizSummaryResponseDto(val questions: List<QuestionWithSummaryDto>)
 
-data class QuestionSummaryDto(
+data class QuestionWithSummaryDto(
+    val question: QuestionDto,
     val correctAnswers: Int,
-    val incorrectAnswers: Int,
+    val incorrectAnswers: Int
 )
-
-typealias QuestionId = Int
