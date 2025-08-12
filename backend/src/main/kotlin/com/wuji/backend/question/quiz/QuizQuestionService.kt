@@ -66,7 +66,10 @@ class QuizQuestionService(
         return nextQuestion.toQuestionDto()
     }
 
+    fun askedQuestions() = game.askedQuestions
+
     fun endQuestion() {
+        game.askedQuestions.add(getCurrentQuestion())
         quizService.pauseGame()
     }
 
