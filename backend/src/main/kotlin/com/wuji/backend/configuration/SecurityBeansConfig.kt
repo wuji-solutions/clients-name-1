@@ -47,6 +47,7 @@ class SecurityBeansConfig {
 
     @PostConstruct
     fun initSecurityContextHolder() {
-        SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_THREADLOCAL)
+        SecurityContextHolder.setStrategyName(
+            SecurityContextHolder.MODE_THREADLOCAL)
     }
 }

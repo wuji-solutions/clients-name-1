@@ -20,7 +20,9 @@ class PlayerAuthService(private val sessionRegistry: SessionRegistry) {
         }
         val nickname = NicknameGenerator.generateRandom()
         val participant = Participant(index, nickname)
-        val auth = UsernamePasswordAuthenticationToken(participant, null, listOf(JOINED_ROLE))
+        val auth =
+            UsernamePasswordAuthenticationToken(
+                participant, null, listOf(JOINED_ROLE))
 
         val securityContext = SecurityContextHolder.getContext()
         securityContext.authentication = auth
@@ -33,17 +35,18 @@ class PlayerAuthService(private val sessionRegistry: SessionRegistry) {
     }
 
     fun removeAuthentication(index: Int) {
-        val principal = sessionRegistry.allPrincipals.find { (it as? Participant)?.index == index }
+        val principal =
+            sessionRegistry.allPrincipals.find {
+                (it as? Participant)?.index == index
+            }
         if (principal != null) {
             sessionRegistry.getAllSessions(principal, false).forEach {
                 sessionRegistry.removeSessionInformation(it.sessionId)
                 it.expireNow()
             }
             sessionRegistry.allPrincipals.remove(principal)
-
         }
     }
-
 }
 
 data class Participant(val index: Int, val nickname: String)

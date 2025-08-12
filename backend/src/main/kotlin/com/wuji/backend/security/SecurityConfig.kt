@@ -44,7 +44,8 @@ class SecurityConfig(
         sessionRegistry: SessionRegistry,
         playerAuthService: PlayerAuthService
     ): SecurityFilterChain {
-        val sessionValidationFilter = SessionValidationFilter(sessionRegistry, playerAuthService)
+        val sessionValidationFilter =
+            SessionValidationFilter(sessionRegistry, playerAuthService)
 
         http
             .csrf { it.disable() }
@@ -63,7 +64,11 @@ class SecurityConfig(
                 it.accessDeniedHandler(customAccessDeniedHandler)
                     .authenticationEntryPoint(customAuthenticationEntryPoint)
             }
-            .addFilterBefore(sessionValidationFilter, org.springframework.security.web.context.SecurityContextHolderFilter::class.java)
+            .addFilterBefore(
+                sessionValidationFilter,
+                org.springframework.security.web.context
+                        .SecurityContextHolderFilter::class
+                    .java)
             .authorizeHttpRequests {
                 it.enablePublicPaths()
                     .authorizeJoinedPaths()

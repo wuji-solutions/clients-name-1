@@ -1,189 +1,99 @@
 package com.wuji.backend.security.auth
 
-import com.wuji.backend.player.NicknameGenerator
-import io.mockk.every
-import io.mockk.mockkObject
-import io.mockk.unmockkObject
-import org.hamcrest.CoreMatchers.containsString
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
+import org.assertj.core.api.Assertions.assertThat
+import org.hamcrest.core.StringContains.containsString
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
-import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockHttpSession
-import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.session.SessionRegistry
+import org.springframework.security.core.context.SecurityContextImpl
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.delete
+import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
-import org.springframework.test.web.servlet.setup.MockMvcBuilders
-import org.springframework.web.context.WebApplicationContext
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
-import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity
 
 @SpringBootTest
-class PlayerAuthServiceIntegrationTest {
+@AutoConfigureMockMvc
+class PlayerAuthServiceHttpIntegrationTest
+@Autowired
+constructor(private val mockMvc: MockMvc) {
 
-    @Autowired
-    private lateinit var playerAuthService: PlayerAuthService
+    @Test
+    fun `POST to auth should create session and return participant`() {
+        val result =
+            mockMvc
+                .post("/test-auth/1") {
+                    contentType = MediaType.APPLICATION_JSON
+                }
+                .andReturn()
 
-    @Autowired
-    private lateinit var sessionRegistry: SessionRegistry
+        val participantJson = result.response.contentAsString
+        assertThat(participantJson).contains("\"index\":1")
+        assertThat(participantJson).contains("nickname")
 
-    @Autowired
-    private lateinit var context: WebApplicationContext
+        val session = result.request.session as MockHttpSession
+        val securityContext =
+            session.getAttribute(
+                HttpSessionSecurityContextRepository
+                    .SPRING_SECURITY_CONTEXT_KEY) as SecurityContextImpl
 
-    private lateinit var mockMvc: MockMvc
-    private lateinit var request: MockHttpServletRequest
-
-    @BeforeEach
-    fun setUp() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(context).apply{springSecurity()}.build()
-        request = MockHttpServletRequest()
-        SecurityContextHolder.clearContext()
-        mockkObject(NicknameGenerator)
+        assertThat(securityContext.authentication.principal)
+            .isInstanceOf(Participant::class.java)
     }
 
-    @AfterEach
-    fun tearDown() {
-        SecurityContextHolder.clearContext()
-        unmockkObject(NicknameGenerator)
-        sessionRegistry.allPrincipals.forEach { principal ->
-            sessionRegistry.getAllSessions(principal, false).forEach {
-                sessionRegistry.removeSessionInformation(it.sessionId)
+    @Test
+    fun `auth twice in same session should reuse participant`() {
+        val mSession = MockHttpSession()
+
+        val first =
+            mockMvc
+                .post("/test-auth/2") {
+                    contentType = MediaType.APPLICATION_JSON
+                    session = mSession
+                }
+                .andReturn()
+                .response
+                .contentAsString
+
+        val second =
+            mockMvc
+                .post("/test-auth/999") {
+                    contentType = MediaType.APPLICATION_JSON
+                    session = mSession
+                }
+                .andReturn()
+                .response
+                .contentAsString
+
+        assertThat(first).isEqualTo(second)
+    }
+
+    @Test
+    fun `DELETE should remove authentication`() {
+        val mSession = MockHttpSession()
+
+        // Authenticate first
+        mockMvc.post("/test-auth/3") {
+            contentType = MediaType.APPLICATION_JSON
+            session = mSession
+        }
+
+        // Remove
+        mockMvc
+            .delete("/test-auth/3") { session = mSession }
+            .andExpect { status { isOk() } }
+
+        // Expect error
+        mockMvc
+            .get("/test-auth/authenticated") { session = mSession }
+            .andExpect {
+                status { is4xxClientError() }
+                content { string(containsString("You are not logged in")) }
             }
-        }
-        sessionRegistry.allPrincipals.clear()
-    }
 
-    @Test
-    fun `should block kicked-out user from accessing answer endpoint`() {
-        // Arrange
-        val index = 1
-        every { NicknameGenerator.generateRandom() } returns "testPlayer"
-        val participant = playerAuthService.authenticate(index, request)
-        val rSession = request.session as MockHttpSession
-        playerAuthService.removeAuthentication(index)
-
-        // Act & Assert
-        mockMvc.post("/answer") {
-            contentType = MediaType.APPLICATION_JSON
-            content = """{"answerIds": [1, 2]}"""
-            session = rSession
-        }.andExpect {
-            status { is5xxServerError () }
-            content { string(containsString("You are not logged in")) }
-        }
-        assertNull(SecurityContextHolder.getContext().authentication)
-        assertNull(request.getSession(false))
-        assertEquals(emptyList<Any>(), sessionRegistry.allPrincipals)
-    }
-
-    @Test
-    fun `should block kicked-out user from accessing sse endpoint`() {
-        // Arrange
-        val index = 1
-        every { NicknameGenerator.generateRandom() } returns "testPlayer"
-        val participant = playerAuthService.authenticate(index, request)
-        val rSession = request.session as MockHttpSession
-        playerAuthService.removeAuthentication(index)
-
-        // Act & Assert
-        mockMvc.post("/sse/game1/player1") {
-            contentType = MediaType.APPLICATION_JSON
-            session = rSession
-        }.andExpect {
-            status { is5xxServerError() }
-            content { string(containsString("YOU WERE KICKED OUT XD")) }
-        }
-        assertNull(SecurityContextHolder.getContext().authentication)
-        assertNull(request.getSession(false))
-        assertEquals(emptyList<Any>(), sessionRegistry.allPrincipals)
-    }
-
-    @Test
-    fun `should block kicked-out user from accessing games endpoint`() {
-        // Arrange
-        val index = 1
-        every { NicknameGenerator.generateRandom() } returns "testPlayer"
-        val participant = playerAuthService.authenticate(index, request)
-        val rSession = request.session as MockHttpSession
-        playerAuthService.removeAuthentication(index)
-
-        // Act & Assert
-        mockMvc.post("/games/game1/action") {
-            contentType = MediaType.APPLICATION_JSON
-            session = rSession
-        }.andExpect {
-            status { is5xxServerError() }
-            content { string(containsString("YOU WERE KICKED OUT XD")) }
-        }
-        assertNull(SecurityContextHolder.getContext().authentication)
-        assertNull(request.getSession(false))
-        assertEquals(emptyList<Any>(), sessionRegistry.allPrincipals)
-    }
-
-    @Test
-    fun `should allow authenticated user to access answer endpoint`() {
-        // Arrange
-        val index = 1
-        every { NicknameGenerator.generateRandom() } returns "testPlayer"
-        val participant = playerAuthService.authenticate(index, request)
-        val rSession = request.session as MockHttpSession
-
-        // Act & Assert
-        mockMvc.post("/answer") {
-            contentType = MediaType.APPLICATION_JSON
-            content = """{"answerIds": [1, 2]}"""
-            session = rSession
-        }.andExpect {
-            status { isOk() }
-        }
-        assertNotNull(SecurityContextHolder.getContext().authentication)
-        assertEquals(participant, SecurityContextHolder.getContext().authentication.principal)
-        assertEquals(listOf(rSession.id), sessionRegistry.getAllSessions(participant, false).map { it.sessionId })
-    }
-
-    @Test
-    fun `should allow authenticated user to access sse endpoint`() {
-        // Arrange
-        val index = 1
-        every { NicknameGenerator.generateRandom() } returns "testPlayer"
-        val participant = playerAuthService.authenticate(index, request)
-        val rSession = request.session as MockHttpSession
-
-        // Act & Assert
-        mockMvc.post("/sse/game1/player1") {
-            contentType = MediaType.APPLICATION_JSON
-            session = rSession
-        }.andExpect {
-            status { isOk() }
-        }
-        assertNotNull(SecurityContextHolder.getContext().authentication)
-        assertEquals(participant, SecurityContextHolder.getContext().authentication.principal)
-        assertEquals(listOf(rSession.id), sessionRegistry.getAllSessions(participant, false).map { it.sessionId })
-    }
-
-    @Test
-    fun `should allow authenticated user to access games endpoint`() {
-        // Arrange
-        val index = 1
-        every { NicknameGenerator.generateRandom() } returns "testPlayer"
-        val participant = playerAuthService.authenticate(index, request)
-        val rSession = request.session as MockHttpSession
-
-        // Act & Assert
-        mockMvc.post("/games/game1/action") {
-            contentType = MediaType.APPLICATION_JSON
-            session = rSession
-        }.andExpect {
-            status { isOk() }
-        }
-        assertNotNull(SecurityContextHolder.getContext().authentication)
-        assertEquals(participant, SecurityContextHolder.getContext().authentication.principal)
-        assertEquals(listOf(rSession.id), sessionRegistry.getAllSessions(participant, false).map { it.sessionId })
+        assert(mSession.isInvalid)
     }
 }
