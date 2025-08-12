@@ -1,0 +1,30 @@
+name: Pull Request backend tests
+
+on:
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: ${{ github.head_ref }}
+        token: ${{ secrets.GITHUB_TOKEN }}
+    - uses: actions/setup-java@v4
+      with:
+        distribution: 'graalvm' 
+        java-version: '21'
+        
+    - name: Grant execute permissions to gradlew
+      run: chmod +x ./backend/gradlew
+      
+    - name: Run tests
+      working-directory: ./backend
+      run: ./gradlew test
