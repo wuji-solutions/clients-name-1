@@ -55,7 +55,6 @@ class SecurityConfig(
                 sm.sessionConcurrency { concurrency ->
                     concurrency.sessionRegistry(sessionRegistry())
                     concurrency.maximumSessions(1)
-                    concurrency.expiredUrl("/some-url")
                 }
             }
             .anonymous(Customizer.withDefaults())
