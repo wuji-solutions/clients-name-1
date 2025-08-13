@@ -70,9 +70,11 @@ class AdminController(
 
     @PostMapping("/kick")
     fun kickPlayer(
-        @RequestParam(required = true) playerIndex: Int
+        @RequestParam(required = true) index: Int,
+        @RequestParam(required = true) nickname: String
     ): ResponseEntity<Nothing> {
-        authService.removeAuthentication(playerIndex)
+        authService.removeAuthentication(index)
+        gameServiceDelegate.kickPlayer(index, nickname)
         return ResponseEntity.ok().build()
     }
 }

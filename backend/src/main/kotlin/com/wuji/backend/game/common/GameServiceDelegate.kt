@@ -27,8 +27,8 @@ class GameServiceDelegate(
                     "Unknown game type: ${gameRegistry.gameType}")
 
     override fun joinGame(
-        index: Any,
-        nickname: Any
+        index: Int,
+        nickname: String
     ): Player<out PlayerDetails> {
         return currentService.joinGame(index, nickname)
     }
@@ -55,5 +55,9 @@ class GameServiceDelegate(
 
     override fun getReport(): String {
         return currentService.getReport()
+    }
+
+    override fun kickPlayer(index: Int, nickname: String) {
+        return currentService.kickPlayer(index, nickname)
     }
 }

@@ -230,14 +230,18 @@ true
 
 ---
 
-### 15. Wydarzenia quizu (SSE)
+### 15. Wydarzenia (SSE)
 
-`GET /sse/quiz/events` *(Content-Type: text/event-stream)*
+`GET /sse/events` *(Content-Type: text/event-stream)*
 
-Typy wydarzeń:
+Typy wydarzeń wspólnych:
 - `game-start`, dane: `{}`
 - `game-finish`, dane: `{}`
-- `next-question`, dane: `{}`
+- `player-kicked`, dane: [`PlayerDto`](#playerdto)
+
+Typy wydarzeń dla quizu:
+- `next-question`, dane: `{}` 
+- `end-question`, dane: `{}`
 
 ---
 

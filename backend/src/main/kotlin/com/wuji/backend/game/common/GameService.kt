@@ -9,7 +9,7 @@ interface GameService {
 
     // Not sure if this is relevant as this 'GameService' is pretty much admin-only other than
     // joining game
-    fun joinGame(index: Any, nickname: Any): Player<out PlayerDetails>
+    fun joinGame(index: Int, nickname: String): Player<out PlayerDetails>
 
     fun listPlayers(): List<PlayerDto>
 
@@ -22,4 +22,6 @@ interface GameService {
     fun finishGame()
 
     fun getReport(): String
+
+    fun kickPlayer(index: Int, nickname: String)
 }

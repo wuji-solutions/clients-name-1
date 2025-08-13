@@ -1,7 +1,8 @@
 package com.wuji.backend.events.quiz
 
 import com.wuji.backend.events.common.ANSWER_COUNTER_CHANNEL
-import com.wuji.backend.events.common.QUIZ_EVENTS_CHANNEL
+import com.wuji.backend.events.common.EVENTS_CHANNEL
+import com.wuji.backend.events.common.SSEEventService
 import com.wuji.backend.events.common.SSEService
 import com.wuji.backend.events.common.dto.GameStartEvent
 import com.wuji.backend.events.quiz.dto.AnswerCounterEvent
@@ -10,14 +11,11 @@ import org.springframework.stereotype.Service
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
 
 @Service
-class SSEQuizService : SSEService() {
+class SSEQuizService(private val sseEventService: SSEEventService) :
+    SSEService() {
 
     fun addAnswerCounterEmitter(): SseEmitter {
         return addEmitter(ANSWER_COUNTER_CHANNEL)
-    }
-
-    fun addEventsEmitter(): SseEmitter {
-        return addEmitter(QUIZ_EVENTS_CHANNEL)
     }
 
     fun sendPlayersAnsweredCounter(count: Int) {
@@ -25,10 +23,10 @@ class SSEQuizService : SSEService() {
     }
 
     fun sendNextQuestion() {
-        sendEvent(QUIZ_EVENTS_CHANNEL, NextQuestionEvent())
+        sseEventService.sendEvent(EVENTS_CHANNEL, NextQuestionEvent())
     }
 
     fun sendQuizStart() {
-        sendEvent(QUIZ_EVENTS_CHANNEL, GameStartEvent())
+        sseEventService.sendEvent(EVENTS_CHANNEL, GameStartEvent())
     }
 }
