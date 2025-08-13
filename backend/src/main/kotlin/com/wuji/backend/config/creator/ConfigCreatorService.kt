@@ -2,7 +2,6 @@ package com.wuji.backend.config.creator
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
 import com.wuji.backend.config.BoardConfig
 import com.wuji.backend.config.ExamConfig
 import com.wuji.backend.config.GameConfig
@@ -12,8 +11,6 @@ import com.wuji.backend.config.dto.ExamConfigDto
 import com.wuji.backend.config.dto.GameConfigDto
 import com.wuji.backend.config.dto.QuizConfigDto
 import com.wuji.backend.game.GameType
-import jakarta.xml.bind.JAXBContext
-import jakarta.xml.bind.Marshaller
 import org.springframework.stereotype.Service
 import java.io.File
 import java.io.FileNotFoundException
@@ -75,5 +72,31 @@ class ConfigCreatorService() {
 
         val file = File(dir, name)
         mapper.writeValue(file, config)
+    }
+
+    fun listConfigs(type: GameType): List<String> {
+        val catalog = when (type) {
+            GameType.QUIZ -> "quiz"
+            GameType.EXAM -> "exam"
+            GameType.BOARD -> "board"
+        }
+        val dir = File("$configPath/$catalog")
+        if (!dir.exists() || !dir.isDirectory) {
+            throw FileNotFoundException("Katalog $configPath/$catalog nie istnieje lub nie jest katalogiem.")
+        }
+        return dir.listFiles()
+            ?.filter { it.isFile }
+            ?.map { it.name }
+            ?: emptyList()
+    }
+
+    fun deleteConfig(type: GameType, name: String): Boolean {
+        val catalog: String = when (type) {
+            GameType.QUIZ -> "quiz"
+            GameType.EXAM -> "exam"
+            GameType.BOARD -> "board"
+        }
+        val dir = File("$configPath/$catalog")
+        return File(dir, name).delete()
     }
 }
