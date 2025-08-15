@@ -6,10 +6,8 @@ import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.authentication.InsufficientAuthenticationException
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.session.SessionRegistry
-import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 
-@Component
 class SessionValidationFilter(
     private val sessionRegistry: SessionRegistry,
 ) : OncePerRequestFilter() {
@@ -26,7 +24,7 @@ class SessionValidationFilter(
                 val session = request.getSession(false)
                 session?.invalidate()
                 throw InsufficientAuthenticationException(
-                    "You are not logged in")
+                    "Your session is invalid")
             }
         }
         chain.doFilter(request, response)

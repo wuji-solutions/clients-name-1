@@ -9,7 +9,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.session.SessionRegistry
-import org.springframework.security.core.session.SessionRegistryImpl
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.access.AccessDeniedHandler
@@ -21,7 +20,7 @@ import org.springframework.web.cors.CorsConfigurationSource
 @EnableMethodSecurity
 class SecurityConfig(
     private val customAccessDeniedHandler: AccessDeniedHandler,
-    private val customAuthenticationEntryPoint: AuthenticationEntryPoint
+    private val customAuthenticationEntryPoint: AuthenticationEntryPoint,
 ) {
 
     private final val joinedAuthorized =
@@ -50,7 +49,7 @@ class SecurityConfig(
             .sessionManagement { sm ->
                 sm.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                 sm.sessionConcurrency { concurrency ->
-                    concurrency.sessionRegistry(sessionRegistry())
+                    concurrency.sessionRegistry(sessionRegistry)
                     concurrency.maximumSessions(1)
                 }
             }
@@ -113,10 +112,5 @@ class SecurityConfig(
                 requestMatchers(matcher).permitAll()
             }
         }
-    }
-
-    @Bean
-    fun sessionRegistry(): SessionRegistry {
-        return SessionRegistryImpl()
     }
 }
