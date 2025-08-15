@@ -37,7 +37,8 @@ class SecurityConfigTest(@Autowired val mockMvc: MockMvc) {
                 MockMvcRequestBuilders.get("/sse/hello")
                     .with(
                         SecurityMockMvcRequestPostProcessors.user("testuser")
-                            .authorities(SimpleGrantedAuthority("JOINED")))
+                            .authorities(SimpleGrantedAuthority("JOINED"))
+                    )
                     .with { req ->
                         req.remoteAddr = EXTERNAL_IP
                         req
@@ -50,9 +51,6 @@ class SecurityConfigTest(@Autowired val mockMvc: MockMvc) {
         mockMvc
             .perform(
                 MockMvcRequestBuilders.get("/sse/hello/world")
-                    .with(
-                        SecurityMockMvcRequestPostProcessors.user("testuser")
-                            .authorities(SimpleGrantedAuthority("JOINED")))
                     .with { req ->
                         req.remoteAddr = LOCALHOST_IPV4
                         req
@@ -89,7 +87,8 @@ class SecurityConfigTest(@Autowired val mockMvc: MockMvc) {
                 MockMvcRequestBuilders.get(JOINED_URL_2)
                     .with(
                         SecurityMockMvcRequestPostProcessors.user("testuser")
-                            .authorities(SimpleGrantedAuthority("JOINED")))
+                            .authorities(SimpleGrantedAuthority("JOINED"))
+                    )
                     .with { req ->
                         req.remoteAddr = EXTERNAL_IP
                         req
@@ -130,7 +129,8 @@ class SecurityConfigTest(@Autowired val mockMvc: MockMvc) {
                 MockMvcRequestBuilders.get("/games/hello/world/123")
                     .with(
                         SecurityMockMvcRequestPostProcessors.user("testuser")
-                            .authorities(SimpleGrantedAuthority("JOINED")))
+                            .authorities(SimpleGrantedAuthority("JOINED"))
+                    )
                     .with { req ->
                         req.remoteAddr = EXTERNAL_IP
                         req
