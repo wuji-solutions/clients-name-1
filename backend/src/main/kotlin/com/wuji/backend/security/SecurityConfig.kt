@@ -1,6 +1,5 @@
 package com.wuji.backend.security
 
-import com.wuji.backend.security.auth.PlayerAuthService
 import com.wuji.backend.security.auth.SessionValidationFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -42,10 +41,9 @@ class SecurityConfig(
         http: HttpSecurity,
         corsConfigurationSource: CorsConfigurationSource,
         sessionRegistry: SessionRegistry,
-        playerAuthService: PlayerAuthService
     ): SecurityFilterChain {
         val sessionValidationFilter =
-            SessionValidationFilter(sessionRegistry, playerAuthService)
+            SessionValidationFilter(sessionRegistry)
 
         http
             .csrf { it.disable() }

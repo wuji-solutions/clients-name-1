@@ -12,7 +12,6 @@ import org.springframework.web.filter.OncePerRequestFilter
 @Component
 class SessionValidationFilter(
     private val sessionRegistry: SessionRegistry,
-    private val playerAuthService: PlayerAuthService
 ) : OncePerRequestFilter() {
     override fun doFilterInternal(
         request: HttpServletRequest,
@@ -23,7 +22,6 @@ class SessionValidationFilter(
         if (auth?.principal is Participant) {
             val participant = auth.principal as Participant
             if (sessionRegistry.getAllSessions(participant, false).isEmpty()) {
-                playerAuthService.removeAuthentication(participant.index)
                 SecurityContextHolder.clearContext()
                 val session = request.getSession(false)
                 session?.invalidate()

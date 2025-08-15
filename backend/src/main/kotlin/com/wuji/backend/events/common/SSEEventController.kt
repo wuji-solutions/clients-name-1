@@ -9,7 +9,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
 @RequestMapping("/sse")
 class SSEEventController(private val sseService: SSEEventService) {
     @GetMapping("/events", produces = ["text/event-stream"])
-    fun nextQuestion(): SseEmitter {
+    fun events(): SseEmitter {
         return sseService.addEventsEmitter()
     }
 }
