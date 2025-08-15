@@ -68,7 +68,7 @@ class AdminController(
         return ResponseEntity.ok().build()
     }
 
-    @PostMapping("/kick")
+    @PostMapping("/player/kick")
     fun kickPlayer(
         @RequestParam(required = true) index: Int,
         @RequestParam(required = true) nickname: String

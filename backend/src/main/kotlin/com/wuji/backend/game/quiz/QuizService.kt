@@ -3,7 +3,6 @@ package com.wuji.backend.game.quiz
 import com.wuji.backend.config.QuizConfig
 import com.wuji.backend.events.common.SSEEventService
 import com.wuji.backend.events.common.SSEUsersService
-import com.wuji.backend.events.quiz.SSEQuizService
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.common.GameService
 import com.wuji.backend.game.quiz.dto.QuestionWithSummaryDto
@@ -25,7 +24,6 @@ class QuizService(
     private val gameRegistry: GameRegistry,
     private val playerService: PlayerService,
     private val sseService: SSEUsersService,
-    private val sseQuizService: SSEQuizService,
     private val sseEventService: SSEEventService
 ) : GameService {
 
@@ -55,7 +53,7 @@ class QuizService(
 
     override fun startGame() {
         quizGame.start()
-        sseQuizService.sendQuizStart()
+        sseEventService.sendGameStart()
     }
 
     override fun pauseGame() {
@@ -68,7 +66,7 @@ class QuizService(
 
     override fun finishGame() {
         quizGame.finish()
-        sseQuizService.sendQuizFinish()
+        sseEventService.sendGameFinish()
     }
 
     fun getGameSummary(): QuizSummaryResponseDto {

@@ -1,5 +1,7 @@
 package com.wuji.backend.events.common
 
+import com.wuji.backend.events.common.dto.GameFinishEvent
+import com.wuji.backend.events.common.dto.GameStartEvent
 import com.wuji.backend.events.common.dto.PlayerKickedEvent
 import com.wuji.backend.player.dto.PlayerDto
 import org.springframework.stereotype.Service
@@ -13,5 +15,13 @@ class SSEEventService() : SSEService() {
 
     fun sendPlayerKickedEvent(player: PlayerDto) {
         sendEvent(EVENTS_CHANNEL, PlayerKickedEvent(player))
+    }
+
+    fun sendGameStart() {
+        sendEvent(EVENTS_CHANNEL, GameStartEvent())
+    }
+
+    fun sendGameFinish() {
+        sendEvent(EVENTS_CHANNEL, GameFinishEvent())
     }
 }

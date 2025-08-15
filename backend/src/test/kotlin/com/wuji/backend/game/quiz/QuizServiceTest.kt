@@ -3,7 +3,6 @@ package com.wuji.backend.game.quiz
 import com.wuji.backend.config.QuizConfig
 import com.wuji.backend.events.common.SSEEventService
 import com.wuji.backend.events.common.SSEUsersService
-import com.wuji.backend.events.quiz.SSEQuizService
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.GameType
 import com.wuji.backend.player.dto.PlayerDto
@@ -26,7 +25,6 @@ class QuizServiceTest {
     private val gameRegistry = mockk<GameRegistry>(relaxed = true)
     private val playerService = mockk<PlayerService>(relaxed = true)
     private val sseUsersService = mockk<SSEUsersService>(relaxed = true)
-    private val sseQuizService = mockk<SSEQuizService>(relaxed = true)
     private val sseEventService = mockk<SSEEventService>(relaxed = true)
 
     private lateinit var quizService: QuizService
@@ -41,11 +39,7 @@ class QuizServiceTest {
 
         quizService =
             QuizService(
-                gameRegistry,
-                playerService,
-                sseUsersService,
-                sseQuizService,
-                sseEventService)
+                gameRegistry, playerService, sseUsersService, sseEventService)
 
         every { gameRegistry.getAs(QuizGame::class.java) } returns quizGame
         every { gameRegistry.game } returns quizGame
@@ -113,7 +107,7 @@ class QuizServiceTest {
 
         verify {
             quizGame.start()
-            sseQuizService.sendQuizStart()
+            sseEventService.sendGameStart()
         }
     }
 
@@ -143,7 +137,7 @@ class QuizServiceTest {
 
         verify {
             quizGame.finish()
-            sseQuizService.sendQuizFinish()
+            sseEventService.sendGameFinish()
         }
     }
 
