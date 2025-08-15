@@ -42,8 +42,7 @@ class SecurityConfig(
         corsConfigurationSource: CorsConfigurationSource,
         sessionRegistry: SessionRegistry,
     ): SecurityFilterChain {
-        val sessionValidationFilter =
-            SessionValidationFilter(sessionRegistry)
+        val sessionValidationFilter = SessionValidationFilter(sessionRegistry)
 
         http
             .csrf { it.disable() }

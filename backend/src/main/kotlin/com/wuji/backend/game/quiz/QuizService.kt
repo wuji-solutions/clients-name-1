@@ -29,10 +29,8 @@ class QuizService(
         get() = gameRegistry.getAs(QuizGame::class.java)
 
     override fun joinGame(index: Int, nickname: String): QuizPlayer {
-        try {
-            if (quizGame.findPlayerByIndex(index).nickname == nickname)
-                throw PlayerAlreadyJoinedException(nickname, index)
-        } catch (_: PlayerNotFoundException) {}
+        if (hasJoined(index, nickname))
+            throw PlayerAlreadyJoinedException(index, nickname)
 
         return playerService
             .createPlayer(index, nickname, QuizPlayerDetails())
@@ -77,4 +75,12 @@ class QuizService(
         quizGame.players.remove(player)
         sseEventService.sendPlayerKickedEvent(player.toDto())
     }
+
+    override fun hasJoined(index: Int, nickname: String): Boolean =
+        try {
+            quizGame.findPlayerByIndexAndNickname(index, nickname)
+            true
+        } catch (_: PlayerNotFoundException) {
+            false
+        }
 }

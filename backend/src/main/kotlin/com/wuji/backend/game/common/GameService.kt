@@ -24,4 +24,6 @@ interface GameService {
     fun getReport(): String
 
     fun kickPlayer(index: Int, nickname: String)
+
+    fun hasJoined(index: Int, nickname: String): Boolean
 }

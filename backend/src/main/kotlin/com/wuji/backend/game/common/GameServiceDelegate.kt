@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class GameServiceDelegate(
-    private val quizService: QuizService,
+    quizService: QuizService,
     private val gameRegistry: GameRegistry
 ) : GameService {
     private val services =
@@ -59,5 +59,9 @@ class GameServiceDelegate(
 
     override fun kickPlayer(index: Int, nickname: String) {
         return currentService.kickPlayer(index, nickname)
+    }
+
+    override fun hasJoined(index: Int, nickname: String): Boolean {
+        return currentService.hasJoined(index, nickname)
     }
 }
