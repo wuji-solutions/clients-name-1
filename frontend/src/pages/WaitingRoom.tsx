@@ -45,11 +45,7 @@ const UserInputContainer = styled.div({
   width: '80vw',
 });
 
-type Props = {
-  user: string | undefined;
-};
-
-const SSEOnStartListener: FC<Props> = ({ user }) => {
+function SSEOnStartListener({ user }: { readonly user: string }) {
   const navigate = useNavigate();
   const delegate = useSSEChannel(
     `${user === 'admin' ? BACKEND_ENDPOINT : BACKEND_ENDPOINT_EXTERNAL}/sse/quiz/events`,
@@ -64,7 +60,7 @@ const SSEOnStartListener: FC<Props> = ({ user }) => {
   }, [delegate]);
 
   return <></>;
-};
+}
 
 function WaitingRoom() {
   const { user, username, setUsername } = useAppContext();
