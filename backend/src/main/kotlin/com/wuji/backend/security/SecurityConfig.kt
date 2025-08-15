@@ -1,5 +1,6 @@
 package com.wuji.backend.security
 
+import com.wuji.backend.security.auth.SessionValidationFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.Customizer
@@ -7,6 +8,8 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.core.session.SessionRegistry
+import org.springframework.security.core.session.SessionRegistryImpl
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.access.AccessDeniedHandler
@@ -36,13 +39,20 @@ class SecurityConfig(
     @Bean
     fun securityFilterChain(
         http: HttpSecurity,
-        corsConfigurationSource: CorsConfigurationSource
+        corsConfigurationSource: CorsConfigurationSource,
+        sessionRegistry: SessionRegistry,
     ): SecurityFilterChain {
+        val sessionValidationFilter = SessionValidationFilter(sessionRegistry)
+
         http
             .csrf { it.disable() }
             .cors { it.configurationSource(corsConfigurationSource) }
             .sessionManagement { sm ->
                 sm.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                sm.sessionConcurrency { concurrency ->
+                    concurrency.sessionRegistry(sessionRegistry())
+                    concurrency.maximumSessions(1)
+                }
             }
             .anonymous(Customizer.withDefaults())
             .formLogin { it.disable() }
@@ -50,6 +60,11 @@ class SecurityConfig(
                 it.accessDeniedHandler(customAccessDeniedHandler)
                     .authenticationEntryPoint(customAuthenticationEntryPoint)
             }
+            .addFilterBefore(
+                sessionValidationFilter,
+                org.springframework.security.web.context
+                        .SecurityContextHolderFilter::class
+                    .java)
             .authorizeHttpRequests {
                 it.enablePublicPaths()
                     .authorizeJoinedPaths()
@@ -98,5 +113,10 @@ class SecurityConfig(
                 requestMatchers(matcher).permitAll()
             }
         }
+    }
+
+    @Bean
+    fun sessionRegistry(): SessionRegistry {
+        return SessionRegistryImpl()
     }
 }

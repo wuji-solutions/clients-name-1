@@ -3,8 +3,10 @@ package com.wuji.backend.configuration
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.wuji.backend.security.CustomAccessDeniedHandler
 import com.wuji.backend.security.CustomAuthenticationEntryPoint
+import jakarta.annotation.PostConstruct
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.access.AccessDeniedHandler
 import org.springframework.web.cors.CorsConfiguration
@@ -41,5 +43,11 @@ class SecurityBeansConfig {
         val source = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", configuration)
         return source
+    }
+
+    @PostConstruct
+    fun initSecurityContextHolder() {
+        SecurityContextHolder.setStrategyName(
+            SecurityContextHolder.MODE_THREADLOCAL)
     }
 }
