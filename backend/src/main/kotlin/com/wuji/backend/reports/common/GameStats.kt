@@ -11,5 +11,20 @@ abstract class GameStats {
             questionId: Int
         ): Int =
             game.players.count { player -> player.alreadyAnswered(questionId) }
+
+        fun countCorrectIncorrectAnswers(
+            game: AbstractGame<out PlayerDetails, out GameConfig>,
+            questionId: Int
+        ): Pair<Int, Int> {
+            val playersAnswered =
+                game.players.filter { player ->
+                    player.alreadyAnswered(questionId)
+                }
+            val correctAnswers =
+                playersAnswered.count { player ->
+                    player.answerForQuestion(questionId).isCorrect
+                }
+            return correctAnswers to playersAnswered.size - correctAnswers
+        }
     }
 }

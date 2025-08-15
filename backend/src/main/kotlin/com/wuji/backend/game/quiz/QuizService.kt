@@ -6,6 +6,8 @@ import com.wuji.backend.events.common.SSEUsersService
 import com.wuji.backend.events.quiz.SSEQuizService
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.common.GameService
+import com.wuji.backend.game.quiz.dto.QuestionWithSummaryDto
+import com.wuji.backend.game.quiz.dto.QuizSummaryResponseDto
 import com.wuji.backend.player.dto.PlayerDto
 import com.wuji.backend.player.dto.PlayerDto.Companion.toDto
 import com.wuji.backend.player.state.PlayerService
@@ -14,6 +16,8 @@ import com.wuji.backend.player.state.QuizPlayerDetails
 import com.wuji.backend.player.state.exception.PlayerAlreadyJoinedException
 import com.wuji.backend.player.state.exception.PlayerNotFoundException
 import com.wuji.backend.question.common.Question
+import com.wuji.backend.question.common.dto.toQuestionDto
+import com.wuji.backend.reports.common.GameStats.Companion.countCorrectIncorrectAnswers
 import org.springframework.stereotype.Service
 
 @Service
@@ -64,6 +68,21 @@ class QuizService(
 
     override fun finishGame() {
         quizGame.finish()
+        sseQuizService.sendQuizFinish()
+    }
+
+    fun getGameSummary(): QuizSummaryResponseDto {
+        val questionsWithSummary: List<QuestionWithSummaryDto> =
+            quizGame.askedQuestions
+                .map { question ->
+                    val (correct, incorrect) =
+                        countCorrectIncorrectAnswers(quizGame, question.id)
+                    QuestionWithSummaryDto(
+                        question.toQuestionDto(), correct, incorrect)
+                }
+                .toList()
+
+        return QuizSummaryResponseDto(questionsWithSummary)
     }
 
     override fun getReport(): String {

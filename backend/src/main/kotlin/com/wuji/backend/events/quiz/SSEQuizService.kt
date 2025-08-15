@@ -4,8 +4,10 @@ import com.wuji.backend.events.common.ANSWER_COUNTER_CHANNEL
 import com.wuji.backend.events.common.EVENTS_CHANNEL
 import com.wuji.backend.events.common.SSEEventService
 import com.wuji.backend.events.common.SSEService
+import com.wuji.backend.events.common.dto.GameFinishEvent
 import com.wuji.backend.events.common.dto.GameStartEvent
 import com.wuji.backend.events.quiz.dto.AnswerCounterEvent
+import com.wuji.backend.events.quiz.dto.EndQuestionEvent
 import com.wuji.backend.events.quiz.dto.NextQuestionEvent
 import org.springframework.stereotype.Service
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
@@ -28,5 +30,13 @@ class SSEQuizService(private val sseEventService: SSEEventService) :
 
     fun sendQuizStart() {
         sseEventService.sendEvent(EVENTS_CHANNEL, GameStartEvent())
+    }
+
+    fun sendQuizFinish() {
+        sendEvent(QUIZ_EVENTS_CHANNEL, GameFinishEvent())
+    }
+
+    fun sendEndQuestion() {
+        sendEvent(QUIZ_EVENTS_CHANNEL, EndQuestionEvent())
     }
 }
