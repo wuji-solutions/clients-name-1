@@ -33,10 +33,10 @@ class SSEQuizService(private val sseEventService: SSEEventService) :
     }
 
     fun sendQuizFinish() {
-        sendEvent(QUIZ_EVENTS_CHANNEL, GameFinishEvent())
+        sendEvent(EVENTS_CHANNEL, GameFinishEvent())
     }
 
     fun sendEndQuestion() {
-        sendEvent(QUIZ_EVENTS_CHANNEL, EndQuestionEvent())
+        sendEvent(EVENTS_CHANNEL, EndQuestionEvent())
     }
 }

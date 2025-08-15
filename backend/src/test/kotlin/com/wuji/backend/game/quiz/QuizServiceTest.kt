@@ -1,13 +1,16 @@
 package com.wuji.backend.game.quiz
 
 import com.wuji.backend.config.QuizConfig
+import com.wuji.backend.events.common.SSEEventService
 import com.wuji.backend.events.common.SSEUsersService
 import com.wuji.backend.events.quiz.SSEQuizService
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.GameType
+import com.wuji.backend.player.dto.PlayerDto
 import com.wuji.backend.player.dto.PlayerDto.Companion.toDto
 import com.wuji.backend.player.state.PlayerService
 import com.wuji.backend.player.state.QuizPlayer
+import com.wuji.backend.player.state.exception.PlayerNotFoundException
 import com.wuji.backend.question.common.Answer
 import com.wuji.backend.question.common.PlayerAnswer
 import com.wuji.backend.question.common.Question
@@ -24,6 +27,7 @@ class QuizServiceTest {
     private val playerService = mockk<PlayerService>(relaxed = true)
     private val sseUsersService = mockk<SSEUsersService>(relaxed = true)
     private val sseQuizService = mockk<SSEQuizService>(relaxed = true)
+    private val sseEventService = mockk<SSEEventService>(relaxed = true)
 
     private lateinit var quizService: QuizService
     private lateinit var quizGame: QuizGame
@@ -37,7 +41,11 @@ class QuizServiceTest {
 
         quizService =
             QuizService(
-                gameRegistry, playerService, sseUsersService, sseQuizService)
+                gameRegistry,
+                playerService,
+                sseUsersService,
+                sseQuizService,
+                sseEventService)
 
         every { gameRegistry.getAs(QuizGame::class.java) } returns quizGame
         every { gameRegistry.game } returns quizGame
@@ -52,14 +60,18 @@ class QuizServiceTest {
                 every { nickname } returns playerNickname
                 every { index } returns playerIndex
             }
+        val playerDto = PlayerDto(playerIndex, playerNickname)
+
         every { playerService.createPlayer(any(), any(), any()) } returns player
+        every { quizGame.findPlayerByIndexAndNickname(any(), any()) } throws
+            PlayerNotFoundException(playerIndex)
 
         quizService.joinGame(playerIndex, playerNickname)
 
         verify {
             playerService.createPlayer(playerIndex, playerNickname, any())
         }
-        verify { sseUsersService.sendPlayers(match { it.contains(player) }) }
+        verify { sseUsersService.sendPlayers(match { it.contains(playerDto) }) }
         assert(player in quizGame.players)
     }
 

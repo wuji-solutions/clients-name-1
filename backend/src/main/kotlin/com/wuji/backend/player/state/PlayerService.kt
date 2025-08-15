@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class PlayerService {
-    final inline fun <reified T : PlayerDetails> createPlayer(
+    final fun <T : PlayerDetails> createPlayer(
         index: Int,
         nickname: String,
         details: T
