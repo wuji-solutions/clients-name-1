@@ -25,7 +25,7 @@ class SecurityConfig(
 
     private final val joinedAuthorized =
         listOf(
-            AntPathRequestMatcher("/sse/*/*"),
+            AntPathRequestMatcher("/sse/events"),
             AntPathRequestMatcher("/games/*/**"))
 
     private final val publicAuthorized =
