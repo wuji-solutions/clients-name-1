@@ -26,7 +26,8 @@ class SessionValidationFilter(
                 val session = request.getSession(false)
                 session?.invalidate()
                 throw InsufficientAuthenticationException(
-                    "You are not logged in")
+                    "You are not logged in"
+                )
             }
         }
         chain.doFilter(request, response)

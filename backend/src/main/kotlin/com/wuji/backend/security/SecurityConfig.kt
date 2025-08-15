@@ -9,11 +9,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.session.SessionRegistry
-import org.springframework.security.core.session.SessionRegistryImpl
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.access.AccessDeniedHandler
 import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager
+import org.springframework.security.web.context.SecurityContextHolderFilter
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 import org.springframework.web.cors.CorsConfigurationSource
 
@@ -21,13 +21,15 @@ import org.springframework.web.cors.CorsConfigurationSource
 @EnableMethodSecurity
 class SecurityConfig(
     private val customAccessDeniedHandler: AccessDeniedHandler,
-    private val customAuthenticationEntryPoint: AuthenticationEntryPoint
+    private val customAuthenticationEntryPoint: AuthenticationEntryPoint,
+    private val sessionValidationFilter: SessionValidationFilter
 ) {
 
     private final val joinedAuthorized =
         listOf(
             AntPathRequestMatcher("/sse/*/*"),
-            AntPathRequestMatcher("/games/*/**"))
+            AntPathRequestMatcher("/games/*/**")
+        )
 
     private final val publicAuthorized =
         listOf(AntPathRequestMatcher("/games/*/join", "POST"))
@@ -42,15 +44,13 @@ class SecurityConfig(
         corsConfigurationSource: CorsConfigurationSource,
         sessionRegistry: SessionRegistry,
     ): SecurityFilterChain {
-        val sessionValidationFilter = SessionValidationFilter(sessionRegistry)
-
         http
             .csrf { it.disable() }
             .cors { it.configurationSource(corsConfigurationSource) }
             .sessionManagement { sm ->
                 sm.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                 sm.sessionConcurrency { concurrency ->
-                    concurrency.sessionRegistry(sessionRegistry())
+                    concurrency.sessionRegistry(sessionRegistry)
                     concurrency.maximumSessions(1)
                 }
             }
@@ -62,9 +62,9 @@ class SecurityConfig(
             }
             .addFilterBefore(
                 sessionValidationFilter,
-                org.springframework.security.web.context
-                        .SecurityContextHolderFilter::class
-                    .java)
+                SecurityContextHolderFilter::class
+                    .java
+            )
             .authorizeHttpRequests {
                 it.enablePublicPaths()
                     .authorizeJoinedPaths()
@@ -80,34 +80,32 @@ class SecurityConfig(
         WebExpressionAuthorizationManager(args.joinToString(separator = " or "))
 
     fun AuthorizeHttpRequestsConfigurer<
-        *>.AuthorizationManagerRequestMatcherRegistry
-        .authorizeLocalhost():
-        AuthorizeHttpRequestsConfigurer<
-            *>.AuthorizationManagerRequestMatcherRegistry {
+            *>.AuthorizationManagerRequestMatcherRegistry.authorizeLocalhost():
+            AuthorizeHttpRequestsConfigurer<
+                    *>.AuthorizationManagerRequestMatcherRegistry {
         return apply {
             anyRequest().access(expressionMatcher(isLocalHostString))
         }
     }
 
     fun AuthorizeHttpRequestsConfigurer<
-        *>.AuthorizationManagerRequestMatcherRegistry
-        .authorizeJoinedPaths():
-        AuthorizeHttpRequestsConfigurer<
-            *>.AuthorizationManagerRequestMatcherRegistry {
+            *>.AuthorizationManagerRequestMatcherRegistry.authorizeJoinedPaths():
+            AuthorizeHttpRequestsConfigurer<
+                    *>.AuthorizationManagerRequestMatcherRegistry {
         return apply {
             joinedAuthorized.forEach { matcher ->
                 requestMatchers(matcher)
                     .access(
-                        expressionMatcher(isLocalHostString, isJoinedString))
+                        expressionMatcher(isLocalHostString, isJoinedString)
+                    )
             }
         }
     }
 
     fun AuthorizeHttpRequestsConfigurer<
-        *>.AuthorizationManagerRequestMatcherRegistry
-        .enablePublicPaths():
-        AuthorizeHttpRequestsConfigurer<
-            *>.AuthorizationManagerRequestMatcherRegistry {
+            *>.AuthorizationManagerRequestMatcherRegistry.enablePublicPaths():
+            AuthorizeHttpRequestsConfigurer<
+                    *>.AuthorizationManagerRequestMatcherRegistry {
         return apply {
             publicAuthorized.forEach { matcher ->
                 requestMatchers(matcher).permitAll()
@@ -115,8 +113,5 @@ class SecurityConfig(
         }
     }
 
-    @Bean
-    fun sessionRegistry(): SessionRegistry {
-        return SessionRegistryImpl()
-    }
+
 }

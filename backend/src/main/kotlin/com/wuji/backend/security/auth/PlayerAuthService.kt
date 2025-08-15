@@ -22,7 +22,8 @@ class PlayerAuthService(private val sessionRegistry: SessionRegistry) {
         val participant = Participant(index, nickname)
         val auth =
             UsernamePasswordAuthenticationToken(
-                participant, null, listOf(JOINED_ROLE))
+                participant, null, listOf(JOINED_ROLE)
+            )
 
         val securityContext = SecurityContextHolder.getContext()
         securityContext.authentication = auth
@@ -44,6 +45,7 @@ class PlayerAuthService(private val sessionRegistry: SessionRegistry) {
                 sessionRegistry.removeSessionInformation(it.sessionId)
                 it.expireNow()
             }
+            println("Removed session $index")
             sessionRegistry.allPrincipals.remove(principal)
         }
     }
