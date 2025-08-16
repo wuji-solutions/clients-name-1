@@ -37,7 +37,8 @@ class SecurityConfigTest(@Autowired val mockMvc: MockMvc) {
                 MockMvcRequestBuilders.get("/sse/hello")
                     .with(
                         SecurityMockMvcRequestPostProcessors.user("testuser")
-                            .authorities(SimpleGrantedAuthority("JOINED")))
+                            .authorities(SimpleGrantedAuthority("JOINED"))
+                    )
                     .with { req ->
                         req.remoteAddr = EXTERNAL_IP
                         req
@@ -46,15 +47,12 @@ class SecurityConfigTest(@Autowired val mockMvc: MockMvc) {
     }
 
     @Test
-    fun `should allow user with JOINED authority`() {
+    fun `should allow localhost user`() {
         mockMvc
             .perform(
                 MockMvcRequestBuilders.get("/sse/hello/world")
-                    .with(
-                        SecurityMockMvcRequestPostProcessors.user("testuser")
-                            .authorities(SimpleGrantedAuthority("JOINED")))
                     .with { req ->
-                        req.remoteAddr = EXTERNAL_IP
+                        req.remoteAddr = LOCALHOST_IPV4
                         req
                     })
             .andExpect(status().isOk)
@@ -62,7 +60,7 @@ class SecurityConfigTest(@Autowired val mockMvc: MockMvc) {
     }
 
     @Test
-    fun `should deny user without JOINED and not localhost`() {
+    fun `should deny user that are not localhost`() {
         mockMvc
             .perform(
                 MockMvcRequestBuilders.get("/sse/hello/world")
@@ -89,7 +87,8 @@ class SecurityConfigTest(@Autowired val mockMvc: MockMvc) {
                 MockMvcRequestBuilders.get(JOINED_URL_2)
                     .with(
                         SecurityMockMvcRequestPostProcessors.user("testuser")
-                            .authorities(SimpleGrantedAuthority("JOINED")))
+                            .authorities(SimpleGrantedAuthority("JOINED"))
+                    )
                     .with { req ->
                         req.remoteAddr = EXTERNAL_IP
                         req
@@ -130,7 +129,8 @@ class SecurityConfigTest(@Autowired val mockMvc: MockMvc) {
                 MockMvcRequestBuilders.get("/games/hello/world/123")
                     .with(
                         SecurityMockMvcRequestPostProcessors.user("testuser")
-                            .authorities(SimpleGrantedAuthority("JOINED")))
+                            .authorities(SimpleGrantedAuthority("JOINED"))
+                    )
                     .with { req ->
                         req.remoteAddr = EXTERNAL_IP
                         req
