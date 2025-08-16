@@ -2,8 +2,7 @@ package com.wuji.backend.events.common
 
 import com.wuji.backend.events.common.dto.PlayerListEvent
 import com.wuji.backend.events.common.dto.SSEEvent
-import com.wuji.backend.player.state.Player
-import com.wuji.backend.player.state.PlayerDetails
+import com.wuji.backend.player.dto.PlayerDto
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 import org.springframework.stereotype.Service
@@ -52,7 +51,7 @@ open class SSEService {
 
 @Service
 class SSEUsersService : SSEService() {
-    fun sendPlayers(data: Collection<Player<PlayerDetails>>) {
+    fun sendPlayers(data: Collection<PlayerDto>) {
         sendEvent(PLAYER_LIST_CHANNEL, PlayerListEvent(data))
     }
 }

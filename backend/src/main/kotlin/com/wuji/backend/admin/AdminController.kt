@@ -9,6 +9,7 @@ import com.wuji.backend.security.GameCreated
 import com.wuji.backend.security.GamePaused
 import com.wuji.backend.security.GameRunning
 import com.wuji.backend.security.IsAdmin
+import com.wuji.backend.security.auth.PlayerAuthService
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
@@ -20,7 +21,8 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/manage")
 class AdminController(
     private val quizService: QuizService,
-    private val gameServiceDelegate: GameServiceDelegate
+    private val gameServiceDelegate: GameServiceDelegate,
+    private val authService: PlayerAuthService
 ) {
 
     @PostMapping("/quiz")
@@ -63,6 +65,16 @@ class AdminController(
     @PostMapping("/finish")
     fun finishGame(): ResponseEntity<Nothing> {
         gameServiceDelegate.finishGame()
+        return ResponseEntity.ok().build()
+    }
+
+    @PostMapping("/player/kick")
+    fun kickPlayer(
+        @RequestParam(required = true) index: Int,
+        @RequestParam(required = true) nickname: String
+    ): ResponseEntity<Nothing> {
+        authService.removeAuthentication(index)
+        gameServiceDelegate.kickPlayer(index, nickname)
         return ResponseEntity.ok().build()
     }
 }

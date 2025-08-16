@@ -6,22 +6,19 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.session.SessionRegistry
 import org.springframework.stereotype.Service
 
 @Service
-class PlayerAuthService {
+class PlayerAuthService(private val sessionRegistry: SessionRegistry) {
     private val JOINED_ROLE = SimpleGrantedAuthority("JOINED")
 
     fun authenticate(index: Int, request: HttpServletRequest): Participant {
-        if (SecurityContextHolder.getContext()
-            .authentication
-            .authorities
-            .contains(JOINED_ROLE)) {
-            return SecurityContextHolder.getContext().authentication.principal
-                as Participant
+        val currentAuth = SecurityContextHolder.getContext().authentication
+        if (currentAuth?.authorities?.contains(JOINED_ROLE) == true) {
+            return currentAuth.principal as Participant
         }
         val nickname = NicknameGenerator.generateRandom()
-
         val participant = Participant(index, nickname)
         val auth =
             UsernamePasswordAuthenticationToken(
@@ -32,8 +29,23 @@ class PlayerAuthService {
 
         val session = request.getSession(true)
         session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext)
+        sessionRegistry.registerNewSession(session.id, participant)
 
         return participant
+    }
+
+    fun removeAuthentication(index: Int) {
+        val principal =
+            sessionRegistry.allPrincipals.find {
+                (it as? Participant)?.index == index
+            }
+        if (principal != null) {
+            sessionRegistry.getAllSessions(principal, false).forEach {
+                sessionRegistry.removeSessionInformation(it.sessionId)
+                it.expireNow()
+            }
+            sessionRegistry.allPrincipals.remove(principal)
+        }
     }
 }
 

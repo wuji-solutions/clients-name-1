@@ -48,7 +48,7 @@ const UserInputContainer = styled.div({
 function SSEOnStartListener({ user }: { readonly user: string }) {
   const navigate = useNavigate();
   const delegate = useSSEChannel(
-    `${user === 'admin' ? BACKEND_ENDPOINT : BACKEND_ENDPOINT_EXTERNAL}/sse/quiz/events`,
+    `${user === 'admin' ? BACKEND_ENDPOINT : BACKEND_ENDPOINT_EXTERNAL}/sse/events`,
     { withCredentials: true }
   );
 
