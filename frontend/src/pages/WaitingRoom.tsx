@@ -62,9 +62,39 @@ function SSEOnStartListener({ user }: { readonly user: string }) {
   return <></>;
 }
 
+function PlayerKickListener({
+  userHandler,
+  onKick,
+}: {
+  userHandler: React.Dispatch<React.SetStateAction<string | null>>;
+  onKick: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
+  const delegate = useSSEChannel(`${BACKEND_ENDPOINT_EXTERNAL}/sse/events`, {
+    withCredentials: true,
+  });
+
+  useEffect(() => {
+    const unsubscribe = delegate.on('player-kicked', (data) => {
+      if (
+        sessionStorage.getItem('userindex') == data.index &&
+        sessionStorage.getItem('username') == data.nickname
+      ) {
+        sessionStorage.removeItem('userindex');
+        sessionStorage.removeItem('username');
+        onKick(true);
+        userHandler(null);
+      }
+    });
+    return unsubscribe;
+  }, [delegate]);
+
+  return <></>;
+}
+
 function WaitingRoom() {
   const { user, username, setUsername } = useAppContext();
   const [identificator, setIdentificator] = useState<number | null>(null);
+  const [playerKicked, setPlayerKicked] = useState(false);
   const navigate = useNavigate();
 
   const joinGame = () => {
@@ -94,16 +124,31 @@ function WaitingRoom() {
     return (
       <Container>
         {!username ? (
-          <UserInputContainer>
-            <CustomTextInput
-              placeholder="Podaj numer z dziennika / numer grupy"
-              onChange={(e) => setIdentificator(parseInt(e.target.value))}
-            />
-            <ButtonCustom onClick={() => joinGame()}>Dołącz do gry</ButtonCustom>
-          </UserInputContainer>
+          !playerKicked ? (
+            <UserInputContainer>
+              <CustomTextInput
+                placeholder="Podaj numer z dziennika / numer grupy"
+                onChange={(e) => setIdentificator(parseInt(e.target.value))}
+              />
+              <ButtonCustom onClick={() => joinGame()}>Dołącz do gry</ButtonCustom>
+            </UserInputContainer>
+          ) : (
+            <UserInputContainer>
+              <span>Wyrzucono cie z gry, kliknij OK aby dołączyć ponownie</span>
+              <ButtonCustom
+                onClick={() => {
+                  joinGame();
+                  setPlayerKicked(false);
+                }}
+              >
+                OK
+              </ButtonCustom>
+            </UserInputContainer>
+          )
         ) : (
           <UserInputContainer>
             <SSEOnStartListener user={user} />
+            <PlayerKickListener userHandler={setUsername} onKick={setPlayerKicked} />
             <h4>Witaj {username}!</h4>
             Czekaj na rozpoczęcie rozgrywki
           </UserInputContainer>
@@ -115,7 +160,7 @@ function WaitingRoom() {
   return (
     <Container>
       <SSEOnStartListener user={user} />
-      <PlayerList user={user} />
+      <PlayerList />
       <QRContainer>
         <QRCode
           value={'http://192.168.137.1:3000/waiting-room'} // NOSONAR

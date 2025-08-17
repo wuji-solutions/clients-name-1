@@ -27,6 +27,6 @@ class SSEQuizService(private val sseEventService: SSEEventService) :
     }
 
     fun sendEndQuestion() {
-        sendEvent(EVENTS_CHANNEL, EndQuestionEvent())
+        sseEventService.sendEvent(EVENTS_CHANNEL, EndQuestionEvent())
     }
 }

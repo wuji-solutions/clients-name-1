@@ -1,56 +1,91 @@
-import React, { useEffect, useState } from "react";
-import { BACKEND_ENDPOINT, BACKEND_ENDPOINT_EXTERNAL } from "../common/config";
-import { styled } from "styled-components";
-import { useSSEChannel } from "../providers/SSEProvider";
+import React, { useEffect, useState } from 'react';
+import { BACKEND_ENDPOINT } from '../common/config';
+import { styled } from 'styled-components';
+import { useSSEChannel } from '../providers/SSEProvider';
+import theme from '../common/theme';
+import { service } from '../service/service';
 
 const Contaier = styled.div({
-  marginTop: "auto",
-  marginBottom: "auto",
-  marginLeft: "20px",
-  height: "88vh",
-  width: "27%",
-  padding: "20px",
-  display: "flex",
-  flexDirection: "column",
-  border: `2px solid`,
-  borderRadius: "5px",
+  marginTop: 'auto',
+  marginBottom: 'auto',
+  marginLeft: '20px',
+  height: '88vh',
+  width: '27%',
+  padding: '20px',
+  display: 'flex',
+  flexDirection: 'column',
+  border: `2px solid #000`,
+  borderRadius: '25px',
+  background: theme.palette.button.primary,
 });
 
 const Header = styled.span({
   fontWeight: 700,
-  fontSize: "22px",
-  marginLeft: "auto",
-  marginRight: "auto",
-  marginTop: "15px",
-  marginBottom: "25px",
+  fontSize: '40px',
+  marginLeft: 'auto',
+  marginRight: 'auto',
+  marginTop: '15px',
+  marginBottom: '25px',
 });
 
 const PlayerContainer = styled.div({
-  display: "flex",
-  flexDirection: "column",
-  gap: "12px",
-  textAlign: "center",
-  overflowY: "auto",
-  overflowX: "hidden",
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '12px',
+  padding: '30px',
+  fontSize: '20px',
+  textAlign: 'start',
+  overflowY: 'auto',
+  overflowX: 'scroll',
+  height: '100%',
 });
 
 const PlayerEntry = styled.span<{ isNew: boolean }>(({ isNew }) => ({
-  display: "inline-block",
-  transformOrigin: "center",
-  animation: isNew ? "popin 0.3s ease forwards" : "none",
-  "@keyframes popin": {
-    "0%": {
-      transform: "scale(0.5)",
+  display: 'inline-block',
+  transformOrigin: 'center',
+  animation: isNew ? 'popin 0.3s ease forwards' : 'none',
+  '@keyframes popin': {
+    '0%': {
+      transform: 'scale(0.5)',
       opacity: 0,
     },
-    "60%": {
-      transform: "scale(1.2)",
+    '60%': {
+      transform: 'scale(1.2)',
       opacity: 1,
     },
-    "100%": {
-      transform: "scale(1)",
+    '100%': {
+      transform: 'scale(1)',
       opacity: 1,
     },
+  },
+}));
+
+const CloseIcon = styled.a(() => ({
+  marginLeft: '20px',
+  width: '32px',
+  height: '32px',
+  opacity: '1',
+  color: theme.palette.main.error,
+  cursor: 'pointer',
+
+  '&:hover': {
+    opacity: '0.6',
+  },
+  '&:before': {
+    left: '15px',
+    content: ' ',
+    height: '33px',
+    width: '2px',
+    backgroundColor: '#333',
+    transform: 'rotate(45deg)',
+  },
+  '&:after': {
+    left: '15px',
+    content: ' ',
+    height: '33px',
+    width: '2px',
+    backgroundColor: '#333',
+    transform: 'rotate(45deg)',
   },
 }));
 
@@ -64,7 +99,7 @@ const addPlayers = (
   event: Player[],
   players: Player[],
   setPlayers: React.Dispatch<React.SetStateAction<Player[]>>,
-  setNewPlayers: React.Dispatch<React.SetStateAction<Set<string>>>,
+  setNewPlayers: React.Dispatch<React.SetStateAction<Set<string>>>
 ) => {
   try {
     const data: Player[] = event;
@@ -90,32 +125,42 @@ const addPlayers = (
       }, 1500);
     }
   } catch (error) {
-    console.error("Failed to fetch player list: ", error);
+    console.error('Failed to fetch player list: ', error);
   }
 };
 
-function PlayerList({ user }: { readonly user: string }) {
+function PlayerList() {
   const [players, setPlayers] = useState<Player[]>([]);
   const [newPlayers, setNewPlayers] = useState<Set<string>>(new Set());
   const delegate = useSSEChannel(`${BACKEND_ENDPOINT}/sse/users`);
 
   useEffect(() => {
-    const unsubscribe = delegate.on("player-list", (data) => {
+    const unsubscribe = delegate.on('player-list', (data) => {
       addPlayers(data, players, setPlayers, setNewPlayers);
     });
     return unsubscribe;
   }, [delegate]);
+
+  const kickPlayer = (index: number, nickname: string) => {
+    service
+      .kickPlayer(index, nickname)
+      .then(() => {
+        service
+          .getPlayerList()
+          .then((response) => addPlayers(response.data, players, setPlayers, setNewPlayers))
+          .catch((error) => console.log(error));
+      })
+      .catch((error) => console.log(error));
+  };
 
   return (
     <Contaier>
       <Header>Lista graczy</Header>
       <PlayerContainer>
         {players.map((player) => (
-          <PlayerEntry
-            key={player.nickname}
-            isNew={newPlayers.has(player.nickname)}
-          >
+          <PlayerEntry key={player.nickname} isNew={newPlayers.has(player.nickname)}>
             {player.nickname}
+            <CloseIcon onClick={() => kickPlayer(player.index, player.nickname)}>X</CloseIcon>
           </PlayerEntry>
         ))}
       </PlayerContainer>

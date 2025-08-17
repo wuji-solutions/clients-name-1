@@ -21,6 +21,14 @@ const startGame = () => {
   return axios.post(BACKEND_ENDPOINT + '/manage/start');
 };
 
+const finishGame = () => {
+  return axios.post(BACKEND_ENDPOINT + '/finish');
+};
+
+const getGameSummary = () => {
+  return axios.get(BACKEND_ENDPOINT + '/games/quiz/summarize') // TODO: CHANGE HARD CODED QUIZ TO SPECIFIC VALUE WHEN MORE GAMES TYPES ARE AVAILABLE
+};
+
 const getCurrentQuestion = (user: string, mode: string) => {
   return axios.get(
     user === 'admin'
@@ -48,12 +56,31 @@ const nextQuestion = (mode: string = 'quiz') => {
   return axios.post(BACKEND_ENDPOINT + `/games/${mode}/questions/next`, {});
 };
 
+const kickPlayer = (index: number, nickname: string) => {
+  return axios.post(
+    BACKEND_ENDPOINT + '/manage/player/kick?index=' + index + '&nickname=' + nickname
+  );
+};
+
+const getPlayerList = () => {
+  return axios.get(BACKEND_ENDPOINT + '/manage/players');
+};
+
+const hasAnsweredQuestion = (questionId: number) => {
+  return axios.get(BACKEND_ENDPOINT_EXTERNAL + `/games/quiz/questions/${questionId}/already-answered`, {withCredentials: true});
+};
+
 export const service = {
   startLobby: startLobby,
   joinGame: joinGame,
   startGame: startGame,
+  finishGame: finishGame,
+  getGameSummary: getGameSummary,
   getCurrentQuestion: getCurrentQuestion,
   sendAnswer: sendAnswer,
   endQuestion: endQuestion,
   nextQuestion: nextQuestion,
+  kickPlayer: kickPlayer,
+  getPlayerList: getPlayerList,
+  hasAnsweredQuestion: hasAnsweredQuestion,
 };

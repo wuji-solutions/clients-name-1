@@ -55,17 +55,14 @@ class QuizQuestionController(
         return ResponseEntity.ok(questionService.getAnswersPerQuestion())
     }
 
-    @GetMapping("/already-answered")
+    @GetMapping("/{questionId}/already-answered")
     fun playerAlreadyAnswered(
-        @Valid
-        @RequestBody
-        questionDto:
-            QuestionAlreadyAnsweredRequestDto, // TODO: move to path param
+        @PathVariable questionId: Int,
         auth: Authentication
     ): ResponseEntity<QuestionAlreadyAnsweredResponseDto> {
         val index = auth.playerIndex()
         return ResponseEntity.ok(
-            questionService.playerAlreadyAnswered(
-                questionDto.questionId, index))
+            questionService.playerAlreadyAnswered(questionId, index)
+        )
     }
 }
