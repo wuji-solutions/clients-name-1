@@ -53,14 +53,18 @@ export class SSEManager {
   closeChannel(url: string) {
     const ch = this.channels.get(url);
     if (!ch) return;
-    try { ch.es.close(); } catch {}
+    try {
+      ch.es.close();
+    } catch {}
     ch.delegate.clearAll();
     this.channels.delete(url);
   }
 
   closeAll() {
     this.channels.forEach((ch) => {
-      try { ch.es.close(); } catch {}
+      try {
+        ch.es.close();
+      } catch {}
       ch.delegate.clearAll();
     });
     this.channels.clear();
