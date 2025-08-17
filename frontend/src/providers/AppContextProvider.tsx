@@ -1,12 +1,5 @@
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import Cookies from "js-cookie";
+import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
+import Cookies from 'js-cookie';
 
 interface AppContextType {
   user: string | null;
@@ -34,16 +27,16 @@ export const AppProvider = ({ children }: AppProviderProps) => {
   const [userindex, setUserindex] = useState<number | null>(null);
 
   useEffect(() => {
-    if (window.location.hostname === "localhost") {
-      setUser("admin");
+    if (window.location.hostname === 'localhost') {
+      setUser('admin');
     } else {
-      setUser("user");
+      setUser('user');
     }
   }, []);
 
   useEffect(() => {
-    const storedUserIndex = sessionStorage.getItem("userindex");
-    const storedUsername = sessionStorage.getItem("username");
+    const storedUserIndex = sessionStorage.getItem('userindex');
+    const storedUsername = sessionStorage.getItem('username');
 
     if (storedUserIndex && storedUsername) {
       const parsedIndex = parseInt(storedUserIndex, 10);
@@ -56,19 +49,18 @@ export const AppProvider = ({ children }: AppProviderProps) => {
     }
   }, []);
 
-  const value = useMemo(() => ({
-    user,
-    username,
-    setUsername,
-    userindex,
-    setUserindex,
-  }), [user, username, setUsername]);
-
-  return (
-    <AppContext.Provider value={value}>
-      {children}
-    </AppContext.Provider>
+  const value = useMemo(
+    () => ({
+      user,
+      username,
+      setUsername,
+      userindex,
+      setUserindex,
+    }),
+    [user, username, setUsername]
   );
+
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
 
 export const useAppContext = () => {
