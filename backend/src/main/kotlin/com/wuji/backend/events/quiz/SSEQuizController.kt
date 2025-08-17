@@ -12,9 +12,4 @@ class SSEQuizController(private val sseService: SSEQuizService) {
     fun answerCounter(): SseEmitter {
         return sseService.addAnswerCounterEmitter()
     }
-
-    @GetMapping("/events", produces = ["text/event-stream"])
-    fun nextQuestion(): SseEmitter {
-        return sseService.addEventsEmitter()
-    }
 }

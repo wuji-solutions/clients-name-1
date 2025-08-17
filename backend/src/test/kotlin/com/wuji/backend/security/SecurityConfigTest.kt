@@ -46,23 +46,19 @@ class SecurityConfigTest(@Autowired val mockMvc: MockMvc) {
     }
 
     @Test
-    fun `should allow user with JOINED authority`() {
+    fun `should allow localhost user`() {
         mockMvc
             .perform(
-                MockMvcRequestBuilders.get("/sse/hello/world")
-                    .with(
-                        SecurityMockMvcRequestPostProcessors.user("testuser")
-                            .authorities(SimpleGrantedAuthority("JOINED")))
-                    .with { req ->
-                        req.remoteAddr = EXTERNAL_IP
-                        req
-                    })
+                MockMvcRequestBuilders.get("/sse/hello/world").with { req ->
+                    req.remoteAddr = LOCALHOST_IPV4
+                    req
+                })
             .andExpect(status().isOk)
             .andExpect(content().string("Hello Joined"))
     }
 
     @Test
-    fun `should deny user without JOINED and not localhost`() {
+    fun `should deny user that are not localhost`() {
         mockMvc
             .perform(
                 MockMvcRequestBuilders.get("/sse/hello/world")

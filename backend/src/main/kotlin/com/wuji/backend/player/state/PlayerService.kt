@@ -5,12 +5,10 @@ import org.springframework.stereotype.Service
 @Service
 class PlayerService {
     final fun <T : PlayerDetails> createPlayer(
-        index: Any,
-        nickname: Any,
+        index: Int,
+        nickname: String,
         details: T
     ): Player<T> {
-        if (index !is Int)
-            throw IllegalArgumentException("Index ucznia powinien byc numerem")
-        return Player(index, nickname as String, details)
+        return Player(index, nickname, details)
     }
 }
