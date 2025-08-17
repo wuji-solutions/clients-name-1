@@ -4,7 +4,6 @@ import com.wuji.backend.game.GameType
 import com.wuji.backend.game.quiz.dto.AnswerQuestionRequestDto
 import com.wuji.backend.question.common.QuestionController
 import com.wuji.backend.question.common.dto.AnswersPerQuestionDto
-import com.wuji.backend.question.common.dto.QuestionAlreadyAnsweredRequestDto
 import com.wuji.backend.question.common.dto.QuestionAlreadyAnsweredResponseDto
 import com.wuji.backend.question.common.dto.QuestionDto
 import com.wuji.backend.security.GameRunning
@@ -62,7 +61,6 @@ class QuizQuestionController(
     ): ResponseEntity<QuestionAlreadyAnsweredResponseDto> {
         val index = auth.playerIndex()
         return ResponseEntity.ok(
-            questionService.playerAlreadyAnswered(questionId, index)
-        )
+            questionService.playerAlreadyAnswered(questionId, index))
     }
 }
