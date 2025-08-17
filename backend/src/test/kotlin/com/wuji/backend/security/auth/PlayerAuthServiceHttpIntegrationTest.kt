@@ -91,7 +91,7 @@ constructor(private val mockMvc: MockMvc) {
             .get("/test-auth/authenticated") { session = mSession }
             .andExpect {
                 status { is4xxClientError() }
-                content { string(containsString("You are not logged in")) }
+                content { string(containsString("Your session is invalid")) }
             }
 
         assert(mSession.isInvalid)
