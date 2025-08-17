@@ -196,7 +196,7 @@ true
 
 ### 12. Wyrzucenie gracza
 
-`POST /manage/kick?playerIndex={int}`
+`POST /manage/player/kick?playerIndex={int}`
 
 ---
 
