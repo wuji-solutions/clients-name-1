@@ -7,23 +7,8 @@ import AnswerCard, { colorPalette } from '../components/AnswerCard';
 import AccessRestricted from '../components/AccessRestricted';
 import { ButtonCustom } from '../components/Button';
 import { useNavigate } from 'react-router-dom';
-
-interface Answer {
-  id: number;
-  content: string;
-}
-
-interface QuestionData {
-  question: {
-    id: number;
-    category: string;
-    type: string;
-    task: string;
-    answers: Answer[];
-  };
-  correctAnswersCount: number;
-  incorrectAnswersCount: number;
-}
+import { QuestionData } from '../common/types';
+import { getPercentage } from '../common/utils';
 
 interface Props {
   data: QuestionData;
@@ -98,8 +83,8 @@ const QuestionCard = ({ data }: Props) => {
   const { question, correctAnswersCount, incorrectAnswersCount } = data;
 
   const total = correctAnswersCount + incorrectAnswersCount;
-  const correctPercent = total > 0 ? (correctAnswersCount / total) * 100 : 0;
-  const incorrectPercent = total > 0 ? (incorrectAnswersCount / total) * 100 : 0;
+  const correctPercent = getPercentage(correctAnswersCount, total);
+  const incorrectPercent = getPercentage(incorrectAnswersCount, total);
 
   return (
     <Card>
@@ -145,7 +130,7 @@ function Summary() {
   return (
     <Container>
       <div style={{ width: '100%', height: '50px' }}>
-        <ButtonCustom onClick={() => navigate('/konfiguracja')} >Powrót</ButtonCustom>
+        <ButtonCustom onClick={() => navigate('/konfiguracja')}>Powrót</ButtonCustom>
       </div>
       <div>{summary && summary.questions.map((question) => <QuestionCard data={question} />)}</div>
     </Container>

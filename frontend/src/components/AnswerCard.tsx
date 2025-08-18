@@ -20,7 +20,7 @@ export function darkenColor(hex: string, amount: number): string {
   return `rgb(${R}, ${G}, ${B})`;
 }
 
-const AnswerCard = styled.div<{ backgroundcolor: string; isselected: boolean }>(
+const AnswerCard = styled.div<{ backgroundcolor: string; isselected: boolean | undefined }>(
   ({ backgroundcolor, isselected }) => {
     const base = backgroundcolor;
     const gradient = isselected

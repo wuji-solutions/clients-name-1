@@ -26,7 +26,7 @@ const finishGame = () => {
 };
 
 const getGameSummary = () => {
-  return axios.get(BACKEND_ENDPOINT + '/games/quiz/summarize') // TODO: CHANGE HARD CODED QUIZ TO SPECIFIC VALUE WHEN MORE GAMES TYPES ARE AVAILABLE
+  return axios.get(BACKEND_ENDPOINT + '/games/quiz/summarize'); // TODO: CHANGE HARD CODED QUIZ TO SPECIFIC VALUE WHEN MORE GAMES TYPES ARE AVAILABLE
 };
 
 const getCurrentQuestion = (user: string, mode: string) => {
@@ -67,7 +67,10 @@ const getPlayerList = () => {
 };
 
 const hasAnsweredQuestion = (questionId: number) => {
-  return axios.get(BACKEND_ENDPOINT_EXTERNAL + `/games/quiz/questions/${questionId}/already-answered`, {withCredentials: true});
+  return axios.get(
+    BACKEND_ENDPOINT_EXTERNAL + `/games/quiz/questions/${questionId}/already-answered`,
+    { withCredentials: true }
+  );
 };
 
 export const service = {
