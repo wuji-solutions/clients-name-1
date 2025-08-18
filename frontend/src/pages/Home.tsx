@@ -1,6 +1,4 @@
-import React from 'react';
 import { styled } from 'styled-components';
-import theme from '../common/theme';
 import { useNavigate } from 'react-router-dom';
 import { ButtonCustom } from '../components/Button';
 import { useAppContext } from '../providers/AppContextProvider';
