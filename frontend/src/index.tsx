@@ -10,9 +10,7 @@ import Quiz from "./pages/quiz/Quiz";
 import { SSEProvider } from "./providers/SSEProvider";
 import Summary from "./pages/Summary";
 
-const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement,
-);
+const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
   <React.StrictMode>
     <AppProvider>
@@ -28,5 +26,5 @@ root.render(
         </Router>
       </SSEProvider>
     </AppProvider>
-  </React.StrictMode>,
+  </React.StrictMode>
 );
