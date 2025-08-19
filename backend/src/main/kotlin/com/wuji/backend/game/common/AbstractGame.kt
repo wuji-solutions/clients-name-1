@@ -4,6 +4,7 @@ import com.wuji.backend.config.GameConfig
 import com.wuji.backend.game.GameType
 import com.wuji.backend.player.state.Player
 import com.wuji.backend.player.state.PlayerDetails
+import com.wuji.backend.player.state.exception.PlayerNotFoundException
 
 abstract class AbstractGame<DetailsT : PlayerDetails, ConfigT : GameConfig>(
     val name: String,
@@ -23,4 +24,11 @@ abstract class AbstractGame<DetailsT : PlayerDetails, ConfigT : GameConfig>(
     abstract fun finish()
 
     abstract fun getReport(): String
+
+    fun findPlayerByIndex(index: Int): Player<DetailsT> {
+        return players.find { player -> player.index == index }
+            ?: throw PlayerNotFoundException(index).also {
+                println("Player not found: $players")
+            }
+    }
 }

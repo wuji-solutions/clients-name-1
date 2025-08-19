@@ -12,8 +12,6 @@ import com.wuji.backend.question.common.dto.QuestionAlreadyAnsweredResponseDto
 import com.wuji.backend.question.common.dto.QuestionDto
 import com.wuji.backend.question.common.dto.toDetailedAnswerDto
 import com.wuji.backend.question.common.dto.toQuestionDto
-import com.wuji.backend.question.common.exception.InvalidQuestionIdException
-import com.wuji.backend.question.common.exception.QuestionAlreadyAnsweredException
 import com.wuji.backend.reports.common.GameStats
 import org.springframework.stereotype.Service
 
@@ -22,7 +20,7 @@ class QuizQuestionService(
     val gameRegistry: GameRegistry,
     private val sseQuizService: SSEQuizService,
     private val quizService: QuizService,
-) : QuestionService {
+) : QuestionService() {
 
     private val game: QuizGame
         get() = gameRegistry.getAs(QuizGame::class.java)
@@ -36,32 +34,15 @@ class QuizQuestionService(
 
     fun getQuestion() = getCurrentQuestion().toQuestionDto()
 
-    override fun answerQuestion(
-        playerIndex: Int,
-        answerIds: Set<Int>
-    ): Boolean {
+    fun answerQuizQuestion(playerIndex: Int, answerIds: Set<Int>): Boolean {
         val question = getCurrentQuestion()
         val player = game.findPlayerByIndex(playerIndex)
 
-        if (player.alreadyAnswered(question.id)) {
-            throw QuestionAlreadyAnsweredException(question.id)
-        }
-        val invalidQuestionId =
-            answerIds.find { answerId ->
-                question.answers.none { it.id == answerId }
-            }
-        if (invalidQuestionId != null) {
-            throw InvalidQuestionIdException(invalidQuestionId)
-        }
-        // TODO update answerTimeInMilliseconds according to internal game timer, when it's built
-        val playerAnswer = PlayerAnswer(question, answerIds, 0)
-        player.details.answers.add(playerAnswer)
-        updatePlayersAnsweredCounter(question.id)
-        return question.areCorrectAnswerIds(answerIds)
+        return answerQuestion(player, question, answerIds)
     }
 
     fun getNextQuestion(): QuestionDto {
-        val nextQuestion = game.questionDispenser.moveNextQuestion()
+        val nextQuestion = game.questionDispenser.moveToNextQuestion()
         sseQuizService.sendNextQuestion()
         return nextQuestion.toQuestionDto()
     }
