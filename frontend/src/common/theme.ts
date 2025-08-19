@@ -3,7 +3,7 @@ const theme = {
     main: {
       background: '#F8FAFC',
       panel: '#FFFFFF',
-      primary: '#3B82F6',
+      primary: '#2d2e30',
       secondary: '#64748B',
       accent: '#FACC15',
       success: '#22C55E',

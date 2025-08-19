@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { BACKEND_ENDPOINT, BACKEND_ENDPOINT_EXTERNAL } from '../common/config';
+import { BACKEND_ENDPOINT } from '../common/config';
 import { styled } from 'styled-components';
 import { useSSEChannel } from '../providers/SSEProvider';
+import theme from '../common/theme';
+import { service } from '../service/service';
 
 const Contaier = styled.div({
   marginTop: 'auto',
@@ -12,13 +14,14 @@ const Contaier = styled.div({
   padding: '20px',
   display: 'flex',
   flexDirection: 'column',
-  border: `2px solid`,
-  borderRadius: '5px',
+  border: `2px solid #000`,
+  borderRadius: '25px',
+  background: theme.palette.button.primary,
 });
 
 const Header = styled.span({
   fontWeight: 700,
-  fontSize: '22px',
+  fontSize: '40px',
   marginLeft: 'auto',
   marginRight: 'auto',
   marginTop: '15px',
@@ -29,9 +32,12 @@ const PlayerContainer = styled.div({
   display: 'flex',
   flexDirection: 'column',
   gap: '12px',
-  textAlign: 'center',
+  padding: '30px',
+  fontSize: '20px',
+  textAlign: 'start',
   overflowY: 'auto',
-  overflowX: 'hidden',
+  overflowX: 'scroll',
+  height: '100%',
 });
 
 const PlayerEntry = styled.span<{ isNew: boolean }>(({ isNew }) => ({
@@ -51,6 +57,35 @@ const PlayerEntry = styled.span<{ isNew: boolean }>(({ isNew }) => ({
       transform: 'scale(1)',
       opacity: 1,
     },
+  },
+}));
+
+const CloseIcon = styled.a(() => ({
+  marginLeft: '20px',
+  width: '32px',
+  height: '32px',
+  opacity: '1',
+  color: theme.palette.main.error,
+  cursor: 'pointer',
+
+  '&:hover': {
+    opacity: '0.6',
+  },
+  '&:before': {
+    left: '15px',
+    content: ' ',
+    height: '33px',
+    width: '2px',
+    backgroundColor: '#333',
+    transform: 'rotate(45deg)',
+  },
+  '&:after': {
+    left: '15px',
+    content: ' ',
+    height: '33px',
+    width: '2px',
+    backgroundColor: '#333',
+    transform: 'rotate(45deg)',
   },
 }));
 
@@ -94,7 +129,7 @@ const addPlayers = (
   }
 };
 
-function PlayerList({ user }: { readonly user: string }) {
+function PlayerList() {
   const [players, setPlayers] = useState<Player[]>([]);
   const [newPlayers, setNewPlayers] = useState<Set<string>>(new Set());
   const delegate = useSSEChannel(`${BACKEND_ENDPOINT}/sse/users`);
@@ -106,6 +141,18 @@ function PlayerList({ user }: { readonly user: string }) {
     return unsubscribe;
   }, [delegate]);
 
+  const kickPlayer = (index: number, nickname: string) => {
+    service
+      .kickPlayer(index, nickname)
+      .then(() => {
+        service
+          .getPlayerList()
+          .then((response) => addPlayers(response.data, players, setPlayers, setNewPlayers))
+          .catch((error) => console.log(error));
+      })
+      .catch((error) => console.log(error));
+  };
+
   return (
     <Contaier>
       <Header>Lista graczy</Header>
@@ -113,6 +160,7 @@ function PlayerList({ user }: { readonly user: string }) {
         {players.map((player) => (
           <PlayerEntry key={player.nickname} isNew={newPlayers.has(player.nickname)}>
             {player.nickname}
+            <CloseIcon onClick={() => kickPlayer(player.index, player.nickname)}>X</CloseIcon>
           </PlayerEntry>
         ))}
       </PlayerContainer>

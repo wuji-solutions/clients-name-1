@@ -1,5 +1,4 @@
 import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
-import Cookies from 'js-cookie';
 
 interface AppContextType {
   user: string | null;
@@ -7,6 +6,7 @@ interface AppContextType {
   setUsername: React.Dispatch<React.SetStateAction<string | null>>;
   userindex: number | null;
   setUserindex: React.Dispatch<React.SetStateAction<number | null>>;
+  isAdmin: () => boolean;
 }
 
 const AppContext = createContext<AppContextType>({
@@ -15,6 +15,7 @@ const AppContext = createContext<AppContextType>({
   setUsername: () => {},
   userindex: null,
   setUserindex: () => {},
+  isAdmin: () => false,
 });
 
 interface AppProviderProps {
@@ -49,6 +50,8 @@ export const AppProvider = ({ children }: AppProviderProps) => {
     }
   }, []);
 
+  const isAdmin = () => user === 'admin';
+
   const value = useMemo(
     () => ({
       user,
@@ -56,8 +59,9 @@ export const AppProvider = ({ children }: AppProviderProps) => {
       setUsername,
       userindex,
       setUserindex,
+      isAdmin,
     }),
-    [user, username, setUsername]
+    [user, username, userindex]
   );
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

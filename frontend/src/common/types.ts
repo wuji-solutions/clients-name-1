@@ -1,4 +1,4 @@
-interface Answer {
+export interface Answer {
   id: string;
   content: string;
   isCorrect?: boolean;
@@ -14,4 +14,16 @@ export interface Question {
   type: string;
   task: string;
   answers: Array<Answer>;
+}
+
+export interface QuestionData {
+  question: {
+    id: number;
+    category: string;
+    type: string;
+    task: string;
+    answers: Answer[];
+  };
+  correctAnswersCount: number;
+  incorrectAnswersCount: number;
 }

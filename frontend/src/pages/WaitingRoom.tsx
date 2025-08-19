@@ -6,7 +6,7 @@ import theme from '../common/theme';
 import { ButtonCustom } from '../components/Button';
 import PlayerList from '../components/PlayerList';
 import { useAppContext } from '../providers/AppContextProvider';
-import { CustomTextInput } from '../components/Fields';
+import { CustomInput } from '../components/Fields';
 import '../service/service';
 import { service } from '../service/service';
 import { useSSEChannel } from '../providers/SSEProvider';
@@ -45,10 +45,11 @@ const UserInputContainer = styled.div({
   width: '80vw',
 });
 
-function SSEOnStartListener({ user }: { readonly user: string }) {
+function SSEOnStartListener() {
+  const { isAdmin } = useAppContext();
   const navigate = useNavigate();
   const delegate = useSSEChannel(
-    `${user === 'admin' ? BACKEND_ENDPOINT : BACKEND_ENDPOINT_EXTERNAL}/sse/events`,
+    `${isAdmin() ? BACKEND_ENDPOINT : BACKEND_ENDPOINT_EXTERNAL}/sse/events`,
     { withCredentials: true }
   );
 
@@ -62,9 +63,39 @@ function SSEOnStartListener({ user }: { readonly user: string }) {
   return <></>;
 }
 
+function PlayerKickListener({
+  userHandler,
+  onKick,
+}: {
+  userHandler: React.Dispatch<React.SetStateAction<string | null>>;
+  onKick: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
+  const delegate = useSSEChannel(`${BACKEND_ENDPOINT_EXTERNAL}/sse/events`, {
+    withCredentials: true,
+  });
+
+  useEffect(() => {
+    const unsubscribe = delegate.on('player-kicked', (data) => {
+      if (
+        sessionStorage.getItem('userindex') == data.index &&
+        sessionStorage.getItem('username') == data.nickname
+      ) {
+        sessionStorage.removeItem('userindex');
+        sessionStorage.removeItem('username');
+        onKick(true);
+        userHandler(null);
+      }
+    });
+    return unsubscribe;
+  }, [delegate]);
+
+  return <></>;
+}
+
 function WaitingRoom() {
-  const { user, username, setUsername } = useAppContext();
+  const { isAdmin, username, setUsername } = useAppContext();
   const [identificator, setIdentificator] = useState<number | null>(null);
+  const [playerKicked, setPlayerKicked] = useState(false);
   const navigate = useNavigate();
 
   const joinGame = () => {
@@ -88,24 +119,36 @@ function WaitingRoom() {
       .catch((error) => console.log(error));
   };
 
-  if (!user) return <></>;
-
-  if (user === 'user') {
+  if (!isAdmin()) {
     return (
       <Container>
-        {!username ? (
+        {username ? (
           <UserInputContainer>
-            <CustomTextInput
+            <SSEOnStartListener />
+            <PlayerKickListener userHandler={setUsername} onKick={setPlayerKicked} />
+            <h4>Witaj {username}!</h4>
+            Czekaj na rozpoczęcie rozgrywki
+          </UserInputContainer>
+        ) : playerKicked ? (
+          <UserInputContainer>
+            <span>Wyrzucono cie z gry, kliknij OK aby dołączyć ponownie</span>
+            <ButtonCustom
+              onClick={() => {
+                joinGame();
+                setPlayerKicked(false);
+              }}
+            >
+              OK
+            </ButtonCustom>
+          </UserInputContainer>
+        ) : (
+          <UserInputContainer>
+            <CustomInput
+              type="number"
               placeholder="Podaj numer z dziennika / numer grupy"
               onChange={(e) => setIdentificator(parseInt(e.target.value))}
             />
             <ButtonCustom onClick={() => joinGame()}>Dołącz do gry</ButtonCustom>
-          </UserInputContainer>
-        ) : (
-          <UserInputContainer>
-            <SSEOnStartListener user={user} />
-            <h4>Witaj {username}!</h4>
-            Czekaj na rozpoczęcie rozgrywki
           </UserInputContainer>
         )}
       </Container>
@@ -114,8 +157,8 @@ function WaitingRoom() {
 
   return (
     <Container>
-      <SSEOnStartListener user={user} />
-      <PlayerList user={user} />
+      <SSEOnStartListener />
+      <PlayerList />
       <QRContainer>
         <QRCode
           value={'http://192.168.137.1:3000/waiting-room'} // NOSONAR

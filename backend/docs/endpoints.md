@@ -59,15 +59,7 @@ true
 
 ### 3. Sprawdzenie czy gracz odpowiedział już na pytanie
 
-`GET /games/quiz/questions/already-answered` *(uwaga: nietypowo z body, do poprawy xd, prawdopodobnie jako query parameter)*
-
-**Body** – [`QuestionAlreadyAnsweredRequestDto`](#questionalreadyansweredrequestdto)
-
-```json
-{
-  "questionId": 1
-}
-```
+`GET /games/quiz/questions/{questionId}/already-answered`
 
 **Response (200)** – [`QuestionAlreadyAnsweredResponseDto`](#questionalreadyansweredresponsedto)
 
