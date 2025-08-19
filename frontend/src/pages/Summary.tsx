@@ -3,12 +3,12 @@ import { useAppContext } from '../providers/AppContextProvider';
 import { service } from '../service/service';
 import styled from 'styled-components';
 import theme from '../common/theme';
-import AnswerCard, { colorPalette } from '../components/AnswerCard';
+import AnswerCard from '../components/AnswerCard';
 import AccessRestricted from '../components/AccessRestricted';
 import { ButtonCustom } from '../components/Button';
 import { useNavigate } from 'react-router-dom';
 import { QuestionData } from '../common/types';
-import { getPercentage } from '../common/utils';
+import { getColor, getPercentage } from '../common/utils';
 
 interface Props {
   data: QuestionData;
@@ -93,7 +93,7 @@ const QuestionCard = ({ data }: Props) => {
       <AnswerList>
         {question.answers.map((answer, index) => (
           <AnswerCard
-            backgroundcolor={colorPalette[index % colorPalette.length]}
+            backgroundcolor={getColor(index)}
             key={answer.id}
             isselected={false}
           >

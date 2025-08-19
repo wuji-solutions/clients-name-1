@@ -7,10 +7,10 @@ import { useAppContext } from '../../providers/AppContextProvider';
 import { useSSEChannel } from '../../providers/SSEProvider';
 import { service } from '../../service/service';
 import theme from '../../common/theme';
-import AnswerCard, { colorPalette } from '../../components/AnswerCard';
+import AnswerCard from '../../components/AnswerCard';
 import { useNavigate } from 'react-router-dom';
 import { SSEDelegate } from '../../delegate/SSEDelegate';
-import { getPercentage } from '../../common/utils';
+import { getPercentage, getColor } from '../../common/utils';
 
 const Container = styled.div(() => ({
   width: '90%',
@@ -262,7 +262,7 @@ function Quiz() {
                   <AnswerCard
                     key={index}
                     isselected={selectedAnswers.includes(answer.id)}
-                    backgroundcolor={colorPalette[index % colorPalette.length]}
+                    backgroundcolor={getColor(index)}
                     onClick={() => handleAnswerSelected(answer.id)}
                   >
                     <h2>{answer.content}</h2>
@@ -302,7 +302,7 @@ function Quiz() {
                 <AnswerCard
                   key={index}
                   isselected={false}
-                  backgroundcolor={colorPalette[index % colorPalette.length]}
+                  backgroundcolor={getColor(index)}
                   style={{ cursor: 'default' }}
                 >
                   <h2>{answer.content}</h2>
@@ -324,7 +324,7 @@ function Quiz() {
                   />
                   <AnswerCard
                     isselected={answer.answer.isCorrect}
-                    backgroundcolor={colorPalette[index % colorPalette.length]}
+                    backgroundcolor={getColor(index)}
                     style={{ cursor: 'default', marginTop: '10px' }}
                   >
                     <h2>{answer.answer.content}</h2>
