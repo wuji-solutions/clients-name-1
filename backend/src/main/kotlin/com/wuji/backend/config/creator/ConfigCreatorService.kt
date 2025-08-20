@@ -15,7 +15,7 @@ import java.io.FileNotFoundException
 class ConfigCreatorService() {
 
     val mapper: ObjectMapper = jacksonObjectMapper()
-    val configPath: String = "." // need to have a discussion where to store config files
+    var configPath: String = "." // need to have a discussion where to store config files
 
     fun readConfig(
         type: GameType,

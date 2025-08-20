@@ -1,0 +1,97 @@
+package com.wuji.backend.config.creator
+
+import com.wuji.backend.config.dto.QuizConfigDto
+import com.wuji.backend.game.GameType
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.io.TempDir
+import java.io.File
+import java.io.FileNotFoundException
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+
+class ConfigCreatorServiceTest {
+    private lateinit var service: ConfigCreatorService
+    @TempDir
+    private lateinit var tempDir: File
+
+    @BeforeEach
+    fun setup() {
+        service = ConfigCreatorService()
+        service.configPath = tempDir.absolutePath
+    }
+
+    @Test
+    fun `createConfig should successfully create a new config`() {
+        val config = QuizConfigDto(
+            totalDurationMinutes = 10,
+            questionFilePath = "question.xml",
+            questionDurationSeconds = 5,
+            endImmediatelyAfterTime = true
+        )
+        service.createConfig(config, "quiz.json")
+        val file = File(tempDir, "quiz/quiz.json")
+        assertTrue(file.exists())
+        val content = file.readText()
+        assertTrue(content.contains("totalDurationMinutes"))
+        assertTrue(content.contains("questionFilePath"))
+        assertTrue(content.contains("questionDurationSeconds"))
+        assertTrue(content.contains("endImmediatelyAfterTime"))
+    }
+
+    @Test
+    fun `readConfig should load existing quiz config`() {
+        val config = QuizConfigDto(
+            totalDurationMinutes = 15,
+            questionFilePath = "questions.xml",
+            questionDurationSeconds = 10,
+            endImmediatelyAfterTime = false
+        )
+
+        val file = File(tempDir, "quiz/quiz.json")
+        file.parentFile.mkdirs()
+        service.mapper.writeValue(file, config)
+
+        val result = service.readConfig(GameType.QUIZ, "quiz.json")
+
+        assertEquals(config.totalDurationMinutes, result.totalDurationMinutes)
+        assertEquals(config.questionFilePath, result.questionFilePath)
+        assertEquals(config.questionDurationSeconds, result.questionDurationSeconds)
+        assertEquals(config.endImmediatelyAfterTime, result.endImmediatelyAfterTime)
+    }
+
+    @Test
+    fun `listConfigs should return config file names`() {
+        val dir = File(tempDir, "exam")
+        dir.mkdirs()
+        File(dir, "exam1.json").writeText("{}")
+        File(dir, "exam2.json").writeText("{}")
+
+        val result = service.listConfigs(GameType.EXAM)
+
+        assertEquals(setOf("exam1.json", "exam2.json"), result.toSet())
+    }
+
+    @Test
+    fun `deleteConfig should remove file and return true`() {
+        val dir = File(tempDir, "board")
+        dir.mkdirs()
+        val file = File(dir, "board1.json")
+        file.writeText("{}")
+
+        val deleted = service.deleteConfig(GameType.BOARD, "board1.json")
+
+        assertTrue(deleted)
+        assertFalse(file.exists(), "File should be deleted")
+    }
+
+    @Test
+    fun `readConfig should throw FileNotFoundException when file missing`() {
+        val exception = assertFailsWith<FileNotFoundException> {
+            service.readConfig(GameType.QUIZ, "not_exists.json")
+        }
+        assertTrue(exception.message!!.contains("nie istnieje"))
+    }
+}
