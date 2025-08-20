@@ -12,13 +12,11 @@ import jakarta.validation.constraints.NotBlank
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
     include = JsonTypeInfo.As.PROPERTY,
-    property = "type"
-)
+    property = "type")
 @JsonSubTypes(
     JsonSubTypes.Type(value = ExamConfigDto::class, name = "EXAM"),
     JsonSubTypes.Type(value = BoardConfigDto::class, name = "BOARD"),
-    JsonSubTypes.Type(value = GameConfigDto::class, name = "QUIZ")
-)
+    JsonSubTypes.Type(value = GameConfigDto::class, name = "QUIZ"))
 open class GameConfigDto(
     @field:Min(1, message = "Całkowity czas na rozgrywkę musi być dodatni")
     val totalDurationMinutes: Int = DEFAULT_TOTAL_DURATION_MINUTES,
