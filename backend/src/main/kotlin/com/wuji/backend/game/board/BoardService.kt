@@ -1,9 +1,12 @@
 package com.wuji.backend.game.board
 
+import com.wuji.backend.events.board.SSEBoardService
 import com.wuji.backend.events.common.SSEEventService
 import com.wuji.backend.events.common.SSEUsersService
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.board.dto.BoardStateDto
+import com.wuji.backend.game.board.dto.SimpleBoardStateDto
+import com.wuji.backend.game.board.dto.SimpleTileStateDto
 import com.wuji.backend.game.board.dto.TileStateDto
 import com.wuji.backend.game.common.GameService
 import com.wuji.backend.player.dto.PlayerDto
@@ -21,6 +24,7 @@ class BoardService(
     private val gameRegistry: GameRegistry,
     private val sseEventService: SSEEventService,
     private val sseUsersService: SSEUsersService,
+    private val sseBoardService: SSEBoardService,
     private val playerService: PlayerService
 ) : GameService {
     override fun joinGame(
@@ -73,19 +77,33 @@ class BoardService(
         TODO("Not yet implemented")
     }
 
-    fun getBoardState(fromTileIndex: Int, toTileIndex: Int): BoardStateDto {
+    fun getBoardState(): BoardStateDto {
         val tileStateDtos =
-            game.boardState
-                .filter { it.key >= fromTileIndex && it.key <= toTileIndex }
-                .map { stateEntry ->
-                    TileStateDto(
-                        stateEntry.key,
-                        stateEntry.value.map { it.toDto() }.toSet())
-                }
+            game.boardState.map { stateEntry ->
+                TileStateDto(
+                    stateEntry.key,
+                    stateEntry.value.map { it.toDto() }.toSet(),
+                    game.tiles[stateEntry.key].category)
+            }
         return BoardStateDto(tileStateDtos)
     }
 
-    fun movePlayer(player: BoardPlayer, steps: Int) {
-        TODO("Not yet implemented")
+    fun getSimpleBoardState(): SimpleBoardStateDto {
+        val tileStateDtos =
+            game.boardState.map { stateEntry ->
+                SimpleTileStateDto(
+                    stateEntry.key,
+                    stateEntry.value.map { it.index }.toSet(),
+                )
+            }
+        return SimpleBoardStateDto(tileStateDtos)
+    }
+
+    fun movePlayer(player: BoardPlayer) {
+        // TODO: change to dice mechanics
+        val diceRoll = 3
+
+        game.movePlayer(player, diceRoll)
+        sseBoardService.sendNewBoardStateEvent(getSimpleBoardState())
     }
 }

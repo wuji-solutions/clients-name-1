@@ -3,6 +3,7 @@ package com.wuji.backend.game.board
 import com.wuji.backend.config.BoardConfig
 import com.wuji.backend.dispenser.BoardDispenser
 import com.wuji.backend.game.GameType
+import com.wuji.backend.game.board.dto.PlayerIndex
 import com.wuji.backend.game.common.AbstractGame
 import com.wuji.backend.game.common.GameState
 import com.wuji.backend.player.state.BoardPlayer
@@ -25,13 +26,21 @@ class BoardGame(
     val questionDispenser =
         BoardDispenser(categories, questions.toMutableList())
 
-    val boardState: ConcurrentMap<Int, MutableSet<BoardPlayer>> =
+    val boardState: ConcurrentMap<TileIndex, MutableSet<BoardPlayer>> =
         (0 until tiles.size)
             .associateWith { ConcurrentHashMap.newKeySet<BoardPlayer>() }
             .toConcurrentMap()
 
+    val askedQuestions: MutableMap<PlayerIndex, MutableList<Question>> =
+        mutableMapOf()
+
     override fun start() {
         gameState = GameState.RUNNING
+
+        askedQuestions.clear()
+        players
+            .map { it.index }
+            .forEach { askedQuestions[it] = mutableListOf() }
     }
 
     override fun pause() {

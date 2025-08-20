@@ -1,12 +1,15 @@
 package com.wuji.backend.question.common
 
+import com.wuji.backend.config.DifficultyLevel
+
 data class Question(
     val id: Int,
     val category: String,
     val type: QuestionType,
     val task: String,
     val answers: List<Answer>,
-    val correctAnswerIds: Set<Int>
+    val correctAnswerIds: Set<Int>,
+    val difficultyLevel: DifficultyLevel,
 ) {
     private val correctAnswers = answers.filter { it.id in correctAnswerIds }
 

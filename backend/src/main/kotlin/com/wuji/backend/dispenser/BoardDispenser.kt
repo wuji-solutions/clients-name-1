@@ -1,15 +1,53 @@
 package com.wuji.backend.dispenser
 
+import com.wuji.backend.config.DifficultyLevel
+import com.wuji.backend.player.state.Category
 import com.wuji.backend.question.common.Question
 
-class BoardDispenser(categories: List<String>, questions: List<Question>) :
-    GameDispenser() {
-    override val dispensers: MutableMap<Int, Dispenser> = mutableMapOf()
-    val categories: List<String> = categories
+class BoardDispenser(
+    private val categories: List<Category>,
+    questions: List<Question>
+) : GameDispenser() {
 
+    override val dispensers: MutableMap<Int, Dispenser> = mutableMapOf()
+
+    // TODO: either this or we create (Category, Difficulty) -> Questions map // wouldn't need to
+    // filter in getQuestion()
     init {
-        for (i in 0 until categories.size) {
-            dispensers.put(i, Dispenser(questions.shuffled().toMutableList()))
+        categories.forEachIndexed { index, category ->
+            val questionsForCategory =
+                questions.filter { it.category == category }.toMutableList()
+            dispensers[index] = Dispenser(questionsForCategory)
         }
+    }
+
+    fun getQuestion(
+        category: Category,
+        difficultyLevel: DifficultyLevel,
+        previousQuestions: Set<Question>
+    ): Question {
+        val categoryIndex = categories.indexOf(category)
+        if (categoryIndex == -1)
+            throw IllegalArgumentException("Nieznana kategoria: $category")
+
+        val dispenser =
+            dispensers[categoryIndex]
+                ?: throw NoSuchElementException(
+                    "Brak dispensera dla kategorii ${category}")
+
+        val available =
+            dispenser.questions.filter {
+                it.difficultyLevel == difficultyLevel &&
+                    it !in previousQuestions
+            }
+
+        if (available.isEmpty()) {
+            // TODO: what do we want to do in this case?
+            return dispenser.questions
+                .filter { it.difficultyLevel == difficultyLevel }
+                .random()
+        }
+
+        return available.random()
     }
 }
