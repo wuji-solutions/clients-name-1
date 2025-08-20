@@ -1,5 +1,6 @@
 package com.wuji.backend.game.board
 
+import com.wuji.backend.config.BoardConfig
 import com.wuji.backend.events.board.SSEBoardService
 import com.wuji.backend.events.common.SSEEventService
 import com.wuji.backend.events.common.SSEUsersService
@@ -17,6 +18,8 @@ import com.wuji.backend.player.state.Player
 import com.wuji.backend.player.state.PlayerDetails
 import com.wuji.backend.player.state.PlayerService
 import com.wuji.backend.player.state.exception.PlayerAlreadyJoinedException
+import com.wuji.backend.player.state.exception.PlayerNotFoundException
+import com.wuji.backend.question.common.Question
 import org.springframework.stereotype.Service
 
 @Service
@@ -73,9 +76,13 @@ class BoardService(
         TODO("Not yet implemented")
     }
 
-    override fun hasJoined(index: Int, nickname: String): Boolean {
-        TODO("Not yet implemented")
-    }
+    override fun hasJoined(index: Int, nickname: String): Boolean =
+        try {
+            game.findPlayerByIndex(index)
+            true
+        } catch (_: PlayerNotFoundException) {
+            false
+        }
 
     fun getBoardState(): BoardStateDto {
         val tileStateDtos =
@@ -105,5 +112,16 @@ class BoardService(
 
         game.movePlayer(player, diceRoll)
         sseBoardService.sendNewBoardStateEvent(getSimpleBoardState())
+    }
+
+    fun createGame(
+        name: String,
+        config: BoardConfig,
+        questions: List<Question>,
+        categories: List<String>,
+        tiles: List<Tile>
+    ) {
+        gameRegistry.register(
+            BoardGame(name, config, categories, questions, tiles))
     }
 }
