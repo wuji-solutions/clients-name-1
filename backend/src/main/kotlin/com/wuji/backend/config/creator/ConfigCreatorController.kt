@@ -1,11 +1,6 @@
 package com.wuji.backend.config.creator
 
-import com.wuji.backend.config.dto.BoardConfigDto
-import com.wuji.backend.config.dto.ExamConfigDto
 import com.wuji.backend.config.dto.GameConfigDto
-import com.wuji.backend.config.dto.toBoardConfig
-import com.wuji.backend.config.dto.toExamConfig
-import com.wuji.backend.config.dto.toQuizConfig
 import com.wuji.backend.game.GameType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -27,12 +22,7 @@ class ConfigCreatorController(
         @RequestBody configDto: GameConfigDto,
         @PathVariable("config_name") configName: String
     ): ResponseEntity<String> {
-        val config = when (configDto) {
-            is ExamConfigDto -> configDto.toExamConfig()
-            is BoardConfigDto -> configDto.toBoardConfig()
-            else -> configDto.toQuizConfig()
-        }
-        creatorService.createConfig(config, configName)
+        creatorService.createConfig(configDto, configName)
 
         return ResponseEntity.ok("Config $configName utworzony pomyślnie")
     }
@@ -52,7 +42,7 @@ class ConfigCreatorController(
         return ResponseEntity.ok(creatorService.listConfigs(type))
     }
 
-    @DeleteMapping("/delete/{type}/{config_name}")
+    @DeleteMapping("/{type}/{config_name}")
     fun deleteConfig(
         @PathVariable("config_name") configName: String,
         @PathVariable("type") type: GameType,

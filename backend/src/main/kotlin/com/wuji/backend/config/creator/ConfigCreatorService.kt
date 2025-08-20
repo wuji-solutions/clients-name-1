@@ -2,10 +2,6 @@ package com.wuji.backend.config.creator
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.wuji.backend.config.BoardConfig
-import com.wuji.backend.config.ExamConfig
-import com.wuji.backend.config.GameConfig
-import com.wuji.backend.config.QuizConfig
 import com.wuji.backend.config.dto.BoardConfigDto
 import com.wuji.backend.config.dto.ExamConfigDto
 import com.wuji.backend.config.dto.GameConfigDto
@@ -54,14 +50,14 @@ class ConfigCreatorService() {
         return mapper.readValue(file, clazz)
     }
 
-    fun <T : GameConfig> createConfig(
+    fun <T : GameConfigDto> createConfig(
         config: T,
         name: String,
     ) {
         val catalog = when (config::class) {
-            QuizConfig::class -> "quiz"
-            BoardConfig::class -> "board"
-            ExamConfig::class -> "exam"
+            QuizConfigDto::class -> "quiz"
+            BoardConfigDto::class -> "board"
+            ExamConfigDto::class -> "exam"
             else -> throw IllegalArgumentException("Nieobsługiwany typ konfiguracji: ${config::class}")
         }
 
