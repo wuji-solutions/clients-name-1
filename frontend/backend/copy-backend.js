@@ -13,7 +13,7 @@ const backendBinDir = path.resolve(__dirname);
 
 let binaryName;
 if (isDev) {
-  binaryName = "backend.jar";
+  binaryName = 'backend.jar';
 } else {
   binaryName = platform === 'win32' ? 'backend.exe' : 'backend';
 }

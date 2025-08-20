@@ -1,91 +1,91 @@
 {
-    "homepage": ".",
-    "main": "build/electron/main.js",
-    "author": "wuji-solutions",
-    "description": "React-TypeScript-Electron sample with Create React App and Electron Builder",
-    "build": {
-        "extends": null,
-        "files": [
-            "**/*",
-            "build/**/*"
-        ],
-        "directories": {
-            "buildResources": "assets"
-        },
-        "extraResources": [
-            {
-                "from": "backend",
-                "to": "backend"
-            }
-        ]
+  "homepage": ".",
+  "main": "build/electron/main.js",
+  "author": "wuji-solutions",
+  "description": "React-TypeScript-Electron sample with Create React App and Electron Builder",
+  "build": {
+    "extends": null,
+    "files": [
+      "**/*",
+      "build/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
     },
-    "name": "frontend",
-    "version": "0.1.0",
-    "private": true,
-    "dependencies": {
-        "@testing-library/dom": "^10.4.0",
-        "@testing-library/jest-dom": "^6.6.3",
-        "@testing-library/react": "^16.3.0",
-        "@testing-library/user-event": "^13.5.0",
-        "@types/electron-devtools-installer": "^4.0.0",
-        "@types/jest": "^27.5.2",
-        "@types/node": "^16.18.126",
-        "@types/react": "^19.1.4",
-        "@types/react-dom": "^19.1.5",
-        "axios": "^1.10.0",
-        "electron-devtools-installer": "^4.0.0",
-        "electron-is-dev": "^3.0.1",
-        "electron-reload": "^2.0.0-alpha.1",
-        "js-cookie": "^3.0.5",
-        "react": "^19.1.0",
-        "react-dom": "^19.1.0",
-        "react-dropzone": "^14.3.8",
-        "react-qr-code": "^2.0.15",
-        "react-router-dom": "^7.6.1",
-        "react-scripts": "5.0.1",
-        "styled-components": "^6.1.18",
-        "typescript": "^4.9.5",
-        "web-vitals": "^2.1.4"
-    },
-    "scripts": {
-        "start": "react-scripts start",
-        "build": "react-scripts build",
-        "test": "react-scripts test",
-        "eject": "react-scripts eject",
-        "pretty": "prettier --write \"./**/*.{js,jsx,json,ts,tsx}\"",
-        "postinstall": "electron-builder install-app-deps",
-        "electron:dev": "yarn build-backend:dev && yarn copy-backend &&concurrently \"cross-env BROWSER=none yarn start\" \"wait-on http://localhost:3000 && tsc -p electron -w\" \"wait-on http://localhost:3000 && tsc -p electron && electron .\"",
-        "build-backend": "cd ../backend && ./gradlew nativeCompile",
-        "build-backend:dev": "cd ../backend && ./gradlew bootJar",
-        "copy-backend": "cross-env NODE_ENV=development node backend/copy-backend.js",
-        "copy-backend:dev": "cross-env NODE_ENV=development node backend/copy-backend.js",
-        "electron:build": "yarn build-backend && yarn copy-backend && yarn build && tsc -p electron && electron-builder"
-    },
-    "eslintConfig": {
-        "extends": [
-            "react-app",
-            "react-app/jest"
-        ]
-    },
-    "browserslist": {
-        "production": [
-            ">0.2%",
-            "not dead",
-            "not op_mini all"
-        ],
-        "development": [
-            "last 1 chrome version",
-            "last 1 firefox version",
-            "last 1 safari version"
-        ]
-    },
-    "devDependencies": {
-        "@types/js-cookie": "^3.0.6",
-        "concurrently": "^9.1.2",
-        "cross-env": "^7.0.3",
-        "electron": "^36.2.1",
-        "electron-builder": "^26.0.12",
-        "prettier": "3.5.3",
-        "wait-on": "^8.0.3"
-    }
+    "extraResources": [
+      {
+        "from": "backend",
+        "to": "backend"
+      }
+    ]
+  },
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/electron-devtools-installer": "^4.0.0",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^16.18.126",
+    "@types/react": "^19.1.4",
+    "@types/react-dom": "^19.1.5",
+    "axios": "^1.10.0",
+    "electron-devtools-installer": "^4.0.0",
+    "electron-is-dev": "^3.0.1",
+    "electron-reload": "^2.0.0-alpha.1",
+    "js-cookie": "^3.0.5",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-dropzone": "^14.3.8",
+    "react-qr-code": "^2.0.15",
+    "react-router-dom": "^7.6.1",
+    "react-scripts": "5.0.1",
+    "styled-components": "^6.1.18",
+    "typescript": "^4.9.5",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "pretty": "prettier --write \"./**/*.{js,jsx,json,ts,tsx}\"",
+    "postinstall": "electron-builder install-app-deps",
+    "electron:dev": "yarn build-backend:dev && yarn copy-backend &&concurrently \"cross-env BROWSER=none yarn start\" \"wait-on http://localhost:3000 && tsc -p electron -w\" \"wait-on http://localhost:3000 && tsc -p electron && electron .\"",
+    "build-backend": "cd ../backend && ./gradlew nativeCompile",
+    "build-backend:dev": "cd ../backend && ./gradlew bootJar",
+    "copy-backend": "cross-env NODE_ENV=development node backend/copy-backend.js",
+    "copy-backend:dev": "cross-env NODE_ENV=development node backend/copy-backend.js",
+    "electron:build": "yarn build-backend && yarn copy-backend && yarn build && tsc -p electron && electron-builder"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@types/js-cookie": "^3.0.6",
+    "concurrently": "^9.1.2",
+    "cross-env": "^7.0.3",
+    "electron": "^36.2.1",
+    "electron-builder": "^26.0.12",
+    "prettier": "3.5.3",
+    "wait-on": "^8.0.3"
+  }
 }

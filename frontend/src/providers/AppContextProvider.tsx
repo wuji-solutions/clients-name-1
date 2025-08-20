@@ -1,12 +1,4 @@
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import Cookies from "js-cookie";
+import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 
 interface AppContextType {
   user: string | null;
@@ -14,6 +6,7 @@ interface AppContextType {
   setUsername: React.Dispatch<React.SetStateAction<string | null>>;
   userindex: number | null;
   setUserindex: React.Dispatch<React.SetStateAction<number | null>>;
+  isAdmin: () => boolean;
 }
 
 const AppContext = createContext<AppContextType>({
@@ -22,6 +15,7 @@ const AppContext = createContext<AppContextType>({
   setUsername: () => {},
   userindex: null,
   setUserindex: () => {},
+  isAdmin: () => false,
 });
 
 interface AppProviderProps {
@@ -34,16 +28,16 @@ export const AppProvider = ({ children }: AppProviderProps) => {
   const [userindex, setUserindex] = useState<number | null>(null);
 
   useEffect(() => {
-    if (window.location.hostname === "localhost") {
-      setUser("admin");
+    if (window.location.hostname === 'localhost') {
+      setUser('admin');
     } else {
-      setUser("user");
+      setUser('user');
     }
   }, []);
 
   useEffect(() => {
-    const storedUserIndex = sessionStorage.getItem("userindex");
-    const storedUsername = sessionStorage.getItem("username");
+    const storedUserIndex = sessionStorage.getItem('userindex');
+    const storedUsername = sessionStorage.getItem('username');
 
     if (storedUserIndex && storedUsername) {
       const parsedIndex = parseInt(storedUserIndex, 10);
@@ -56,19 +50,21 @@ export const AppProvider = ({ children }: AppProviderProps) => {
     }
   }, []);
 
-  const value = useMemo(() => ({
-    user,
-    username,
-    setUsername,
-    userindex,
-    setUserindex,
-  }), [user, username, setUsername]);
+  const isAdmin = () => user === 'admin';
 
-  return (
-    <AppContext.Provider value={value}>
-      {children}
-    </AppContext.Provider>
+  const value = useMemo(
+    () => ({
+      user,
+      username,
+      setUsername,
+      userindex,
+      setUserindex,
+      isAdmin,
+    }),
+    [user, username, userindex]
   );
+
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
 
 export const useAppContext = () => {

@@ -12,11 +12,7 @@ export const SSEProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     };
   }, []);
 
-  return (
-    <SSEContext.Provider value={managerRef.current}>
-      {children}
-    </SSEContext.Provider>
-  );
+  return <SSEContext.Provider value={managerRef.current}>{children}</SSEContext.Provider>;
 };
 
 export function useSSEChannel(url: string, opts?: EventSourceInit) {
