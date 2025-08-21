@@ -38,7 +38,9 @@ class QuizQuestionService(
         val question = getCurrentQuestion()
         val player = game.findPlayerByIndex(playerIndex)
 
-        return answerQuestion(player, question, answerIds)
+        return answerQuestion(player, question, answerIds).also {
+            updatePlayersAnsweredCounter(question.id)
+        }
     }
 
     fun getNextQuestion(): QuestionDto {
