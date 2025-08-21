@@ -2,23 +2,25 @@ package com.wuji.backend.game.common
 
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.GameType
+import com.wuji.backend.game.board.BoardService
 import com.wuji.backend.game.quiz.QuizService
 import com.wuji.backend.player.dto.PlayerDto
 import com.wuji.backend.player.state.Player
 import com.wuji.backend.player.state.PlayerDetails
 import org.springframework.stereotype.Service
 
+@SuppressWarnings("kotlin:S6514")
 @Service
 class GameServiceDelegate(
     quizService: QuizService,
+    boardService: BoardService,
     private val gameRegistry: GameRegistry
 ) : GameService {
     private val services =
         mapOf(
             GameType.QUIZ to quizService,
             //        GameType.EXAM to examService,
-            //        GameType.BOARD to boardService
-        )
+            GameType.BOARD to boardService)
 
     private val currentService: GameService
         get() =

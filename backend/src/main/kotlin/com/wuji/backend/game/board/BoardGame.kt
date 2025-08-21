@@ -54,7 +54,9 @@ class BoardGame(
     }
 
     fun addPlayer(player: BoardPlayer) {
-        boardState[0]!!.add(player)
+        val playersOnTile =
+            boardState[0] ?: throw IllegalStateException("Board state is empty")
+        playersOnTile.add(player)
     }
 
     @Synchronized
@@ -67,12 +69,14 @@ class BoardGame(
                 ?: throw IllegalStateException(
                     "Tile $currentTileIndex is not initialized in boardState")
 
-        if (!currentSet.remove(player)) {
-            throw IllegalStateException(
-                "Player $player not found on tile $currentTileIndex")
+        check(currentSet.remove(player)) {
+            "Player $player not found on tile $currentTileIndex"
         }
 
-        boardState[newTileIndex]!!.add(player)
+        val newSet =
+            boardState[newTileIndex]
+                ?: throw IllegalStateException("Board state is empty")
+        newSet.add(player)
 
         player.details.currentTileIndex = newTileIndex
     }

@@ -27,8 +27,7 @@ class BoardDispenser(
         previousQuestions: Set<Question>
     ): Question {
         val categoryIndex = categories.indexOf(category)
-        if (categoryIndex == -1)
-            throw IllegalArgumentException("Nieznana kategoria: $category")
+        require(categoryIndex == -1) { "Nieznana kategoria: $category" }
 
         val dispenser =
             dispensers[categoryIndex]
