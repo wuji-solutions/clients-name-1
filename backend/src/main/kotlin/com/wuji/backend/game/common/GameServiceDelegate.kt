@@ -64,4 +64,8 @@ class GameServiceDelegate(
     override fun hasJoined(index: Int, nickname: String): Boolean {
         return currentService.hasJoined(index, nickname)
     }
+
+    override fun getPlayer(index: Int): Player<out PlayerDetails> {
+        return currentService.getPlayer(index)
+    }
 }

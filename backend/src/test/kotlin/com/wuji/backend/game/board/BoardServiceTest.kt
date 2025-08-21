@@ -156,9 +156,9 @@ class BoardServiceTest {
     fun `movePlayer should call game move and send SSE update`() {
         val player = BoardPlayer(0, "Test", BoardPlayerDetails())
         game.addPlayer(player)
+        every { game.findPlayerByIndex(player.index) } returns player
 
-        service.movePlayer(player)
-
+        service.movePlayer(player.index)
         verify { game.movePlayer(player, any()) }
         verify { sseBoardService.sendNewBoardStateEvent(any()) }
     }

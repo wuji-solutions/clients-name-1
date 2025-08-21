@@ -34,15 +34,6 @@ class BoardGameTest {
     }
 
     @Test
-    fun `start should initialize state and askedQuestions`() {
-        game.start()
-
-        assertEquals(GameState.RUNNING, game.gameState)
-        assertTrue(game.askedQuestions.containsKey(player.index))
-        assertEquals(0, game.askedQuestions[player.index]!!.size)
-    }
-
-    @Test
     fun `pause should set state to PAUSED`() {
         game.pause()
         assertEquals(GameState.PAUSED, game.gameState)

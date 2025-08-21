@@ -2,8 +2,11 @@ package com.wuji.backend.game.board
 
 import com.wuji.backend.game.GameType
 import com.wuji.backend.game.board.dto.BoardStateDto
+import com.wuji.backend.game.board.dto.MovePlayerResponseDto
 import com.wuji.backend.game.common.GameController
 import com.wuji.backend.game.common.dto.JoinGameRequestDto
+import com.wuji.backend.player.dto.PlayerDto
+import com.wuji.backend.player.dto.PlayerDto.Companion.toDto
 import com.wuji.backend.security.RequiresGame
 import com.wuji.backend.security.auth.PlayerAuthService
 import com.wuji.backend.security.auth.playerIndex
@@ -39,13 +42,25 @@ class BoardController(
         return ResponseEntity.ok(participant.nickname)
     }
 
+    @GetMapping("/player")
+    override fun getPlayer(
+        authentication: Authentication
+    ): ResponseEntity<PlayerDto> {
+        val playerIndex = authentication.playerIndex()
+        return ResponseEntity.ok(boardService.getPlayer(playerIndex).toDto())
+    }
+
     @GetMapping("/state")
     fun getBoardState(): ResponseEntity<BoardStateDto> {
         return ResponseEntity.ok(boardService.getBoardState())
     }
 
     @PostMapping("/player/move")
-    fun movePlayer(authentication: Authentication) {
+    fun movePlayer(
+        authentication: Authentication
+    ): ResponseEntity<MovePlayerResponseDto> {
         val playerIndex = authentication.playerIndex()
+        val responseDto = boardService.movePlayer(playerIndex)
+        return ResponseEntity.ok(responseDto)
     }
 }

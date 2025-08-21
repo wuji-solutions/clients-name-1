@@ -6,13 +6,13 @@ import com.wuji.backend.events.common.SSEEventService
 import com.wuji.backend.events.common.SSEUsersService
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.board.dto.BoardStateDto
+import com.wuji.backend.game.board.dto.MovePlayerResponseDto
 import com.wuji.backend.game.board.dto.SimpleBoardStateDto
 import com.wuji.backend.game.board.dto.SimpleTileStateDto
 import com.wuji.backend.game.board.dto.TileStateDto
 import com.wuji.backend.game.common.GameService
 import com.wuji.backend.player.dto.PlayerDto
 import com.wuji.backend.player.dto.PlayerDto.Companion.toDto
-import com.wuji.backend.player.state.BoardPlayer
 import com.wuji.backend.player.state.BoardPlayerDetails
 import com.wuji.backend.player.state.Player
 import com.wuji.backend.player.state.PlayerDetails
@@ -84,6 +84,10 @@ class BoardService(
             false
         }
 
+    override fun getPlayer(index: Int): Player<out PlayerDetails> {
+        return game.findPlayerByIndex(index)
+    }
+
     fun getBoardState(): BoardStateDto {
         val tileStateDtos =
             game.boardState.map { stateEntry ->
@@ -106,12 +110,13 @@ class BoardService(
         return SimpleBoardStateDto(tileStateDtos)
     }
 
-    fun movePlayer(player: BoardPlayer) {
-        // TODO: change to dice mechanics
-        val diceRoll = 3
+    fun movePlayer(playerIndex: Int): MovePlayerResponseDto {
+        val player = game.findPlayerByIndex(playerIndex)
+        val steps = game.dice.roll(player)
 
-        game.movePlayer(player, diceRoll)
+        game.movePlayer(player, steps)
         sseBoardService.sendNewBoardStateEvent(getSimpleBoardState())
+        return MovePlayerResponseDto(steps, player.details.currentTileIndex)
     }
 
     fun createGame(

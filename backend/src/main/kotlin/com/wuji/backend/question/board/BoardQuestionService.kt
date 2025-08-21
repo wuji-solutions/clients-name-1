@@ -25,7 +25,7 @@ class BoardQuestionService(
         val tile = game.tiles[currentTileIndex]
         val difficulty =
             player.details.categoryToDifficulty.getValue(tile.category)
-        val previousQuestions = game.askedQuestions[playerIndex]!!.toSet()
+        val previousQuestions = player.details.askedQuestions.toSet()
 
         return game.questionDispenser.getQuestion(
             tile.category, difficulty, previousQuestions)
@@ -34,7 +34,30 @@ class BoardQuestionService(
     fun answerBoardQuestion(playerIndex: Int, answerIds: Set<Int>): Boolean {
         val question = getQuestion(playerIndex)
         val player = game.findPlayerByIndex(playerIndex)
-        game.askedQuestions[player.index]!!.add(question)
-        return answerQuestion(player, question, answerIds)
+        player.details.askedQuestions.add(question)
+
+        return answerQuestion(player, question, answerIds).also {
+            checkForDifficultyPromotion(playerIndex)
+        }
+    }
+
+    fun checkForDifficultyPromotion(playerIndex: Int) {
+        val question = getQuestion(playerIndex)
+        val player = game.findPlayerByIndex(playerIndex)
+
+        val correctAnswersNeeded =
+            game.config.rankingPromotionRules.getValue(question.category)
+        val correctAnswers =
+            player.details.askedQuestions.count { q ->
+                q.category == question.category &&
+                    q.difficultyLevel == question.difficultyLevel
+            }
+
+        if (correctAnswers == correctAnswersNeeded) {
+            player.details.categoryToDifficulty[question.category] =
+                player.details.categoryToDifficulty
+                    .getValue(question.category)
+                    .next()
+        }
     }
 }
