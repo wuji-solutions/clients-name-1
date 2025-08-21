@@ -54,7 +54,7 @@ class BoardGameTest {
     @Test
     fun `addPlayer should put player on tile 0`() {
         game.addPlayer(player)
-        assertTrue(game.boardState[0]!!.contains(player))
+        assertTrue(game.boardState.getValue(0).contains(player))
     }
 
     @Test
@@ -66,8 +66,8 @@ class BoardGameTest {
 
         val newIndex = player.details.currentTileIndex
         assertEquals((startIndex + 2) % game.tiles.size, newIndex)
-        assertFalse(game.boardState[startIndex]!!.contains(player))
-        assertTrue(game.boardState[newIndex]!!.contains(player))
+        assertFalse(game.boardState.getValue(startIndex).contains(player))
+        assertTrue(game.boardState.getValue(newIndex).contains(player))
     }
 
     @Test
