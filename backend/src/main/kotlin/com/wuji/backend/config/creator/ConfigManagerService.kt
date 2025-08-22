@@ -22,22 +22,8 @@ class ConfigManagerService() {
         type: GameType,
         name: String,
     ): GameConfigDto {
-        val catalog: String
-        val clazz: Class<out GameConfigDto> =
-            when (type) {
-                GameType.QUIZ -> {
-                    catalog = "quiz"
-                    QuizConfigDto::class.java
-                }
-                GameType.EXAM -> {
-                    catalog = "exam"
-                    ExamConfigDto::class.java
-                }
-                GameType.BOARD -> {
-                    catalog = "board"
-                    BoardConfigDto::class.java
-                }
-            }
+        val catalog = getCatalogFromGameType(type)
+        val clazz = getClassFromGameType(type)
 
         val dir = File("$configPath/$catalog")
         if (!dir.exists() || !dir.isDirectory) {
@@ -58,15 +44,7 @@ class ConfigManagerService() {
         config: T,
         name: String,
     ) {
-        val catalog =
-            when (config::class) {
-                QuizConfigDto::class -> "quiz"
-                BoardConfigDto::class -> "board"
-                ExamConfigDto::class -> "exam"
-                else ->
-                    throw IllegalArgumentException(
-                        "Nieobsługiwany typ konfiguracji: ${config::class}")
-            }
+        val catalog = getCatalogFromDtoClass(config)
 
         val dir = File("$configPath/$catalog")
         if (!dir.exists()) {
@@ -78,12 +56,7 @@ class ConfigManagerService() {
     }
 
     fun listConfigs(type: GameType): List<String> {
-        val catalog =
-            when (type) {
-                GameType.QUIZ -> "quiz"
-                GameType.EXAM -> "exam"
-                GameType.BOARD -> "board"
-            }
+        val catalog = getCatalogFromGameType(type)
         val dir = File("$configPath/$catalog")
         if (!dir.exists() || !dir.isDirectory) {
             throw FileNotFoundException(
@@ -94,13 +67,35 @@ class ConfigManagerService() {
     }
 
     fun deleteConfig(type: GameType, name: String): Boolean {
-        val catalog: String =
-            when (type) {
-                GameType.QUIZ -> "quiz"
-                GameType.EXAM -> "exam"
-                GameType.BOARD -> "board"
-            }
+        val catalog = getCatalogFromGameType(type)
         val dir = File("$configPath/$catalog")
         return File(dir, name).delete()
+    }
+
+    private fun getCatalogFromGameType(type: GameType): String {
+        return when (type) {
+            GameType.QUIZ -> "quiz"
+            GameType.EXAM -> "exam"
+            GameType.BOARD -> "board"
+        }
+    }
+
+    private fun <T : GameConfigDto> getCatalogFromDtoClass(config: T): String {
+        return when (config::class) {
+            QuizConfigDto::class -> "quiz"
+            BoardConfigDto::class -> "board"
+            ExamConfigDto::class -> "exam"
+            else ->
+                throw IllegalArgumentException(
+                    "Nieobsługiwany typ konfiguracji: ${config::class}")
+        }
+    }
+
+    private fun getClassFromGameType(type: GameType): Class<out GameConfigDto> {
+        return when (type) {
+            GameType.QUIZ -> QuizConfigDto::class.java
+            GameType.EXAM -> ExamConfigDto::class.java
+            GameType.BOARD -> BoardConfigDto::class.java
+        }
     }
 }
