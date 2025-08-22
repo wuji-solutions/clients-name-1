@@ -17,7 +17,7 @@ class ConfigCreatorController(
     private val creatorService: ConfigCreatorService = ConfigCreatorService(),
 ) {
 
-    @PostMapping("/create/{config_name}")
+    @PostMapping("/{config_name}")
     fun createConfig(
         @RequestBody configDto: GameConfigDto,
         @PathVariable("config_name") configName: String
@@ -27,7 +27,7 @@ class ConfigCreatorController(
         return ResponseEntity.ok("Config $configName utworzony pomyślnie")
     }
 
-    @GetMapping("/read/{type}/{config_name}")
+    @GetMapping("/{type}/{config_name}")
     fun readConfig(
         @PathVariable("config_name") configName: String,
         @PathVariable("type") type: GameType,
