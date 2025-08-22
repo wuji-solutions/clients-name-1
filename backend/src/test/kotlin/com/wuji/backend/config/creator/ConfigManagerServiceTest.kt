@@ -12,13 +12,13 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.io.TempDir
 
-class ConfigCreatorServiceTest {
-    private lateinit var service: ConfigCreatorService
+class ConfigManagerServiceTest {
+    private lateinit var service: ConfigManagerService
     @TempDir private lateinit var tempDir: File
 
     @BeforeEach
     fun setup() {
-        service = ConfigCreatorService()
+        service = ConfigManagerService()
         service.configPath = tempDir.absolutePath
     }
 

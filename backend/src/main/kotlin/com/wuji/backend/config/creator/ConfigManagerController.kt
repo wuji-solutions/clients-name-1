@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/config")
-class ConfigCreatorController(
-    private val creatorService: ConfigCreatorService = ConfigCreatorService(),
+class ConfigManagerController(
+    private val creatorService: ConfigManagerService = ConfigManagerService(),
 ) {
 
     @PostMapping("/{config_name}")

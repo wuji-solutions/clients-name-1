@@ -12,7 +12,7 @@ import java.io.FileNotFoundException
 import org.springframework.stereotype.Service
 
 @Service
-class ConfigCreatorService() {
+class ConfigManagerService() {
 
     val mapper: ObjectMapper = jacksonObjectMapper()
     var configPath: String =
