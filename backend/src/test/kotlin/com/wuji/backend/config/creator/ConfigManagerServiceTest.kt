@@ -96,6 +96,7 @@ class ConfigManagerServiceTest {
             }
         assertTrue(exception.message!!.contains("nie istnieje"))
     }
+
     @Test
     fun `createConfig should throw IllegalArgumentException for invalid file name`() {
         val config =
@@ -127,9 +128,10 @@ class ConfigManagerServiceTest {
         val catalogDir = File(tempDir, "quiz")
         catalogDir.mkdirs()
 
-        val exception = assertFailsWith<FileNotFoundException> {
-            service.readConfig(GameType.QUIZ, "missing.json")
-        }
+        val exception =
+            assertFailsWith<FileNotFoundException> {
+                service.readConfig(GameType.QUIZ, "missing.json")
+            }
         assertTrue(exception.message!!.contains("missing.json"))
     }
 
@@ -144,5 +146,4 @@ class ConfigManagerServiceTest {
             service.listConfigs(GameType.BOARD)
         }
     }
-
 }
