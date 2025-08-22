@@ -96,4 +96,53 @@ class ConfigManagerServiceTest {
             }
         assertTrue(exception.message!!.contains("nie istnieje"))
     }
+    @Test
+    fun `createConfig should throw IllegalArgumentException for invalid file name`() {
+        val config =
+            QuizConfigDto(
+                totalDurationMinutes = 10,
+                questionFilePath = "question.xml",
+                questionDurationSeconds = 5,
+                endImmediatelyAfterTime = true)
+
+        assertFailsWith<IllegalArgumentException> {
+            service.createConfig(config, "invalid-name.txt")
+        }
+    }
+
+    @Test
+    fun `readConfig should throw FileNotFoundException when catalog missing`() {
+        val catalogDir = File(tempDir, "exam")
+        if (catalogDir.exists()) {
+            catalogDir.deleteRecursively()
+        }
+
+        assertFailsWith<FileNotFoundException> {
+            service.readConfig(GameType.EXAM, "exam1.json")
+        }
+    }
+
+    @Test
+    fun `readConfig should throw FileNotFoundException when file missing in existing catalog`() {
+        val catalogDir = File(tempDir, "quiz")
+        catalogDir.mkdirs()
+
+        val exception = assertFailsWith<FileNotFoundException> {
+            service.readConfig(GameType.QUIZ, "missing.json")
+        }
+        assertTrue(exception.message!!.contains("missing.json"))
+    }
+
+    @Test
+    fun `listConfigs should throw FileNotFoundException when catalog missing`() {
+        val catalogDir = File(tempDir, "board")
+        if (catalogDir.exists()) {
+            catalogDir.deleteRecursively()
+        }
+
+        assertFailsWith<FileNotFoundException> {
+            service.listConfigs(GameType.BOARD)
+        }
+    }
+
 }
