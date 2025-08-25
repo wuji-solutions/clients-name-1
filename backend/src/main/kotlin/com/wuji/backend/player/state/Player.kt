@@ -4,7 +4,7 @@ import com.wuji.backend.question.common.PlayerAnswer
 import com.wuji.backend.question.common.exception.QuestionNotYetAnsweredException
 
 data class Player<PlayerDetailsT : PlayerDetails>(
-    val index: Int,
+    val index: PlayerIndex,
     val nickname: String,
     var details: PlayerDetailsT
 ) {
@@ -28,3 +28,5 @@ open class PlayerDetails(
 typealias QuizPlayerDetails = PlayerDetails
 
 typealias QuizPlayer = Player<QuizPlayerDetails>
+
+typealias PlayerIndex = Int

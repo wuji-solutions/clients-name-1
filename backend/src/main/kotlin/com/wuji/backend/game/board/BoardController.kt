@@ -1,12 +1,12 @@
-package com.wuji.backend.game.quiz
+package com.wuji.backend.game.board
 
 import com.wuji.backend.game.GameType
+import com.wuji.backend.game.board.dto.BoardStateDto
+import com.wuji.backend.game.board.dto.MovePlayerResponseDto
 import com.wuji.backend.game.common.GameController
 import com.wuji.backend.game.common.dto.JoinGameRequestDto
-import com.wuji.backend.game.quiz.dto.QuizSummaryResponseDto
 import com.wuji.backend.player.dto.PlayerDto
 import com.wuji.backend.player.dto.PlayerDto.Companion.toDto
-import com.wuji.backend.security.IsAdmin
 import com.wuji.backend.security.RequiresGame
 import com.wuji.backend.security.auth.PlayerAuthService
 import com.wuji.backend.security.auth.playerIndex
@@ -23,11 +23,11 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @Validated
-@RequiresGame(gametype = GameType.QUIZ)
-@RequestMapping("/games/quiz")
-class QuizController(
-    private val quizService: QuizService,
-    private val playerAuthService: PlayerAuthService
+@RequiresGame(gametype = GameType.BOARD)
+@RequestMapping("/games/board")
+class BoardController(
+    private val playerAuthService: PlayerAuthService,
+    private val boardService: BoardService
 ) : GameController {
 
     @PostMapping("/join")
@@ -37,7 +37,7 @@ class QuizController(
     ): ResponseEntity<Any> {
         val participant =
             playerAuthService.authenticate(requestDto.index, request)
-        quizService.joinGame(participant.index, participant.nickname)
+        boardService.joinGame(participant.index, participant.nickname)
 
         return ResponseEntity.ok(participant.nickname)
     }
@@ -47,12 +47,20 @@ class QuizController(
         authentication: Authentication
     ): ResponseEntity<PlayerDto> {
         val playerIndex = authentication.playerIndex()
-        return ResponseEntity.ok(quizService.getPlayer(playerIndex).toDto())
+        return ResponseEntity.ok(boardService.getPlayer(playerIndex).toDto())
     }
 
-    @IsAdmin
-    @GetMapping("/summarize")
-    fun summarizeGame(): ResponseEntity<QuizSummaryResponseDto> {
-        return ResponseEntity.ok(quizService.getGameSummary())
+    @GetMapping("/state")
+    fun getBoardState(): ResponseEntity<BoardStateDto> {
+        return ResponseEntity.ok(boardService.getBoardState())
+    }
+
+    @PostMapping("/player/move")
+    fun movePlayer(
+        authentication: Authentication
+    ): ResponseEntity<MovePlayerResponseDto> {
+        val playerIndex = authentication.playerIndex()
+        val responseDto = boardService.movePlayer(playerIndex)
+        return ResponseEntity.ok(responseDto)
     }
 }

@@ -10,5 +10,7 @@ interface GameConfig {
 enum class DifficultyLevel {
     EASY,
     MEDIUM,
-    HARD
+    HARD;
+
+    fun next(): DifficultyLevel = values().getOrNull(this.ordinal + 1) ?: HARD
 }
