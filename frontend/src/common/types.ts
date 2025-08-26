@@ -27,3 +27,16 @@ export interface QuestionData {
   correctAnswersCount: number;
   incorrectAnswersCount: number;
 }
+
+export interface Pawn {
+  id: string;
+  color: string;
+}
+
+export type BoardPositions = Pawn[][]
+
+export interface FieldCoordinate {
+  x: number;
+  y: number;
+  scale: number;
+}
