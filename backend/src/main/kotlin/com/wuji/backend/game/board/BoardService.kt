@@ -73,7 +73,9 @@ class BoardService(
     }
 
     override fun kickPlayer(index: Int, nickname: String) {
-        TODO("Not yet implemented")
+        val player = game.findPlayerByIndex(index)
+        game.players.remove(player)
+        sseEventService.sendPlayerKickedEvent(player.toDto())
     }
 
     override fun hasJoined(index: Int, nickname: String): Boolean =
