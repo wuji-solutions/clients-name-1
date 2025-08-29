@@ -7,14 +7,18 @@ import { ButtonCustom } from '../../components/Button';
 import { BOARD_X_RADIUS, BOARD_Y_RADIUS } from '../../common/config';
 
 export const Container = styled.div(() => ({
-  width: '100vw',
-  height: '100vh',
-  overflow: 'hidden',
-  cursor: 'grab',
+  width: '100%',
+  height: 'fit-content',
+  padding: '20px',
+}));
 
-  '&:active': {
-    cursor: 'grabbing',
-  },
+export const GameContainer = styled.div(() => ({
+  cursor: 'grab',
+  width: '100%',
+  height: '200px',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
 }));
 
 function getRandomIntInclusive(min: number, max: number) {
@@ -23,16 +27,30 @@ function getRandomIntInclusive(min: number, max: number) {
   return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
 }
 
-const NUMFIELDS = 30;
+const NUMFIELDS = 9;
 const PERSPECTIVE = 0.35;
 const MIN_SCALE = 0.6;
 const MAX_SCALE = 1.2;
 
 const getInitialPositions = (): BoardPositions => {
   const initial: BoardPositions = Array.from({ length: NUMFIELDS }, () => []);
-  initial[0] = [{ id: 'p1', color: '#e74c3c' }, { id: 'p3', color: '#2ecc71' }, { id: 'p2', color: '#3498db' },
-  { id: 'p4', color: '#f2355' }, { id: 'p6', color: '#2ecc71' }, { id: 'p8', color: '#3498db' },
-  { id: 'p5', color: '#e74c3c' }, { id: 'p7', color: '#2ecc71' }, { id: 'p9', color: '#3498db' }];
+  initial[0] = [
+    { id: '1', color: '#e74c3c' },
+    { id: '3', color: '#2ecc71' },
+    { id: '2', color: '#3498db' },
+    { id: '4', color: '#f23552' },
+    { id: '6', color: '#2ecc71' },
+    { id: '8', color: '#3498db' },
+    { id: '5', color: '#e74c3c' },
+    { id: '7', color: '#2ecc71' },
+    { id: '9', color: '#3498db' },
+    { id: '10', color: '#f23552' },
+    { id: '12', color: '#2ecc71' },
+    { id: '14', color: '#3498db' },
+    { id: '11', color: '#e74c3c' },
+    { id: '13', color: '#2ecc71' },
+    { id: '15', color: '#3498db' },
+  ];
   return initial;
 };
 
@@ -65,31 +83,36 @@ function BoardgamePlayer() {
     return coords;
   }, []);
 
-  React.useEffect(() => {
-    if (gameContainerRef.current) {
-      panzoom(gameContainerRef.current, {
-        maxZoom: 3,
-        minZoom: 0.5,
-      });
-    }
-  }, []);
+  // React.useEffect(() => {
+  //   if (gameContainerRef.current) {
+  //     const pz = panzoom(gameContainerRef.current, {
+  //       maxZoom: 2,
+  //       minZoom: 1,
+  //       bounds: true,
+  //       boundsPadding: 0.6,
+  //     });
+  //     pz.zoomAbs(0, 0, 0.8);
+  //   }
+  //   sessionStorage.setItem('id', '1');
+  // }, []);
 
   const testMove = () => {
     const board: BoardPositions = Array.from({ length: NUMFIELDS }, () => []);
     for (let i = 0; i < NUMFIELDS; i++) {
       for (const player of positions[i]) {
-        const new_position = (getRandomIntInclusive(1, 6) + i) % NUMFIELDS
-        board[new_position].push(player)
+        const new_position = (getRandomIntInclusive(1, 6) + i) % NUMFIELDS;
+        board[new_position].push(player);
       }
     }
-    setPositions(board)
-    
-  }
+    setPositions(board);
+  };
 
   return (
-    <Container ref={gameContainerRef}>
+    <Container>
       <ButtonCustom onClick={testMove} >Test</ButtonCustom>
-      <GameBoard positions={positions} fieldCoordinates={fieldCoordinates} />
+      <GameContainer ref={gameContainerRef}>
+        <GameBoard positions={positions} fieldCoordinates={fieldCoordinates} />
+      </GameContainer>
     </Container>
   );
 }

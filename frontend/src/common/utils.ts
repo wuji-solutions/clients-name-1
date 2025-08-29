@@ -19,8 +19,15 @@ export const colorPalette = [
   '#DDA0DD',
   '#1a24f7',
   '#804040',
+  '#e67300',
+  '#800040',
+  '#408080',
 ];
 
 export function getColor(identifier: number) {
   return colorPalette[identifier % colorPalette.length];
+};
+
+export function isMobileView() {
+  return window.innerWidth <= 768;
 }

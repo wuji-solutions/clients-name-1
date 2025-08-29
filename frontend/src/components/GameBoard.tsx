@@ -1,40 +1,42 @@
 import React, { useRef, useEffect } from 'react';
-import { Stage, Layer, Ellipse, Circle, Wedge, Line, Path } from 'react-konva';
+import { Stage, Layer, Ellipse, Path, Group } from 'react-konva';
 import Konva from 'konva';
 import { BoardPositions, FieldCoordinate } from '../common/types';
 import { usePrevious } from '../hooks/usePrevious';
 import { BOARD_X_RADIUS, BOARD_Y_RADIUS } from '../common/config';
+import { colorPalette, isMobileView } from '../common/utils';
+import Pawn from './Pawn';
 
 interface Props {
   positions: BoardPositions;
   fieldCoordinates: FieldCoordinate[];
 }
 
-const PAWN_RADIUS = 16;
-const STACK_OFFSET = 12;
+const STACK_OFFSET = isMobileView() ? 6 : 12;
 const PAWN_POSITION_OFFSET = 0.7;
+const Y_OFFSET = isMobileView() ? 10 : 45;
 
 const GameBoard: React.FC<Props> = ({ positions, fieldCoordinates }) => {
-  const pawnReferences = useRef<Map<string, Konva.Circle>>(new Map());
+  const pawnReferences = useRef<Map<string, Konva.Group>>(new Map());
   const previousPositions = usePrevious(positions);
   const animationInProgress = useRef<boolean>(false);
 
   const getPawnPositionInField = (
-    fieldCoords: FieldCoordinate, 
-    centerX: number, 
+    fieldCoords: FieldCoordinate,
+    centerX: number,
     centerY: number
   ) => {
     const dirX = fieldCoords.x - centerX;
     const dirY = fieldCoords.y - centerY;
-    
+
     const length = Math.sqrt(dirX * dirX + dirY * dirY);
     const normalizedX = dirX / length;
     const normalizedY = dirY / length;
-    
+
     return {
       x: centerX + normalizedX * length * PAWN_POSITION_OFFSET,
       y: centerY + normalizedY * length * PAWN_POSITION_OFFSET,
-      scale: fieldCoords.scale
+      scale: fieldCoords.scale,
     };
   };
 
@@ -46,26 +48,31 @@ const GameBoard: React.FC<Props> = ({ positions, fieldCoordinates }) => {
     centerY: number
   ) => {
     const fieldPosition = getPawnPositionInField(baseCoords, centerX, centerY);
-    
     if (totalInStack === 1) return fieldPosition;
 
     const angle = (stackIndex * 2 * Math.PI) / totalInStack;
-    const stackRadius = STACK_OFFSET * (1 / fieldPosition.scale);
+
+    const radiusX = STACK_OFFSET * 2.5 * (1 / fieldPosition.scale);
+    const radiusY = STACK_OFFSET * 1.1 * (1 / fieldPosition.scale);
 
     return {
-      x: fieldPosition.x + Math.cos(angle) * stackRadius,
-      y: fieldPosition.y + Math.sin(angle) * stackRadius,
-      scale: fieldPosition.scale
+      x: fieldPosition.x - Math.cos(angle) * radiusX,
+      y: fieldPosition.y - Math.sin(angle) * radiusY,
+      scale: fieldPosition.scale,
     };
   };
 
-  const generateClockwisePathIndices = (fromIndex: number, toIndex: number, totalFields: number) => {
+  const generateClockwisePathIndices = (
+    fromIndex: number,
+    toIndex: number,
+    totalFields: number
+  ) => {
     const stepIndices: number[] = [];
-    
+
     if (fromIndex === toIndex) {
       return stepIndices;
     }
-    
+
     if (toIndex > fromIndex) {
       for (let i = fromIndex + 1; i < toIndex; i++) {
         stepIndices.push(i);
@@ -78,13 +85,13 @@ const GameBoard: React.FC<Props> = ({ positions, fieldCoordinates }) => {
         stepIndices.push(i);
       }
     }
-    
+
     return stepIndices;
   };
 
   useEffect(() => {
     if (!fieldCoordinates.length || animationInProgress.current) return;
-    
+
     const centerX = window.innerWidth / 2;
     const centerY = window.innerHeight / 2;
     const totalFields = fieldCoordinates.length;
@@ -168,7 +175,13 @@ const GameBoard: React.FC<Props> = ({ positions, fieldCoordinates }) => {
           const endCoords = fieldCoordinates[toIndex];
           if (!endCoords) return;
 
-          const stackedPos = getStackedPosition(endCoords, toStackIndex, field.length, centerX, centerY);
+          const stackedPos = getStackedPosition(
+            endCoords,
+            toStackIndex,
+            field.length,
+            centerX,
+            centerY
+          );
           node.setAttrs({
             x: stackedPos.x,
             y: stackedPos.y,
@@ -183,7 +196,13 @@ const GameBoard: React.FC<Props> = ({ positions, fieldCoordinates }) => {
           const coords = fieldCoordinates[toIndex];
           if (!coords) return;
 
-          const stackedPos = getStackedPosition(coords, toStackIndex, field.length, centerX, centerY);
+          const stackedPos = getStackedPosition(
+            coords,
+            toStackIndex,
+            field.length,
+            centerX,
+            centerY
+          );
           const promise = new Promise<void>((resolve) => {
             node.to({
               x: stackedPos.x,
@@ -205,7 +224,13 @@ const GameBoard: React.FC<Props> = ({ positions, fieldCoordinates }) => {
 
         const promise = new Promise<void>((resolve) => {
           const prevField = previousPositions[fromIndex];
-          const startStackedPos = getStackedPosition(startCoords, fromStackIndex, prevField.length, centerX, centerY);
+          const startStackedPos = getStackedPosition(
+            startCoords,
+            fromStackIndex,
+            prevField.length,
+            centerX,
+            centerY
+          );
 
           node.setAttrs({
             x: startStackedPos.x,
@@ -221,7 +246,7 @@ const GameBoard: React.FC<Props> = ({ positions, fieldCoordinates }) => {
             for (const stepIndex of stepIndices) {
               const stepCoords = fieldCoordinates[stepIndex];
               if (!stepCoords) continue;
-              
+
               const stepPosition = getPawnPositionInField(stepCoords, centerX, centerY);
 
               await new Promise<void>((stepResolve) => {
@@ -237,7 +262,13 @@ const GameBoard: React.FC<Props> = ({ positions, fieldCoordinates }) => {
               });
             }
 
-            const endStackedPos = getStackedPosition(endCoords, toStackIndex, field.length, centerX, centerY);
+            const endStackedPos = getStackedPosition(
+              endCoords,
+              toStackIndex,
+              field.length,
+              centerX,
+              centerY
+            );
 
             await new Promise<void>((finalResolve) => {
               node.to({
@@ -279,7 +310,7 @@ const GameBoard: React.FC<Props> = ({ positions, fieldCoordinates }) => {
       <Layer>
         <Ellipse
           x={centerX}
-          y={centerY}
+          y={centerY + Y_OFFSET}
           radiusX={BOARD_X_RADIUS}
           radiusY={BOARD_Y_RADIUS + 0.35}
           fillRadialGradientStartPoint={{ x: 0, y: -200 }}
@@ -289,51 +320,72 @@ const GameBoard: React.FC<Props> = ({ positions, fieldCoordinates }) => {
           stroke="white"
           strokeWidth={4}
         />
+        <Group
+          clipFunc={(ctx) => {
+            ctx.ellipse(centerX, centerY + Y_OFFSET, BOARD_X_RADIUS, BOARD_Y_RADIUS + 0.35, 0, 0, Math.PI * 2);
+          }}
+        >
+          {fieldCoordinates.map((coords, i) => {
+            const INNER_X_RADIUS = BOARD_X_RADIUS * 0.45;
+            const INNER_Y_RADIUS = (BOARD_Y_RADIUS + 0.35) * 0.45;
 
-        {fieldCoordinates.map((coords, i) => {
-          const angle = ((2 * Math.PI) / numFields) * i;
-          const angleWidth = (2 * Math.PI) / numFields;
-          
-          const startAngle = angle - angleWidth / 2;
-          const endAngle = angle + angleWidth / 2;
-          
-          const startX = centerX + BOARD_X_RADIUS * Math.cos(startAngle);
-          const startY = centerY + (BOARD_Y_RADIUS + 0.35) * Math.sin(startAngle);
-          const endX = centerX + BOARD_X_RADIUS * Math.cos(endAngle);
-          const endY = centerY + (BOARD_Y_RADIUS + 0.35) * Math.sin(endAngle);
-          
-          const pathData = `
-            M ${centerX} ${centerY}
-            L ${startX} ${startY}
-            A ${BOARD_X_RADIUS} ${BOARD_Y_RADIUS + 0.35} 0 0 1 ${endX} ${endY}
+            const angle = ((2 * Math.PI) / numFields) * i;
+            const angleWidth = (2 * Math.PI) / numFields;
+
+            const startAngle = angle - angleWidth / 2;
+            const endAngle = angle + angleWidth / 2;
+
+            const OUTER_X_RADIUS = BOARD_X_RADIUS * 1.2;
+            const OUTER_Y_RADIUS = (BOARD_Y_RADIUS + 0.35) * 1.2;
+
+            const outerStartX = centerX + OUTER_X_RADIUS * Math.cos(startAngle);
+            const outerStartY = centerY + OUTER_Y_RADIUS * Math.sin(startAngle);
+            const outerEndX   = centerX + OUTER_X_RADIUS * Math.cos(endAngle);
+            const outerEndY   = centerY + OUTER_Y_RADIUS * Math.sin(endAngle);
+
+            const innerStartX = centerX + INNER_X_RADIUS * Math.cos(startAngle);
+            const innerStartY = centerY + INNER_Y_RADIUS * Math.sin(startAngle);
+            const innerEndX = centerX + INNER_X_RADIUS * Math.cos(endAngle);
+            const innerEndY = centerY + INNER_Y_RADIUS * Math.sin(endAngle);
+
+            const largeArcFlag = angleWidth > Math.PI ? 1 : 0;
+            const sweepOuter = 1;
+            const sweepInner = 0;
+
+            const pathData = `
+            M ${outerStartX} ${outerStartY}
+            A ${BOARD_X_RADIUS} ${BOARD_Y_RADIUS + 0.35} 0 ${largeArcFlag} ${sweepOuter} ${outerEndX} ${outerEndY}
+            L ${innerEndX} ${innerEndY}
+            A ${INNER_X_RADIUS} ${INNER_Y_RADIUS} 0 ${largeArcFlag} ${sweepInner} ${innerStartX} ${innerStartY}
             Z
           `;
-
-          return (
-            <Path
-              key={i}
-              data={pathData}
-              fill="rgba(0, 210, 255, 0.2)"
-              stroke="rgba(255, 255, 255, 0.5)"
-              strokeWidth={1}
-              listening={false}
-            />
-          );
-        })}
+                      
+            return (
+              <Path
+                key={i}
+                data={pathData}
+                fill="rgba(0, 210, 255, 0.2)"
+                stroke="rgba(255, 255, 255, 0.5)"
+                strokeWidth={1}
+                listening={false}
+              />
+            );
+          })}
+        </Group>
       </Layer>
 
       <Layer>
         {positions.flatMap((field) =>
           field.map((pawnData) => (
-            <Circle
+            <Pawn
               key={pawnData.id}
-              radius={PAWN_RADIUS}
-              fill={pawnData.color}
-              stroke="black"
-              strokeWidth={2}
-              shadowBlur={5}
-              opacity={0}
-              ref={(node) => {
+              id={pawnData.id}
+              x={0}
+              y={0}
+              scale={1}
+              color={colorPalette[parseInt(pawnData.id) % colorPalette.length]}
+              isCurrentPlayer={pawnData.id == sessionStorage.getItem('id')}
+              nodeRef={(node) => {
                 if (node) {
                   pawnReferences.current.set(pawnData.id, node);
                 } else {
@@ -346,6 +398,7 @@ const GameBoard: React.FC<Props> = ({ positions, fieldCoordinates }) => {
       </Layer>
     </Stage>
   );
+  
 };
 
 export default GameBoard;
