@@ -1,24 +1,38 @@
 import { styled } from 'styled-components';
-import React, { useState, useRef, useMemo } from 'react';
+import { useState } from 'react';
 import GameBoard from '../../components/GameBoard';
-import { BoardPositions, FieldCoordinate } from '../../common/types';
-import panzoom from 'panzoom';
+import { BoardPositions } from '../../common/types';
 import { ButtonCustom } from '../../components/Button';
-import { BOARD_X_RADIUS, BOARD_Y_RADIUS } from '../../common/config';
+import { useContainerDimensions } from '../../hooks/useContainerDimensions';
+import Dice from '../../components/Dice';
 
 export const Container = styled.div(() => ({
-  width: '100%',
+  width: '90%',
   height: 'fit-content',
   padding: '20px',
+  margin: 'auto',
+}));
+
+export const ActionContainer = styled.div(() => ({
+  position: 'relative',
+  zIndex: 2,
+  marginBottom: '10px',
+  textAlign: 'center',
 }));
 
 export const GameContainer = styled.div(() => ({
-  cursor: 'grab',
-  width: '100%',
-  height: '200px',
+  width: '90%',
+  height: 'calc(80vh)',
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
+  marginTop: '10px',
+  border: '1px solid #ccc',
+  position: 'relative',
+  zIndex: 1,
+  margin: 'auto',
+  overflow: 'hidden',
+  padding: '20px',
 }));
 
 function getRandomIntInclusive(min: number, max: number) {
@@ -28,9 +42,6 @@ function getRandomIntInclusive(min: number, max: number) {
 }
 
 const NUMFIELDS = 9;
-const PERSPECTIVE = 0.35;
-const MIN_SCALE = 0.6;
-const MAX_SCALE = 1.2;
 
 const getInitialPositions = (): BoardPositions => {
   const initial: BoardPositions = Array.from({ length: NUMFIELDS }, () => []);
@@ -56,45 +67,8 @@ const getInitialPositions = (): BoardPositions => {
 
 function BoardgamePlayer() {
   const [positions, setPositions] = useState<BoardPositions>(getInitialPositions());
-  const gameContainerRef = useRef<HTMLDivElement>(null);
 
-  const fieldCoordinates = useMemo<FieldCoordinate[]>(() => {
-    const coords: FieldCoordinate[] = [];
-
-    const centerX = window.innerWidth / 2;
-    const centerY = window.innerHeight / 2;
-    const radius_x = BOARD_X_RADIUS;
-    const radius_y = BOARD_Y_RADIUS;
-    const offset = 0;
-
-    for (let i = 0; i < NUMFIELDS; i++) {
-      const angle = ((2 * Math.PI) / NUMFIELDS) * i;
-      const sinAngle = Math.sin(angle);
-      const depth = sinAngle + 1;
-      const scale = MIN_SCALE + ((MAX_SCALE - MIN_SCALE) * depth) / 2;
-      const y = centerY + offset + (radius_y * sinAngle + PERSPECTIVE);
-      coords.push({
-        x: centerX + radius_x * Math.cos(angle),
-        y,
-        scale,
-      });
-    }
-
-    return coords;
-  }, []);
-
-  // React.useEffect(() => {
-  //   if (gameContainerRef.current) {
-  //     const pz = panzoom(gameContainerRef.current, {
-  //       maxZoom: 2,
-  //       minZoom: 1,
-  //       bounds: true,
-  //       boundsPadding: 0.6,
-  //     });
-  //     pz.zoomAbs(0, 0, 0.8);
-  //   }
-  //   sessionStorage.setItem('id', '1');
-  // }, []);
+  const { ref: gameContainerRef, dimensions } = useContainerDimensions();
 
   const testMove = () => {
     const board: BoardPositions = Array.from({ length: NUMFIELDS }, () => []);
@@ -109,11 +83,21 @@ function BoardgamePlayer() {
 
   return (
     <Container>
-      <ButtonCustom onClick={testMove} >Test</ButtonCustom>
-      <GameContainer ref={gameContainerRef}>
-        <GameBoard positions={positions} fieldCoordinates={fieldCoordinates} />
-      </GameContainer>
-    </Container>
+      <ActionContainer>
+      <ButtonCustom onClick={testMove}>Test</ButtonCustom>
+      </ActionContainer>
+    <GameContainer ref={gameContainerRef}>
+      {dimensions.width > 0 && (
+        <GameBoard
+          positions={positions}
+          width={dimensions.width}
+          height={dimensions.height}
+          numFields={NUMFIELDS}
+        />
+      )}
+    </GameContainer>
+      <Dice />
+  </Container>
   );
 }
 

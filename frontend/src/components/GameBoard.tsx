@@ -1,25 +1,83 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useMemo } from 'react';
 import { Stage, Layer, Ellipse, Path, Group } from 'react-konva';
 import Konva from 'konva';
+import panzoom from 'panzoom';
 import { BoardPositions, FieldCoordinate } from '../common/types';
 import { usePrevious } from '../hooks/usePrevious';
-import { BOARD_X_RADIUS, BOARD_Y_RADIUS } from '../common/config';
 import { colorPalette, isMobileView } from '../common/utils';
 import Pawn from './Pawn';
 
 interface Props {
   positions: BoardPositions;
-  fieldCoordinates: FieldCoordinate[];
+  width: number;
+  height: number;
+  numFields: number;
 }
 
 const STACK_OFFSET = isMobileView() ? 6 : 12;
 const PAWN_POSITION_OFFSET = 0.7;
-const Y_OFFSET = isMobileView() ? 10 : 45;
+const PERSPECTIVE = 0.35;
+const MIN_SCALE = 0.6;
+const MAX_SCALE = 1.2;
 
-const GameBoard: React.FC<Props> = ({ positions, fieldCoordinates }) => {
+const GameBoard: React.FC<Props> = ({ positions, width, height, numFields }) => {
+  const stageRef = useRef<Konva.Stage>(null);
   const pawnReferences = useRef<Map<string, Konva.Group>>(new Map());
   const previousPositions = usePrevious(positions);
   const animationInProgress = useRef<boolean>(false);
+
+  const centerX = width / 2;
+  const centerY = height / 2;
+  const BOARD_X_RADIUS = width / 2.2;
+  const BOARD_Y_RADIUS = BOARD_X_RADIUS / 3.2;
+  const Y_OFFSET = isMobileView() ? 10 : 45;
+
+  useEffect(() => {
+    const stage = stageRef.current;
+    if (stage) {
+      const container = stage.container();
+      
+      container.style.cursor = 'grab';
+      const mobile = isMobileView()
+      const pz = panzoom(container, {
+        bounds: true,
+        
+        minZoom: mobile ? 1.5 : 1,
+        initialX: centerX,
+        initialY: centerY,
+        initialZoom: 2.5,
+        maxZoom: mobile ? 3 : 2.2,
+        autocenter: true, 
+        
+        enableTextSelection: false, 
+      });
+  
+      return () => {
+        pz.dispose();
+      };
+    }
+  }, []);
+
+  const fieldCoordinates = useMemo<FieldCoordinate[]>(() => {
+    const coords: FieldCoordinate[] = [];
+    const radius_x = BOARD_X_RADIUS;
+    const radius_y = BOARD_Y_RADIUS;
+
+    for (let i = 0; i < numFields; i++) {
+      const angle = ((2 * Math.PI) / numFields) * i;
+      const sinAngle = Math.sin(angle);
+      const depth = sinAngle + 1;
+      const scale = MIN_SCALE + ((MAX_SCALE - MIN_SCALE) * depth) / 2;
+      const y = centerY + (radius_y * sinAngle + PERSPECTIVE);
+      coords.push({
+        x: centerX + radius_x * Math.cos(angle),
+        y,
+        scale,
+      });
+    }
+
+    return coords;
+  }, [width, height, numFields]);
 
   const getPawnPositionInField = (
     fieldCoords: FieldCoordinate,
@@ -91,10 +149,6 @@ const GameBoard: React.FC<Props> = ({ positions, fieldCoordinates }) => {
 
   useEffect(() => {
     if (!fieldCoordinates.length || animationInProgress.current) return;
-
-    const centerX = window.innerWidth / 2;
-    const centerY = window.innerHeight / 2;
-    const totalFields = fieldCoordinates.length;
 
     if (!previousPositions) {
       positions.forEach((field, fieldIndex) => {
@@ -240,7 +294,7 @@ const GameBoard: React.FC<Props> = ({ positions, fieldCoordinates }) => {
             opacity: 1,
           });
 
-          const stepIndices = generateClockwisePathIndices(fromIndex, toIndex, totalFields);
+          const stepIndices = generateClockwisePathIndices(fromIndex, toIndex, numFields);
 
           const animatePath = async () => {
             for (const stepIndex of stepIndices) {
@@ -301,14 +355,10 @@ const GameBoard: React.FC<Props> = ({ positions, fieldCoordinates }) => {
     });
   }, [positions, previousPositions, fieldCoordinates]);
 
-  const numFields = fieldCoordinates.length;
-  const centerX = window.innerWidth / 2;
-  const centerY = window.innerHeight / 2;
-
   return (
-    <Stage width={window.innerWidth} height={window.innerHeight}>
+    <Stage width={width} height={height} ref={stageRef}>
       <Layer>
-        <Ellipse
+      <Ellipse
           x={centerX}
           y={centerY + Y_OFFSET}
           radiusX={BOARD_X_RADIUS}
@@ -318,7 +368,7 @@ const GameBoard: React.FC<Props> = ({ positions, fieldCoordinates }) => {
           fillRadialGradientEndPoint={{ x: 0, y: 0 }}
           fillRadialGradientEndRadius={BOARD_Y_RADIUS - 50}
           stroke="white"
-          strokeWidth={4}
+          strokeWidth={ isMobileView() ? 2 : 4}
         />
         <Group
           clipFunc={(ctx) => {
@@ -335,8 +385,8 @@ const GameBoard: React.FC<Props> = ({ positions, fieldCoordinates }) => {
             const startAngle = angle - angleWidth / 2;
             const endAngle = angle + angleWidth / 2;
 
-            const OUTER_X_RADIUS = BOARD_X_RADIUS * 1.2;
-            const OUTER_Y_RADIUS = (BOARD_Y_RADIUS + 0.35) * 1.2;
+            const OUTER_X_RADIUS = BOARD_X_RADIUS * 1.4;
+            const OUTER_Y_RADIUS = (BOARD_Y_RADIUS + 0.35) * 1.4;
 
             const outerStartX = centerX + OUTER_X_RADIUS * Math.cos(startAngle);
             const outerStartY = centerY + OUTER_Y_RADIUS * Math.sin(startAngle);
