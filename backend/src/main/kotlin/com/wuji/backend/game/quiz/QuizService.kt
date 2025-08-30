@@ -9,6 +9,8 @@ import com.wuji.backend.game.quiz.dto.QuestionWithSummaryDto
 import com.wuji.backend.game.quiz.dto.QuizSummaryResponseDto
 import com.wuji.backend.player.dto.PlayerDto
 import com.wuji.backend.player.dto.PlayerDto.Companion.toDto
+import com.wuji.backend.player.state.Player
+import com.wuji.backend.player.state.PlayerDetails
 import com.wuji.backend.player.state.PlayerService
 import com.wuji.backend.player.state.QuizPlayer
 import com.wuji.backend.player.state.QuizPlayerDetails
@@ -100,4 +102,8 @@ class QuizService(
         } catch (_: PlayerNotFoundException) {
             false
         }
+
+    override fun getPlayer(index: Int): Player<out PlayerDetails> {
+        return quizGame.findPlayerByIndex(index)
+    }
 }

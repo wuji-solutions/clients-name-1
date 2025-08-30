@@ -42,13 +42,6 @@ class QuizGame(
         TODO("Not yet implemented")
     }
 
-    fun findPlayerByIndex(index: Int): QuizPlayer {
-        return players.find { player -> player.index == index }
-            ?: throw PlayerNotFoundException(index).also {
-                println("Player not found: $players")
-            }
-    }
-
     fun findPlayerByIndexAndNickname(index: Int, nickname: String): QuizPlayer {
         return players.find { player ->
             player.index == index && player.nickname == nickname
