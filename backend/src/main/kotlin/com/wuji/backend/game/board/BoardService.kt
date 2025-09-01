@@ -131,4 +131,6 @@ class BoardService(
         gameRegistry.register(
             BoardGame(name, config, categories, questions, tiles))
     }
+
+    fun getRanking(): List<PlayerDto> = game.getTop5Players().map { it.toDto() }
 }
