@@ -1,5 +1,6 @@
-# API Dokumentacja – Quiz
+# API Dokumentacja
 
+# Quiz
 ## Endpoints gracza
 
 ### 1. Pobranie aktualnego pytania
@@ -237,6 +238,94 @@ Typy wydarzeń dla quizu:
 
 ---
 
+# Board
+
+## Endpoints gracza
+
+### 1. Dołączenie do gry Board
+
+`POST /games/board/join`
+
+**Body** – [`JoinGameRequestDto`](#joingamerequestdto)
+
+```json
+{
+  "index": 0
+}
+```
+
+**Response (200)**
+
+```json
+"Ola"
+```
+
+---
+
+### 2. Pobranie danych gracza
+
+`GET /games/board/player`
+
+**Response (200)** – [`PlayerDto`](#playerdto)
+
+```json
+{
+  "index": 0,
+  "nickname": "Ola"
+}
+```
+
+---
+
+### 3. Pobranie stanu planszy
+
+`GET /games/board/state`
+
+**Response (200)** – [`BoardStateDto`](#boardstatedto)
+
+```json
+{
+  "players": [
+    { "index": 0, "nickname": "Ola" },
+    { "index": 1, "nickname": "Jan" }
+  ],
+  "tileIndex": 2,
+  "category": "Matematyka"
+}
+```
+
+---
+
+### 4. Ruch gracza
+
+`POST /games/board/player/move`
+
+**Response (200)** – [`MovePlayerResponseDto`](#moveplayerresponsedto)
+
+```json
+{
+  "diceRoll": 5,
+  "newPosition": 2
+}
+```
+
+---
+
+### 5. Ranking graczy
+
+`GET /games/board/ranking`
+
+**Response (200)** – [`PlayerDto[]`](#playerdto)
+
+```json
+[
+  { "index": 0, "nickname": "Ola" },
+  { "index": 1, "nickname": "Jan" }
+]
+```
+
+---
+
 # Schematy DTO
 
 ## `QuestionDto`
@@ -343,3 +432,24 @@ Typy wydarzeń dla quizu:
 }
 ```
 
+---
+### `BoardStateDto`
+
+```json
+{
+  "players": /* PlayerDto[] */,
+  "tileIndex": "number",
+  "category": "string"
+}
+```
+
+---
+
+### `MovePlayerResponseDto`
+
+```json
+{
+  "diceRoll": "number",
+  "newPosition": "number"
+}
+```
