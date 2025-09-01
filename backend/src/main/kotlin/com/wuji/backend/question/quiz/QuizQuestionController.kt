@@ -36,7 +36,8 @@ class QuizQuestionController(
         auth: Authentication
     ): ResponseEntity<Boolean> {
         val index = auth.playerIndex()
-        val correct = questionService.answerQuestion(index, answerDto.answerIds)
+        val correct =
+            questionService.answerQuizQuestion(index, answerDto.answerIds)
 
         return ResponseEntity.ok(correct)
     }

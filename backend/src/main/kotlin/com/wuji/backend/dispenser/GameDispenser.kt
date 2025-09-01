@@ -5,7 +5,7 @@ import com.wuji.backend.question.common.Question
 abstract class GameDispenser {
     abstract val dispensers: Map<Int, Dispenser>
 
-    open fun moveNextQuestion(id: Int = 0): Question {
+    open fun moveToNextQuestion(id: Int = 0): Question {
         val dispenser =
             dispensers[id]
                 ?: throw NoSuchElementException("Brak dispenser o id=$id")
