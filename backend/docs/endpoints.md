@@ -215,29 +215,6 @@ true
 
 ---
 
-## SSE – Strumieniowanie zdarzeń
-
-### 14. Licznik odpowiedzi (SSE)
-
-`GET /sse/quiz/answer-counter` *(Content-Type: text/event-stream)*
-
----
-
-### 15. Wydarzenia (SSE)
-
-`GET /sse/events` *(Content-Type: text/event-stream)*
-
-Typy wydarzeń wspólnych:
-- `game-start`, dane: `{}`
-- `game-finish`, dane: `{}`
-- `player-kicked`, dane: [`PlayerDto`](#playerdto)
-
-Typy wydarzeń dla quizu:
-- `next-question`, dane: `{}` 
-- `end-question`, dane: `{}`
-
----
-
 # Board
 
 ## Endpoints gracza
@@ -323,6 +300,42 @@ Typy wydarzeń dla quizu:
   { "index": 1, "nickname": "Jan" }
 ]
 ```
+
+---
+
+
+# SSE – Strumieniowanie zdarzeń
+
+## Wydarzenia
+
+`GET /sse/events` *(Content-Type: text/event-stream)*
+
+Typy wydarzeń wspólnych:
+- `game-start`, dane: `{}`
+- `game-finish`, dane: `{}`
+- `player-kicked`, dane: [`PlayerDto`](#playerdto)
+
+Typy wydarzeń dla quizu:
+- `next-question`, dane: `{}`
+- `end-question`, dane: `{}`
+
+Typy wydarzeń dla boardgame:
+- `new-ranking-state`, dane: [`PlayerDto[]`](#playerdto)
+
+---
+
+## Quiz
+### Licznik odpowiedzi
+
+`GET /sse/quiz/answer-counter` *(Content-Type: text/event-stream)*
+
+---
+
+## Board
+### Nowy stan planszy
+
+`GET /sse/board/new-state (Content-Type: text/event-stream)`, dane: [`SimpleBoardStateDto`](#simpleboardstatedto)
+
 
 ---
 
@@ -451,5 +464,15 @@ Typy wydarzeń dla quizu:
 {
   "diceRoll": "number",
   "newPosition": "number"
+}
+```
+---
+
+### `SimpleBoardStateDto`
+
+```json
+{
+  "players": /* PlayerDto[] */,
+  "tileIndex": "number"
 }
 ```
