@@ -5,5 +5,5 @@ import com.wuji.backend.question.common.Answer
 data class AnswerDto(val id: Int, val content: String)
 
 fun Answer.toAnswerDto(): AnswerDto {
-    return AnswerDto(id = this.id, content = this.content)
+    return AnswerDto(id = this.id, content = this.text)
 }

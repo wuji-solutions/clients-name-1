@@ -146,7 +146,7 @@ class QuizServiceTest {
         val answer =
             mockk<Answer> {
                 every { id } returns 1
-                every { content } returns "content"
+                every { text } returns "content"
             }
 
         val question =
@@ -154,7 +154,7 @@ class QuizServiceTest {
                 every { id } returns 1
                 every { category } returns "category"
                 every { type } returns QuestionType.TEXT
-                every { task } returns "task"
+                every { text } returns "task"
                 every { answers } returns listOf(answer)
                 every { correctAnswerIds } returns mutableSetOf(answer.id)
             }

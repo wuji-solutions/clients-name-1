@@ -16,5 +16,5 @@ fun Question.toQuestionDto() =
         id = this.id,
         category = this.category,
         type = this.type,
-        task = this.task,
+        task = this.text,
         answers = this.answers.map { it.toAnswerDto() })
