@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+
+    <!-- Category -->
+    <question type="category">
+        <category>
+            <text>$course$/Sample Quiz Category</text>
+        </category>
+    </question>
+
+    <!-- Multiple Choice -->
+    <question type="multichoice">
+        <name>
+            <text>Capital of France</text>
+        </name>
+        <questiontext format="html">
+            <text><![CDATA[What is the capital of France?]]></text>
+        </questiontext>
+        <answer fraction="100">
+            <text>Paris</text>
+            <feedback><text>Correct! Paris is the capital of France.</text></feedback>
+        </answer>
+        <answer fraction="0">
+            <text>Berlin</text>
+            <feedback><text>No, Berlin is the capital of Germany.</text></feedback>
+        </answer>
+        <answer fraction="0">
+            <text>Madrid</text>
+            <feedback><text>No, Madrid is the capital of Spain.</text></feedback>
+        </answer>
+        <answer fraction="0">
+            <text>Rome</text>
+            <feedback><text>No, Rome is the capital of Italy.</text></feedback>
+        </answer>
+        <shuffleanswers>1</shuffleanswers>
+        <single>true</single>
+        <answernumbering>abc</answernumbering>
+    </question>
+
+    <!-- True/False -->
+    <question type="truefalse">
+        <name>
+            <text>The Sun is a Star</text>
+        </name>
+        <questiontext format="html">
+            <text><![CDATA[The Sun is a star. True or False?]]></text>
+        </questiontext>
+        <answer fraction="100">
+            <text>true</text>
+            <feedback><text>Correct! The Sun is indeed a star.</text></feedback>
+        </answer>
+        <answer fraction="0">
+            <text>false</text>
+            <feedback><text>Incorrect, the Sun is a star.</text></feedback>
+        </answer>
+    </question>
+
+    <!-- Short Answer -->
+    <question type="shortanswer">
+        <name>
+            <text>Water Chemical Formula</text>
+        </name>
+        <questiontext format="html">
+            <text><![CDATA[What is the chemical formula of water?]]></text>
+        </questiontext>
+        <answer fraction="100">
+            <text>H2O</text>
+            <feedback><text>Correct! Water is H₂O.</text></feedback>
+        </answer>
+        <answer fraction="100">
+            <text>h2o</text>
+            <feedback><text>Correct! Case-insensitive accepted.</text></feedback>
+        </answer>
+        <usecase>0</usecase>
+    </question>
+
+    <!-- Numerical -->
+    <question type="numerical">
+        <name>
+            <text>Speed of Light</text>
+        </name>
+        <questiontext format="html">
+            <text><![CDATA[What is the approximate speed of light in vacuum (in km/s)?]]></text>
+        </questiontext>
+        <answer fraction="100">
+            <text>300000</text>
+            <tolerance>10000</tolerance>
+            <feedback><text>Correct! Around 300,000 km/s.</text></feedback>
+        </answer>
+    </question>
+
+    <!-- Matching -->
+    <question type="matching">
+        <name>
+            <text>Countries and Capitals</text>
+        </name>
+        <questiontext format="html">
+            <text><![CDATA[Match each country with its capital city.]]></text>
+        </questiontext>
+        <subquestion>
+            <text>Germany</text>
+            <answer>
+                <text>Berlin</text>
+            </answer>
+        </subquestion>
+        <subquestion>
+            <text>Italy</text>
+            <answer>
+                <text>Rome</text>
+            </answer>
+        </subquestion>
+        <subquestion>
+            <text>Spain</text>
+            <answer>
+                <text>Madrid</text>
+            </answer>
+        </subquestion>
+        <shuffleanswers>true</shuffleanswers>
+    </question>
+
+    <!-- Essay -->
+    <question type="essay">
+        <name>
+            <text>Causes of World War I</text>
+        </name>
+        <questiontext format="html">
+            <text><![CDATA[Explain the main causes of World War I.]]></text>
+        </questiontext>
+        <answer fraction="0">
+            <text></text>
+        </answer>
+    </question>
+
+</quiz>
