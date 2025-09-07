@@ -9,7 +9,7 @@
 | `questionDurationSeconds` | `Int`     | Maksymalny czas na odpowiedź na jedno pytanie (w sekundach).         |
 
 ---
-
+sonar plz
 ##  Sprawdzian 
 
 | Pole                       | Typ                         | Opis                                                                               |
