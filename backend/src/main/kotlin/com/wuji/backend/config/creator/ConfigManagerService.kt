@@ -25,7 +25,7 @@ class ConfigManagerService() {
         val catalog = getCatalogFromGameType(type)
         val clazz = getClassFromGameType(type)
 
-        val dir = File("$configPath/$catalog")
+        val dir = File(getPath(catalog))
         if (!dir.exists() || !dir.isDirectory) {
             throw FileNotFoundException(
                 "Katalog konfiguracji $catalog nie istnieje.")
@@ -47,7 +47,7 @@ class ConfigManagerService() {
         require(checkFileName(name))
         val catalog = getCatalogFromDtoClass(config)
 
-        val dir = File("$configPath/$catalog")
+        val dir = File(getPath(catalog))
         if (!dir.exists()) {
             dir.mkdirs()
         }
@@ -58,7 +58,7 @@ class ConfigManagerService() {
 
     fun listConfigs(type: GameType): List<String> {
         val catalog = getCatalogFromGameType(type)
-        val dir = File("$configPath/$catalog")
+        val dir = File(getPath(catalog))
         if (!dir.exists() || !dir.isDirectory) {
             throw FileNotFoundException(
                 "Katalog $configPath/$catalog nie istnieje lub nie jest katalogiem.")
@@ -69,7 +69,7 @@ class ConfigManagerService() {
 
     fun deleteConfig(type: GameType, name: String): Boolean {
         val catalog = getCatalogFromGameType(type)
-        val dir = File("$configPath/$catalog")
+        val dir = File(getPath(catalog))
         return File(dir, name).delete()
     }
 
@@ -101,4 +101,5 @@ class ConfigManagerService() {
     }
 
     private fun checkFileName(name: String) = pattern.matches(name)
+    private fun getPath(catalog: String) = "$configPath/$catalog"
 }
