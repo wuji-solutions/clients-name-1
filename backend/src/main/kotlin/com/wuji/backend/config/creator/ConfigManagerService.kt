@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class ConfigManagerService(
-    val jsonPattern: Regex = Regex("^[a-zA-Z0-9]+\\.json$"),
+    val fileNamePattern: Regex = Regex("^[a-zA-Z0-9]+\\.json$"),
     val mapper: ObjectMapper = jacksonObjectMapper(),
     var configPath: String =
         "." // need to have a discussion where to store config files
@@ -101,7 +101,7 @@ class ConfigManagerService(
         }
     }
 
-    private fun checkFileName(name: String) = jsonPattern.matches(name)
+    private fun checkFileName(name: String) = fileNamePattern.matches(name)
 
     private fun getPath(catalog: String) = "$configPath/$catalog"
 }
