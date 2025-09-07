@@ -102,5 +102,6 @@ class ConfigManagerService(
     }
 
     private fun checkFileName(name: String) = jsonPattern.matches(name)
+
     private fun getPath(catalog: String) = "$configPath/$catalog"
 }
