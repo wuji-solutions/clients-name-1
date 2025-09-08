@@ -1,5 +1,7 @@
 package com.wuji.backend.config.creator
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.wuji.backend.config.dto.QuizConfigDto
 import com.wuji.backend.game.GameType
 import java.io.File
@@ -14,12 +16,16 @@ import org.junit.jupiter.api.io.TempDir
 
 class ConfigManagerServiceTest {
     private lateinit var service: ConfigManagerService
+    private lateinit var mapper: ObjectMapper
     @TempDir private lateinit var tempDir: File
 
     @BeforeEach
     fun setup() {
-        service = ConfigManagerService()
-        service.configPath = tempDir.absolutePath
+        mapper = jacksonObjectMapper()
+        service =
+            ConfigManagerService(
+                mapper = jacksonObjectMapper(),
+                configPath = tempDir.absolutePath)
     }
 
     @Test
@@ -30,7 +36,7 @@ class ConfigManagerServiceTest {
                 questionFilePath = "question.xml",
                 questionDurationSeconds = 5,
                 endImmediatelyAfterTime = true)
-        service.createConfig(config, "quiz.json")
+        service.createConfig(config, "quiz")
         val file = File(tempDir, "quiz/quiz.json")
         assertTrue(file.exists())
         val content = file.readText()
@@ -51,9 +57,9 @@ class ConfigManagerServiceTest {
 
         val file = File(tempDir, "quiz/quiz.json")
         file.parentFile.mkdirs()
-        service.mapper.writeValue(file, config)
+        mapper.writeValue(file, config)
 
-        val result = service.readConfig(GameType.QUIZ, "quiz.json")
+        val result = service.readConfig(GameType.QUIZ, "quiz")
 
         assertEquals(config.totalDurationMinutes, result.totalDurationMinutes)
         assertEquals(config.questionFilePath, result.questionFilePath)
@@ -72,7 +78,7 @@ class ConfigManagerServiceTest {
 
         val result = service.listConfigs(GameType.EXAM)
 
-        assertEquals(setOf("exam1.json", "exam2.json"), result.toSet())
+        assertEquals(setOf("exam1", "exam2"), result.toSet())
     }
 
     @Test
@@ -82,7 +88,7 @@ class ConfigManagerServiceTest {
         val file = File(dir, "board1.json")
         file.writeText("{}")
 
-        val deleted = service.deleteConfig(GameType.BOARD, "board1.json")
+        val deleted = service.deleteConfig(GameType.BOARD, "board1")
 
         assertTrue(deleted)
         assertFalse(file.exists(), "File should be deleted")
@@ -92,23 +98,9 @@ class ConfigManagerServiceTest {
     fun `readConfig should throw FileNotFoundException when file missing`() {
         val exception =
             assertFailsWith<FileNotFoundException> {
-                service.readConfig(GameType.QUIZ, "not_exists.json")
+                service.readConfig(GameType.QUIZ, "not_exists")
             }
         assertTrue(exception.message!!.contains("nie istnieje"))
-    }
-
-    @Test
-    fun `createConfig should throw IllegalArgumentException for invalid file name`() {
-        val config =
-            QuizConfigDto(
-                totalDurationMinutes = 10,
-                questionFilePath = "question.xml",
-                questionDurationSeconds = 5,
-                endImmediatelyAfterTime = true)
-
-        assertFailsWith<IllegalArgumentException> {
-            service.createConfig(config, "invalid-name.txt")
-        }
     }
 
     @Test

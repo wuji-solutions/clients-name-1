@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class ConfigManagerService(
-    val mapper: ObjectMapper = jacksonObjectMapper(),
-    var configPath: String =
+    private val mapper: ObjectMapper = jacksonObjectMapper(),
+    private var configPath: String =
         "." // need to have a discussion where to store config files
 ) {
 
@@ -31,7 +31,7 @@ class ConfigManagerService(
                 "Katalog konfiguracji $catalog nie istnieje.")
         }
 
-        val file = File(dir, name)
+        val file = File(dir, addExtension(name))
         if (!file.exists() || !file.isFile) {
             throw FileNotFoundException(
                 "Plik konfiguracyjny $name nie istnieje w katalogu $catalog.")
@@ -62,14 +62,15 @@ class ConfigManagerService(
             throw FileNotFoundException(
                 "Katalog $configPath/$catalog nie istnieje lub nie jest katalogiem.")
         }
-        return dir.listFiles()?.filter { it.isFile }?.map { it.name }
-            ?: emptyList()
+        return dir.listFiles()
+            ?.filter { it.isFile }
+            ?.map { it.nameWithoutExtension } ?: emptyList()
     }
 
     fun deleteConfig(type: GameType, name: String): Boolean {
         val catalog = getCatalogFromGameType(type)
         val dir = File(getPath(catalog))
-        return File(dir, name).delete()
+        return File(dir, addExtension(name)).delete()
     }
 
     private fun getCatalogFromGameType(type: GameType): String {
