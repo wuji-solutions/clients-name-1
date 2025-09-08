@@ -262,12 +262,17 @@ true
 
 ```json
 {
-  "players": [
-    { "index": 0, "nickname": "Ola" },
-    { "index": 1, "nickname": "Jan" }
-  ],
-  "tileIndex": 2,
-  "category": "Matematyka"
+  "tileStates": [
+    {
+      "players": [
+        { "index": 0, "nickname": "Ola" },
+        { "index": 1, "nickname": "Jan" }
+      ],
+      "tileIndex": 2,
+      "category": "Matematyka"
+    },
+    ...
+  ]
 }
 ```
 
@@ -450,9 +455,14 @@ Typy wydarzeń dla boardgame:
 
 ```json
 {
-  "players": /* PlayerDto[] */,
-  "tileIndex": "number",
-  "category": "string"
+  "tileStates": [
+    {
+      "players": /* PlayerDto[] */,
+      "tileIndex": "number",
+      "category": "string"
+    },
+    ...
+  ]
 }
 ```
 
@@ -472,7 +482,12 @@ Typy wydarzeń dla boardgame:
 
 ```json
 {
-  "players": /* PlayerDto[] */,
-  "tileIndex": "number"
+  "tileStates": [
+    {
+      "players": /* PlayerDto[] */,
+      "tileIndex": "number"
+    },
+    ...
+  ]
 }
 ```

@@ -1,6 +1,9 @@
 package com.wuji.backend.admin
 
+import com.wuji.backend.config.dto.toBoardConfig
 import com.wuji.backend.config.dto.toQuizConfig
+import com.wuji.backend.game.board.BoardService
+import com.wuji.backend.game.board.dto.BoardGameCreateRequestDto
 import com.wuji.backend.game.common.GameServiceDelegate
 import com.wuji.backend.game.quiz.QuizService
 import com.wuji.backend.game.quiz.dto.QuizGameCreateRequestDto
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/manage")
 class AdminController(
     private val quizService: QuizService,
+    private val boardService: BoardService,
     private val gameServiceDelegate: GameServiceDelegate,
     private val authService: PlayerAuthService
 ) {
@@ -33,6 +37,19 @@ class AdminController(
             requestDto.name,
             requestDto.config.toQuizConfig(),
             requestDto.questions)
+        return ResponseEntity.ok().build()
+    }
+
+    @PostMapping("/board")
+    fun createBoardGame(
+        @Valid @RequestBody requestDto: BoardGameCreateRequestDto
+    ): ResponseEntity<Nothing> {
+        boardService.createGame(
+            requestDto.name,
+            requestDto.config.toBoardConfig(),
+            requestDto.questions,
+            requestDto.categories,
+            requestDto.tiles)
         return ResponseEntity.ok().build()
     }
 
