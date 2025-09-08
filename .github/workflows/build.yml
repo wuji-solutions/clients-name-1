@@ -1,0 +1,32 @@
+name: Build Kotlin Spring Boot
+
+on:
+  push:
+    branches:
+      - test-cd
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Grant execute permission for Gradlew
+        run: chmod +x gradlew
+
+      - name: Build with Gradle (bootJar)
+        run: ./gradlew clean bootJar
+
+      - name: Upload backend.jar artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-jar
+          path: build/libs/backend.jar
