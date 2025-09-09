@@ -31,14 +31,32 @@ class BoardQuestionService(
             tile.category, difficulty, previousQuestions)
     }
 
+    fun getQuestionAndMarkTime(playerIndex: Int): Question {
+        val player = game.findPlayerByIndex(playerIndex)
+        if (player.details.firstGetCurrentQuestionTime == null)
+            player.details.firstGetCurrentQuestionTime =
+                System.currentTimeMillis()
+        return getQuestion(playerIndex)
+    }
+
     fun answerBoardQuestion(playerIndex: Int, answerIds: Set<Int>): Boolean {
         val question = getQuestion(playerIndex)
         val player = game.findPlayerByIndex(playerIndex)
         player.details.askedQuestions.add(question)
 
-        return answerQuestion(player, question, answerIds).also {
-            checkForDifficultyPromotion(playerIndex)
-        }
+        val firstGetCurrentQuestionTime =
+            player.details.firstGetCurrentQuestionTime
+                ?: throw IllegalStateException(
+                    "It appears you answered the question before retrieving it first")
+        val answerTime =
+            System.currentTimeMillis() - firstGetCurrentQuestionTime
+
+        return answerQuestion(player, question, answerIds, answerTime)
+            .also { checkForDifficultyPromotion(playerIndex) }
+            .also {
+                //          reset the time, it will be set on the next getQuestionAndMarkTime()
+                player.details.firstGetCurrentQuestionTime = null
+            }
     }
 
     fun checkForDifficultyPromotion(playerIndex: Int) {

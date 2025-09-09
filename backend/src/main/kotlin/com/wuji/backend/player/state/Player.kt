@@ -22,8 +22,7 @@ data class Player<PlayerDetailsT : PlayerDetails>(
 }
 
 open class PlayerDetails(
-    val answers: MutableList<PlayerAnswer> = mutableListOf(),
-    val timeTookInSeconds: Long = 0
+    val answers: MutableList<PlayerAnswer> = mutableListOf()
 )
 
 typealias QuizPlayerDetails = PlayerDetails

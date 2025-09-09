@@ -13,4 +13,11 @@ enum class DifficultyLevel {
     HARD;
 
     fun next(): DifficultyLevel = values().getOrNull(this.ordinal + 1) ?: HARD
+
+    fun toPolish(): String =
+        when (this) {
+            EASY -> "Łatwy"
+            MEDIUM -> "Średni"
+            HARD -> "Trudny"
+        }
 }

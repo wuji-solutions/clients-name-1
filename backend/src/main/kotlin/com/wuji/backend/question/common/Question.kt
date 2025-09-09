@@ -19,7 +19,12 @@ data class Question(
 }
 
 enum class QuestionType {
-    TEXT
+    TEXT;
+
+    fun toPolish(): String =
+        when (this) {
+            TEXT -> "TEKST"
+        }
 }
 
 data class Answer(val id: Int, val content: String)
@@ -27,7 +32,7 @@ data class Answer(val id: Int, val content: String)
 data class PlayerAnswer(
     val question: Question,
     val selectedIds: Set<Int>,
-    val answerTimeInMilliseconds: Int
+    val answerTimeInMilliseconds: Long
 ) {
     val isCorrect = question.areCorrectAnswerIds(selectedIds)
 }
