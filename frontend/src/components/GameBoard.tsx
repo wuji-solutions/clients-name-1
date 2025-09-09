@@ -16,13 +16,39 @@ interface Props {
   storedPlayerIndex?: string;
 }
 
-const STACK_OFFSET = isMobileView() ? 3.5 : 10;
-const PAWN_POSITION_OFFSET = 0.70;
+function createCheckerboardImage(size = 8): HTMLImageElement {
+  const canvas = document.createElement("canvas");
+  canvas.width = size * 2;
+  canvas.height = size * 2;
+  const ctx = canvas.getContext("2d")!;
+
+  ctx.fillStyle = "white";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.fillStyle = "black";
+  ctx.fillRect(0, 0, size, size);
+  ctx.fillRect(size, size, size, size);
+
+  // convert canvas → image
+  const img = new Image();
+  img.src = canvas.toDataURL();
+  return img;
+}
+
+const mobile = isMobileView();
+const STACK_OFFSET = mobile ? 3.5 : 13;
+const PAWN_POSITION_OFFSET = 0.7;
 const PERSPECTIVE = 0.35;
 const MIN_SCALE = 0.6;
 const MAX_SCALE = 1.2;
 
-const GameBoard: React.FC<Props> = ({ positions, width, height, numFields, storedPlayerIndex = '1' }) => {
+const GameBoard: React.FC<Props> = ({
+  positions,
+  width,
+  height,
+  numFields,
+  storedPlayerIndex = '1',
+}) => {
   const stageRef = useRef<Konva.Stage>(null);
   const pawnReferences = useRef<Map<string, Konva.Group>>(new Map());
   const animationInProgress = useRef<boolean>(false);
@@ -38,14 +64,13 @@ const GameBoard: React.FC<Props> = ({ positions, width, height, numFields, store
   const centerY = height / 2;
   const BOARD_X_RADIUS = width / 2.02;
   const BOARD_Y_RADIUS = BOARD_X_RADIUS / 3.5;
-  const Y_OFFSET = isMobileView() ? 10 : 45;
+  const Y_OFFSET = mobile ? 10 : 45;
 
   useEffect(() => {
     const stage = stageRef.current;
     if (stage) {
       const container = stage.container();
 
-      const mobile = isMobileView();
       const pz = panzoom(container, {
         bounds: true,
         boundsPadding: 0.2,
@@ -55,10 +80,12 @@ const GameBoard: React.FC<Props> = ({ positions, width, height, numFields, store
         initialZoom: mobile ? 1.6 : 1,
         maxZoom: mobile ? 3 : 2.2,
         autocenter: true,
-        enableTextSelection: false, 
+        enableTextSelection: false,
         smoothScroll: false,
         beforeMouseDown: () => true,
       });
+
+      pz.pause()
 
       pzRef.current = pz;
 
@@ -121,7 +148,7 @@ const GameBoard: React.FC<Props> = ({ positions, width, height, numFields, store
 
     const angle = (stackIndex * 2 * Math.PI) / totalInStack;
 
-    const radiusX = STACK_OFFSET * 2.5 * (1 / fieldPosition.scale); // CHANGE PAWN SPACING BASED TO DEVICE WIDTH
+    const radiusX = STACK_OFFSET * 3.5 * (1 / fieldPosition.scale); // CHANGE PAWN SPACING BASED TO DEVICE WIDTH
     const radiusY = STACK_OFFSET * 1.1 * (1 / fieldPosition.scale); // SAME AS ABOVE
 
     return {
@@ -378,24 +405,23 @@ const GameBoard: React.FC<Props> = ({ positions, width, height, numFields, store
   const smoothCenterOnNode = (node: Konva.Node, index: string, lerp = 0.2) => {
     if (index != playerIndex) return;
     if (!pzRef.current || !stageRef.current) return;
-    const mobile = isMobileView()
-  
+
     const rect = stageRef.current.container().getBoundingClientRect();
-    const viewX = rect.width / ( mobile ? 3.5 : 2.5);
-    const viewY = rect.height / ( mobile ? 3.5 : 2.5);
-  
+    const viewX = rect.width / (mobile ? 3.5 : 2.5);
+    const viewY = rect.height / (mobile ? 3.5 : 2.5);
+
     const pawnPos = node.getAbsolutePosition();
-  
+
     const transform = pzRef.current.getTransform();
-  
+
     const targetX = viewX - pawnPos.x * transform.scale;
     const targetY = viewY - pawnPos.y * transform.scale;
-  
+
     const newX = transform.x + (targetX - transform.x) * lerp;
     const newY = transform.y + (targetY - transform.y) * lerp;
-  
+
     pzRef.current.moveTo(newX, newY);
-  
+
     const scale = mobile ? 2 : 1.2;
     pzRef.current.zoomAbs(viewX, viewY, scale);
   };
@@ -413,7 +439,7 @@ const GameBoard: React.FC<Props> = ({ positions, width, height, numFields, store
           fillRadialGradientEndPoint={{ x: 0, y: 0 }}
           fillRadialGradientEndRadius={BOARD_Y_RADIUS - 50}
           stroke="white"
-          strokeWidth={isMobileView() ? 2 : 4}
+          strokeWidth={mobile ? 2 : 4}
         />
         <Group
           clipFunc={(ctx) => {
@@ -463,17 +489,21 @@ const GameBoard: React.FC<Props> = ({ positions, width, height, numFields, store
             Z
           `;
 
+            const checkerboard =
+              i === 0 ? createCheckerboardImage( mobile ? 8 : 18) : undefined;
+
             return (
               <Path
                 key={i}
                 data={pathData}
-                // fill="rgba(0, 210, 255, 1)"
+                fill={i === 0 ? undefined : 'rgba(0, 210, 255, 0.7)'}
+                fillPatternImage={checkerboard}
+                fillPatternRepeat="repeat"
+                fillPatternScale={{ x: 1, y: 0.92 }}
+                fillPatternRotation={10}
                 stroke="rgba(255, 255, 255, 1)"
                 strokeWidth={1}
                 listening={false}
-                fillLinearGradientColorStops={[0, 'rgba(0, 0, 0, 1)', 1, 'rgba(255, 255, 255, 1)']}
-                fillPatternX={20}
-                fillPatternRepeat='repeat'
               />
             );
           })}
