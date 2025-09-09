@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useMemo } from 'react';
+import React, { useRef, useEffect, useMemo, useState } from 'react';
 import { Stage, Layer, Ellipse, Path, Group } from 'react-konva';
 import Konva from 'konva';
 import panzoom from 'panzoom';
@@ -6,54 +6,65 @@ import { BoardPositions, FieldCoordinate } from '../common/types';
 import { usePrevious } from '../hooks/usePrevious';
 import { colorPalette, isMobileView } from '../common/utils';
 import Pawn from './Pawn';
+import { service } from '../service/service';
 
 interface Props {
   positions: BoardPositions;
   width: number;
   height: number;
   numFields: number;
+  storedPlayerIndex?: string;
 }
 
-const STACK_OFFSET = isMobileView() ? 6 : 12;
-const PAWN_POSITION_OFFSET = 0.7;
+const STACK_OFFSET = isMobileView() ? 3.5 : 10;
+const PAWN_POSITION_OFFSET = 0.70;
 const PERSPECTIVE = 0.35;
 const MIN_SCALE = 0.6;
 const MAX_SCALE = 1.2;
 
-const GameBoard: React.FC<Props> = ({ positions, width, height, numFields }) => {
+const GameBoard: React.FC<Props> = ({ positions, width, height, numFields, storedPlayerIndex = '1' }) => {
   const stageRef = useRef<Konva.Stage>(null);
   const pawnReferences = useRef<Map<string, Konva.Group>>(new Map());
-  const previousPositions = usePrevious(positions);
   const animationInProgress = useRef<boolean>(false);
+  const pzRef = useRef<ReturnType<typeof panzoom> | null>(null);
+  const previousPositions = usePrevious(positions);
+  const [playerIndex, setPlayerIndex] = useState<string | null>(storedPlayerIndex);
+
+  useEffect(() => {
+    if (!storedPlayerIndex) service.getPlayerId().then((response) => setPlayerIndex(response.data));
+  }, []);
 
   const centerX = width / 2;
   const centerY = height / 2;
-  const BOARD_X_RADIUS = width / 2.2;
-  const BOARD_Y_RADIUS = BOARD_X_RADIUS / 3.2;
+  const BOARD_X_RADIUS = width / 2.02;
+  const BOARD_Y_RADIUS = BOARD_X_RADIUS / 3.5;
   const Y_OFFSET = isMobileView() ? 10 : 45;
 
   useEffect(() => {
     const stage = stageRef.current;
     if (stage) {
       const container = stage.container();
-      
-      container.style.cursor = 'grab';
-      const mobile = isMobileView()
+
+      const mobile = isMobileView();
       const pz = panzoom(container, {
         bounds: true,
-        
-        minZoom: mobile ? 1.5 : 1,
+        boundsPadding: 0.2,
+        minZoom: 1,
         initialX: centerX,
         initialY: centerY,
-        initialZoom: 2.5,
+        initialZoom: mobile ? 1.6 : 1,
         maxZoom: mobile ? 3 : 2.2,
-        autocenter: true, 
-        
+        autocenter: true,
         enableTextSelection: false, 
+        smoothScroll: false,
+        beforeMouseDown: () => true,
       });
-  
+
+      pzRef.current = pz;
+
       return () => {
         pz.dispose();
+        pzRef.current = null;
       };
     }
   }, []);
@@ -110,8 +121,8 @@ const GameBoard: React.FC<Props> = ({ positions, width, height, numFields }) => 
 
     const angle = (stackIndex * 2 * Math.PI) / totalInStack;
 
-    const radiusX = STACK_OFFSET * 2.5 * (1 / fieldPosition.scale);
-    const radiusY = STACK_OFFSET * 1.1 * (1 / fieldPosition.scale);
+    const radiusX = STACK_OFFSET * 2.5 * (1 / fieldPosition.scale); // CHANGE PAWN SPACING BASED TO DEVICE WIDTH
+    const radiusY = STACK_OFFSET * 1.1 * (1 / fieldPosition.scale); // SAME AS ABOVE
 
     return {
       x: fieldPosition.x - Math.cos(angle) * radiusX,
@@ -265,6 +276,9 @@ const GameBoard: React.FC<Props> = ({ positions, width, height, numFields }) => 
               scaleY: stackedPos.scale,
               duration: 0.2,
               easing: Konva.Easings.EaseOut,
+              onUpdate: () => {
+                smoothCenterOnNode(node, pawnData.id);
+              },
               onFinish: resolve,
             });
           });
@@ -311,6 +325,9 @@ const GameBoard: React.FC<Props> = ({ positions, width, height, numFields }) => 
                   scaleY: stepPosition.scale,
                   duration: 0.25,
                   easing: Konva.Easings.EaseInOut,
+                  onUpdate: () => {
+                    smoothCenterOnNode(node, pawnData.id);
+                  },
                   onFinish: stepResolve,
                 });
               });
@@ -332,6 +349,9 @@ const GameBoard: React.FC<Props> = ({ positions, width, height, numFields }) => 
                 scaleY: endStackedPos.scale,
                 duration: 0.25,
                 easing: Konva.Easings.EaseInOut,
+                onUpdate: () => {
+                  smoothCenterOnNode(node, pawnData.id);
+                },
                 onFinish: finalResolve,
               });
             });
@@ -355,10 +375,35 @@ const GameBoard: React.FC<Props> = ({ positions, width, height, numFields }) => 
     });
   }, [positions, previousPositions, fieldCoordinates]);
 
+  const smoothCenterOnNode = (node: Konva.Node, index: string, lerp = 0.2) => {
+    if (index != playerIndex) return;
+    if (!pzRef.current || !stageRef.current) return;
+    const mobile = isMobileView()
+  
+    const rect = stageRef.current.container().getBoundingClientRect();
+    const viewX = rect.width / ( mobile ? 3.5 : 2.5);
+    const viewY = rect.height / ( mobile ? 3.5 : 2.5);
+  
+    const pawnPos = node.getAbsolutePosition();
+  
+    const transform = pzRef.current.getTransform();
+  
+    const targetX = viewX - pawnPos.x * transform.scale;
+    const targetY = viewY - pawnPos.y * transform.scale;
+  
+    const newX = transform.x + (targetX - transform.x) * lerp;
+    const newY = transform.y + (targetY - transform.y) * lerp;
+  
+    pzRef.current.moveTo(newX, newY);
+  
+    const scale = mobile ? 2 : 1.2;
+    pzRef.current.zoomAbs(viewX, viewY, scale);
+  };
+
   return (
     <Stage width={width} height={height} ref={stageRef}>
       <Layer>
-      <Ellipse
+        <Ellipse
           x={centerX}
           y={centerY + Y_OFFSET}
           radiusX={BOARD_X_RADIUS}
@@ -368,11 +413,19 @@ const GameBoard: React.FC<Props> = ({ positions, width, height, numFields }) => 
           fillRadialGradientEndPoint={{ x: 0, y: 0 }}
           fillRadialGradientEndRadius={BOARD_Y_RADIUS - 50}
           stroke="white"
-          strokeWidth={ isMobileView() ? 2 : 4}
+          strokeWidth={isMobileView() ? 2 : 4}
         />
         <Group
           clipFunc={(ctx) => {
-            ctx.ellipse(centerX, centerY + Y_OFFSET, BOARD_X_RADIUS, BOARD_Y_RADIUS + 0.35, 0, 0, Math.PI * 2);
+            ctx.ellipse(
+              centerX,
+              centerY + Y_OFFSET,
+              BOARD_X_RADIUS,
+              BOARD_Y_RADIUS + 0.35,
+              0,
+              0,
+              Math.PI * 2
+            );
           }}
         >
           {fieldCoordinates.map((coords, i) => {
@@ -390,8 +443,8 @@ const GameBoard: React.FC<Props> = ({ positions, width, height, numFields }) => 
 
             const outerStartX = centerX + OUTER_X_RADIUS * Math.cos(startAngle);
             const outerStartY = centerY + OUTER_Y_RADIUS * Math.sin(startAngle);
-            const outerEndX   = centerX + OUTER_X_RADIUS * Math.cos(endAngle);
-            const outerEndY   = centerY + OUTER_Y_RADIUS * Math.sin(endAngle);
+            const outerEndX = centerX + OUTER_X_RADIUS * Math.cos(endAngle);
+            const outerEndY = centerY + OUTER_Y_RADIUS * Math.sin(endAngle);
 
             const innerStartX = centerX + INNER_X_RADIUS * Math.cos(startAngle);
             const innerStartY = centerY + INNER_Y_RADIUS * Math.sin(startAngle);
@@ -409,15 +462,18 @@ const GameBoard: React.FC<Props> = ({ positions, width, height, numFields }) => 
             A ${INNER_X_RADIUS} ${INNER_Y_RADIUS} 0 ${largeArcFlag} ${sweepInner} ${innerStartX} ${innerStartY}
             Z
           `;
-                      
+
             return (
               <Path
                 key={i}
                 data={pathData}
-                fill="rgba(0, 210, 255, 0.2)"
-                stroke="rgba(255, 255, 255, 0.5)"
+                // fill="rgba(0, 210, 255, 1)"
+                stroke="rgba(255, 255, 255, 1)"
                 strokeWidth={1}
                 listening={false}
+                fillLinearGradientColorStops={[0, 'rgba(0, 0, 0, 1)', 1, 'rgba(255, 255, 255, 1)']}
+                fillPatternX={20}
+                fillPatternRepeat='repeat'
               />
             );
           })}
@@ -426,29 +482,30 @@ const GameBoard: React.FC<Props> = ({ positions, width, height, numFields }) => 
 
       <Layer>
         {positions.flatMap((field) =>
-          field.map((pawnData) => (
-            <Pawn
-              key={pawnData.id}
-              id={pawnData.id}
-              x={0}
-              y={0}
-              scale={1}
-              color={colorPalette[parseInt(pawnData.id) % colorPalette.length]}
-              isCurrentPlayer={pawnData.id == sessionStorage.getItem('id')}
-              nodeRef={(node) => {
-                if (node) {
-                  pawnReferences.current.set(pawnData.id, node);
-                } else {
-                  pawnReferences.current.delete(pawnData.id);
-                }
-              }}
-            />
-          ))
+          field.map((pawnData) => {
+            return (
+              <Pawn
+                key={pawnData.id}
+                id={pawnData.id}
+                x={0}
+                y={0}
+                scale={1}
+                color={colorPalette[parseInt(pawnData.id) % colorPalette.length]}
+                isCurrentPlayer={pawnData.id == playerIndex}
+                nodeRef={(node) => {
+                  if (node) {
+                    pawnReferences.current.set(pawnData.id, node);
+                  } else {
+                    pawnReferences.current.delete(pawnData.id);
+                  }
+                }}
+              />
+            );
+          })
         )}
       </Layer>
     </Stage>
   );
-  
 };
 
 export default GameBoard;

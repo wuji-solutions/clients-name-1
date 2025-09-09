@@ -29,5 +29,5 @@ export function getColor(identifier: number) {
 };
 
 export function isMobileView() {
-  return window.innerWidth <= 768;
+  return window.innerWidth <= 968;
 }

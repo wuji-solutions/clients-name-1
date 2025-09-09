@@ -4,12 +4,10 @@ import GameBoard from '../../components/GameBoard';
 import { BoardPositions } from '../../common/types';
 import { ButtonCustom } from '../../components/Button';
 import { useContainerDimensions } from '../../hooks/useContainerDimensions';
-import Dice from '../../components/Dice';
 
 export const Container = styled.div(() => ({
-  width: '90%',
-  height: 'fit-content',
-  padding: '20px',
+  width: '100%',
+  height: '100%',
   margin: 'auto',
 }));
 
@@ -21,17 +19,16 @@ export const ActionContainer = styled.div(() => ({
 }));
 
 export const GameContainer = styled.div(() => ({
-  width: '90%',
+  width: '100%',
   height: 'calc(80vh)',
+  overflow: 'hidden',
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
   marginTop: '10px',
-  border: '1px solid #ccc',
   position: 'relative',
   zIndex: 1,
   margin: 'auto',
-  overflow: 'hidden',
   padding: '20px',
 }));
 
@@ -41,7 +38,7 @@ function getRandomIntInclusive(min: number, max: number) {
   return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
 }
 
-const NUMFIELDS = 9;
+const NUMFIELDS = 15;
 
 const getInitialPositions = (): BoardPositions => {
   const initial: BoardPositions = Array.from({ length: NUMFIELDS }, () => []);
@@ -96,7 +93,6 @@ function BoardgamePlayer() {
         />
       )}
     </GameContainer>
-      <Dice />
   </Container>
   );
 }
