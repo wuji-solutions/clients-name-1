@@ -36,4 +36,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: backend-jar-${{ env.pr_number }}
-          path: build/libs/backend.jar
+          path: backend/build/libs/backend.jar
