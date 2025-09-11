@@ -1,9 +1,12 @@
 import { styled } from 'styled-components';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import GameBoard from '../../components/GameBoard';
-import { BoardPositions } from '../../common/types';
+import { BoardPositions, Pawn } from '../../common/types';
 import { ButtonCustom } from '../../components/Button';
 import { useContainerDimensions } from '../../hooks/useContainerDimensions';
+import { service } from '../../service/service';
+import { useSSEChannel } from '../../providers/SSEProvider';
+import { BACKEND_ENDPOINT_EXTERNAL } from '../../common/config';
 
 export const Container = styled.div(() => ({
   width: '100%',
@@ -38,62 +41,61 @@ function getRandomIntInclusive(min: number, max: number) {
   return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
 }
 
+function parsePlayerPositions(
+  positions: [{ tileIndex: number; players: [Pawn]; category: string }]
+) {
+  return positions.map((tileState) => tileState.players);
+}
+
+function SSEOnBoardgameStateChangeListener({setPositions}: {setPositions: Function}) {
+  const delegate = useSSEChannel(
+    BACKEND_ENDPOINT_EXTERNAL + '/sse/board/new-state',
+    { withCredentials: true }
+  );
+
+  useEffect(() => {
+    const unsubscribe = delegate.on('new-board-state', (data) => {
+      setPositions(parsePlayerPositions(data));
+    });
+    return unsubscribe;
+  }, [delegate]);
+
+  return <></>
+}
+
 const NUMFIELDS = 15;
 
-const getInitialPositions = (): BoardPositions => {
-  const initial: BoardPositions = Array.from({ length: NUMFIELDS }, () => []);
-  initial[0] = [
-    { id: '1', color: '#e74c3c' },
-    { id: '3', color: '#2ecc71' },
-    { id: '2', color: '#3498db' },
-    { id: '4', color: '#f23552' },
-    { id: '6', color: '#2ecc71' },
-    { id: '8', color: '#3498db' },
-    { id: '5', color: '#e74c3c' },
-    { id: '7', color: '#2ecc71' },
-    { id: '9', color: '#3498db' },
-    { id: '10', color: '#f23552' },
-    { id: '12', color: '#2ecc71' },
-    { id: '14', color: '#3498db' },
-    { id: '11', color: '#e74c3c' },
-    { id: '13', color: '#2ecc71' },
-    { id: '15', color: '#3498db' },
-  ];
-  return initial;
-};
-
 function BoardgamePlayer() {
-  const [positions, setPositions] = useState<BoardPositions>(getInitialPositions());
-
+  const [positions, setPositions] = useState<BoardPositions>([]);
   const { ref: gameContainerRef, dimensions } = useContainerDimensions();
 
+  useEffect(() => {
+    service.getBoardState('user').then((response) => {
+      setPositions(parsePlayerPositions(response.data.tileStates));
+    });
+  }, []);
+
   const testMove = () => {
-    const board: BoardPositions = Array.from({ length: NUMFIELDS }, () => []);
-    for (let i = 0; i < NUMFIELDS; i++) {
-      for (const player of positions[i]) {
-        const new_position = (getRandomIntInclusive(1, 6) + i) % NUMFIELDS;
-        board[new_position].push(player);
-      }
-    }
-    setPositions(board);
+    service.makeMove().then((response) => console.log(response));
   };
 
   return (
     <Container>
+      <SSEOnBoardgameStateChangeListener setPositions={setPositions} />
       <ActionContainer>
-      <ButtonCustom onClick={testMove}>Test</ButtonCustom>
+        <ButtonCustom onClick={testMove}>Test</ButtonCustom>
       </ActionContainer>
-    <GameContainer ref={gameContainerRef}>
-      {dimensions.width > 0 && (
-        <GameBoard
-          positions={positions}
-          width={dimensions.width}
-          height={dimensions.height}
-          numFields={NUMFIELDS}
-        />
-      )}
-    </GameContainer>
-  </Container>
+      <GameContainer ref={gameContainerRef}>
+        {dimensions.width > 0 && (
+          <GameBoard
+            positions={positions}
+            width={dimensions.width}
+            height={dimensions.height}
+            numFields={NUMFIELDS}
+          />
+        )}
+      </GameContainer>
+    </Container>
   );
 }
 

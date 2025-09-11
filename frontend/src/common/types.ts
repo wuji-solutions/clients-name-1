@@ -29,8 +29,8 @@ export interface QuestionData {
 }
 
 export interface Pawn {
-  id: string;
-  color: string;
+  index: string;
+  nickname: string;
 }
 
 export type BoardPositions = Pawn[][]

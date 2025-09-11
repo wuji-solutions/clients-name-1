@@ -74,15 +74,22 @@ const hasAnsweredQuestion = (questionId: number) => {
 };
 
 const getBoardState = (user: string) => {
-  return axios.get(user === 'admin' ? BACKEND_ENDPOINT : BACKEND_ENDPOINT_EXTERNAL + '/games/board/state');
+  return axios.get(
+    (user === 'admin' ? BACKEND_ENDPOINT : BACKEND_ENDPOINT_EXTERNAL) + '/games/board/state',
+    { withCredentials: true }
+  );
 };
 
 const makeMove = () => {
-  return axios.post(BACKEND_ENDPOINT_EXTERNAL + '/player/move');
+  return axios.post(
+    BACKEND_ENDPOINT_EXTERNAL + '/games/board/player/move',
+    {},
+    { withCredentials: true }
+  );
 };
 
 const getPlayerId = () => {
-  return axios.get(BACKEND_ENDPOINT_EXTERNAL + '/player');
+  return axios.get(BACKEND_ENDPOINT_EXTERNAL + '/games/board/player', { withCredentials: true });
 };
 
 export const service = {

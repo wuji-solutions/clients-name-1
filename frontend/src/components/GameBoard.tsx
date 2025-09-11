@@ -191,7 +191,7 @@ const GameBoard: React.FC<Props> = ({
     if (!previousPositions) {
       positions.forEach((field, fieldIndex) => {
         field.forEach((pawnData, stackIndex) => {
-          const node = pawnReferences.current.get(pawnData.id);
+          const node = pawnReferences.current.get(pawnData.index);
           const coords = fieldCoordinates[fieldIndex];
           if (!node || !coords) return;
 
@@ -222,10 +222,10 @@ const GameBoard: React.FC<Props> = ({
     previousPositions.forEach((field) => {
       field.forEach((pawnData) => {
         const stillExists = positions.some((currentField) =>
-          currentField.some((currentPawn) => currentPawn.id === pawnData.id)
+          currentField.some((currentPawn) => currentPawn.index === pawnData.index)
         );
         if (!stillExists) {
-          removedPawns.push(pawnData.id);
+          removedPawns.push(pawnData.index);
         }
       });
     });
@@ -248,15 +248,15 @@ const GameBoard: React.FC<Props> = ({
 
     positions.forEach((field, toIndex) => {
       field.forEach((pawnData, toStackIndex) => {
-        currentPawnIds.add(pawnData.id);
-        const node = pawnReferences.current.get(pawnData.id);
+        currentPawnIds.add(pawnData.index);
+        const node = pawnReferences.current.get(pawnData.index);
         if (!node) return;
 
         let fromIndex = -1;
         let fromStackIndex = -1;
 
         previousPositions.forEach((prevField, prevIndex) => {
-          const pawnIndex = prevField.findIndex((p) => p.id === pawnData.id);
+          const pawnIndex = prevField.findIndex((p) => p.index === pawnData.index);
           if (pawnIndex !== -1) {
             fromIndex = prevIndex;
             fromStackIndex = pawnIndex;
@@ -304,7 +304,7 @@ const GameBoard: React.FC<Props> = ({
               duration: 0.2,
               easing: Konva.Easings.EaseOut,
               onUpdate: () => {
-                smoothCenterOnNode(node, pawnData.id);
+                smoothCenterOnNode(node, pawnData.index);
               },
               onFinish: resolve,
             });
@@ -353,7 +353,7 @@ const GameBoard: React.FC<Props> = ({
                   duration: 0.25,
                   easing: Konva.Easings.EaseInOut,
                   onUpdate: () => {
-                    smoothCenterOnNode(node, pawnData.id);
+                    smoothCenterOnNode(node, pawnData.index);
                   },
                   onFinish: stepResolve,
                 });
@@ -377,7 +377,7 @@ const GameBoard: React.FC<Props> = ({
                 duration: 0.25,
                 easing: Konva.Easings.EaseInOut,
                 onUpdate: () => {
-                  smoothCenterOnNode(node, pawnData.id);
+                  smoothCenterOnNode(node, pawnData.index);
                 },
                 onFinish: finalResolve,
               });
@@ -515,18 +515,18 @@ const GameBoard: React.FC<Props> = ({
           field.map((pawnData) => {
             return (
               <Pawn
-                key={pawnData.id}
-                id={pawnData.id}
+                key={pawnData.index}
+                id={pawnData.index}
                 x={0}
                 y={0}
                 scale={1}
-                color={colorPalette[parseInt(pawnData.id) % colorPalette.length]}
-                isCurrentPlayer={pawnData.id == playerIndex}
+                color={colorPalette[parseInt(pawnData.index) % colorPalette.length]}
+                isCurrentPlayer={pawnData.index == playerIndex}
                 nodeRef={(node) => {
                   if (node) {
-                    pawnReferences.current.set(pawnData.id, node);
+                    pawnReferences.current.set(pawnData.index, node);
                   } else {
-                    pawnReferences.current.delete(pawnData.id);
+                    pawnReferences.current.delete(pawnData.index);
                   }
                 }}
               />
