@@ -12,20 +12,22 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
+      - name: Set up GraalVM JDK 21
+        uses: graalvm/setup-graalvm@v1
         with:
-          distribution: temurin
           java-version: '21'
+          distribution: 'graalvm'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          native-image-job-reports: true
 
       - name: Grant execute permission for Gradlew
         run: chmod +x backend/gradlew
 
-      - name: Build with Gradle (bootJar)
+      - name: Build native binary with Gradle
         run: ./backend/gradlew -p backend clean nativeCompile
 
-      - name: Upload backend.jar artifact
+      - name: Upload backend native binary
         uses: actions/upload-artifact@v4
         with:
           name: backend-linux-${{ github.sha }}
-          path: backend/build/libs/backend.jar
+          path: backend/build/native/nativeCompile/*
