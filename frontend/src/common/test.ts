@@ -98,5 +98,33 @@ export const TEST_GAME = {
       category: 'cat1',
       index: 2,
     },
+    {
+      category: 'cat1',
+      index: 3,
+    },
+    {
+      category: 'cat1',
+      index: 4,
+    },
+    {
+      category: 'cat1',
+      index: 5,
+    },
+    {
+      category: 'cat1',
+      index: 6,
+    },
+    {
+      category: 'cat1',
+      index: 7,
+    },
+    {
+      category: 'cat1',
+      index: 8,
+    },
+    {
+      category: 'cat1',
+      index: 9,
+    },
   ],
 };
