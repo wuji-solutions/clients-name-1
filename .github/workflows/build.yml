@@ -3,10 +3,10 @@ name: Build Kotlin Spring Boot
 on:
   push:
     branches:
-      - main
+      - deploy-binaries-and-versioning
 
 jobs:
-  build:
+  build-linux:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -22,13 +22,10 @@ jobs:
         run: chmod +x backend/gradlew
 
       - name: Build with Gradle (bootJar)
-        run: ./backend/gradlew -p backend clean bootJar
-
-      - name: Get ID
-        run: 
+        run: ./backend/gradlew -p backend clean nativeCompile
 
       - name: Upload backend.jar artifact
         uses: actions/upload-artifact@v4
         with:
-          name: backend-jar-${{ github.sha }}
+          name: backend-linux-${{ github.sha }}
           path: backend/build/libs/backend.jar
