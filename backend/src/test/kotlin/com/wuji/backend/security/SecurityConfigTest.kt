@@ -34,7 +34,7 @@ class SecurityConfigTest(@Autowired val mockMvc: MockMvc) {
     fun `should deny user with JOINED and not localhost`() {
         mockMvc
             .perform(
-                MockMvcRequestBuilders.get("/sse/hello")
+                MockMvcRequestBuilders.get("/sse/")
                     .with(
                         SecurityMockMvcRequestPostProcessors.user("testuser")
                             .authorities(SimpleGrantedAuthority("JOINED")))
