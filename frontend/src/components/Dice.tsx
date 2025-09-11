@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { styled } from 'styled-components';
 import face1 from '../resources/face1.png';
 import face2 from '../resources/face2.png';
@@ -35,18 +35,18 @@ const CubeFaceData = {
 };
 
 const Scene = styled.div(() => ({
-  perspective: '600px',
-  width: '400px',
-  height: '400px',
-  margin: '25px',
+  perspective: '400px',
+  width: '250px',
+  height: '250px',
 }));
 
 const Cube = styled.div<{ rotationY: number; rotationX: number }>(({ rotationY, rotationX }) => ({
   transform: `rotateY(${rotationY}deg) rotateX(${rotationX}deg)`,
 
-  width: '50%',
-  height: '50%',
+  width: '75%',
+  height: '75%',
   position: 'relative',
+  top: '10%',
   transformStyle: 'preserve-3d',
   transition: 'transform 0.18s linear',
   margin: 'auto',
@@ -68,7 +68,7 @@ const CubeFace = styled.div<{ faceNumber: '1' | '2' | '3' | '4' | '5' | '6' }>(
     borderRadius: '10px',
     overflow: 'hidden',
 
-    transform: `rotateY(${CubeFaceData[faceNumber].y}deg) rotateX(${CubeFaceData[faceNumber].x}deg) translateZ(-100px)`,
+    transform: `rotateY(-${CubeFaceData[faceNumber].y}deg) rotateX(-${CubeFaceData[faceNumber].x}deg) translateZ(90px)`,
 
     '& img': {
       width: '100%',
@@ -79,7 +79,7 @@ const CubeFace = styled.div<{ faceNumber: '1' | '2' | '3' | '4' | '5' | '6' }>(
   })
 );
 
-function Dice() {
+function Dice({diceRoll, cheatValue}: {diceRoll?: boolean, cheatValue?: '1' | '2' | '3' | '4' | '5' | '6'}) {
   const [rotateY, setRotateY] = useState(0);
   const [rotateX, setRotateX] = useState(0);
   const [diceRolling, setDiceRolling] = useState(false);
@@ -106,10 +106,18 @@ function Dice() {
   const setValue = (faceNumber: '1' | '2' | '3' | '4' | '5' | '6') => {
     setRotateY(CubeFaceData[faceNumber].y);
     setRotateX(CubeFaceData[faceNumber].x);
-  }
+  };
+
+  useEffect(() => {
+    if (diceRoll != undefined) toggleDice();
+  }, [diceRoll]);
+
+  useEffect(() => {
+    if (cheatValue) setValue(cheatValue);
+  }, [cheatValue])
 
   return (
-    <Scene onClick={() => toggleDice()}>
+    <Scene>
       <Cube rotationY={rotateY} rotationX={rotateX}>
         <CubeFace faceNumber="1">
           <img src={face1} />

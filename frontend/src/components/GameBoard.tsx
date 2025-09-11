@@ -14,18 +14,19 @@ interface Props {
   height: number;
   numFields: number;
   storedPlayerIndex?: string;
+  positionUpdateBlock?: boolean;
 }
 
 function createCheckerboardImage(size = 8): HTMLImageElement {
-  const canvas = document.createElement("canvas");
+  const canvas = document.createElement('canvas');
   canvas.width = size * 2;
   canvas.height = size * 2;
-  const ctx = canvas.getContext("2d")!;
+  const ctx = canvas.getContext('2d')!;
 
-  ctx.fillStyle = "white";
+  ctx.fillStyle = 'white';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  ctx.fillStyle = "black";
+  ctx.fillStyle = 'black';
   ctx.fillRect(0, 0, size, size);
   ctx.fillRect(size, size, size, size);
 
@@ -48,6 +49,7 @@ const GameBoard: React.FC<Props> = ({
   height,
   numFields,
   storedPlayerIndex = null,
+  positionUpdateBlock = false,
 }) => {
   const stageRef = useRef<Konva.Stage>(null);
   const pawnReferences = useRef<Map<string, Konva.Group>>(new Map());
@@ -85,7 +87,7 @@ const GameBoard: React.FC<Props> = ({
         beforeMouseDown: () => true,
       });
 
-      pz.pause()
+      pz.pause();
 
       pzRef.current = pz;
 
@@ -208,13 +210,15 @@ const GameBoard: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    if (!fieldCoordinates.length) return;
+    if (!fieldCoordinates.length || positionUpdateBlock) return;
 
     // Stop and cleanup existing tween for a pawn
     const stopTweenIfExists = (pawnId: string) => {
       const t = tweensRef.current.get(pawnId);
       if (t && typeof t.stop === 'function') {
-        try { t.stop(); } catch (e) {}
+        try {
+          t.stop();
+        } catch (e) {}
       }
       tweensRef.current.delete(pawnId);
     };
@@ -245,14 +249,32 @@ const GameBoard: React.FC<Props> = ({
       return;
     }
 
-    const prevMap = new Map<string, { fieldIndex: number; stackIndex: number; totalInStack: number }>();
+    const prevMap = new Map<
+      string,
+      { fieldIndex: number; stackIndex: number; totalInStack: number }
+    >();
     previousPositions.forEach((field, fieldIndex) => {
-      field.forEach((pawn, stepIndex) => prevMap.set(pawn.index, { fieldIndex: fieldIndex, stackIndex: stepIndex, totalInStack: field.length }));
+      field.forEach((pawn, stepIndex) =>
+        prevMap.set(pawn.index, {
+          fieldIndex: fieldIndex,
+          stackIndex: stepIndex,
+          totalInStack: field.length,
+        })
+      );
     });
 
-    const currMap = new Map<string, { fieldIndex: number; stackIndex: number; totalInStack: number }>();
+    const currMap = new Map<
+      string,
+      { fieldIndex: number; stackIndex: number; totalInStack: number }
+    >();
     positions.forEach((field, fieldIndex) => {
-      field.forEach((pawn, stepIndex) => currMap.set(pawn.index, { fieldIndex: fieldIndex, stackIndex: stepIndex, totalInStack: field.length }));
+      field.forEach((pawn, stepIndex) =>
+        currMap.set(pawn.index, {
+          fieldIndex: fieldIndex,
+          stackIndex: stepIndex,
+          totalInStack: field.length,
+        })
+      );
     });
 
     previousPositions.forEach((field) => {
@@ -297,7 +319,13 @@ const GameBoard: React.FC<Props> = ({
 
           const endCoords = fieldCoordinates[toIndex];
           if (!endCoords) return;
-          const stackedPos = getStackedPosition(endCoords, toStackIndex, field.length, centerX, centerY);
+          const stackedPos = getStackedPosition(
+            endCoords,
+            toStackIndex,
+            field.length,
+            centerX,
+            centerY
+          );
           node.setAttrs({
             x: stackedPos.x,
             y: stackedPos.y,
@@ -319,7 +347,13 @@ const GameBoard: React.FC<Props> = ({
         if (fromIndex === -1) {
           const endCoords = fieldCoordinates[toIndex];
           if (!endCoords) return;
-          const stackedPos = getStackedPosition(endCoords, toStackIndex, field.length, centerX, centerY);
+          const stackedPos = getStackedPosition(
+            endCoords,
+            toStackIndex,
+            field.length,
+            centerX,
+            centerY
+          );
           node.setAttrs({
             x: stackedPos.x,
             y: stackedPos.y,
@@ -337,7 +371,13 @@ const GameBoard: React.FC<Props> = ({
 
           stopTweenIfExists(pawnId);
 
-          const stackedPos = getStackedPosition(coords, toStackIndex, field.length, centerX, centerY);
+          const stackedPos = getStackedPosition(
+            coords,
+            toStackIndex,
+            field.length,
+            centerX,
+            centerY
+          );
           const p = new Promise<void>((resolve) => {
             const tween = node.to({
               x: stackedPos.x,
@@ -549,8 +589,7 @@ const GameBoard: React.FC<Props> = ({
             Z
           `;
 
-            const checkerboard =
-              i === 0 ? createCheckerboardImage( mobile ? 8 : 18) : undefined;
+            const checkerboard = i === 0 ? createCheckerboardImage(mobile ? 8 : 18) : undefined;
 
             return (
               <Path

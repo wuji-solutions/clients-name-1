@@ -7,7 +7,7 @@ import { useContainerDimensions } from '../../hooks/useContainerDimensions';
 import { service } from '../../service/service';
 import { useSSEChannel } from '../../providers/SSEProvider';
 import { BACKEND_ENDPOINT_EXTERNAL } from '../../common/config';
-import { data } from 'react-router';
+import Dice from '../../components/Dice';
 
 export const Container = styled.div(() => ({
   width: '100%',
@@ -16,10 +16,14 @@ export const Container = styled.div(() => ({
 }));
 
 export const ActionContainer = styled.div(() => ({
-  position: 'relative',
+  position: 'absolute',
   zIndex: 2,
-  marginBottom: '10px',
+  margin: 'auto',
   textAlign: 'center',
+  top: '25%',
+  left: '50%',
+  width: 'fit-content',
+  height: 'fit-content',
 }));
 
 export const GameContainer = styled.div(() => ({
@@ -64,10 +68,14 @@ function SSEOnBoardgameStateChangeListener({setPositions}: {setPositions: Functi
 }
 
 function BoardgamePlayer() {
+  const [positionsBuffer, setPositionsBuffer] = useState<BoardPositions>([]);
   const [positions, setPositions] = useState<BoardPositions>([]);
   const [numfields, setNumfields] = useState<number>(0);
   const { ref: gameContainerRef, dimensions } = useContainerDimensions();
   const [playerIndex, setPlayerIndex] = useState<string | undefined>(undefined);
+  const [diceRoll, setDiceRoll] = useState<boolean | undefined>(undefined);
+  const [cheatValue, setCheatValue] = useState<'1' | '2' | '3' | '4' | '5' | '6' | undefined>(undefined);
+  const [positionUpdateBlock, setPositionUpdateBlock] = useState<boolean>(false);
 
   useEffect(() => {
     service.getBoardState('user').then((response) => {
@@ -83,15 +91,28 @@ function BoardgamePlayer() {
     }
   }, []);
 
-  const testMove = () => {
-    service.makeMove().then((response) => console.log(response));
+  useEffect(() => {
+    if (!positionUpdateBlock) setPositions(positionsBuffer);
+  }, [positionsBuffer, positionUpdateBlock])
+
+  const rollDice = () => {
+    setPositionUpdateBlock(true)
+    setCheatValue(undefined)
+    setDiceRoll(true)
+    service.makeMove().then((response) => {
+      setTimeout(() => {
+        setDiceRoll(false)
+        setCheatValue(response.data.diceRoll)
+        setPositionUpdateBlock(false)
+      }, 1000)
+    }).catch((e) => setDiceRoll(false))
   };
 
   return (
     <Container>
-      <SSEOnBoardgameStateChangeListener setPositions={setPositions} />
-      <ActionContainer>
-        <ButtonCustom onClick={testMove}>Test</ButtonCustom>
+      <SSEOnBoardgameStateChangeListener setPositions={setPositionsBuffer} />
+      <ActionContainer onClick={rollDice}>
+        <Dice diceRoll={diceRoll} cheatValue={cheatValue} />
       </ActionContainer>
       <GameContainer ref={gameContainerRef}>
         {dimensions.width > 0 && numfields && (
@@ -101,6 +122,7 @@ function BoardgamePlayer() {
             height={dimensions.height}
             numFields={numfields}
             storedPlayerIndex={playerIndex}
+            positionUpdateBlock={positionUpdateBlock}
           />
         )}
       </GameContainer>
