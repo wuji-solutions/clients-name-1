@@ -54,7 +54,7 @@ class GameServiceDelegate(
 
     override fun finishGame() {
         currentService.finishGame()
-        ReportsService.writeAllReports(gameRegistry.game)
+        ReportsService().writeReports(gameRegistry.game)
     }
 
     override fun getReport(): String {
