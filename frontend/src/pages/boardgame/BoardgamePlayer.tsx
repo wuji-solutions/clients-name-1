@@ -67,6 +67,7 @@ function BoardgamePlayer() {
   const [positions, setPositions] = useState<BoardPositions>([]);
   const [numfields, setNumfields] = useState<number>(0);
   const { ref: gameContainerRef, dimensions } = useContainerDimensions();
+  const [playerIndex, setPlayerIndex] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     service.getBoardState('user').then((response) => {
@@ -74,6 +75,12 @@ function BoardgamePlayer() {
       setPositions(setup.positions);
       setNumfields(setup.numfields);
     });
+  }, []);
+
+  useEffect(() => {
+    if (!playerIndex) {
+      service.getPlayerId().then((response) => setPlayerIndex(response.data.index as string))
+    }
   }, []);
 
   const testMove = () => {
@@ -93,6 +100,7 @@ function BoardgamePlayer() {
             width={dimensions.width}
             height={dimensions.height}
             numFields={numfields}
+            storedPlayerIndex={playerIndex}
           />
         )}
       </GameContainer>

@@ -29,7 +29,7 @@ function createCheckerboardImage(size = 8): HTMLImageElement {
   ctx.fillRect(0, 0, size, size);
   ctx.fillRect(size, size, size, size);
 
-  // convert canvas → image
+  // Convert canvas to image
   const img = new Image();
   img.src = canvas.toDataURL();
   return img;
@@ -47,11 +47,11 @@ const GameBoard: React.FC<Props> = ({
   width,
   height,
   numFields,
-  storedPlayerIndex = '1',
+  storedPlayerIndex = null,
 }) => {
   const stageRef = useRef<Konva.Stage>(null);
   const pawnReferences = useRef<Map<string, Konva.Group>>(new Map());
-  const animationInProgress = useRef<boolean>(false);
+  const tweensRef = useRef<Map<string, any>>(new Map());
   const pzRef = useRef<ReturnType<typeof panzoom> | null>(null);
   const previousPositions = usePrevious(positions);
   const [playerIndex, setPlayerIndex] = useState<string | null>(storedPlayerIndex);
@@ -148,8 +148,8 @@ const GameBoard: React.FC<Props> = ({
 
     const angle = (stackIndex * 2 * Math.PI) / totalInStack;
 
-    const radiusX = STACK_OFFSET * 3.5 * (1 / fieldPosition.scale); // CHANGE PAWN SPACING BASED TO DEVICE WIDTH
-    const radiusY = STACK_OFFSET * 1.1 * (1 / fieldPosition.scale); // SAME AS ABOVE
+    const radiusX = STACK_OFFSET * 3.5 * (1 / fieldPosition.scale); // Change pawn spacing based on device width
+    const radiusY = STACK_OFFSET * 1.1 * (1 / fieldPosition.scale); // As above
 
     return {
       x: fieldPosition.x - Math.cos(angle) * radiusX,
@@ -185,9 +185,41 @@ const GameBoard: React.FC<Props> = ({
     return stepIndices;
   };
 
-  useEffect(() => {
-    if (!fieldCoordinates.length || animationInProgress.current) return;
+  const findClosestFieldIndex = (node: Konva.Node) => {
+    try {
+      const pos = node.getAbsolutePosition();
+      let min = Infinity;
+      let best = -1;
+      for (let i = 0; i < fieldCoordinates.length; i++) {
+        const coords = fieldCoordinates[i];
+        const pawnPos = getPawnPositionInField(coords, centerX, centerY);
+        const dx = pawnPos.x - pos.x;
+        const dy = pawnPos.y - pos.y;
+        const d = dx * dx + dy * dy;
+        if (d < min) {
+          min = d;
+          best = i;
+        }
+      }
+      return best;
+    } catch (e) {
+      return -1;
+    }
+  };
 
+  useEffect(() => {
+    if (!fieldCoordinates.length) return;
+
+    // Stop and cleanup existing tween for a pawn
+    const stopTweenIfExists = (pawnId: string) => {
+      const t = tweensRef.current.get(pawnId);
+      if (t && typeof t.stop === 'function') {
+        try { t.stop(); } catch (e) {}
+      }
+      tweensRef.current.delete(pawnId);
+    };
+
+    // If there's no previousPositions, snap pawns into place
     if (!previousPositions) {
       positions.forEach((field, fieldIndex) => {
         field.forEach((pawnData, stackIndex) => {
@@ -213,67 +245,59 @@ const GameBoard: React.FC<Props> = ({
       return;
     }
 
-    animationInProgress.current = true;
+    const prevMap = new Map<string, { fieldIndex: number; stackIndex: number; totalInStack: number }>();
+    previousPositions.forEach((field, fieldIndex) => {
+      field.forEach((pawn, stepIndex) => prevMap.set(pawn.index, { fieldIndex: fieldIndex, stackIndex: stepIndex, totalInStack: field.length }));
+    });
 
-    const animationPromises: Promise<void>[] = [];
-    const currentPawnIds = new Set<string>();
+    const currMap = new Map<string, { fieldIndex: number; stackIndex: number; totalInStack: number }>();
+    positions.forEach((field, fieldIndex) => {
+      field.forEach((pawn, stepIndex) => currMap.set(pawn.index, { fieldIndex: fieldIndex, stackIndex: stepIndex, totalInStack: field.length }));
+    });
 
-    const removedPawns: string[] = [];
     previousPositions.forEach((field) => {
       field.forEach((pawnData) => {
-        const stillExists = positions.some((currentField) =>
-          currentField.some((currentPawn) => currentPawn.index === pawnData.index)
-        );
-        if (!stillExists) {
-          removedPawns.push(pawnData.index);
+        if (!currMap.has(pawnData.index)) {
+          const node = pawnReferences.current.get(pawnData.index);
+          if (!node) return;
+          stopTweenIfExists(pawnData.index);
+          const promise = new Promise<void>((resolve) => {
+            const tween = node.to({
+              opacity: 0,
+              scaleX: 0,
+              scaleY: 0,
+              duration: 0.2,
+              onFinish: () => {
+                resolve();
+              },
+            });
+            tweensRef.current.set(pawnData.index, tween);
+          });
+          promise.then(() => {
+            stopTweenIfExists(pawnData.index);
+          });
         }
       });
     });
 
-    removedPawns.forEach((pawnId) => {
-      const node = pawnReferences.current.get(pawnId);
-      if (node) {
-        const promise = new Promise<void>((resolve) => {
-          node.to({
-            opacity: 0,
-            scaleX: 0,
-            scaleY: 0,
-            duration: 0.2,
-            onFinish: resolve,
-          });
-        });
-        animationPromises.push(promise);
-      }
-    });
+    const animationPromises: Promise<void>[] = [];
 
     positions.forEach((field, toIndex) => {
       field.forEach((pawnData, toStackIndex) => {
-        currentPawnIds.add(pawnData.index);
-        const node = pawnReferences.current.get(pawnData.index);
+        const pawnId = pawnData.index;
+        const node = pawnReferences.current.get(pawnId);
         if (!node) return;
 
-        let fromIndex = -1;
-        let fromStackIndex = -1;
+        const prev = prevMap.get(pawnId);
 
-        previousPositions.forEach((prevField, prevIndex) => {
-          const pawnIndex = prevField.findIndex((p) => p.index === pawnData.index);
-          if (pawnIndex !== -1) {
-            fromIndex = prevIndex;
-            fromStackIndex = pawnIndex;
-          }
-        });
+        // If pawn is brand new, snap into place
+        if (!prev) {
+          // but if it's currently animating, stop that animation first
+          stopTweenIfExists(pawnId);
 
-        if (fromIndex === -1) {
           const endCoords = fieldCoordinates[toIndex];
           if (!endCoords) return;
-
-          const stackedPos = getStackedPosition(
-            endCoords,
-            toStackIndex,
-            field.length,
-            centerX,
-            centerY
-          );
+          const stackedPos = getStackedPosition(endCoords, toStackIndex, field.length, centerX, centerY);
           node.setAttrs({
             x: stackedPos.x,
             y: stackedPos.y,
@@ -284,19 +308,38 @@ const GameBoard: React.FC<Props> = ({
           return;
         }
 
+        let fromIndex = prev.fieldIndex;
+        let fromStackIndex = prev.stackIndex;
+
+        if (tweensRef.current.has(pawnId)) {
+          const guessed = findClosestFieldIndex(node);
+          if (guessed !== -1) fromIndex = guessed;
+        }
+
+        if (fromIndex === -1) {
+          const endCoords = fieldCoordinates[toIndex];
+          if (!endCoords) return;
+          const stackedPos = getStackedPosition(endCoords, toStackIndex, field.length, centerX, centerY);
+          node.setAttrs({
+            x: stackedPos.x,
+            y: stackedPos.y,
+            scaleX: stackedPos.scale,
+            scaleY: stackedPos.scale,
+            opacity: 1,
+          });
+          return;
+        }
+
+        // If pawn stays in same field, just animate to new stacked position
         if (fromIndex === toIndex) {
           const coords = fieldCoordinates[toIndex];
           if (!coords) return;
 
-          const stackedPos = getStackedPosition(
-            coords,
-            toStackIndex,
-            field.length,
-            centerX,
-            centerY
-          );
-          const promise = new Promise<void>((resolve) => {
-            node.to({
+          stopTweenIfExists(pawnId);
+
+          const stackedPos = getStackedPosition(coords, toStackIndex, field.length, centerX, centerY);
+          const p = new Promise<void>((resolve) => {
+            const tween = node.to({
               x: stackedPos.x,
               y: stackedPos.y,
               scaleX: stackedPos.scale,
@@ -304,25 +347,30 @@ const GameBoard: React.FC<Props> = ({
               duration: 0.2,
               easing: Konva.Easings.EaseOut,
               onUpdate: () => {
-                smoothCenterOnNode(node, pawnData.index);
+                smoothCenterOnNode(node, pawnId);
               },
-              onFinish: resolve,
+              onFinish: () => resolve(),
             });
+            tweensRef.current.set(pawnId, tween);
           });
-          animationPromises.push(promise);
+
+          animationPromises.push(p);
           return;
         }
 
+        // Animate along the path from fromIndex to toIndex
         const startCoords = fieldCoordinates[fromIndex];
         const endCoords = fieldCoordinates[toIndex];
         if (!startCoords || !endCoords) return;
 
-        const promise = new Promise<void>((resolve) => {
-          const prevField = previousPositions[fromIndex];
+        stopTweenIfExists(pawnId);
+
+        const pathPromise = new Promise<void>((resolve) => {
+          const prevField = previousPositions[fromIndex] || [];
           const startStackedPos = getStackedPosition(
             startCoords,
             fromStackIndex,
-            prevField.length,
+            prevField.length || 1,
             centerX,
             centerY
           );
@@ -345,7 +393,7 @@ const GameBoard: React.FC<Props> = ({
               const stepPosition = getPawnPositionInField(stepCoords, centerX, centerY);
 
               await new Promise<void>((stepResolve) => {
-                node.to({
+                const tween = node.to({
                   x: stepPosition.x,
                   y: stepPosition.y,
                   scaleX: stepPosition.scale,
@@ -353,10 +401,14 @@ const GameBoard: React.FC<Props> = ({
                   duration: 0.25,
                   easing: Konva.Easings.EaseInOut,
                   onUpdate: () => {
-                    smoothCenterOnNode(node, pawnData.index);
+                    smoothCenterOnNode(node, pawnId);
                   },
-                  onFinish: stepResolve,
+                  onFinish: () => {
+                    stepResolve();
+                  },
                 });
+
+                tweensRef.current.set(pawnId, tween);
               });
             }
 
@@ -369,7 +421,7 @@ const GameBoard: React.FC<Props> = ({
             );
 
             await new Promise<void>((finalResolve) => {
-              node.to({
+              const tween = node.to({
                 x: endStackedPos.x,
                 y: endStackedPos.y,
                 scaleX: endStackedPos.scale,
@@ -377,29 +429,37 @@ const GameBoard: React.FC<Props> = ({
                 duration: 0.25,
                 easing: Konva.Easings.EaseInOut,
                 onUpdate: () => {
-                  smoothCenterOnNode(node, pawnData.index);
+                  smoothCenterOnNode(node, pawnId);
                 },
-                onFinish: finalResolve,
+                onFinish: () => finalResolve(),
               });
+
+              tweensRef.current.set(pawnId, tween);
             });
 
+            // Finish animation for this pawn
+            tweensRef.current.delete(pawnId);
             resolve();
           };
 
           void animatePath();
         });
 
-        animationPromises.push(promise);
+        animationPromises.push(pathPromise);
       });
     });
 
+    // After all started animations settle, batch draw
     Promise.all(animationPromises).then(() => {
       const firstNode = pawnReferences.current.values().next().value;
       if (firstNode) {
         firstNode.getLayer()?.batchDraw();
       }
-      animationInProgress.current = false;
     });
+
+    return () => {
+      // Dont stop tweens here
+    };
   }, [positions, previousPositions, fieldCoordinates]);
 
   const smoothCenterOnNode = (node: Konva.Node, index: string, lerp = 0.2) => {
