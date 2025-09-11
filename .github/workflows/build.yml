@@ -3,7 +3,7 @@ name: Build Kotlin Spring Boot
 on:
   push:
     branches:
-      - deploy-binaries-and-versioning
+      - main
 
 jobs:
   build-linux:
