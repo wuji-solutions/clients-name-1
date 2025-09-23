@@ -9,7 +9,7 @@ import { BACKEND_ENDPOINT_EXTERNAL } from '../../common/config';
 import Dice from '../../components/Dice';
 import Modal from '../../components/Modal';
 import AnswerCard from '../../components/AnswerCard';
-import { getColor } from '../../common/utils';
+import { boardgameColorPalette, getColor } from '../../common/utils';
 import {
   AnswerGrid,
   QuestionCategory,
@@ -60,7 +60,12 @@ function getBoardSetup(data: {
   tileStates: [{ players: [Pawn]; tileIndex: number; category: string }];
 }) {
   const positions = parsePlayerPositions(data.tileStates);
-  return { positions: positions, numfields: positions.length };
+  const categoryColorReferences = new Map<string, string | undefined>();
+  data.tileStates.map((tile, i) => {
+    if (tile.category in categoryColorReferences) return;
+    categoryColorReferences.set(tile.category, boardgameColorPalette[ i + 2 % boardgameColorPalette.length]);
+  })
+  return { positions: positions, numfields: positions.length, tileColors: categoryColorReferences, tileStates: data.tileStates.map((entry) => entry.category) };
 }
 
 function SSEOnBoardgameStateChangeListener({ setPositions }: { setPositions: Function }) {
@@ -97,6 +102,9 @@ function BoardgamePlayer() {
   const [selectedAnswers, setSelectedAnswers] = useState<Array<string>>([]);
   const [hasAnsweredQuestion, setHasAnsweredQuestion] = useState(false);
 
+  const [tileStates, setTileStates] = useState<string[]>();
+  const [boardColorReferences, setBoardColorReferences] = useState<Map<string, string | undefined>>();
+
   useEffect(() => {
     if (!currentQuestion) {
       setShowDice(false);
@@ -109,6 +117,8 @@ function BoardgamePlayer() {
       const setup = getBoardSetup(response.data);
       setPositions(setup.positions);
       setNumfields(setup.numfields);
+      setTileStates(setup.tileStates);
+      setBoardColorReferences(setup.tileColors);
     });
   }, []);
 
@@ -246,6 +256,8 @@ function BoardgamePlayer() {
             numFields={numfields}
             storedPlayerIndex={playerIndex}
             positionUpdateBlock={positionUpdateBlock}
+            boardColorReferences={boardColorReferences}
+            tileStates={tileStates}
           />
         )}
       </GameContainer>
