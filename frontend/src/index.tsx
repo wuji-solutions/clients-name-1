@@ -10,6 +10,9 @@ import Quiz from './pages/quiz/Quiz';
 import { SSEProvider } from './providers/SSEProvider';
 import Summary from './pages/Summary';
 import BoardgamePlayer from './pages/boardgame/BoardgamePlayer';
+import BoardgameObserver from './pages/boardgame/BoardgameObserver';
+
+const context = (window.location.hostname === 'localhost') ? 'admin' : 'user'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
@@ -22,7 +25,7 @@ root.render(
             <Route path="/konfiguracja" element={<Configurations />} />
             <Route path="/waiting-room" element={<WaitingRoom />} />
             <Route path="/gra/quiz" element={<Quiz />} />
-            <Route path="/gra/planszowa" element={<BoardgamePlayer />} />
+            <Route path="/gra/planszowa" element={ context === 'user' ? <BoardgamePlayer /> : <BoardgameObserver /> } />
             <Route path="/podsumowanie" element={<Summary />} />
           </Routes>
         </Router>

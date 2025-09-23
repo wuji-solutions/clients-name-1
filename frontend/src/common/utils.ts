@@ -24,6 +24,26 @@ export const colorPalette = [
   '#408080',
 ];
 
+export const boardgameColorPalette = [
+  '#FFC96B',
+  '#00BBBf',
+  '#F2440D',
+  '#6A21CD',
+  '#78237C',
+  '#B992AA',
+  '#dd94f7',
+  '#802210',
+  '#AD7911',
+  '#888040',
+  '#992080',
+  '#BAAFFA',
+  '#CC211F',
+  '#972FFF',
+  '#A3D922',
+  '#AAFFFF',
+  '#11EE0A',
+];
+
 export function getColor(identifier: number) {
   return colorPalette[identifier % colorPalette.length];
 };

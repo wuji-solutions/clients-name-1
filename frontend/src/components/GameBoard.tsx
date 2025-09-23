@@ -13,8 +13,11 @@ interface Props {
   width: number;
   height: number;
   numFields: number;
+  tileStates? : string[];
+  boardColorReferences?: Map<string, string | undefined>;
   storedPlayerIndex?: string;
   positionUpdateBlock?: boolean;
+  observerVersion?: boolean;
 }
 
 function createCheckerboardImage(size = 8): HTMLImageElement {
@@ -50,6 +53,9 @@ const GameBoard: React.FC<Props> = ({
   numFields,
   storedPlayerIndex = null,
   positionUpdateBlock = false,
+  observerVersion = false,
+  boardColorReferences,
+  tileStates = [],
 }) => {
   const stageRef = useRef<Konva.Stage>(null);
   const pawnReferences = useRef<Map<string, Konva.Group>>(new Map());
@@ -59,7 +65,7 @@ const GameBoard: React.FC<Props> = ({
   const [playerIndex, setPlayerIndex] = useState<string | null>(storedPlayerIndex);
 
   useEffect(() => {
-    if (!storedPlayerIndex) service.getPlayerId().then((response) => setPlayerIndex(response.data));
+    if (!storedPlayerIndex && !observerVersion) service.getPlayerId().then((response) => setPlayerIndex(response.data));
   }, []);
 
   const centerX = width / 2;
@@ -76,10 +82,10 @@ const GameBoard: React.FC<Props> = ({
       const pz = panzoom(container, {
         bounds: true,
         boundsPadding: 0.2,
-        minZoom: 1,
+        minZoom: observerVersion ? 0.5 : 1,
         initialX: centerX,
         initialY: centerY,
-        initialZoom: mobile ? 1.6 : 1,
+        initialZoom: observerVersion ? 0.9 :  mobile ? 1.6 : 1,
         maxZoom: mobile ? 3 : 2.2,
         autocenter: true,
         enableTextSelection: false,
@@ -595,7 +601,7 @@ const GameBoard: React.FC<Props> = ({
               <Path
                 key={i}
                 data={pathData}
-                fill={i === 0 ? undefined : 'rgba(0, 210, 255, 0.7)'}
+                fill={i === 0 ? undefined : (boardColorReferences ? boardColorReferences.get(tileStates[i]) : '#00ffff')}
                 fillPatternImage={checkerboard}
                 fillPatternRepeat="repeat"
                 fillPatternScale={{ x: 1, y: 0.92 }}
