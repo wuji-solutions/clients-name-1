@@ -17,33 +17,33 @@ const Container = styled.div(() => ({
   margin: 'auto',
 }));
 
-const QuestionContainer = styled.div(() => ({
+export const QuestionContainer = styled.div(() => ({
   padding: '20px',
   display: 'flex',
   flexDirection: 'column',
   textAlign: 'center',
 }));
 
-const QuestionHeader = styled.div(() => ({
+export const QuestionHeader = styled.div(() => ({
   margin: 'auto',
   display: 'flex',
   flexDirection: 'column',
   gap: '15px',
 }));
 
-const QuestionCategory = styled.span(() => ({
+export const QuestionCategory = styled.span(() => ({
   fontSize: '35px',
   margin: 'auto',
   fontWeight: 'bold',
 }));
 
-const QuestionTask = styled.span(() => ({
+export const QuestionTask = styled.span(() => ({
   fontSize: '80px',
   margin: 'auto',
   fontWeight: 'bold',
 }));
 
-const AnswerContainer = styled.div(() => ({
+export const AnswerContainer = styled.div(() => ({
   display: 'flex',
   flexDirection: 'column',
   textAlign: 'center',
@@ -57,18 +57,18 @@ const AnsweredContainer = styled.div(() => ({
   height: '100vh',
 }));
 
-const AnswerHeader = styled.h1(() => ({
+export const AnswerHeader = styled.h1(() => ({
   marginTop: '30px',
 }));
 
-const AnswerColumn = styled.div(() => ({
+export const AnswerColumn = styled.div(() => ({
   display: 'flex',
   flexDirection: 'column',
   gap: '35px',
   padding: '40px',
 }));
 
-const AnswerGrid = styled.div(() => ({
+export const AnswerGrid = styled.div(() => ({
   display: 'grid',
   gridTemplateColumns: 'repeat(2, 1fr)',
   gap: '35px',

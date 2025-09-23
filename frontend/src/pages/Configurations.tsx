@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import theme from '../common/theme';
 import { ButtonChoose, ButtonCustom } from '../components/Button';
-import { TEST_GAME, TEST_QUIZ } from '../common/test';
+import { TEST_GAME, TEST_GAME_2, TEST_QUIZ } from '../common/test';
 import { useAppContext } from '../providers/AppContextProvider';
 import AccessRestricted from '../components/AccessRestricted';
 import { service } from '../service/service';
@@ -116,7 +116,7 @@ function Configurations() {
   const startLobby = () => {
     if (!mode) return;
     service
-      .startLobby(mode, mode === 'quiz' ? { ...TEST_QUIZ } : { ... TEST_GAME })
+      .startLobby(mode, mode === 'quiz' ? { ...TEST_QUIZ } : { ... TEST_GAME_2 })
       .then((response) => {
         console.log('Successfully created new game');
         navigate(`/waiting-room?tryb=${mode}`);

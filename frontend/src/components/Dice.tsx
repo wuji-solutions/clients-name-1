@@ -85,8 +85,8 @@ function Dice({diceRoll, cheatValue}: {diceRoll?: boolean, cheatValue?: '1' | '2
   const [diceRolling, setDiceRolling] = useState(false);
   const rollingInterval = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const toggleDice = () => {
-    if (diceRolling) {
+  const toggleDice = (diceRoll?: boolean) => {
+    if (!diceRoll) {
       if (rollingInterval.current) {
         clearInterval(rollingInterval.current);
         rollingInterval.current = null;
@@ -109,7 +109,7 @@ function Dice({diceRoll, cheatValue}: {diceRoll?: boolean, cheatValue?: '1' | '2
   };
 
   useEffect(() => {
-    if (diceRoll != undefined) toggleDice();
+    if (diceRoll != undefined) toggleDice(diceRoll);
   }, [diceRoll]);
 
   useEffect(() => {

@@ -1,13 +1,23 @@
 import { styled } from 'styled-components';
 import { useEffect, useState } from 'react';
 import GameBoard from '../../components/GameBoard';
-import { BoardPositions, Pawn } from '../../common/types';
-import { ButtonCustom } from '../../components/Button';
+import { BoardPositions, Pawn, Question } from '../../common/types';
 import { useContainerDimensions } from '../../hooks/useContainerDimensions';
 import { service } from '../../service/service';
 import { useSSEChannel } from '../../providers/SSEProvider';
 import { BACKEND_ENDPOINT_EXTERNAL } from '../../common/config';
 import Dice from '../../components/Dice';
+import Modal from '../../components/Modal';
+import AnswerCard from '../../components/AnswerCard';
+import { getColor } from '../../common/utils';
+import {
+  AnswerGrid,
+  QuestionCategory,
+  QuestionContainer,
+  QuestionHeader,
+  QuestionTask,
+} from '../quiz/Quiz';
+import { ButtonCustom } from '../../components/Button';
 
 export const Container = styled.div(() => ({
   width: '100%',
@@ -46,16 +56,17 @@ function parsePlayerPositions(
   return positions.map((tileState) => tileState.players);
 }
 
-function getBoardSetup(data: {tileStates: [{players: [Pawn], tileIndex: number, category: string}]}){
-  const positions = parsePlayerPositions(data.tileStates)
-  return {positions: positions, numfields: positions.length}
+function getBoardSetup(data: {
+  tileStates: [{ players: [Pawn]; tileIndex: number; category: string }];
+}) {
+  const positions = parsePlayerPositions(data.tileStates);
+  return { positions: positions, numfields: positions.length };
 }
 
-function SSEOnBoardgameStateChangeListener({setPositions}: {setPositions: Function}) {
-  const delegate = useSSEChannel(
-    BACKEND_ENDPOINT_EXTERNAL + '/sse/board/new-state',
-    { withCredentials: true }
-  );
+function SSEOnBoardgameStateChangeListener({ setPositions }: { setPositions: Function }) {
+  const delegate = useSSEChannel(BACKEND_ENDPOINT_EXTERNAL + '/sse/board/new-state', {
+    withCredentials: true,
+  });
 
   useEffect(() => {
     const unsubscribe = delegate.on('new-board-state', (data) => {
@@ -64,7 +75,7 @@ function SSEOnBoardgameStateChangeListener({setPositions}: {setPositions: Functi
     return unsubscribe;
   }, [delegate]);
 
-  return <></>
+  return <></>;
 }
 
 function BoardgamePlayer() {
@@ -74,12 +85,28 @@ function BoardgamePlayer() {
   const { ref: gameContainerRef, dimensions } = useContainerDimensions();
   const [playerIndex, setPlayerIndex] = useState<string | undefined>(undefined);
   const [diceRoll, setDiceRoll] = useState<boolean | undefined>(undefined);
-  const [cheatValue, setCheatValue] = useState<'1' | '2' | '3' | '4' | '5' | '6' | undefined>(undefined);
+  const [cheatValue, setCheatValue] = useState<'1' | '2' | '3' | '4' | '5' | '6' | undefined>(
+    undefined
+  );
   const [positionUpdateBlock, setPositionUpdateBlock] = useState<boolean>(false);
+  const [diceInteractable, setDiceInteractable] = useState<boolean>(true);
+  const [showDice, setShowDice] = useState<boolean>(true);
+
+  const [showAnswerModal, setShowAnswerModal] = useState(false);
+  const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
+  const [selectedAnswers, setSelectedAnswers] = useState<Array<string>>([]);
+  const [hasAnsweredQuestion, setHasAnsweredQuestion] = useState(false);
+
+  useEffect(() => {
+    if (!currentQuestion) {
+      setShowDice(false);
+      getQuestion();
+    }
+  }, []);
 
   useEffect(() => {
     service.getBoardState('user').then((response) => {
-      const setup = getBoardSetup(response.data)
+      const setup = getBoardSetup(response.data);
       setPositions(setup.positions);
       setNumfields(setup.numfields);
     });
@@ -87,32 +114,128 @@ function BoardgamePlayer() {
 
   useEffect(() => {
     if (!playerIndex) {
-      service.getPlayerId().then((response) => setPlayerIndex(response.data.index as string))
+      service.getPlayerId().then((response) => setPlayerIndex(response.data.index as string));
     }
   }, []);
 
   useEffect(() => {
     if (!positionUpdateBlock) setPositions(positionsBuffer);
-  }, [positionsBuffer, positionUpdateBlock])
+  }, [positionsBuffer, positionUpdateBlock]);
+
+  const getQuestion = () => {
+    service
+      .getCurrentQuestion('user', 'board')
+      .then((response) => {
+        setCurrentQuestion(response.data);
+        setSelectedAnswers([]);
+        setHasAnsweredQuestion(false);
+        setShowAnswerModal(true);
+      })
+      .catch((error) => {
+        console.log(error);
+        setDiceInteractable(true);
+        setShowDice(true);
+      });
+  };
 
   const rollDice = () => {
-    setPositionUpdateBlock(true)
-    setCheatValue(undefined)
-    setDiceRoll(true)
-    service.makeMove().then((response) => {
-      setTimeout(() => {
-        setDiceRoll(false)
-        setCheatValue(response.data.diceRoll)
-        setPositionUpdateBlock(false)
-      }, 1000)
-    }).catch((e) => setDiceRoll(false))
+    if (!diceInteractable) return;
+    setPositionUpdateBlock(true);
+    toggleDiceRoll('on');
+    service
+      .makeMove()
+      .then((response) => {
+        setTimeout(() => {
+          setDiceRoll(false);
+          setCheatValue(response.data.diceRoll);
+          setPositionUpdateBlock(false);
+        }, 1000);
+        setTimeout(() => {
+          setShowDice(false);
+          setDiceInteractable(true);
+          getQuestion();
+        }, 2000);
+      })
+      .catch(() => setTimeout(() => { setDiceRoll(false) }, 1000));
+  };
+
+  const handleAnswerSelected = (id: string) => {
+    setSelectedAnswers((prevState) => {
+      const answers = [...prevState];
+      if (answers.includes(id)) {
+        return answers.filter((answer) => answer !== id);
+      } else {
+        answers.push(id);
+        return answers;
+      }
+    });
+  };
+
+  const handleAnswerSent = () => {
+    service
+      .sendAnswer(
+        selectedAnswers.map((id) => parseInt(id)),
+        'board'
+      )
+      .then((response) => {
+        setHasAnsweredQuestion(true);
+        console.log(response.data);
+        setShowAnswerModal(false);
+        setHasAnsweredQuestion(true);
+        console.log(diceRoll)
+        setDiceInteractable(true);
+        setShowDice(true);
+      })
+      .catch((error) => console.error(error));
+  };
+
+  const toggleAnswerModal = (mode: 'on' | 'off') => {
+    if (mode === 'on') {
+      setShowAnswerModal(true);
+    } else {
+      setShowAnswerModal(false);
+    }
+  };
+
+  const toggleDiceRoll = (mode: 'on' | 'off') => {
+    if (mode === 'on') {
+      setCheatValue(undefined);
+      setDiceInteractable(false);
+      setDiceRoll(true);
+    } else {
+      setDiceInteractable(true);
+      setDiceRoll(false);
+    }
   };
 
   return (
     <Container>
+      {showAnswerModal && currentQuestion && (
+        <Modal>
+          <QuestionContainer>
+            <QuestionHeader>
+              <QuestionCategory>{currentQuestion.category}</QuestionCategory>
+              <QuestionTask>{currentQuestion.task}</QuestionTask>
+            </QuestionHeader>
+            <AnswerGrid>
+              {currentQuestion.answers.map((answer, index) => (
+                <AnswerCard
+                  key={index}
+                  isselected={selectedAnswers.includes(answer.id)}
+                  backgroundcolor={getColor(index)}
+                  onClick={() => handleAnswerSelected(answer.id)}
+                >
+                  <h2>{answer.content}</h2>
+                </AnswerCard>
+              ))}
+            </AnswerGrid>
+            <ButtonCustom onClick={() => handleAnswerSent()}>Wyślij odpowiedź</ButtonCustom>
+          </QuestionContainer>
+        </Modal>
+      )}
       <SSEOnBoardgameStateChangeListener setPositions={setPositionsBuffer} />
       <ActionContainer onClick={rollDice}>
-        <Dice diceRoll={diceRoll} cheatValue={cheatValue} />
+        {showDice && <Dice diceRoll={diceRoll} cheatValue={cheatValue} />}
       </ActionContainer>
       <GameContainer ref={gameContainerRef}>
         {dimensions.width > 0 && numfields && (
