@@ -10,13 +10,34 @@ import com.wuji.backend.game.GameType
 import java.io.File
 import java.io.FileNotFoundException
 import org.springframework.stereotype.Service
+import java.nio.file.Paths
 
 @Service
 class ConfigManagerService(
     private val mapper: ObjectMapper = jacksonObjectMapper(),
-    private var configPath: String =
-        "." // need to have a discussion where to store config files
+    private var configPath: String = resolveGlobalConfigPath().toAbsolutePath().toString()
 ) {
+
+    companion object {
+        private const val CONFIG_DIR_NAME = "Konfiguracje"
+
+        fun resolveGlobalConfigPath(): java.nio.file.Path {
+            val os = System.getProperty("os.name").lowercase()
+            return when {
+                os.contains("win") ->
+                    Paths.get(System.getenv("ProgramData") ?: "C:\\ProgramData", CONFIG_DIR_NAME)
+
+                os.contains("mac") ->
+                    Paths.get("/Library/Application Support", CONFIG_DIR_NAME)
+
+                os.contains("nux") ->
+                    Paths.get("/etc", CONFIG_DIR_NAME)
+
+                else ->
+                    Paths.get(System.getProperty("user.home"), CONFIG_DIR_NAME)
+            }
+        }
+    }
 
     fun readConfig(
         type: GameType,
