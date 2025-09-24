@@ -9,13 +9,14 @@ import com.wuji.backend.config.dto.QuizConfigDto
 import com.wuji.backend.game.GameType
 import java.io.File
 import java.io.FileNotFoundException
-import org.springframework.stereotype.Service
 import java.nio.file.Paths
+import org.springframework.stereotype.Service
 
 @Service
 class ConfigManagerService(
     private val mapper: ObjectMapper = jacksonObjectMapper(),
-    private var configPath: String = resolveGlobalConfigPath().toAbsolutePath().toString()
+    private var configPath: String =
+        resolveGlobalConfigPath().toAbsolutePath().toString()
 ) {
 
     companion object {
@@ -25,13 +26,14 @@ class ConfigManagerService(
             val os = System.getProperty("os.name").lowercase()
             return when {
                 os.contains("win") ->
-                    Paths.get(System.getenv("ProgramData") ?: "C:\\ProgramData", CONFIG_DIR_NAME)
+                    Paths.get(
+                        System.getenv("ProgramData") ?: "C:\\ProgramData",
+                        CONFIG_DIR_NAME)
 
                 os.contains("mac") ->
                     Paths.get("/Library/Application Support", CONFIG_DIR_NAME)
 
-                os.contains("nux") ->
-                    Paths.get("/etc", CONFIG_DIR_NAME)
+                os.contains("nux") -> Paths.get("/etc", CONFIG_DIR_NAME)
 
                 else ->
                     Paths.get(System.getProperty("user.home"), CONFIG_DIR_NAME)
