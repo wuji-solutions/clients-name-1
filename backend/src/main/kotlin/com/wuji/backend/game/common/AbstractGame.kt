@@ -13,6 +13,7 @@ abstract class AbstractGame<DetailsT : PlayerDetails, ConfigT : GameConfig>(
     val config: ConfigT
 ) {
     var gameState: GameState = GameState.CREATED
+    val timeOfCreationEpoch = System.currentTimeMillis()
 
     val players: MutableSet<Player<DetailsT>> = CopyOnWriteArraySet()
 

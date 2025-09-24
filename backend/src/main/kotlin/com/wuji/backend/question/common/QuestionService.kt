@@ -11,7 +11,8 @@ abstract class QuestionService {
     fun answerQuestion(
         player: Player<out PlayerDetails>,
         question: Question,
-        answerIds: Set<Int>
+        answerIds: Set<Int>,
+        answerTimeInMilliseconds: Long = 0
     ): Boolean {
         if (player.alreadyAnswered(question.id)) {
             throw QuestionAlreadyAnsweredException(question.id)
@@ -23,8 +24,9 @@ abstract class QuestionService {
         if (invalidQuestionId != null) {
             throw InvalidQuestionIdException(invalidQuestionId)
         }
-        // TODO update answerTimeInMilliseconds according to internal game timer, when it's built
-        val playerAnswer = PlayerAnswer(question, answerIds, 0)
+
+        val playerAnswer =
+            PlayerAnswer(question, answerIds, answerTimeInMilliseconds)
         player.details.answers.add(playerAnswer)
         return question.areCorrectAnswerIds(answerIds)
     }
