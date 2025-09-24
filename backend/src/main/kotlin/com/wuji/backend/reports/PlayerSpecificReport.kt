@@ -55,7 +55,7 @@ object PlayerSpecificReport : Report {
                 writeRow(
                     listOf(
                         answer.question.id,
-                        answer.question.task,
+                        answer.question.text,
                         answer.selectedIds,
                         answer.isCorrect))
             }

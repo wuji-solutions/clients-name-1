@@ -5,6 +5,7 @@ import com.wuji.backend.game.GameType
 import com.wuji.backend.player.state.Player
 import com.wuji.backend.player.state.PlayerDetails
 import com.wuji.backend.player.state.exception.PlayerNotFoundException
+import java.util.concurrent.CopyOnWriteArraySet
 
 abstract class AbstractGame<DetailsT : PlayerDetails, ConfigT : GameConfig>(
     val name: String,
@@ -14,7 +15,7 @@ abstract class AbstractGame<DetailsT : PlayerDetails, ConfigT : GameConfig>(
     var gameState: GameState = GameState.CREATED
     val timeOfCreationEpoch = System.currentTimeMillis()
 
-    val players: MutableSet<Player<DetailsT>> = mutableSetOf()
+    val players: MutableSet<Player<DetailsT>> = CopyOnWriteArraySet()
 
     abstract fun start()
 

@@ -104,7 +104,7 @@ abstract class GameStats {
         ): List<AnswerSummary> {
             val answerIdToSummary =
                 question.answers.associate { answer ->
-                    answer.id to AnswerSummary(answer.id, answer.content, 0)
+                    answer.id to AnswerSummary(answer.id, answer.text, 0)
                 }
 
             players.forEach { player ->

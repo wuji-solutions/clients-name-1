@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+    <!-- Test category with special characters -->
+    <question type="category">
+        <category>
+            <text>$course$/Test Category/Subcategory &amp; More</text>
+        </category>
+    </question>
+
+    <!-- Multiple Choice with various options -->
+    <question type="multichoice">
+        <name>
+            <text>MCQ with special characters &amp; HTML</text>
+        </name>
+        <questiontext format="html">
+            <text><![CDATA[<p>Which of these is <strong>not</strong> a programming language? &amp; why?</p>
+            <p style="color: blue;">Choose <em>carefully</em>!</p>]]></text>
+        </questiontext>
+        <generalfeedback>
+            <text><![CDATA[<p>HTML is a markup language, not a programming language.</p>]]></text>
+        </generalfeedback>
+        <defaultgrade>2.0</defaultgrade>
+        <penalty>0.5</penalty>
+        <hidden>0</hidden>
+        <single>true</single>
+        <shuffleanswers>1</shuffleanswers>
+        <answernumbering>123</answernumbering>
+        <correctfeedback>
+            <text>Correct! Well done.</text>
+        </correctfeedback>
+        <partiallycorrectfeedback>
+            <text>Partially correct.</text>
+        </partiallycorrectfeedback>
+        <incorrectfeedback>
+            <text>Incorrect. Try again.</text>
+        </incorrectfeedback>
+        <answer fraction="0">
+            <text><![CDATA[Python]]></text>
+            <feedback><text>Python is a programming language.</text></feedback>
+        </answer>
+        <answer fraction="0">
+            <text><![CDATA[Java]]></text>
+            <feedback><text>Java is a programming language.</text></feedback>
+        </answer>
+        <answer fraction="100">
+            <text><![CDATA[HTML]]></text>
+            <feedback><text>HTML is a markup language, not a programming language.</text></feedback>
+        </answer>
+        <answer fraction="0">
+            <text><![CDATA[C++]]></text>
+            <feedback><text>C++ is a programming language.</text></feedback>
+        </answer>
+        <tags>
+            <tag><text>programming</text></tag>
+            <tag><text>test</text></tag>
+        </tags>
+    </question>
+
+    <!-- Multiple Choice with multiple correct answers -->
+    <question type="multichoice">
+        <name>
+            <text>Multiple correct answers</text>
+        </name>
+        <questiontext format="html">
+            <text><![CDATA[<p>Select all prime numbers:</p>]]></text>
+        </questiontext>
+        <single>false</single>
+        <shuffleanswers>1</shuffleanswers>
+        <answernumbering>abc</answernumbering>
+        <answer fraction="100">
+            <text>2</text>
+        </answer>
+        <answer fraction="100">
+            <text>3</text>
+        </answer>
+        <answer fraction="0">
+            <text>4</text>
+        </answer>
+        <answer fraction="100">
+            <text>5</text>
+        </answer>
+        <answer fraction="0">
+            <text>6</text>
+        </answer>
+    </question>
+
+    <!-- True/False with special content -->
+    <question type="truefalse">
+        <name>
+            <text>True/False with HTML</text>
+        </name>
+        <questiontext format="html">
+            <text><![CDATA[<p>The Earth is &lt; than Jupiter in size.</p>]]></text>
+        </questiontext>
+        <answer fraction="100">
+            <text>true</text>
+            <feedback><text>Correct! Earth is smaller than Jupiter.</text></feedback>
+        </answer>
+        <answer fraction="0">
+            <text>false</text>
+            <feedback><text>Incorrect. Jupiter is much larger than Earth.</text></feedback>
+        </answer>
+    </question>
+
+    <!-- Short Answer with multiple correct responses and case sensitivity -->
+    <question type="shortanswer">
+        <name>
+            <text>Short Answer with case options</text>
+        </name>
+        <questiontext format="html">
+            <text><![CDATA[<p>What is the capital of France? (Include special characters: é, è, etc.)</p>]]></text>
+        </questiontext>
+        <usecase>1</usecase> <!-- Case sensitive -->
+        <answer fraction="100">
+            <text>Paris</text>
+            <feedback><text>Correct, but did you include the special characters?</text></feedback>
+        </answer>
+        <answer fraction="90">
+            <text>paris</text>
+            <feedback><text>Almost correct, but remember case sensitivity.</text></feedback>
+        </answer>
+        <answer fraction="100">
+            <text>Páris</text>
+            <feedback><text>Correct with special characters!</text></feedback>
+        </answer>
+    </question>
+
+    <!-- Numerical with tolerance and units -->
+    <question type="numerical">
+        <name>
+            <text>Numerical with units</text>
+        </name>
+        <questiontext format="html">
+            <text><![CDATA[<p>What is the value of π rounded to two decimal places?</p>]]></text>
+        </questiontext>
+        <answer fraction="100">
+            <text>3.14</text>
+            <feedback><text>Correct!</text></feedback>
+            <tolerance>0.01</tolerance>
+        </answer>
+        <answer fraction="50">
+            <text>3.14159</text>
+            <feedback><text>More precise than needed, but accepted.</text></feedback>
+            <tolerance>0.00001</tolerance>
+        </answer>
+        <units>
+            <unit>
+                <multiplier>1</multiplier>
+                <unit_name>radians</unit_name>
+            </unit>
+        </units>
+    </question>
+
+    <!-- Matching with HTML content -->
+    <question type="matching">
+        <name>
+            <text>Matching with special chars</text>
+        </name>
+        <questiontext format="html">
+            <text><![CDATA[<p>Match the symbols with their names:</p>]]></text>
+        </questiontext>
+        <shuffleanswers>1</shuffleanswers>
+        <subquestion>
+            <text>&amp; (ampersand)</text>
+            <answer>
+                <text>and</text>
+            </answer>
+        </subquestion>
+        <subquestion>
+            <text>&gt; (greater than)</text>
+            <answer>
+                <text>greater than</text>
+            </answer>
+        </subquestion>
+        <subquestion>
+            <text>&lt; (less than)</text>
+            <answer>
+                <text>less than</text>
+            </answer>
+        </subquestion>
+    </question>
+
+    <!-- Essay question with formatting requirements -->
+    <question type="essay">
+        <name>
+            <text>Essay with formatting</text>
+        </name>
+        <questiontext format="html">
+            <text><![CDATA[<p>Discuss the importance of <strong>XML parsing</strong> in educational technology.</p>]]></text>
+        </questiontext>
+        <generalfeedback>
+            <text><![CDATA[<p>A good answer would mention interoperability, data exchange, and standardization.</p>]]></text>
+        </generalfeedback>
+        <responseformat>editor</responseformat>
+        <responserequired>1</responserequired>
+        <responsefieldlines>10</responsefieldlines>
+        <attachments>1</attachments>
+        <attachmentsrequired>0</attachmentsrequired>
+    </question>
+
+    <!-- Description question type -->
+    <question type="description">
+        <name>
+            <text>Instruction section</text>
+        </name>
+        <questiontext format="html">
+            <text><![CDATA[<h2>Important Instructions</h2>
+            <p>This is a description question that provides information but doesn't require an answer.</p>
+            <ul>
+                <li>Read each question carefully</li>
+                <li>Answer to the best of your ability</li>
+                <li>Review your answers before submitting</li>
+            </ul>]]></text>
+        </questiontext>
+    </question>
+
+    <!-- Cloze question with embedded answers -->
+    <question type="cloze">
+        <name>
+            <text>Cloze with various embedded types</text>
+        </name>
+        <questiontext format="html">
+            <text><![CDATA[<p>Complete the following text:</p>
+            <p>The capital of France is {1:SHORTANSWER:=Paris#Correct!~%50%paris#Almost right, but remember capitalization}. </p>
+            <p>The value of π is approximately {1:NUMERICAL:=3.14:0.01}. </p>
+            <p>Java is {1:MC:~%0%a markup language~%100%a programming language~%0%a database language}.</p>]]></text>
+        </questiontext>
+        <generalfeedback>
+            <text><![CDATA[<p>Cloze questions combine multiple question types in one.</p>]]></text>
+        </generalfeedback>
+    </question>
+
+    <!-- Question with plain text format -->
+    <question type="shortanswer">
+        <name>
+            <text>Plain text question</text>
+        </name>
+        <questiontext format="plain_text">
+            <text>This question uses plain text format without HTML. What is 2+2?</text>
+        </questiontext>
+        <answer fraction="100">
+            <text>4</text>
+        </answer>
+    </question>
+
+    <!-- Question with image reference -->
+    <question type="multichoice">
+        <name>
+            <text>Question with image</text>
+        </name>
+        <questiontext format="html">
+            <text><![CDATA[<p>Which shape is shown below?</p>
+            <p><img src="@@PLUGINFILE@@/shape.png" alt="A triangle" width="100" height="100"></p>]]></text>
+        </questiontext>
+        <answer fraction="100">
+            <text>Triangle</text>
+        </answer>
+        <answer fraction="0">
+            <text>Square</text>
+        </answer>
+        <answer fraction="0">
+            <text>Circle</text>
+        </answer>
+    </question>
+
+    <!-- Empty question text edge case -->
+    <question type="shortanswer">
+        <name>
+            <text>Edge case: empty question text</text>
+        </name>
+        <questiontext format="html">
+            <text></text>
+        </questiontext>
+        <answer fraction="100">
+            <text>answer</text>
+        </answer>
+    </question>
+
+    <!-- Question with CDATA but no HTML -->
+    <question type="shortanswer">
+        <name>
+            <text>CDATA without HTML</text>
+        </name>
+        <questiontext format="html">
+            <text><![CDATA[What is the answer to life, the universe, and everything?]]></text>
+        </questiontext>
+        <answer fraction="100">
+            <text>42</text>
+        </answer>
+    </question>
+</quiz>

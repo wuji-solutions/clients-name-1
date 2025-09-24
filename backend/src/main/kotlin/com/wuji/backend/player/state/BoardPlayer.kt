@@ -13,7 +13,8 @@ class BoardPlayerDetails(
             DifficultyLevel.EASY
         },
     val askedQuestions: MutableList<Question> = mutableListOf(),
-    var firstGetCurrentQuestionTime: Long? = null
+    var firstGetCurrentQuestionTime: Long? = null,
+    var points: Int = 0,
 ) : PlayerDetails()
 
 typealias BoardPlayer = Player<BoardPlayerDetails>

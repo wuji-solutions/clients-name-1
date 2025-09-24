@@ -5,6 +5,6 @@ import kotlin.random.Random
 
 class RandomDice : GameDice<BoardPlayer> {
     override fun roll(player: BoardPlayer): Int {
-        return Random.nextInt(7)
+        return Random.nextInt(1, 7)
     }
 }

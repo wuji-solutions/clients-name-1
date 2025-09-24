@@ -1,7 +1,9 @@
 package com.wuji.backend.question.board
 
+import com.wuji.backend.events.board.SSEBoardService
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.board.BoardGame
+import com.wuji.backend.player.dto.PlayerDto.Companion.toDto
 import com.wuji.backend.question.common.PlayerAnswer
 import com.wuji.backend.question.common.Question
 import com.wuji.backend.question.common.QuestionService
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service
 @Service
 class BoardQuestionService(
     val gameRegistry: GameRegistry,
+    val sseBoardService: SSEBoardService
 ) : QuestionService() {
 
     private val game: BoardGame
@@ -44,6 +47,9 @@ class BoardQuestionService(
         val player = game.findPlayerByIndex(playerIndex)
         player.details.askedQuestions.add(question)
 
+        val top5Players = game.getTop5Players()
+        val minimumPoints = top5Players.last().details.points
+
         val firstGetCurrentQuestionTime =
             player.details.firstGetCurrentQuestionTime
                 ?: throw IllegalStateException(
@@ -56,6 +62,18 @@ class BoardQuestionService(
             .also {
                 //          reset the time, it will be set on the next getQuestionAndMarkTime()
                 player.details.firstGetCurrentQuestionTime = null
+            }
+            .also { answeredCorrectly ->
+                if (answeredCorrectly)
+                    player.details.points +=
+                        game.config.pointsPerDifficulty.getValue(
+                            question.difficultyLevel)
+            }
+            .also {
+                if (player.details.points >= minimumPoints ||
+                    top5Players.size < 5)
+                    sseBoardService.sendNewRankingStateEvent(
+                        game.getTop5Players().map { it.toDto() })
             }
     }
 

@@ -55,7 +55,7 @@ object QuestionsSummaryReport : Report {
                     listOf(
                         question.id,
                         question.category,
-                        question.task,
+                        question.text,
                         question.type.toPolish(),
                         question.difficultyLevel.toPolish(),
                         correctCount,
