@@ -106,7 +106,7 @@ class BoardService(
             game.boardState.map { stateEntry ->
                 SimpleTileStateDto(
                     stateEntry.key,
-                    stateEntry.value.map { it.index }.toSet(),
+                    stateEntry.value.map { it.toDto() }.toSet(),
                 )
             }
         return SimpleBoardStateDto(tileStateDtos)
@@ -131,4 +131,6 @@ class BoardService(
         gameRegistry.register(
             BoardGame(name, config, categories, questions, tiles))
     }
+
+    fun getRanking(): List<PlayerDto> = game.getTop5Players().map { it.toDto() }
 }
