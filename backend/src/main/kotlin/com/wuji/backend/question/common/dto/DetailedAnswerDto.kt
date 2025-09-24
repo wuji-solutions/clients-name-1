@@ -10,5 +10,5 @@ data class DetailedAnswerDto(
 
 fun Answer.toDetailedAnswerDto(isCorrect: Boolean): DetailedAnswerDto {
     return DetailedAnswerDto(
-        id = this.id, content = this.content, isCorrect = isCorrect)
+        id = this.id, content = this.text, isCorrect = isCorrect)
 }

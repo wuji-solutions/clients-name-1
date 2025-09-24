@@ -10,6 +10,7 @@ import com.wuji.backend.question.common.Answer
 import com.wuji.backend.question.common.PlayerAnswer
 import com.wuji.backend.question.common.Question
 import com.wuji.backend.question.common.QuestionType
+import com.wuji.backend.question.common.TextFormat
 import io.mockk.*
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -44,9 +45,14 @@ class BoardQuestionServiceTest {
                 "cat",
                 QuestionType.TEXT,
                 "task",
+                TextFormat.PLAIN_TEXT,
                 listOf(Answer(0, "answer")),
                 setOf(0),
-                DifficultyLevel.MEDIUM)
+                DifficultyLevel.MEDIUM,
+                "imageUrl",
+                "imageBase64",
+                listOf("tag1", "tag1"),
+            )
     }
 
     @Test
