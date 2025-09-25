@@ -32,7 +32,8 @@
       "id": 3,
       "content": "15"
     }
-  ]
+  ],
+  "difficultyLevel": "EASY"
 }
 ```
 
@@ -304,6 +305,57 @@ true
   { "index": 0, "nickname": "Ola" },
   { "index": 1, "nickname": "Jan" }
 ]
+```
+
+---
+
+### 6. Ruch gracza
+
+`GET /games/board/questions/current`
+
+**Response (200)** – [`QuestionDto`](#questiondto)
+
+```json
+{
+  "id": 1,
+  "category": "Matematyka",
+  "type": "TEXT",
+  "task": "2 + 2 =",
+  "answers": [
+    {
+      "id": 0,
+      "content": "1"
+    },
+    {
+      "id": 1,
+      "content": "4"
+    },
+    {
+      "id": 2,
+      "content": "7"
+    },
+    {
+      "id": 3,
+      "content": "15"
+    }
+  ],
+  "difficultyLevel": "EASY"
+}
+```
+
+
+---
+
+### 7. Odpowiedź na pytanie gracza
+
+`POST /games/board/questions/answer`
+
+**Response (200)** – [`AnswerQuestionRequestDto`](#answerquestionrequestdto)
+
+```json
+{
+  "answerIds": [1]
+}
 ```
 
 ---
