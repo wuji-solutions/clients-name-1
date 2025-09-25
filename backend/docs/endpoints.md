@@ -18,21 +18,22 @@
   "answers": [
     {
       "id": 0,
-      "content": "1"
+      "text": "1"
     },
     {
       "id": 1,
-      "content": "4"
+      "text": "4"
     },
     {
       "id": 2,
-      "content": "7"
+      "text": "7"
     },
     {
       "id": 3,
-      "content": "15"
+      "text": "15"
     }
-  ]
+  ],
+  "difficultyLevel": "EASY"
 }
 ```
 
@@ -95,7 +96,7 @@ true
     {
       "answer": {
         "id": 0,
-        "content": "1",
+        "text": "1",
         "isCorrect": false
       },
       "count": 0
@@ -103,7 +104,7 @@ true
     {
       "answer": {
         "id": 1,
-        "content": "4",
+        "text": "4",
         "isCorrect": true
       },
       "count": 1
@@ -134,10 +135,10 @@ true
       "type": "TEXT",
       "task": "2 + 2 =",
       "answers": [
-        { "id": 0, "content": "1" },
-        { "id": 1, "content": "4" },
-        { "id": 2, "content": "7" },
-        { "id": 3, "content": "15" }
+        { "id": 0, "text": "1" },
+        { "id": 1, "text": "4" },
+        { "id": 2, "text": "7" },
+        { "id": 3, "text": "15" }
       ],
       "correctAnswerIds": [1]
     }
@@ -308,6 +309,57 @@ true
 
 ---
 
+### 6. Ruch gracza
+
+`GET /games/board/questions/current`
+
+**Response (200)** – [`QuestionDto`](#questiondto)
+
+```json
+{
+  "id": 1,
+  "category": "Matematyka",
+  "type": "TEXT",
+  "task": "2 + 2 =",
+  "answers": [
+    {
+      "id": 0,
+      "text": "1"
+    },
+    {
+      "id": 1,
+      "text": "4"
+    },
+    {
+      "id": 2,
+      "text": "7"
+    },
+    {
+      "id": 3,
+      "text": "15"
+    }
+  ],
+  "difficultyLevel": "EASY"
+}
+```
+
+
+---
+
+### 7. Odpowiedź na pytanie gracza
+
+`POST /games/board/questions/answer`
+
+**Response (200)** – [`AnswerQuestionRequestDto`](#answerquestionrequestdto)
+
+```json
+{
+  "answerIds": [1]
+}
+```
+
+---
+
 
 # SSE – Strumieniowanie zdarzeń
 
@@ -357,7 +409,7 @@ Typy wydarzeń dla boardgame:
   "answers": [
     {
       "id": "number",
-      "content": "string"
+      "text": "string"
     }
   ]
 }
@@ -404,7 +456,7 @@ Typy wydarzeń dla boardgame:
     {
       "answer": {
         "id": "number",
-        "content": "text",
+        "text": "text",
         "isCorrect": "boolean"
       },
       "count": "number"
