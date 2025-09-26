@@ -14,6 +14,7 @@ class BoardPlayerDetails(
         },
     val askedQuestions: MutableList<Question> = mutableListOf(),
     var firstGetCurrentQuestionTime: Long? = null,
+    var currentQuestion: Question? = null,
     var points: Int = 0,
 ) : PlayerDetails()
 
