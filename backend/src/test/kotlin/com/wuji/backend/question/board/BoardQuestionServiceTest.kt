@@ -70,19 +70,29 @@ class BoardQuestionServiceTest {
     @Test
     fun `getQuestion should fetch question from dispenser`() {
         every { boardGame.findPlayerByIndex(0) } returns player
+
+        every { player.details.currentQuestion } returns null
         every { player.details.currentTileIndex } returns 5
-        every { boardGame.tiles[5].category } returns "cat"
-        every { player.details.categoryToDifficulty.getValue("cat") } returns
-            question.difficultyLevel
+        every { boardGame.tiles[5].category } returns question.category
+        every {
+            player.details.categoryToDifficulty.getValue(question.category)
+        } returns question.difficultyLevel
         every { player.details.askedQuestions } returns mutableListOf()
+
         every {
             questionDispenser.getQuestion(
-                "cat", question.difficultyLevel, emptySet())
+                question.category, question.difficultyLevel, emptySet())
         } returns question
 
         val result = service.getQuestion(0)
 
         assertEquals(question, result)
+
+        // verify dispenser was called once
+        verify(exactly = 1) {
+            questionDispenser.getQuestion(
+                question.category, question.difficultyLevel, emptySet())
+        }
     }
 
     @Test
@@ -254,5 +264,48 @@ class BoardQuestionServiceTest {
         assertTrue(result)
         assertEquals(5, mutablePoints)
         verify(exactly = 0) { sseBoardService.sendNewRankingStateEvent(any()) }
+    }
+
+    @Test
+    fun `calling getQuestion multiple times should return the first question returned`() {
+        // arrange
+        every { boardGame.findPlayerByIndex(0) } returns player
+
+        // make currentQuestion stateful so setter changes getter result
+        var mutableCurrentQuestion: Question? = null
+        every { player.details.currentQuestion } answers
+            {
+                mutableCurrentQuestion
+            }
+        every { player.details.currentQuestion = any() } answers
+            {
+                mutableCurrentQuestion = it.invocation.args[0] as Question?
+            }
+
+        every { player.details.currentTileIndex } returns 5
+        every { boardGame.tiles[5].category } returns question.category
+        every {
+            player.details.categoryToDifficulty.getValue(question.category)
+        } returns question.difficultyLevel
+        every { player.details.askedQuestions } returns mutableListOf()
+
+        every {
+            questionDispenser.getQuestion(
+                question.category, question.difficultyLevel, emptySet())
+        } returns question
+
+        // act
+        val first = service.getQuestion(0)
+        val second = service.getQuestion(0)
+
+        // assert
+        assertEquals(question, first)
+        assertEquals(first, second)
+
+        // ensure dispenser was only used once (cached on player.details.currentQuestion)
+        verify(exactly = 1) {
+            questionDispenser.getQuestion(
+                question.category, question.difficultyLevel, emptySet())
+        }
     }
 }

@@ -24,21 +24,30 @@ class BoardQuestionService(
 
     fun getQuestion(playerIndex: Int): Question {
         val player = game.findPlayerByIndex(playerIndex)
-        val currentTileIndex = player.details.currentTileIndex
-        val tile = game.tiles[currentTileIndex]
-        val difficulty =
-            player.details.categoryToDifficulty.getValue(tile.category)
-        val previousQuestions = player.details.askedQuestions.toSet()
+        val details = player.details
+        details.currentQuestion?.let {
+            return it
+        }
 
-        return game.questionDispenser.getQuestion(
-            tile.category, difficulty, previousQuestions)
+        val currentTileIndex = details.currentTileIndex
+        val tile = game.tiles[currentTileIndex]
+        val difficulty = details.categoryToDifficulty.getValue(tile.category)
+        val previousQuestions = details.askedQuestions.toSet()
+
+        val newQuestion =
+            game.questionDispenser.getQuestion(
+                tile.category, difficulty, previousQuestions)
+        details.currentQuestion = newQuestion
+
+        return newQuestion
     }
 
     fun getQuestionAndMarkTime(playerIndex: Int): Question {
         val player = game.findPlayerByIndex(playerIndex)
-        if (player.details.firstGetCurrentQuestionTime == null)
+        if (player.details.firstGetCurrentQuestionTime == null) {
             player.details.firstGetCurrentQuestionTime =
                 System.currentTimeMillis()
+        }
         return getQuestion(playerIndex)
     }
 
@@ -62,6 +71,7 @@ class BoardQuestionService(
             .also {
                 //          reset the time, it will be set on the next getQuestionAndMarkTime()
                 player.details.firstGetCurrentQuestionTime = null
+                player.details.currentQuestion = null
             }
             .also { answeredCorrectly ->
                 if (answeredCorrectly)
