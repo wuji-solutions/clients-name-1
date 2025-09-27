@@ -17,12 +17,13 @@ class ConfigManagerController(
     private val creatorService: ConfigManagerService = ConfigManagerService(),
 ) {
 
-    @PostMapping("/{config_name}")
+    @PostMapping("/{type}/{config_name}")
     fun createConfig(
         @RequestBody configDto: GameConfigDto,
-        @PathVariable("config_name") configName: String
+        @PathVariable("config_name") configName: String,
+        @PathVariable("type") type: GameType,
     ): ResponseEntity<String> {
-        creatorService.createConfig(configDto, configName)
+        creatorService.createConfig(configDto, type, configName)
 
         return ResponseEntity.ok("Config $configName utworzony pomyślnie")
     }

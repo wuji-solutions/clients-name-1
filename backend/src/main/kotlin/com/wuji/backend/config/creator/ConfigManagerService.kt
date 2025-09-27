@@ -65,9 +65,10 @@ class ConfigManagerService(
 
     fun <T : GameConfigDto> createConfig(
         config: T,
+        type: GameType,
         name: String,
     ) {
-        val catalog = getCatalogFromDtoClass(config)
+        val catalog = getCatalogFromGameType(type)
 
         val dir = File(getPath(catalog))
         if (!dir.exists()) {
@@ -101,17 +102,6 @@ class ConfigManagerService(
             GameType.QUIZ -> "quiz"
             GameType.EXAM -> "exam"
             GameType.BOARD -> "board"
-        }
-    }
-
-    private fun <T : GameConfigDto> getCatalogFromDtoClass(config: T): String {
-        return when (config::class) {
-            QuizConfigDto::class -> "quiz"
-            BoardConfigDto::class -> "board"
-            ExamConfigDto::class -> "exam"
-            else ->
-                throw IllegalArgumentException(
-                    "Nieobsługiwany typ konfiguracji: ${config::class}")
         }
     }
 
