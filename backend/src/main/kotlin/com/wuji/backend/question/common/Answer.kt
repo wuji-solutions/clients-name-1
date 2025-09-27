@@ -14,7 +14,7 @@ data class Answer(val id: Int, val text: String, val feedback: String? = null) {
 data class PlayerAnswer(
     val question: Question,
     val selectedIds: Set<Int>,
-    val answerTimeInMilliseconds: Int
+    val answerTimeInMilliseconds: Long
 ) {
     val isCorrect = question.areCorrectAnswerIds(selectedIds)
 }

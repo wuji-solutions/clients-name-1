@@ -24,14 +24,31 @@ class BoardQuestionService(
 
     fun getQuestion(playerIndex: Int): Question {
         val player = game.findPlayerByIndex(playerIndex)
-        val currentTileIndex = player.details.currentTileIndex
-        val tile = game.tiles[currentTileIndex]
-        val difficulty =
-            player.details.categoryToDifficulty.getValue(tile.category)
-        val previousQuestions = player.details.askedQuestions.toSet()
+        val details = player.details
+        details.currentQuestion?.let {
+            return it
+        }
 
-        return game.questionDispenser.getQuestion(
-            tile.category, difficulty, previousQuestions)
+        val currentTileIndex = details.currentTileIndex
+        val tile = game.tiles[currentTileIndex]
+        val difficulty = details.categoryToDifficulty.getValue(tile.category)
+        val previousQuestions = details.askedQuestions.toSet()
+
+        val newQuestion =
+            game.questionDispenser.getQuestion(
+                tile.category, difficulty, previousQuestions)
+        details.currentQuestion = newQuestion
+
+        return newQuestion
+    }
+
+    fun getQuestionAndMarkTime(playerIndex: Int): Question {
+        val player = game.findPlayerByIndex(playerIndex)
+        if (player.details.firstGetCurrentQuestionTime == null) {
+            player.details.firstGetCurrentQuestionTime =
+                System.currentTimeMillis()
+        }
+        return getQuestion(playerIndex)
     }
 
     fun answerBoardQuestion(playerIndex: Int, answerIds: Set<Int>): Boolean {
@@ -42,8 +59,20 @@ class BoardQuestionService(
         val top5Players = game.getTop5Players()
         val minimumPoints = top5Players.last().details.points
 
-        return answerQuestion(player, question, answerIds)
+        val firstGetCurrentQuestionTime =
+            player.details.firstGetCurrentQuestionTime
+                ?: throw IllegalStateException(
+                    "It appears you answered the question before retrieving it first")
+        val answerTime =
+            System.currentTimeMillis() - firstGetCurrentQuestionTime
+
+        return answerQuestion(player, question, answerIds, answerTime)
             .also { checkForDifficultyPromotion(playerIndex) }
+            .also {
+                //          reset the time, it will be set on the next getQuestionAndMarkTime()
+                player.details.firstGetCurrentQuestionTime = null
+                player.details.currentQuestion = null
+            }
             .also { answeredCorrectly ->
                 if (answeredCorrectly)
                     player.details.points +=
