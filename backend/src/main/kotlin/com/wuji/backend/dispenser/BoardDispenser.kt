@@ -11,8 +11,6 @@ class BoardDispenser(
 
     override val dispensers: MutableMap<Int, Dispenser> = mutableMapOf()
 
-    // TODO: either this or we create (Category, Difficulty) -> Questions map // wouldn't need to
-    // filter in getQuestion()
     init {
         categories.forEachIndexed { index, category ->
             val questionsForCategory =
@@ -41,9 +39,13 @@ class BoardDispenser(
             }
 
         if (available.isEmpty()) {
-            return dispenser.questions
-                .filter { it.difficultyLevel == difficultyLevel }
-                .random()
+            val sameDifficulty =
+                dispenser.questions.filter {
+                    it.difficultyLevel == difficultyLevel
+                }
+
+            return if (sameDifficulty.isNotEmpty()) sameDifficulty.random()
+            else dispenser.questions.random()
         }
 
         return available.random()

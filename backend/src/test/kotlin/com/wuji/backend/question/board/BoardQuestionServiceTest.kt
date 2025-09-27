@@ -13,9 +13,11 @@ import com.wuji.backend.question.common.QuestionType
 import com.wuji.backend.question.common.TextFormat
 import io.mockk.*
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class BoardQuestionServiceTest {
 
@@ -306,6 +308,101 @@ class BoardQuestionServiceTest {
         verify(exactly = 1) {
             questionDispenser.getQuestion(
                 question.category, question.difficultyLevel, emptySet())
+        }
+    }
+
+    @Test
+    fun `answerBoardQuestion should reset currentQuestion and firstGetCurrentQuestionTime`() {
+        service =
+            spyk(
+                BoardQuestionService(gameRegistry, sseBoardService),
+                recordPrivateCalls = true)
+
+        val answers = setOf(0)
+
+        every { service.getQuestion(0) } returns question
+        every { boardGame.findPlayerByIndex(0) } returns player
+        every { player.details.askedQuestions.add(question) } returns true
+        every {
+            service.answerQuestion(player, question, answers, any())
+        } returns true
+        justRun { service.checkForDifficultyPromotion(0) }
+        every { boardGame.getTop5Players() } returns listOf(player)
+        every { boardGame.config.pointsPerDifficulty.getValue(any()) } returns 5
+
+        // prepare mutable state for currentQuestion and time
+        var mutableQuestion: Question? = question
+        var mutableTime: Long? = System.currentTimeMillis()
+        every { player.details.currentQuestion } answers { mutableQuestion }
+        every { player.details.currentQuestion = any() } answers
+            {
+                mutableQuestion = it.invocation.args[0] as Question?
+            }
+        every { player.details.firstGetCurrentQuestionTime } answers
+            {
+                mutableTime
+            }
+        every { player.details.firstGetCurrentQuestionTime = any() } answers
+            {
+                mutableTime = it.invocation.args[0] as Long?
+            }
+
+        val result = service.answerBoardQuestion(0, answers)
+
+        assertTrue(result)
+        assertEquals(null, mutableQuestion)
+        assertEquals(null, mutableTime)
+    }
+
+    @Test
+    fun `answerBoardQuestion should not award points if incorrect`() {
+        service =
+            spyk(
+                BoardQuestionService(gameRegistry, sseBoardService),
+                recordPrivateCalls = true)
+
+        val answers = setOf(999)
+
+        every { service.getQuestion(0) } returns question
+        every { boardGame.findPlayerByIndex(0) } returns player
+        every { player.details.askedQuestions.add(question) } returns true
+        every {
+            service.answerQuestion(player, question, answers, any())
+        } returns false
+        justRun { service.checkForDifficultyPromotion(0) }
+        every { boardGame.getTop5Players() } returns listOf(player)
+        every { boardGame.config.pointsPerDifficulty.getValue(any()) } returns 5
+
+        var mutablePoints = 0
+        every { player.details.points = any() } answers
+            {
+                mutablePoints = it.invocation.args[0] as Int
+            }
+        every { player.details.points } answers { mutablePoints }
+
+        val result = service.answerBoardQuestion(0, answers)
+
+        assertFalse(result)
+        assertEquals(0, mutablePoints)
+    }
+
+    @Test
+    fun `answerBoardQuestion should throw if answered before getQuestion`() {
+        service =
+            spyk(
+                BoardQuestionService(gameRegistry, sseBoardService),
+                recordPrivateCalls = true)
+
+        every { service.getQuestion(0) } returns question
+        every { boardGame.findPlayerByIndex(0) } returns player
+        every { boardGame.getTop5Players() } returns listOf(player)
+        every { player.details.askedQuestions.add(question) } returns true
+        // simulate no time set
+        every { player.details.firstGetCurrentQuestionTime } returns null
+        every { player.details.currentQuestion } returns question
+
+        assertThrows<IllegalStateException> {
+            service.answerBoardQuestion(0, setOf(0))
         }
     }
 }
