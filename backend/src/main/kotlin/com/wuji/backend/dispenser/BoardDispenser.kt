@@ -27,7 +27,7 @@ class BoardDispenser(
         previousQuestions: Set<Question>
     ): Question {
         val categoryIndex = categories.indexOf(category)
-        require(categoryIndex == -1) { "Nieznana kategoria: $category" }
+        require(categoryIndex != -1) { "Nieznana kategoria: $category" }
 
         val dispenser =
             dispensers[categoryIndex]
@@ -41,7 +41,6 @@ class BoardDispenser(
             }
 
         if (available.isEmpty()) {
-            // TODO: what do we want to do in this case?
             return dispenser.questions
                 .filter { it.difficultyLevel == difficultyLevel }
                 .random()

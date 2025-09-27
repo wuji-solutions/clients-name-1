@@ -33,7 +33,7 @@ class BoardQuestionController(
     ): ResponseEntity<QuestionDto> {
         val index = authentication.playerIndex()
         return ResponseEntity.ok(
-            questionService.getQuestion(index).toQuestionDto())
+            questionService.getQuestionAndMarkTime(index).toQuestionDto())
     }
 
     @PostMapping("/answer")

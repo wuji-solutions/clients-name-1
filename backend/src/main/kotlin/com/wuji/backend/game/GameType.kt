@@ -18,4 +18,11 @@ enum class GameType {
             BOARD -> TODO()
         }
     }
+
+    fun toPolish(): String =
+        when (this) {
+            QUIZ -> "Głosowanie"
+            EXAM -> "Sprawdzian"
+            BOARD -> "Planszowa"
+        }
 }

@@ -25,6 +25,8 @@ class QuizQuestionService(
     private val game: QuizGame
         get() = gameRegistry.getAs(QuizGame::class.java)
 
+    private var currentQuestionStartTime: Long = 0
+
     override fun getAnswers(playerIndex: Int): List<PlayerAnswer> {
         return game.players
             .find { player -> player.index == playerIndex }
@@ -37,8 +39,9 @@ class QuizQuestionService(
     fun answerQuizQuestion(playerIndex: Int, answerIds: Set<Int>): Boolean {
         val question = getCurrentQuestion()
         val player = game.findPlayerByIndex(playerIndex)
+        val answerTime = System.currentTimeMillis() - currentQuestionStartTime
 
-        return answerQuestion(player, question, answerIds).also {
+        return answerQuestion(player, question, answerIds, answerTime).also {
             updatePlayersAnsweredCounter(question.id)
         }
     }
@@ -46,6 +49,7 @@ class QuizQuestionService(
     fun getNextQuestion(): QuestionDto {
         val nextQuestion = game.questionDispenser.moveToNextQuestion()
         sseQuizService.sendNextQuestion()
+        currentQuestionStartTime = System.currentTimeMillis()
         return nextQuestion.toQuestionDto()
     }
 

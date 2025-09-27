@@ -7,6 +7,7 @@ import com.wuji.backend.game.quiz.QuizService
 import com.wuji.backend.player.dto.PlayerDto
 import com.wuji.backend.player.state.Player
 import com.wuji.backend.player.state.PlayerDetails
+import com.wuji.backend.reports.ReportsService
 import org.springframework.stereotype.Service
 
 @SuppressWarnings("kotlin:S6514")
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Service
 class GameServiceDelegate(
     quizService: QuizService,
     boardService: BoardService,
-    private val gameRegistry: GameRegistry
+    private val gameRegistry: GameRegistry,
 ) : GameService {
     private val services =
         mapOf(
@@ -53,6 +54,7 @@ class GameServiceDelegate(
 
     override fun finishGame() {
         currentService.finishGame()
+        ReportsService().writeReports(gameRegistry.game)
     }
 
     override fun getReport(): String {

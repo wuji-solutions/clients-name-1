@@ -63,4 +63,9 @@ class BoardController(
         val responseDto = boardService.movePlayer(playerIndex)
         return ResponseEntity.ok(responseDto)
     }
+
+    @GetMapping("/ranking")
+    fun getRanking(): ResponseEntity<List<PlayerDto>> {
+        return ResponseEntity.ok(boardService.getRanking())
+    }
 }
