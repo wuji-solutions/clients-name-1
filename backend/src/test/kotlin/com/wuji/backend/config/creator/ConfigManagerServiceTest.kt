@@ -36,7 +36,7 @@ class ConfigManagerServiceTest {
                 questionFilePath = "question.xml",
                 questionDurationSeconds = 5,
                 endImmediatelyAfterTime = true)
-        service.createConfig(config, "quiz")
+        service.createConfig(config, GameType.QUIZ, "quiz")
         val file = File(tempDir, "quiz/quiz.json")
         assertTrue(file.exists())
         val content = file.readText()
