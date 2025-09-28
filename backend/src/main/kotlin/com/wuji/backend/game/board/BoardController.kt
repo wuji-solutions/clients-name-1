@@ -5,8 +5,9 @@ import com.wuji.backend.game.board.dto.BoardStateDto
 import com.wuji.backend.game.board.dto.MovePlayerResponseDto
 import com.wuji.backend.game.common.GameController
 import com.wuji.backend.game.common.dto.JoinGameRequestDto
+import com.wuji.backend.player.dto.BoardPlayerDto
+import com.wuji.backend.player.dto.BoardPlayerDto.Companion.toBoardPlayerDto
 import com.wuji.backend.player.dto.PlayerDto
-import com.wuji.backend.player.dto.PlayerDto.Companion.toDto
 import com.wuji.backend.security.RequiresGame
 import com.wuji.backend.security.auth.PlayerAuthService
 import com.wuji.backend.security.auth.playerIndex
@@ -45,9 +46,10 @@ class BoardController(
     @GetMapping("/player")
     override fun getPlayer(
         authentication: Authentication
-    ): ResponseEntity<PlayerDto> {
+    ): ResponseEntity<BoardPlayerDto> {
         val playerIndex = authentication.playerIndex()
-        return ResponseEntity.ok(boardService.getPlayer(playerIndex).toDto())
+        return ResponseEntity.ok(
+            boardService.getPlayer(playerIndex).toBoardPlayerDto())
     }
 
     @GetMapping("/state")
