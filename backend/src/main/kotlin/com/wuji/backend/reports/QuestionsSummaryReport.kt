@@ -62,7 +62,8 @@ object QuestionsSummaryReport : Report {
                         incorrectCount,
                         "%.2f"
                             .format(
-                                correctCount / (correctCount + incorrectCount) *
+                                correctCount.toDouble() /
+                                    (correctCount + incorrectCount).toDouble() *
                                     100f)))
             }
         }
