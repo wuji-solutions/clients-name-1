@@ -2,7 +2,6 @@ package com.wuji.backend.reports.common
 
 import com.wuji.backend.config.GameConfig
 import com.wuji.backend.game.GameType
-import com.wuji.backend.game.board.BoardGame
 import com.wuji.backend.game.common.AbstractGame
 import com.wuji.backend.game.quiz.QuizGame
 import com.wuji.backend.player.state.Player
@@ -42,8 +41,7 @@ abstract class GameStats {
                 GameType.QUIZ ->
                     countCorrectAnswersForPlayer(game as QuizGame, playerIndex)
                 GameType.EXAM -> TODO()
-                GameType.BOARD ->
-                    countCorrectAnswersForPlayer(game as BoardGame, playerIndex)
+                GameType.BOARD -> TODO()
             }
         }
 
@@ -56,9 +54,7 @@ abstract class GameStats {
                     countIncorrectAnswersForPlayer(
                         game as QuizGame, playerIndex)
                 GameType.EXAM -> TODO()
-                GameType.BOARD ->
-                    countIncorrectAnswersForPlayer(
-                        game as BoardGame, playerIndex)
+                GameType.BOARD -> TODO()
             }
         }
 
@@ -73,14 +69,6 @@ abstract class GameStats {
             }
         }
 
-        fun countCorrectAnswersForPlayer(
-            game: BoardGame,
-            playerIndex: PlayerIndex
-        ): Int {
-            val player = game.findPlayerByIndex(playerIndex)
-            return player.details.answers.count { it.isCorrect }
-        }
-
         fun countIncorrectAnswersForPlayer(
             game: QuizGame,
             playerIndex: PlayerIndex
@@ -90,14 +78,6 @@ abstract class GameStats {
                 player.alreadyAnswered(question.id) &&
                     !player.answerForQuestion(question.id).isCorrect
             }
-        }
-
-        fun countIncorrectAnswersForPlayer(
-            game: BoardGame,
-            playerIndex: PlayerIndex
-        ): Int {
-            val player = game.findPlayerByIndex(playerIndex)
-            return player.details.answers.count { !it.isCorrect }
         }
 
         fun sumTotalAnswerTimeInMillis(

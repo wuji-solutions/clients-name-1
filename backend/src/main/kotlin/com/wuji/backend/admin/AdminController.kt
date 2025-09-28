@@ -1,6 +1,5 @@
 package com.wuji.backend.admin
 
-import com.wuji.backend.admin.dto.ParsedQuestionsInfo
 import com.wuji.backend.config.dto.toBoardConfig
 import com.wuji.backend.config.dto.toQuizConfig
 import com.wuji.backend.game.board.BoardService
@@ -8,7 +7,6 @@ import com.wuji.backend.game.board.dto.BoardGameCreateRequestDto
 import com.wuji.backend.game.common.GameServiceDelegate
 import com.wuji.backend.game.quiz.QuizService
 import com.wuji.backend.game.quiz.dto.QuizGameCreateRequestDto
-import com.wuji.backend.parser.MoodleXmlParser
 import com.wuji.backend.player.dto.PlayerDto
 import com.wuji.backend.security.GameCreated
 import com.wuji.backend.security.GamePaused
@@ -49,17 +47,10 @@ class AdminController(
         boardService.createGame(
             requestDto.name,
             requestDto.config.toBoardConfig(),
-            requestDto.questionsFilePath,
-            requestDto.numberOfTiles)
+            requestDto.questions,
+            requestDto.categories,
+            requestDto.tiles)
         return ResponseEntity.ok().build()
-    }
-
-    @GetMapping("/parse-questions")
-    fun parseQuestions(
-        @RequestParam(value = "questionsFilePath", required = true)
-        questionsFilePath: String,
-    ): ResponseEntity<ParsedQuestionsInfo> {
-        return ResponseEntity.ok(MoodleXmlParser.parsedInfo(questionsFilePath))
     }
 
     @GetMapping("/players")

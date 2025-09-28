@@ -1,15 +1,11 @@
 package com.wuji.backend.parser
 
-import com.wuji.backend.admin.dto.ParsedQuestionsInfo
 import com.wuji.backend.config.DifficultyLevel
 import com.wuji.backend.question.common.Answer
 import com.wuji.backend.question.common.Question
 import com.wuji.backend.question.common.QuestionType
 import com.wuji.backend.question.common.TextFormat
 import com.wuji.backend.question.common.TextFormat.PLAIN_TEXT
-import com.wuji.backend.util.ext.getCategories
-import java.io.File
-import java.io.FileNotFoundException
 import java.io.InputStream
 import javax.xml.stream.XMLInputFactory
 import javax.xml.stream.XMLStreamConstants
@@ -60,16 +56,6 @@ object MoodleXmlParser {
             }
             return questions
         }
-    }
-
-    fun parsedInfo(filePath: String): ParsedQuestionsInfo {
-        val file = File(filePath)
-        if (!file.exists() || !file.isFile) {
-            throw FileNotFoundException("Nie można znaleźć pliku $filePath")
-        }
-        val questions = parse(file.inputStream())
-        val categories = questions.getCategories()
-        return ParsedQuestionsInfo(categories, questions.size)
     }
 
     private fun parseCategoryQuestion(reader: XMLStreamReader): String? {

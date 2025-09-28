@@ -20,7 +20,7 @@ object PlayersSummaryReport : Report {
         val rowNames =
             listOf(
                 "Pseudonim",
-                "Czas spędzony odpowiadając na pytanie [s]",
+                "Czas spędzony odpowiadając na pytania [s]",
                 "Liczba prawidłowych odpowiedzi",
                 "Liczba nieprawidłowych odpowiedzi",
                 "Procent poprawnych odpowiedzi [%]")
@@ -45,8 +45,7 @@ object PlayersSummaryReport : Report {
                         incorrectCount,
                         "%.2f"
                             .format(
-                                correctCount.toDouble() /
-                                    (correctCount + incorrectCount).toDouble() *
+                                correctCount / (correctCount + incorrectCount) *
                                     100f)))
             }
         }

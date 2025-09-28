@@ -74,7 +74,7 @@ true
 
 ---
 
-## Endpoints administratora – pytania
+## 🛠 Endpoints administratora – pytania
 
 ### 4. Przejście do następnego pytania
 
@@ -115,7 +115,7 @@ true
 
 ---
 
-## Endpoints gry (Admin)
+## 🎮 Endpoints gry (Admin)
 
 ### 6. Utworzenie gry Quiz
 
@@ -193,52 +193,6 @@ true
 `POST /manage/player/kick?playerIndex={int}`
 
 ---
-
-### 13. Utworzenie gry Board
-
-`POST /manage/board`
-
-**Body** – [`BoardGameCreateRequestDto`](#boardgamecreaterequestdto)
-
-```json
-{
-  "name": "Board testowy 1",
-  "config": {
-    "type": "BOARD",
-    "totalDurationMinutes": 10,
-    "endImmediatelyAfterTime": false,
-    "questionFilePath": "questions.json",
-    "questionDurationSeconds": 30,
-    "pointsPerDifficulty":{
-      "EASY":1,
-      "MEDIUM":2,
-      "HARD":3
-    },
-    "rankingPromotionRules":{
-      "$course$/Sample Quiz Category": 2
-    }
-  },
-  "questionsFilePath": "D:\\PROJEKTY\\clients-name-1\\backend\\src\\test\\resources\\sample_moodle_xml_1.xml",
-  "numberOfTiles": 12
-}
-
-```
----
-
-### 14. Próba parsowania pliku z pytaniami
-
-`GET /manage/parse-questions?questionsFilePath={path}`
-
-**Response (200)**
-
-```json
-{
-	"categories": [
-		"$course$/Sample Quiz Category"
-	],
-	"numOfQuestions": 2
-}
-```
 
 ## Endpoints gracza – dołączanie do gry
 
@@ -524,20 +478,6 @@ Typy wydarzeń dla boardgame:
   "questions": [
     /* Question[] */
   ]
-}
-```
-
----
-## `BoardGameCreateRequestDto`
-
-```json
-{
-  "name": "string",
-  "config": {
-    /* pola konfiguracji boardu */
-  },
-  "questionsFilePath": "string",
-  "numberOfTiles": "number"
 }
 ```
 
