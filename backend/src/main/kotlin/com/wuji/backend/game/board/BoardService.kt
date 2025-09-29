@@ -141,7 +141,7 @@ class BoardService(
         val questions = MoodleXmlParser.parse(questionsFile.inputStream())
         val categories = questions.getCategories()
         require(numberOfTiles >= categories.size) {
-            "Liczba pól musi być większa lub równa liczba kategorii"
+            "Liczba pól musi być większa lub równa liczbie kategorii"
         }
 
         val tiles = randomizeTilesNoNeighbours(categories, numberOfTiles)
