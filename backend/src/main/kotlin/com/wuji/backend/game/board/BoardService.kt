@@ -13,6 +13,7 @@ import com.wuji.backend.game.board.dto.TileStateDto
 import com.wuji.backend.game.common.GameService
 import com.wuji.backend.player.dto.PlayerDto
 import com.wuji.backend.player.dto.PlayerDto.Companion.toDto
+import com.wuji.backend.player.state.BoardPlayer
 import com.wuji.backend.player.state.BoardPlayerDetails
 import com.wuji.backend.player.state.Player
 import com.wuji.backend.player.state.PlayerDetails
@@ -86,7 +87,7 @@ class BoardService(
             false
         }
 
-    override fun getPlayer(index: Int): Player<out PlayerDetails> {
+    override fun getPlayer(index: Int): BoardPlayer {
         return game.findPlayerByIndex(index)
     }
 
