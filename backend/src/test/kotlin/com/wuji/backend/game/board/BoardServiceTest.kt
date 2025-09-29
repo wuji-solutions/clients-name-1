@@ -10,10 +10,8 @@ import com.wuji.backend.player.dto.PlayerDto
 import com.wuji.backend.player.dto.PlayerDto.Companion.toDto
 import com.wuji.backend.player.state.BoardPlayer
 import com.wuji.backend.player.state.BoardPlayerDetails
-import com.wuji.backend.player.state.Category
 import com.wuji.backend.player.state.PlayerService
 import com.wuji.backend.player.state.exception.PlayerNotFoundException
-import com.wuji.backend.question.common.Question
 import io.mockk.*
 import kotlin.test.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -96,13 +94,12 @@ class BoardServiceTest {
     @Test
     fun `createGame should register a new quiz game`() {
         val config = mockk<BoardConfig>()
-        val questions = listOf(mockk<Question>())
-        val categories = listOf<Category>()
-        val tiles = listOf(mockk<Tile>())
-
+        val resource =
+            this::class.java.getResource("/sample_moodle_xml_1.xml")!!.path
+        val numOfTiles = 10
         every { gameRegistry.register(any()) } just runs
 
-        service.createGame("test", config, questions, categories, tiles)
+        service.createGame("test", config, resource, numOfTiles)
 
         verify {
             gameRegistry.register(
