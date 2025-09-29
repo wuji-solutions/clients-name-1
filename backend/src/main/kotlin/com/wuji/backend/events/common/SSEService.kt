@@ -9,9 +9,10 @@ import org.springframework.stereotype.Service
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
 
 open class SSEService {
-
-    private val channelToEmitters =
-        ConcurrentHashMap<String, CopyOnWriteArrayList<SseEmitter>>()
+    protected companion object {
+        val channelToEmitters =
+            ConcurrentHashMap<String, CopyOnWriteArrayList<SseEmitter>>()
+    }
 
     fun addEmitter(channel: String): SseEmitter {
         val emitter = SseEmitter(Long.MAX_VALUE)

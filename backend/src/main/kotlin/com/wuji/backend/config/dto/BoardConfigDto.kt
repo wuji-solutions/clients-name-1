@@ -13,8 +13,7 @@ data class BoardConfigDto(
     val pointsPerDifficulty: Map<DifficultyLevel, Int>,
     @JsonProperty(required = true)
     val rankingPromotionRules: Map<CategoryName, MinCorrectAnswers>,
-    @JsonProperty(required = true)
-    val showLeaderboard: Boolean,
+    @JsonProperty(required = true) val showLeaderboard: Boolean,
     override val totalDurationMinutes: Int,
     override val questionFilePath: String,
     override val questionDurationSeconds: Int,
