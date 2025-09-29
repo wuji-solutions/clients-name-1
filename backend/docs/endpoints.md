@@ -656,7 +656,7 @@ Typy wydarzeń dla boardgame:
     "HARD": "number"
   },
   "rankingPromotionRules": {
-    "string": { "minCorrectAnswers": "number" }
+    "string": "number"
     ...
   }
 }
