@@ -23,9 +23,7 @@ class SSEBoardService : SSEService() {
         players: List<PlayerDto>,
         showLeaderboardConfig: Boolean
     ) {
-        if (showLeaderboardConfig) {
-            println("sendNewLeaderboardStateEvent, players: $players")
+        if (showLeaderboardConfig)
             sendEvent(EVENTS_CHANNEL, NewLeaderboardStateEvent(players))
-        }
     }
 }
