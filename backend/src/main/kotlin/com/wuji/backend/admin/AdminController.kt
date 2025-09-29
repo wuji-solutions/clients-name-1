@@ -1,5 +1,6 @@
 package com.wuji.backend.admin
 
+import com.wuji.backend.config.dto.GameConfigDto
 import com.wuji.backend.config.dto.toBoardConfig
 import com.wuji.backend.config.dto.toQuizConfig
 import com.wuji.backend.game.board.BoardService
@@ -93,5 +94,10 @@ class AdminController(
         authService.removeAuthentication(index)
         gameServiceDelegate.kickPlayer(index, nickname)
         return ResponseEntity.ok().build()
+    }
+
+    @GetMapping("/config")
+    fun getConfig(): ResponseEntity<out GameConfigDto> {
+        return ResponseEntity.ok(gameServiceDelegate.getConfigDto())
     }
 }

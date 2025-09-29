@@ -25,8 +25,6 @@ abstract class AbstractGame<DetailsT : PlayerDetails, ConfigT : GameConfig>(
 
     abstract fun finish()
 
-    abstract fun getReport(): String
-
     fun findPlayerByIndex(index: Int): Player<DetailsT> {
         return players.find { player -> player.index == index }
             ?: throw PlayerNotFoundException(index).also {

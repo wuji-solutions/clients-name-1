@@ -82,8 +82,9 @@ class BoardQuestionService(
             .also {
                 if (player.details.points >= minimumPoints ||
                     top5Players.size < 5)
-                    sseBoardService.sendNewRankingStateEvent(
-                        game.getTop5Players().map { it.toDto() })
+                    sseBoardService.sendNewLeaderboardStateEvent(
+                        game.getTop5Players().map { it.toDto() },
+                        game.config.showLeaderboard)
             }
     }
 

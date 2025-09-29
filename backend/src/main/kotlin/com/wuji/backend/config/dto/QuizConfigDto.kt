@@ -11,3 +11,11 @@ fun QuizConfigDto.toQuizConfig(): QuizConfig {
         questionDurationSeconds = questionDurationSeconds,
         endImmediatelyAfterTime = endImmediatelyAfterTime)
 }
+
+fun QuizConfig.toQuizConfigDto(): QuizConfigDto {
+    return QuizConfigDto(
+        totalDurationMinutes = totalDurationMinutes,
+        questionFilePath = questionFilePath,
+        questionDurationSeconds = questionDurationSeconds,
+        endImmediatelyAfterTime = endImmediatelyAfterTime)
+}

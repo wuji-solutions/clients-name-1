@@ -194,6 +194,17 @@ true
 
 ---
 
+### 13. Konfiuracja aktualnej rozgrywki
+
+`GET /manage/config`
+
+**Response (200)**
+
+```json
+JSON z konfiguracją gry zależny od typu gry
+```
+---
+
 ## Endpoints gracza – dołączanie do gry
 
 ### 13. Dołączenie do gry Quiz
@@ -294,9 +305,9 @@ true
 
 ---
 
-### 5. Ranking graczy
+### 5. Ranking graczy (Leaderboard)
 
-`GET /games/board/ranking`
+`GET /games/board/leaderboard`
 
 **Response (200)** – [`PlayerDto[]`](#playerdto)
 
@@ -377,7 +388,7 @@ Typy wydarzeń dla quizu:
 - `end-question`, dane: `{}`
 
 Typy wydarzeń dla boardgame:
-- `new-ranking-state`, dane: [`PlayerDto[]`](#playerdto)
+- `new-leaderboard-state`, dane: [`PlayerDto[]`](#playerdto)
 
 ---
 

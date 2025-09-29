@@ -1,7 +1,7 @@
 package com.wuji.backend.events.board
 
 import com.wuji.backend.events.board.dto.NewBoardStateEvent
-import com.wuji.backend.events.board.dto.NewRankingStateEvent
+import com.wuji.backend.events.board.dto.NewLeaderboardStateEvent
 import com.wuji.backend.events.common.EVENTS_CHANNEL
 import com.wuji.backend.events.common.NEW_BOARD_STATE_CHANNEL
 import com.wuji.backend.events.common.SSEService
@@ -19,7 +19,13 @@ class SSEBoardService : SSEService() {
         sendEvent(NEW_BOARD_STATE_CHANNEL, NewBoardStateEvent(state))
     }
 
-    fun sendNewRankingStateEvent(players: List<PlayerDto>) {
-        sendEvent(EVENTS_CHANNEL, NewRankingStateEvent(players))
+    fun sendNewLeaderboardStateEvent(
+        players: List<PlayerDto>,
+        showLeaderboardConfig: Boolean
+    ) {
+        if (showLeaderboardConfig) {
+            println("sendNewLeaderboardStateEvent, players: $players")
+            sendEvent(EVENTS_CHANNEL, NewLeaderboardStateEvent(players))
+        }
     }
 }
