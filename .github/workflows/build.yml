@@ -52,3 +52,39 @@ jobs:
         with:
           name: backend-windows-${{ github.sha }}
           path: backend/build/native/nativeCompile/*
+
+  build-all:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      
+      - name: Set up GraalVM JDK 21
+        uses: graalvm/setup-graalvm@e140024fdc2d95d3c7e10a636887a91090d29990
+        with:
+          java-version: '21'
+          distribution: 'graalvm'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Build native binary with Gradle
+        run: ./backend/gradlew.bat -p backend clean nativeCompile
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      
+      - name: Install dependencies
+        run: yarn install
+        working-directory: frontend
+      
+      - name: Build Electron app
+        run: yarn electron:build
+        working-directory: frontend
+      
+      - name: Upload installers
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-${{ github.sha }}
+          path: frontend/dist/**
+
