@@ -2,6 +2,7 @@ package com.wuji.backend.parser
 
 import com.wuji.backend.config.DifficultyLevel
 import com.wuji.backend.question.common.QuestionType
+import com.wuji.backend.util.ext.getCategories
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
@@ -105,7 +106,10 @@ class MoodleXmlParserTest {
         requireNotNull(resource) { "Resource not found" }
 
         val inputStream = resource.openStream()
-        assertDoesNotThrow { MoodleXmlParser.parse(inputStream) }
+        val questions = MoodleXmlParser.parse(inputStream)
+        val categories = questions.getCategories()
+        assertEquals(1, categories.size)
+        assertEquals(2, questions.size)
     }
 
     @Test
@@ -114,7 +118,10 @@ class MoodleXmlParserTest {
         requireNotNull(resource) { "Resource not found" }
 
         val inputStream = resource.openStream()
-        assertDoesNotThrow { MoodleXmlParser.parse(inputStream) }
+        val questions = MoodleXmlParser.parse(inputStream)
+        val categories = questions.getCategories()
+        assertEquals(1, categories.size)
+        assertEquals(2, questions.size)
     }
 
     @Test
@@ -123,6 +130,9 @@ class MoodleXmlParserTest {
         requireNotNull(resource) { "Resource not found" }
 
         val inputStream = resource.openStream()
-        assertDoesNotThrow { MoodleXmlParser.parse(inputStream) }
+        val questions = MoodleXmlParser.parse(inputStream)
+        val categories = questions.getCategories()
+        assertEquals(1, categories.size)
+        assertEquals(7, questions.size)
     }
 }
