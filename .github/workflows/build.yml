@@ -6,52 +6,52 @@ on:
       - deploy-binaries-and-versioning
 
 jobs:
-  build-linux:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+  # build-linux:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout repo
+  #       uses: actions/checkout@v4
 
-      - name: Set up GraalVM JDK 21
-        uses: graalvm/setup-graalvm@e140024fdc2d95d3c7e10a636887a91090d29990
-        with:
-          java-version: '21'
-          distribution: 'graalvm'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+  #     - name: Set up GraalVM JDK 21
+  #       uses: graalvm/setup-graalvm@e140024fdc2d95d3c7e10a636887a91090d29990
+  #       with:
+  #         java-version: '21'
+  #         distribution: 'graalvm'
+  #         github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Grant execute permission for Gradlew
-        run: chmod +x backend/gradlew
+  #     - name: Grant execute permission for Gradlew
+  #       run: chmod +x backend/gradlew
 
-      - name: Build native binary with Gradle
-        run: ./backend/gradlew -p backend clean nativeCompile
+  #     - name: Build native binary with Gradle
+  #       run: ./backend/gradlew -p backend clean nativeCompile
 
-      - name: Upload backend native binary
-        uses: actions/upload-artifact@v4
-        with:
-          name: backend-linux-${{ github.sha }}
-          path: backend/build/native/nativeCompile/*
+  #     - name: Upload backend native binary
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: backend-linux-${{ github.sha }}
+  #         path: backend/build/native/nativeCompile/*
 
-  build-windows:
-    runs-on: windows-latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+  # build-windows:
+  #   runs-on: windows-latest
+  #   steps:
+  #     - name: Checkout repo
+  #       uses: actions/checkout@v4
 
-      - name: Set up GraalVM JDK 21
-        uses: graalvm/setup-graalvm@e140024fdc2d95d3c7e10a636887a91090d29990
-        with:
-          java-version: '21'
-          distribution: 'graalvm'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+  #     - name: Set up GraalVM JDK 21
+  #       uses: graalvm/setup-graalvm@e140024fdc2d95d3c7e10a636887a91090d29990
+  #       with:
+  #         java-version: '21'
+  #         distribution: 'graalvm'
+  #         github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build native binary with Gradle
-        run: ./backend/gradlew.bat -p backend clean nativeCompile
+  #     - name: Build native binary with Gradle
+  #       run: ./backend/gradlew.bat -p backend clean nativeCompile
 
-      - name: Upload backend native binary
-        uses: actions/upload-artifact@v4
-        with:
-          name: backend-windows-${{ github.sha }}
-          path: backend/build/native/nativeCompile/*
+  #     - name: Upload backend native binary
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: backend-windows-${{ github.sha }}
+  #         path: backend/build/native/nativeCompile/*
 
   build-all:
     runs-on: windows-latest
@@ -74,14 +74,10 @@ jobs:
         with:
           node-version: 20
         
-      - name: Force Git to use HTTPS instead of SSH
-        run: |
-          git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
-          git config --global url."https://github.com/".insteadOf "git@github.com:"
-      
-      - name: Install dependencies
-        run: yarn install
-        working-directory: frontend
+      - name: Run install
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: install
       
       - name: Build Electron app
         run: yarn electron:build
