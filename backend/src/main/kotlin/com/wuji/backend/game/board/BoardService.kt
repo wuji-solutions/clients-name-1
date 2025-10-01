@@ -11,15 +11,19 @@ import com.wuji.backend.game.board.dto.SimpleBoardStateDto
 import com.wuji.backend.game.board.dto.SimpleTileStateDto
 import com.wuji.backend.game.board.dto.TileStateDto
 import com.wuji.backend.game.common.GameService
+import com.wuji.backend.parser.MoodleXmlParser
 import com.wuji.backend.player.dto.PlayerDto
 import com.wuji.backend.player.dto.PlayerDto.Companion.toDto
+import com.wuji.backend.player.state.BoardPlayer
 import com.wuji.backend.player.state.BoardPlayerDetails
 import com.wuji.backend.player.state.Player
 import com.wuji.backend.player.state.PlayerDetails
 import com.wuji.backend.player.state.PlayerService
 import com.wuji.backend.player.state.exception.PlayerAlreadyJoinedException
 import com.wuji.backend.player.state.exception.PlayerNotFoundException
-import com.wuji.backend.question.common.Question
+import com.wuji.backend.util.ext.getCategories
+import java.io.File
+import java.io.FileNotFoundException
 import org.springframework.stereotype.Service
 
 @Service
@@ -86,7 +90,7 @@ class BoardService(
             false
         }
 
-    override fun getPlayer(index: Int): Player<out PlayerDetails> {
+    override fun getPlayer(index: Int): BoardPlayer {
         return game.findPlayerByIndex(index)
     }
 
@@ -124,12 +128,45 @@ class BoardService(
     fun createGame(
         name: String,
         config: BoardConfig,
-        questions: List<Question>,
-        categories: List<String>,
-        tiles: List<Tile>
+        questionsFilePath: String,
+        numberOfTiles: Int
     ) {
+        val questionsFile = File(questionsFilePath)
+        if (!questionsFile.exists())
+            throw FileNotFoundException(
+                "Nie można znaleźć pliku $questionsFilePath")
+        if (!questionsFile.isFile)
+            throw FileNotFoundException("$questionsFilePath to nie plik")
+
+        val questions = MoodleXmlParser.parse(questionsFile.inputStream())
+        val categories = questions.getCategories()
+        require(numberOfTiles >= categories.size) {
+            "Liczba pól musi być większa lub równa liczbie kategorii"
+        }
+
+        val tiles = randomizeTilesNoNeighbours(categories, numberOfTiles)
         gameRegistry.register(
             BoardGame(name, config, categories, questions, tiles))
+    }
+
+    /** Randomizes tiles so that no tiles of the same category are neighbours */
+    fun randomizeTilesNoNeighbours(
+        categories: List<String>,
+        numberOfTiles: Int
+    ): List<Tile> {
+        val result = mutableListOf<Tile>()
+        var index = 0
+        var tmpCategories = categories.toMutableSet()
+        while (index < numberOfTiles) {
+            val category = tmpCategories.random()
+            tmpCategories.remove(category)
+
+            result.add(Tile(category, index++))
+            if (tmpCategories.isEmpty()) {
+                tmpCategories = categories.toMutableSet()
+            }
+        }
+        return result
     }
 
     fun getRanking(): List<PlayerDto> = game.getTop5Players().map { it.toDto() }

@@ -1,7 +1,7 @@
 package com.wuji.backend.game.common
 
 import com.wuji.backend.game.common.dto.JoinGameRequestDto
-import com.wuji.backend.player.dto.PlayerDto
+import com.wuji.backend.player.dto.IPlayerDto
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
@@ -20,5 +20,7 @@ interface GameController {
         request: HttpServletRequest
     ): ResponseEntity<Any>
 
-    fun getPlayer(authentication: Authentication): ResponseEntity<PlayerDto>
+    fun getPlayer(
+        authentication: Authentication
+    ): ResponseEntity<out IPlayerDto>
 }

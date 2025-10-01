@@ -13,9 +13,21 @@ class BoardPlayerDetails(
             DifficultyLevel.EASY
         },
     val askedQuestions: MutableList<Question> = mutableListOf(),
+    var firstGetCurrentQuestionTime: Long? = null,
+    var currentQuestion: Question? = null,
     var points: Int = 0,
-) : PlayerDetails()
+) : PlayerDetails() {
+    val playerState: PlayerState
+        get() =
+            if (currentQuestion == null) PlayerState.IDLE
+            else PlayerState.ANSWERING
+}
 
 typealias BoardPlayer = Player<BoardPlayerDetails>
 
 typealias Category = String
+
+enum class PlayerState {
+    ANSWERING,
+    IDLE
+}

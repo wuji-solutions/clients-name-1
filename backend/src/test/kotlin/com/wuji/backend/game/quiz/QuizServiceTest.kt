@@ -1,5 +1,6 @@
 package com.wuji.backend.game.quiz
 
+import com.wuji.backend.config.DifficultyLevel
 import com.wuji.backend.config.QuizConfig
 import com.wuji.backend.events.common.SSEEventService
 import com.wuji.backend.events.common.SSEUsersService
@@ -146,7 +147,7 @@ class QuizServiceTest {
         val answer =
             mockk<Answer> {
                 every { id } returns 1
-                every { content } returns "content"
+                every { text } returns "content"
             }
 
         val question =
@@ -154,9 +155,10 @@ class QuizServiceTest {
                 every { id } returns 1
                 every { category } returns "category"
                 every { type } returns QuestionType.TEXT
-                every { task } returns "task"
+                every { text } returns "task"
                 every { answers } returns listOf(answer)
                 every { correctAnswerIds } returns mutableSetOf(answer.id)
+                every { difficultyLevel } returns DifficultyLevel.EASY
             }
 
         val player = mockk<QuizPlayer>()

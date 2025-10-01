@@ -4,11 +4,11 @@ import com.wuji.backend.question.common.Answer
 
 data class DetailedAnswerDto(
     val id: Int,
-    val content: String,
+    val text: String,
     val isCorrect: Boolean
 )
 
 fun Answer.toDetailedAnswerDto(isCorrect: Boolean): DetailedAnswerDto {
     return DetailedAnswerDto(
-        id = this.id, content = this.content, isCorrect = isCorrect)
+        id = this.id, text = this.text, isCorrect = isCorrect)
 }
