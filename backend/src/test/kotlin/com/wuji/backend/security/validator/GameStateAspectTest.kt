@@ -2,7 +2,7 @@ package com.wuji.backend.security.validator
 
 import com.wuji.backend.game.GameType
 import com.wuji.backend.game.common.GameServiceDelegate
-import com.wuji.backend.security.validator.exception.InvalidGameStateException
+import com.wuji.backend.game.common.exception.GameInIncorrectStateException
 import io.mockk.every
 import io.mockk.mockk
 import org.aspectj.lang.JoinPoint
@@ -12,11 +12,11 @@ import org.junit.jupiter.api.Test
 
 class GameStateAspectTest {
 
-    private val mockGameServiceDelegate = mockk<GameServiceDelegate>(relaxed = true)
+    private val mockGameServiceDelegate =
+        mockk<GameServiceDelegate>(relaxed = true)
     private val aspect = GameStateAspect(mockGameServiceDelegate)
 
-    @RequiresGame(GameType.BOARD)
-    class BoardGameController
+    @RequiresGame(GameType.BOARD) class BoardGameController
 
     private fun mockJoinPoint(target: Any): JoinPoint {
         val jp = mockk<JoinPoint>()
@@ -39,7 +39,7 @@ class GameStateAspectTest {
         every { mockGameServiceDelegate.getGameType() } returns GameType.QUIZ
         val joinPoint = mockJoinPoint(BoardGameController())
 
-        assertThrows(InvalidGameStateException::class.java) {
+        assertThrows(GameInIncorrectStateException::class.java) {
             aspect.checkGameType(joinPoint)
         }
     }

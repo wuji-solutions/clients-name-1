@@ -3,7 +3,8 @@ package com.wuji.backend.security.validator
 import com.wuji.backend.game.GameType
 import com.wuji.backend.game.common.GameServiceDelegate
 import com.wuji.backend.game.common.GameState
-import com.wuji.backend.security.validator.exception.InvalidGameStateException
+import com.wuji.backend.game.common.exception.GameInIncorrectStateException
+import com.wuji.backend.security.validator.exception.InvalidGameTypeException
 import kotlin.jvm.java
 import org.aspectj.lang.JoinPoint
 import org.aspectj.lang.annotation.Aspect
@@ -17,22 +18,24 @@ class GameStateAspect(private val gameServiceDelegate: GameServiceDelegate) {
     @Before("@within(GameCreated) || @annotation(GameCreated)")
     fun checkCreated() {
         if (gameServiceDelegate.getGameState() != GameState.CREATED) {
-            throw InvalidGameStateException(
-                "Gra nie została jeszcze stworzona.")
+            throw GameInIncorrectStateException(
+                GameState.CREATED, gameServiceDelegate.getGameState())
         }
     }
 
     @Before("@within(GameRunning) || @annotation(GameRunning)")
     fun checkRunning() {
         if (gameServiceDelegate.getGameState() != GameState.RUNNING) {
-            throw InvalidGameStateException("Gra nie jest w toku")
+            throw GameInIncorrectStateException(
+                GameState.RUNNING, gameServiceDelegate.getGameState())
         }
     }
 
     @Before("@within(GamePaused) || @annotation(GamePaused)")
     fun checkPaused() {
         if (gameServiceDelegate.getGameState() != GameState.PAUSED) {
-            throw InvalidGameStateException("Gra nie jest zapauzowana")
+            throw GameInIncorrectStateException(
+                GameState.PAUSED, gameServiceDelegate.getGameState())
         }
     }
 
@@ -43,9 +46,8 @@ class GameStateAspect(private val gameServiceDelegate: GameServiceDelegate) {
 
         if (annotation != null &&
             gameServiceDelegate.getGameType() != annotation.value) {
-            throw InvalidGameStateException(
-                "Wymagana gra to ${annotation.value}, " +
-                    "a aktualna to ${gameServiceDelegate.getGameType()}")
+            throw InvalidGameTypeException(
+                annotation.value, gameServiceDelegate.getGameType())
         }
     }
 }
