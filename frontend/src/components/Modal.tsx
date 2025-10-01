@@ -21,12 +21,14 @@ const ModalOverlay = styled.div`
   justify-content: center;
   align-items: flex-start;
   animation: ${fadeIn} 1s ease forwards;
+  overflow: scroll;
   z-index: 999;
 `;
 
 const ModalContent = styled.div`
   margin-top: 2rem;
   animation: ${slideDown} 1.5s ease forwards;
+  overflow: scroll;
 `;
 
 function Modal({ children }: { children: ReactNode }) {

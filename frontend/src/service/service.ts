@@ -92,6 +92,10 @@ const getPlayerId = () => {
   return axios.get(BACKEND_ENDPOINT_EXTERNAL + '/games/board/player', { withCredentials: true });
 };
 
+const getPlayerRanking = () => {
+  return axios.get(BACKEND_ENDPOINT + '/games/board/ranking', { withCredentials: true });
+};
+
 export const service = {
   startLobby: startLobby,
   joinGame: joinGame,
@@ -108,4 +112,5 @@ export const service = {
   getBoardState: getBoardState,
   makeMove: makeMove,
   getPlayerId: getPlayerId,
+  getPlayerRanking: getPlayerRanking,
 };

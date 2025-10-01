@@ -9,20 +9,20 @@ import { BACKEND_ENDPOINT_EXTERNAL } from '../../common/config';
 import Dice from '../../components/Dice';
 import Modal from '../../components/Modal';
 import AnswerCard from '../../components/AnswerCard';
-import { boardgameColorPalette, getColor } from '../../common/utils';
+import { boardgameColorPalette, getColor, isMobileView } from '../../common/utils';
 import {
-  AnswerGrid,
-  QuestionCategory,
   QuestionContainer,
   QuestionHeader,
-  QuestionTask,
 } from '../quiz/Quiz';
 import { ButtonCustom } from '../../components/Button';
+
+const mobile = isMobileView();
 
 export const Container = styled.div(() => ({
   width: '100%',
   height: '100%',
   margin: 'auto',
+  overflow: 'hidden',
 }));
 
 export const ActionContainer = styled.div(() => ({
@@ -47,7 +47,27 @@ export const GameContainer = styled.div(() => ({
   position: 'relative',
   zIndex: 1,
   margin: 'auto',
-  padding: '20px',
+  boxSizing: 'border-box',
+}));
+
+export const BoardQuestionCategory = styled.span(() => ({
+  fontSize: mobile ? '20px' : '25px',
+  margin: 'auto',
+  fontWeight: 'bold',
+}));
+
+export const BoardQuestionTask = styled.span(() => ({
+  fontSize: mobile ? '25px' : '50px',
+  margin: 'auto',
+  fontWeight: 'bold',
+}));
+
+const AnswerGrid = styled.div(() => ({
+  display: 'grid',
+  gridTemplateColumns: mobile ? 'repeat(1, 1fr)' : 'repeat(2, 1fr)',
+  gap: '35px',
+  padding: '40px',
+  justifyItems: 'center',
 }));
 
 function parsePlayerPositions(
@@ -95,22 +115,34 @@ function BoardgamePlayer() {
   );
   const [positionUpdateBlock, setPositionUpdateBlock] = useState<boolean>(false);
   const [diceInteractable, setDiceInteractable] = useState<boolean>(true);
-  const [showDice, setShowDice] = useState<boolean>(true);
+  const [showDice, setShowDice] = useState<boolean>(false);
 
   const [showAnswerModal, setShowAnswerModal] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
   const [selectedAnswers, setSelectedAnswers] = useState<Array<string>>([]);
   const [hasAnsweredQuestion, setHasAnsweredQuestion] = useState(false);
 
+  const [isAnswering, setIsAnswering] = useState(false);
+
   const [tileStates, setTileStates] = useState<string[]>();
   const [boardColorReferences, setBoardColorReferences] = useState<Map<string, string | undefined>>();
 
   useEffect(() => {
-    if (!currentQuestion) {
+    if (!playerIndex) {
+      service.getPlayerId().then((response) => {
+        setPlayerIndex(response.data.index as string)
+        setIsAnswering(response.data.state === 'ANSWERING')
+        setShowDice(response.data.state !== 'ANSWERING')
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!currentQuestion && isAnswering) {
       setShowDice(false);
       getQuestion();
     }
-  }, []);
+  }, [isAnswering]);
 
   useEffect(() => {
     service.getBoardState('user').then((response) => {
@@ -122,11 +154,6 @@ function BoardgamePlayer() {
     });
   }, []);
 
-  useEffect(() => {
-    if (!playerIndex) {
-      service.getPlayerId().then((response) => setPlayerIndex(response.data.index as string));
-    }
-  }, []);
 
   useEffect(() => {
     if (!positionUpdateBlock) setPositions(positionsBuffer);
@@ -189,12 +216,11 @@ function BoardgamePlayer() {
       )
       .then((response) => {
         setHasAnsweredQuestion(true);
-        console.log(response.data);
         setShowAnswerModal(false);
         setHasAnsweredQuestion(true);
-        console.log(diceRoll)
         setDiceInteractable(true);
         setShowDice(true);
+        setIsAnswering(false);
       })
       .catch((error) => console.error(error));
   };
@@ -224,8 +250,8 @@ function BoardgamePlayer() {
         <Modal>
           <QuestionContainer>
             <QuestionHeader>
-              <QuestionCategory>{currentQuestion.category}</QuestionCategory>
-              <QuestionTask>{currentQuestion.task}</QuestionTask>
+              <BoardQuestionCategory>{currentQuestion.category}</BoardQuestionCategory>
+              <BoardQuestionTask>{currentQuestion.task}</BoardQuestionTask>
             </QuestionHeader>
             <AnswerGrid>
               {currentQuestion.answers.map((answer, index) => (

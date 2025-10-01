@@ -83,7 +83,7 @@ const GameBoard: React.FC<Props> = ({
         bounds: true,
         boundsPadding: 0.2,
         minZoom: observerVersion ? 0.5 : 1,
-        initialX: centerX,
+        initialX: observerVersion && !mobile ? centerX + 40 : centerX,
         initialY: centerY,
         initialZoom: observerVersion ? 0.9 :  mobile ? 1.6 : 1,
         maxZoom: mobile ? 3 : 2.2,

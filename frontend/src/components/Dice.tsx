@@ -1,11 +1,14 @@
 import { useRef, useState, useEffect } from 'react';
 import { styled } from 'styled-components';
+import { isMobileView } from '../common/utils';
 import face1 from '../resources/face1.png';
 import face2 from '../resources/face2.png';
 import face3 from '../resources/face3.png';
 import face4 from '../resources/face4.png';
 import face5 from '../resources/face5.png';
 import face6 from '../resources/face6.png';
+
+const mobile = isMobileView()
 
 const CubeFaceData = {
   '1': {
@@ -35,9 +38,9 @@ const CubeFaceData = {
 };
 
 const Scene = styled.div(() => ({
-  perspective: '400px',
-  width: '250px',
-  height: '250px',
+  perspective: mobile ? '400px' : '400px',
+  width: mobile ? '150px' : '250px',
+  height: mobile ? '150px' : '250px',
 }));
 
 const Cube = styled.div<{ rotationY: number; rotationX: number }>(({ rotationY, rotationX }) => ({
@@ -46,7 +49,8 @@ const Cube = styled.div<{ rotationY: number; rotationX: number }>(({ rotationY, 
   width: '75%',
   height: '75%',
   position: 'relative',
-  top: '10%',
+  top: mobile ? '70%' : '10%',
+  right: mobile ? '30%' : 'auto',
   transformStyle: 'preserve-3d',
   transition: 'transform 0.18s linear',
   margin: 'auto',
@@ -68,7 +72,7 @@ const CubeFace = styled.div<{ faceNumber: '1' | '2' | '3' | '4' | '5' | '6' }>(
     borderRadius: '10px',
     overflow: 'hidden',
 
-    transform: `rotateY(-${CubeFaceData[faceNumber].y}deg) rotateX(-${CubeFaceData[faceNumber].x}deg) translateZ(90px)`,
+    transform: `rotateY(-${CubeFaceData[faceNumber].y}deg) rotateX(-${CubeFaceData[faceNumber].x}deg) translateZ(${mobile ? 48 : 90}px)`,
 
     '& img': {
       width: '100%',
@@ -98,8 +102,8 @@ function Dice({diceRoll, cheatValue}: {diceRoll?: boolean, cheatValue?: '1' | '2
         const direction1 = Math.floor(Math.random() * 2) % 2 == 0;
         const direction2 = Math.floor(Math.random() * 2) % 2 == 0;
         setRotateX((prevState) => prevState + (direction1 ? 90 : 180));
-        setRotateY((prevState) => prevState + (direction2 ? 90 : 180));
-      }, 180);
+        setRotateY((prevState) => prevState + (direction1 ? 90 : 180));
+      }, 200);
     }
   };
 

@@ -32,13 +32,13 @@ export const QuestionHeader = styled.div(() => ({
 }));
 
 export const QuestionCategory = styled.span(() => ({
-  fontSize: '35px',
+  fontSize: '25px',
   margin: 'auto',
   fontWeight: 'bold',
 }));
 
 export const QuestionTask = styled.span(() => ({
-  fontSize: '80px',
+  fontSize: '50px',
   margin: 'auto',
   fontWeight: 'bold',
 }));

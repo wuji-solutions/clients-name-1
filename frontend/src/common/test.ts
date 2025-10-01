@@ -39,95 +39,24 @@ export const TEST_QUIZ = {
 };
 
 export const TEST_GAME = {
-  name: 'Quiz testowy 1',
-  config: {
-    totalDurationMinutes: 10,
-    endImmediatelyAfterTime: false,
-    questionFilePath: 'questions.json',
-    questionDurationSeconds: 30,
-    pointsPerDifficulty: {
-      EASY: 1,
-      MEDIUM: 2,
-      HARD: 3,
+  "name": "Board testowy 1",
+  "config": {
+    "type": "BOARD",
+    "totalDurationMinutes": 10,
+    "endImmediatelyAfterTime": false,
+    "questionFilePath": "C:\\inzynierka\\clients-name-1\\backend\\src\\test\\resources\\sample_moodle_xml_3.xml",
+    "questionDurationSeconds": 30,
+    "pointsPerDifficulty": {
+      "EASY": 1,
+      "MEDIUM": 2,
+      "HARD": 3
     },
-    rankingPromotionRules: {
-      Matematyka: 2,
-    },
+    "rankingPromotionRules": {
+      "$course$/Test Category/Subcategory & More": 2
+    }
   },
-  questions: [
-    {
-      id: 1,
-      category: 'Matematyka',
-      type: 'TEXT',
-      task: '2 + 2 =',
-      answers: [
-        { id: 0, text: '1' },
-        { id: 1, text: '4' },
-        { id: 2, text: '7' },
-        { id: 3, text: '15' },
-      ],
-      correctAnswerIds: [1],
-      difficultyLevel: 'EASY',
-    },
-    {
-      id: 2,
-      category: 'Matematyka',
-      type: 'TEXT',
-      task: '2 + 3 =',
-      answers: [
-        { id: 0, text: '1' },
-        { id: 1, text: '4' },
-        { id: 2, text: '7' },
-        { id: 3, text: '15' },
-      ],
-      correctAnswerIds: [1],
-      difficultyLevel: 'EASY',
-    },
-  ],
-  categories: ['Matematyka'],
-  tiles: [
-    {
-      category: 'Matematyka',
-      index: 0,
-    },
-    {
-      category: 'Matematyka',
-      index: 1,
-    },
-    {
-      category: 'Matematyka',
-      index: 2,
-    },
-    {
-      category: 'Matematyka',
-      index: 3,
-    },
-    {
-      category: 'Matematyka',
-      index: 4,
-    },
-    {
-      category: 'Matematyka',
-      index: 5,
-    },
-    {
-      category: 'Matematyka',
-      index: 6,
-    },
-    {
-      category: 'Matematyka',
-      index: 7,
-    },
-    {
-      category: 'Matematyka',
-      index: 8,
-    },
-    {
-      category: 'Matematyka',
-      index: 9,
-    },
-  ],
-};
+    "numberOfTiles": 10
+}
 
 export const TEST_GAME_2 = {
   name: 'Quiz wiedzy ogólnej',
@@ -680,3 +609,4 @@ export const TEST_GAME_3 = {
     },
   ],
 };
+

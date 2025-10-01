@@ -116,7 +116,7 @@ function Configurations() {
   const startLobby = () => {
     if (!mode) return;
     service
-      .startLobby(mode, mode === 'quiz' ? { ...TEST_QUIZ } : { ... TEST_GAME_2 })
+      .startLobby(mode, mode === 'quiz' ? { ...TEST_QUIZ } : { ... TEST_GAME })
       .then((response) => {
         console.log('Successfully created new game');
         navigate(`/waiting-room?tryb=${mode}`);
