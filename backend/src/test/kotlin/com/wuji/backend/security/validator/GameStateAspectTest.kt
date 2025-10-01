@@ -15,7 +15,6 @@ class GameStateAspectTest {
     private val mockGameServiceDelegate = mockk<GameServiceDelegate>(relaxed = true)
     private val aspect = GameStateAspect(mockGameServiceDelegate)
 
-    // Dummy controller annotated with RequiresGame
     @RequiresGame(GameType.BOARD)
     class BoardGameController
 
@@ -29,21 +28,17 @@ class GameStateAspectTest {
 
     @Test
     fun `allows access when game type matches`() {
-        // Arrange
         every { mockGameServiceDelegate.getGameType() } returns GameType.BOARD
         val joinPoint = mockJoinPoint(BoardGameController())
 
-        // Act & Assert (no exception should be thrown)
         aspect.checkGameType(joinPoint)
     }
 
     @Test
     fun `throws exception when game type does not match`() {
-        // Arrange
         every { mockGameServiceDelegate.getGameType() } returns GameType.QUIZ
         val joinPoint = mockJoinPoint(BoardGameController())
 
-        // Act & Assert
         assertThrows(InvalidGameStateException::class.java) {
             aspect.checkGameType(joinPoint)
         }
