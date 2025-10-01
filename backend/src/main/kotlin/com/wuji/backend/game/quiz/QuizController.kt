@@ -1,13 +1,11 @@
 package com.wuji.backend.game.quiz
 
-import com.wuji.backend.game.GameType
 import com.wuji.backend.game.common.GameController
 import com.wuji.backend.game.common.dto.JoinGameRequestDto
 import com.wuji.backend.game.quiz.dto.QuizSummaryResponseDto
 import com.wuji.backend.player.dto.PlayerDto
 import com.wuji.backend.player.dto.PlayerDto.Companion.toDto
 import com.wuji.backend.security.IsAdmin
-import com.wuji.backend.security.RequiresGame
 import com.wuji.backend.security.auth.PlayerAuthService
 import com.wuji.backend.security.auth.playerIndex
 import jakarta.servlet.http.HttpServletRequest
@@ -23,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @Validated
-@RequiresGame(gametype = GameType.QUIZ)
 @RequestMapping("/games/quiz")
 class QuizController(
     private val quizService: QuizService,

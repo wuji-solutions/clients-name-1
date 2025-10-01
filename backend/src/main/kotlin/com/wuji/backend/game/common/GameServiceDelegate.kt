@@ -72,4 +72,12 @@ class GameServiceDelegate(
     override fun getPlayer(index: Int): Player<out PlayerDetails> {
         return currentService.getPlayer(index)
     }
+
+    fun getGameState(): GameState {
+        return gameRegistry.game.gameState
+    }
+
+    fun getGameType(): GameType {
+        return gameRegistry.gameType
+    }
 }
