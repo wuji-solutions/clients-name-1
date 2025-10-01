@@ -22,12 +22,6 @@ class GameStateAspectTest {
 
     @RequiresGame(GameType.BOARD) class BoardGameController
 
-    @GameCreated class CreatedController
-
-    @GameRunning class RunningController
-
-    @GamePaused class PausedController
-
     private fun mockJoinPoint(target: Any): JoinPoint {
         val jp = mockk<JoinPoint>()
         val sig = mockk<Signature>()
