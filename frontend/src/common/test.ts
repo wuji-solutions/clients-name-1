@@ -13,10 +13,10 @@ export const TEST_QUIZ = {
       type: 'TEXT',
       task: '2 + 2 =',
       answers: [
-        { id: 0, content: '1' },
-        { id: 1, content: '4' },
-        { id: 2, content: '7' },
-        { id: 3, content: '15' },
+        { id: 0, text: '1' },
+        { id: 1, text: '4' },
+        { id: 2, text: '7' },
+        { id: 3, text: '15' },
       ],
       correctAnswerIds: [1],
       difficultyLevel: 'EASY',
@@ -27,10 +27,10 @@ export const TEST_QUIZ = {
       type: 'TEXT',
       task: '2 + 3 =',
       answers: [
-        { id: 0, content: '5' },
-        { id: 1, content: '-5' },
-        { id: 2, content: '∫5x^18' },
-        { id: 3, content: 'whatever man' },
+        { id: 0, text: '5' },
+        { id: 1, text: '-5' },
+        { id: 2, text: '∫5x^18' },
+        { id: 3, text: 'whatever man' },
       ],
       correctAnswerIds: [0],
       difficultyLevel: 'EASY',
@@ -61,10 +61,10 @@ export const TEST_GAME = {
       type: 'TEXT',
       task: '2 + 2 =',
       answers: [
-        { id: 0, content: '1' },
-        { id: 1, content: '4' },
-        { id: 2, content: '7' },
-        { id: 3, content: '15' },
+        { id: 0, text: '1' },
+        { id: 1, text: '4' },
+        { id: 2, text: '7' },
+        { id: 3, text: '15' },
       ],
       correctAnswerIds: [1],
       difficultyLevel: 'EASY',
@@ -75,10 +75,10 @@ export const TEST_GAME = {
       type: 'TEXT',
       task: '2 + 3 =',
       answers: [
-        { id: 0, content: '1' },
-        { id: 1, content: '4' },
-        { id: 2, content: '7' },
-        { id: 3, content: '15' },
+        { id: 0, text: '1' },
+        { id: 1, text: '4' },
+        { id: 2, text: '7' },
+        { id: 3, text: '15' },
       ],
       correctAnswerIds: [1],
       difficultyLevel: 'EASY',
@@ -130,480 +130,553 @@ export const TEST_GAME = {
 };
 
 export const TEST_GAME_2 = {
-  "name": "Quiz wiedzy ogólnej",
-  "config": {
-    "totalDurationMinutes": 15,
-    "endImmediatelyAfterTime": false,
-    "questionFilePath": "questions.json",
-    "questionDurationSeconds": 30,
-    "pointsPerDifficulty": {
-      "EASY": 1,
-      "MEDIUM": 2,
-      "HARD": 3
+  name: 'Quiz wiedzy ogólnej',
+  config: {
+    type: 'BOARD',
+    totalDurationMinutes: 15,
+    endImmediatelyAfterTime: false,
+    questionFilePath: 'questions.json',
+    questionDurationSeconds: 30,
+    pointsPerDifficulty: {
+      EASY: 1,
+      MEDIUM: 2,
+      HARD: 3,
     },
-    "rankingPromotionRules": {
-      "Matematyka": 2,
-      "Język polski": 2,
-      "Historia": 2,
-      "Geografia": 1,
-      "Biologia": 2,
-      "Chemia": 2,
-      "Sport": 2,
-      "Muzyka": 2,
-      "Film": 2
-    }
+    rankingPromotionRules: {
+      Matematyka: 2,
+      'Język polski': 2,
+      Historia: 2,
+      Geografia: 1,
+      Biologia: 2,
+      Chemia: 2,
+      Sport: 2,
+      Muzyka: 2,
+      Film: 2,
+    },
   },
-  "questions": [
+  questions: [
     {
-      "id": 1,
-      "category": "Matematyka",
-      "type": "TEXT",
-      "task": "2 + 2 =",
-      "answers": [
-        { "id": 0, "content": "1" },
-        { "id": 1, "content": "4" },
-        { "id": 2, "content": "7" },
-        { "id": 3, "content": "15" }
+      id: 1,
+      category: 'Matematyka',
+      type: 'TEXT',
+      task: '2 + 2 =',
+      answers: [
+        { id: 0, text: '1' },
+        { id: 1, text: '4' },
+        { id: 2, text: '7' },
+        { id: 3, text: '15' },
       ],
-      "correctAnswerIds": [1],
-      "difficultyLevel": "EASY"
+      correctAnswerIds: [1],
+      difficultyLevel: 'EASY',
     },
     {
-      "id": 2,
-      "category": "Matematyka",
-      "type": "TEXT",
-      "task": "Ile wynosi pierwiastek kwadratowy z 81?",
-      "answers": [
-        { "id": 0, "content": "7" },
-        { "id": 1, "content": "8" },
-        { "id": 2, "content": "9" },
-        { "id": 3, "content": "10" }
+      id: 2,
+      category: 'Matematyka',
+      type: 'TEXT',
+      task: 'Ile wynosi pierwiastek kwadratowy z 81?',
+      answers: [
+        { id: 0, text: '7' },
+        { id: 1, text: '8' },
+        { id: 2, text: '9' },
+        { id: 3, text: '10' },
       ],
-      "correctAnswerIds": [2],
-      "difficultyLevel": "EASY"
+      correctAnswerIds: [2],
+      difficultyLevel: 'EASY',
     },
     {
-      "id": 3,
-      "category": "Język polski",
-      "type": "TEXT",
-      "task": "Kto jest autorem \"Pana Tadeusza\"?",
-      "answers": [
-        { "id": 0, "content": "Juliusz Słowacki" },
-        { "id": 1, "content": "Adam Mickiewicz" },
-        { "id": 2, "content": "Henryk Sienkiewicz" }
+      id: 3,
+      category: 'Język polski',
+      type: 'TEXT',
+      task: 'Kto jest autorem "Pana Tadeusza"?',
+      answers: [
+        { id: 0, text: 'Juliusz Słowacki' },
+        { id: 1, text: 'Adam Mickiewicz' },
+        { id: 2, text: 'Henryk Sienkiewicz' },
       ],
-      "correctAnswerIds": [1],
-      "difficultyLevel": "EASY"
+      correctAnswerIds: [1],
+      difficultyLevel: 'EASY',
     },
     {
-      "id": 4,
-      "category": "Język polski",
-      "type": "TEXT",
-      "task": "\"W Szczebrzeszynie chrząszcz brzmi w trzcinie\" to przykład:",
-      "answers": [
-        { "id": 0, "content": "Palindromu" },
-        { "id": 1, "content": "Anagramu" },
-        { "id": 2, "content": "Łamańca językowego" }
+      id: 4,
+      category: 'Język polski',
+      type: 'TEXT',
+      task: '"W Szczebrzeszynie chrząszcz brzmi w trzcinie" to przykład:',
+      answers: [
+        { id: 0, text: 'Palindromu' },
+        { id: 1, text: 'Anagramu' },
+        { id: 2, text: 'Łamańca językowego' },
       ],
-      "correctAnswerIds": [2],
-      "difficultyLevel": "EASY"
+      correctAnswerIds: [2],
+      difficultyLevel: 'EASY',
     },
     {
-      "id": 5,
-      "category": "Język polski",
-      "type": "TEXT",
-      "task": "Która z postaci nie pochodzi z twórczości Henryka Sienkiewicza?",
-      "answers": [
-        { "id": 0, "content": "Andrzej Kmicic" },
-        { "id": 1, "content": "Stanisław Wokulski" },
-        { "id": 2, "content": "Jan Skrzetuski" },
-        { "id": 3, "content": "Longinus Podbipięta" }
+      id: 5,
+      category: 'Język polski',
+      type: 'TEXT',
+      task: 'Która z postaci nie pochodzi z twórczości Henryka Sienkiewicza?',
+      answers: [
+        { id: 0, text: 'Andrzej Kmicic' },
+        { id: 1, text: 'Stanisław Wokulski' },
+        { id: 2, text: 'Jan Skrzetuski' },
+        { id: 3, text: 'Longinus Podbipięta' },
       ],
-      "correctAnswerIds": [1],
-      "difficultyLevel": "MEDIUM"
+      correctAnswerIds: [1],
+      difficultyLevel: 'MEDIUM',
     },
     {
-      "id": 6,
-      "category": "Język polski",
-      "type": "TEXT",
-      "task": "W której epoce literackiej tworzył Jan Kochanowski?",
-      "answers": [
-        { "id": 0, "content": "Średniowiecze" },
-        { "id": 1, "content": "Barok" },
-        { "id": 2, "content": "Renesans" },
-        { "id": 3, "content": "Oświecenie" }
+      id: 6,
+      category: 'Język polski',
+      type: 'TEXT',
+      task: 'W której epoce literackiej tworzył Jan Kochanowski?',
+      answers: [
+        { id: 0, text: 'Średniowiecze' },
+        { id: 1, text: 'Barok' },
+        { id: 2, text: 'Renesans' },
+        { id: 3, text: 'Oświecenie' },
       ],
-      "correctAnswerIds": [2],
-      "difficultyLevel": "MEDIUM"
+      correctAnswerIds: [2],
+      difficultyLevel: 'MEDIUM',
     },
     {
-      "id": 7,
-      "category": "Język polski",
-      "type": "TEXT",
-      "task": "Jak nazywa się artystyczny środek stylistyczny polegający na przypisaniu cech ludzkich zwierzętom lub przedmiotom?",
-      "answers": [
-        { "id": 0, "content": "Metafora" },
-        { "id": 1, "content": "Porównanie" },
-        { "id": 2, "content": "Personifikacja" },
-        { "id": 3, "content": "Epitet" }
+      id: 7,
+      category: 'Język polski',
+      type: 'TEXT',
+      task: 'Jak nazywa się artystyczny środek stylistyczny polegający na przypisaniu cech ludzkich zwierzętom lub przedmiotom?',
+      answers: [
+        { id: 0, text: 'Metafora' },
+        { id: 1, text: 'Porównanie' },
+        { id: 2, text: 'Personifikacja' },
+        { id: 3, text: 'Epitet' },
       ],
-      "correctAnswerIds": [2],
-      "difficultyLevel": "HARD"
+      correctAnswerIds: [2],
+      difficultyLevel: 'HARD',
     },
     {
-      "id": 8,
-      "category": "Historia",
-      "type": "TEXT",
-      "task": "W którym roku odbył się chrzest Polski?",
-      "answers": [
-        { "id": 0, "content": "1025" },
-        { "id": 1, "content": "1410" },
-        { "id": 2, "content": "966" }
+      id: 8,
+      category: 'Historia',
+      type: 'TEXT',
+      task: 'W którym roku odbył się chrzest Polski?',
+      answers: [
+        { id: 0, text: '1025' },
+        { id: 1, text: '1410' },
+        { id: 2, text: '966' },
       ],
-      "correctAnswerIds": [2],
-      "difficultyLevel": "EASY"
+      correctAnswerIds: [2],
+      difficultyLevel: 'EASY',
     },
     {
-      "id": 9,
-      "category": "Historia",
-      "type": "TEXT",
-      "task": "Kto był pierwszym królem Polski?",
-      "answers": [
-        { "id": 0, "content": "Mieszko I" },
-        { "id": 1, "content": "Bolesław Chrobry" },
-        { "id": 2, "content": "Kazimierz Wielki" },
-        { "id": 3, "content": "Władysław Łokietek" }
+      id: 9,
+      category: 'Historia',
+      type: 'TEXT',
+      task: 'Kto był pierwszym królem Polski?',
+      answers: [
+        { id: 0, text: 'Mieszko I' },
+        { id: 1, text: 'Bolesław Chrobry' },
+        { id: 2, text: 'Kazimierz Wielki' },
+        { id: 3, text: 'Władysław Łokietek' },
       ],
-      "correctAnswerIds": [1],
-      "difficultyLevel": "EASY"
+      correctAnswerIds: [1],
+      difficultyLevel: 'EASY',
     },
     {
-      "id": 10,
-      "category": "Historia",
-      "type": "TEXT",
-      "task": "W którym roku wybuchło Powstanie Warszawskie?",
-      "answers": [
-        { "id": 0, "content": "1939" },
-        { "id": 1, "content": "1943" },
-        { "id": 2, "content": "1944" },
-        { "id": 3, "content": "1945" }
+      id: 10,
+      category: 'Historia',
+      type: 'TEXT',
+      task: 'W którym roku wybuchło Powstanie Warszawskie?',
+      answers: [
+        { id: 0, text: '1939' },
+        { id: 1, text: '1943' },
+        { id: 2, text: '1944' },
+        { id: 3, text: '1945' },
       ],
-      "correctAnswerIds": [2],
-      "difficultyLevel": "MEDIUM"
+      correctAnswerIds: [2],
+      difficultyLevel: 'MEDIUM',
     },
     {
-      "id": 11,
-      "category": "Historia",
-      "type": "TEXT",
-      "task": "Która bitwa jest uznawana za jedną z największych bitew średniowiecznej Europy?",
-      "answers": [
-        { "id": 0, "content": "Bitwa pod Cedynią" },
-        { "id": 1, "content": "Bitwa pod Grunwaldem" },
-        { "id": 2, "content": "Bitwa pod Wiedniem" }
+      id: 11,
+      category: 'Historia',
+      type: 'TEXT',
+      task: 'Która bitwa jest uznawana za jedną z największych bitew średniowiecznej Europy?',
+      answers: [
+        { id: 0, text: 'Bitwa pod Cedynią' },
+        { id: 1, text: 'Bitwa pod Grunwaldem' },
+        { id: 2, text: 'Bitwa pod Wiedniem' },
       ],
-      "correctAnswerIds": [1],
-      "difficultyLevel": "MEDIUM"
+      correctAnswerIds: [1],
+      difficultyLevel: 'MEDIUM',
     },
     {
-      "id": 12,
-      "category": "Historia",
-      "type": "TEXT",
-      "task": "Słynne słowa \"Veni, vidi, vici\" wypowiedział:",
-      "answers": [
-        { "id": 0, "content": "Oktawian August" },
-        { "id": 1, "content": "Neron" },
-        { "id": 2, "content": "Juliusz Cezar" },
-        { "id": 3, "content": "Aleksander Wielki" }
+      id: 12,
+      category: 'Historia',
+      type: 'TEXT',
+      task: 'Słynne słowa "Veni, vidi, vici" wypowiedział:',
+      answers: [
+        { id: 0, text: 'Oktawian August' },
+        { id: 1, text: 'Neron' },
+        { id: 2, text: 'Juliusz Cezar' },
+        { id: 3, text: 'Aleksander Wielki' },
       ],
-      "correctAnswerIds": [2],
-      "difficultyLevel": "HARD"
+      correctAnswerIds: [2],
+      difficultyLevel: 'HARD',
     },
     {
-      "id": 13,
-      "category": "Geografia",
-      "type": "TEXT",
-      "task": "Jaka jest stolica Australii?",
-      "answers": [
-        { "id": 0, "content": "Sydney" },
-        { "id": 1, "content": "Melbourne" },
-        { "id": 2, "content": "Canberra" }
+      id: 13,
+      category: 'Geografia',
+      type: 'TEXT',
+      task: 'Jaka jest stolica Australii?',
+      answers: [
+        { id: 0, text: 'Sydney' },
+        { id: 1, text: 'Melbourne' },
+        { id: 2, text: 'Canberra' },
       ],
-      "correctAnswerIds": [2],
-      "difficultyLevel": "EASY"
+      correctAnswerIds: [2],
+      difficultyLevel: 'EASY',
     },
     {
-      "id": 14,
-      "category": "Geografia",
-      "type": "TEXT",
-      "task": "Która rzeka jest najdłuższa na świecie?",
-      "answers": [
-        { "id": 0, "content": "Amazonka" },
-        { "id": 1, "content": "Nil" },
-        { "id": 2, "content": "Jangcy" }
+      id: 14,
+      category: 'Geografia',
+      type: 'TEXT',
+      task: 'Która rzeka jest najdłuższa na świecie?',
+      answers: [
+        { id: 0, text: 'Amazonka' },
+        { id: 1, text: 'Nil' },
+        { id: 2, text: 'Jangcy' },
       ],
-      "correctAnswerIds": [1],
-      "difficultyLevel": "EASY"
+      correctAnswerIds: [1],
+      difficultyLevel: 'EASY',
     },
     {
-      "id": 15,
-      "category": "Geografia",
-      "type": "TEXT",
-      "task": "Jak nazywa się najwyższy szczyt Ziemi?",
-      "answers": [
-        { "id": 0, "content": "K2" },
-        { "id": 1, "content": "Mount Everest" },
-        { "id": 2, "content": "Mont Blanc" }
+      id: 15,
+      category: 'Geografia',
+      type: 'TEXT',
+      task: 'Jak nazywa się najwyższy szczyt Ziemi?',
+      answers: [
+        { id: 0, text: 'K2' },
+        { id: 1, text: 'Mount Everest' },
+        { id: 2, text: 'Mont Blanc' },
       ],
-      "correctAnswerIds": [1],
-      "difficultyLevel": "MEDIUM"
+      correctAnswerIds: [1],
+      difficultyLevel: 'MEDIUM',
     },
     {
-      "id": 16,
-      "category": "Geografia",
-      "type": "TEXT",
-      "task": "W którym państwie znajduje się Wielki Kanion?",
-      "answers": [
-        { "id": 0, "content": "Kanada" },
-        { "id": 1, "content": "Meksyk" },
-        { "id": 2, "content": "USA" }
+      id: 16,
+      category: 'Geografia',
+      type: 'TEXT',
+      task: 'W którym państwie znajduje się Wielki Kanion?',
+      answers: [
+        { id: 0, text: 'Kanada' },
+        { id: 1, text: 'Meksyk' },
+        { id: 2, text: 'USA' },
       ],
-      "correctAnswerIds": [2],
-      "difficultyLevel": "MEDIUM"
+      correctAnswerIds: [2],
+      difficultyLevel: 'MEDIUM',
     },
     {
-      "id": 17,
-      "category": "Geografia",
-      "type": "TEXT",
-      "task": "Które z wymienionych państw nie ma dostępu do morza?",
-      "answers": [
-        { "id": 0, "content": "Węgry" },
-        { "id": 1, "content": "Rumunia" },
-        { "id": 2, "content": "Chorwacja" },
-        { "id": 3, "content": "Bułgaria" }
+      id: 17,
+      category: 'Geografia',
+      type: 'TEXT',
+      task: 'Które z wymienionych państw nie ma dostępu do morza?',
+      answers: [
+        { id: 0, text: 'Węgry' },
+        { id: 1, text: 'Rumunia' },
+        { id: 2, text: 'Chorwacja' },
+        { id: 3, text: 'Bułgaria' },
       ],
-      "correctAnswerIds": [0],
-      "difficultyLevel": "HARD"
+      correctAnswerIds: [0],
+      difficultyLevel: 'HARD',
     },
     {
-      "id": 18,
-      "category": "Biologia",
-      "type": "TEXT",
-      "task": "Jak nazywa się proces, w którym rośliny przekształcają światło słoneczne w energię?",
-      "answers": [
-        { "id": 0, "content": "Oddychanie" },
-        { "id": 1, "content": "Transpiracja" },
-        { "id": 2, "content": "Fotosynteza" }
+      id: 18,
+      category: 'Biologia',
+      type: 'TEXT',
+      task: 'Jak nazywa się proces, w którym rośliny przekształcają światło słoneczne w energię?',
+      answers: [
+        { id: 0, text: 'Oddychanie' },
+        { id: 1, text: 'Transpiracja' },
+        { id: 2, text: 'Fotosynteza' },
       ],
-      "correctAnswerIds": [2],
-      "difficultyLevel": "EASY"
+      correctAnswerIds: [2],
+      difficultyLevel: 'EASY',
     },
     {
-      "id": 19,
-      "category": "Biologia",
-      "type": "TEXT",
-      "task": "Który narząd jest odpowiedzialny za pompowanie krwi?",
-      "answers": [
-        { "id": 0, "content": "Płuca" },
-        { "id": 1, "content": "Serce" },
-        { "id": 2, "content": "Wątroba" },
-        { "id": 3, "content": "Mózg" }
+      id: 19,
+      category: 'Biologia',
+      type: 'TEXT',
+      task: 'Który narząd jest odpowiedzialny za pompowanie krwi?',
+      answers: [
+        { id: 0, text: 'Płuca' },
+        { id: 1, text: 'Serce' },
+        { id: 2, text: 'Wątroba' },
+        { id: 3, text: 'Mózg' },
       ],
-      "correctAnswerIds": [1],
-      "difficultyLevel": "EASY"
+      correctAnswerIds: [1],
+      difficultyLevel: 'EASY',
     },
     {
-      "id": 20,
-      "category": "Biologia",
-      "type": "TEXT",
-      "task": "Co jest nośnikiem informacji genetycznej w komórkach?",
-      "answers": [
-        { "id": 0, "content": "RNA" },
-        { "id": 1, "content": "Białko" },
-        { "id": 2, "content": "DNA" }
+      id: 20,
+      category: 'Biologia',
+      type: 'TEXT',
+      task: 'Co jest nośnikiem informacji genetycznej w komórkach?',
+      answers: [
+        { id: 0, text: 'RNA' },
+        { id: 1, text: 'Białko' },
+        { id: 2, text: 'DNA' },
       ],
-      "correctAnswerIds": [2],
-      "difficultyLevel": "MEDIUM"
+      correctAnswerIds: [2],
+      difficultyLevel: 'MEDIUM',
     },
     {
-      "id": 21,
-      "category": "Biologia",
-      "type": "TEXT",
-      "task": "Które z poniższych zwierząt jest ssakiem?",
-      "answers": [
-        { "id": 0, "content": "Pingwin" },
-        { "id": 1, "content": "Wieloryb" },
-        { "id": 2, "content": "Rekin" }
+      id: 21,
+      category: 'Biologia',
+      type: 'TEXT',
+      task: 'Które z poniższych zwierząt jest ssakiem?',
+      answers: [
+        { id: 0, text: 'Pingwin' },
+        { id: 1, text: 'Wieloryb' },
+        { id: 2, text: 'Rekin' },
       ],
-      "correctAnswerIds": [1],
-      "difficultyLevel": "MEDIUM"
+      correctAnswerIds: [1],
+      difficultyLevel: 'MEDIUM',
     },
     {
-      "id": 22,
-      "category": "Biologia",
-      "type": "TEXT",
-      "task": "Jak nazywają się organelle komórkowe odpowiedzialne za produkcję energii (ATP)?",
-      "answers": [
-        { "id": 0, "content": "Rybosomy" },
-        { "id": 1, "content": "Mitochondria" },
-        { "id": 2, "content": "Aparat Golgiego" },
-        { "id": 3, "content": "Jądro komórkowe" }
+      id: 22,
+      category: 'Biologia',
+      type: 'TEXT',
+      task: 'Jak nazywają się organelle komórkowe odpowiedzialne za produkcję energii (ATP)?',
+      answers: [
+        { id: 0, text: 'Rybosomy' },
+        { id: 1, text: 'Mitochondria' },
+        { id: 2, text: 'Aparat Golgiego' },
+        { id: 3, text: 'Jądro komórkowe' },
       ],
-      "correctAnswerIds": [1],
-      "difficultyLevel": "HARD"
+      correctAnswerIds: [1],
+      difficultyLevel: 'HARD',
     },
     {
-      "id": 23,
-      "category": "Chemia",
-      "type": "TEXT",
-      "task": "Jaki jest chemiczny symbol wody?",
-      "answers": [
-        { "id": 0, "content": "O2" },
-        { "id": 1, "content": "H2O" },
-        { "id": 2, "content": "CO2" }
+      id: 23,
+      category: 'Chemia',
+      type: 'TEXT',
+      task: 'Jaki jest chemiczny symbol wody?',
+      answers: [
+        { id: 0, text: 'O2' },
+        { id: 1, text: 'H2O' },
+        { id: 2, text: 'CO2' },
       ],
-      "correctAnswerIds": [1],
-      "difficultyLevel": "EASY"
+      correctAnswerIds: [1],
+      difficultyLevel: 'EASY',
     },
     {
-      "id": 24,
-      "category": "Chemia",
-      "type": "TEXT",
-      "task": "Z jakich pierwiastków składa się sól kuchenna (NaCl)?",
-      "answers": [
-        { "id": 0, "content": "Sód i chlor" },
-        { "id": 1, "content": "Wodór i tlen" },
-        { "id": 2, "content": "Węgiel i tlen" }
+      id: 24,
+      category: 'Chemia',
+      type: 'TEXT',
+      task: 'Z jakich pierwiastków składa się sól kuchenna (NaCl)?',
+      answers: [
+        { id: 0, text: 'Sód i chlor' },
+        { id: 1, text: 'Wodór i tlen' },
+        { id: 2, text: 'Węgiel i tlen' },
       ],
-      "correctAnswerIds": [0],
-      "difficultyLevel": "EASY"
+      correctAnswerIds: [0],
+      difficultyLevel: 'EASY',
     },
     {
-      "id": 25,
-      "category": "Chemia",
-      "type": "TEXT",
-      "task": "Jaki gaz jest najobficiej występującym w atmosferze ziemskiej?",
-      "answers": [
-        { "id": 0, "content": "Tlen" },
-        { "id": 1, "content": "Azot" },
-        { "id": 2, "content": "Dwutlenek węgla" }
+      id: 25,
+      category: 'Chemia',
+      type: 'TEXT',
+      task: 'Jaki gaz jest najobficiej występującym w atmosferze ziemskiej?',
+      answers: [
+        { id: 0, text: 'Tlen' },
+        { id: 1, text: 'Azot' },
+        { id: 2, text: 'Dwutlenek węgla' },
       ],
-      "correctAnswerIds": [1],
-      "difficultyLevel": "MEDIUM"
+      correctAnswerIds: [1],
+      difficultyLevel: 'MEDIUM',
     },
     {
-      "id": 26,
-      "category": "Chemia",
-      "type": "TEXT",
-      "task": "Który pierwiastek chemiczny ma symbol 'Au'?",
-      "answers": [
-        { "id": 0, "content": "Srebro" },
-        { "id": 1, "content": "Miedź" },
-        { "id": 2, "content": "Złoto" }
+      id: 26,
+      category: 'Chemia',
+      type: 'TEXT',
+      task: "Który pierwiastek chemiczny ma symbol 'Au'?",
+      answers: [
+        { id: 0, text: 'Srebro' },
+        { id: 1, text: 'Miedź' },
+        { id: 2, text: 'Złoto' },
       ],
-      "correctAnswerIds": [2],
-      "difficultyLevel": "HARD"
+      correctAnswerIds: [2],
+      difficultyLevel: 'HARD',
     },
     {
-      "id": 27,
-      "category": "Sport",
-      "type": "TEXT",
-      "task": "Ile zawodników liczy drużyna piłkarska na boisku?",
-      "answers": [
-        { "id": 0, "content": "9" },
-        { "id": 1, "content": "11" },
-        { "id": 2, "content": "13" }
+      id: 27,
+      category: 'Sport',
+      type: 'TEXT',
+      task: 'Ile zawodników liczy drużyna piłkarska na boisku?',
+      answers: [
+        { id: 0, text: '9' },
+        { id: 1, text: '11' },
+        { id: 2, text: '13' },
       ],
-      "correctAnswerIds": [1],
-      "difficultyLevel": "EASY"
+      correctAnswerIds: [1],
+      difficultyLevel: 'EASY',
     },
     {
-      "id": 28,
-      "category": "Sport",
-      "type": "TEXT",
-      "task": "W jakiej dyscyplinie sportowej medale zdobywa Iga Świątek?",
-      "answers": [
-        { "id": 0, "content": "Pływanie" },
-        { "id": 1, "content": "Tenis" },
-        { "id": 2, "content": "Siatkówka" }
+      id: 28,
+      category: 'Sport',
+      type: 'TEXT',
+      task: 'W jakiej dyscyplinie sportowej medale zdobywa Iga Świątek?',
+      answers: [
+        { id: 0, text: 'Pływanie' },
+        { id: 1, text: 'Tenis' },
+        { id: 2, text: 'Siatkówka' },
       ],
-      "correctAnswerIds": [1],
-      "difficultyLevel": "EASY"
+      correctAnswerIds: [1],
+      difficultyLevel: 'EASY',
     },
     {
-      "id": 29,
-      "category": "Sport",
-      "type": "TEXT",
-      "task": "Co ile lat odbywają się letnie Igrzyska Olimpijskie?",
-      "answers": [
-        { "id": 0, "content": "Co 2 lata" },
-        { "id": 1, "content": "Co 4 lata" },
-        { "id": 2, "content": "Co 5 lat" }
+      id: 29,
+      category: 'Sport',
+      type: 'TEXT',
+      task: 'Co ile lat odbywają się letnie Igrzyska Olimpijskie?',
+      answers: [
+        { id: 0, text: 'Co 2 lata' },
+        { id: 1, text: 'Co 4 lata' },
+        { id: 2, text: 'Co 5 lat' },
       ],
-      "correctAnswerIds": [1],
-      "difficultyLevel": "MEDIUM"
+      correctAnswerIds: [1],
+      difficultyLevel: 'MEDIUM',
     },
     {
-      "id": 30,
-      "category": "Sport",
-      "type": "TEXT",
-      "task": "Jaki dystans ma bieg maratoński?",
-      "answers": [
-        { "id": 0, "content": "21,0975 km" },
-        { "id": 1, "content": "30 km" },
-        { "id": 2, "content": "42,195 km" }
+      id: 30,
+      category: 'Sport',
+      type: 'TEXT',
+      task: 'Jaki dystans ma bieg maratoński?',
+      answers: [
+        { id: 0, text: '21,0975 km' },
+        { id: 1, text: '30 km' },
+        { id: 2, text: '42,195 km' },
       ],
-      "correctAnswerIds": [2],
-      "difficultyLevel": "HARD"
+      correctAnswerIds: [2],
+      difficultyLevel: 'HARD',
     },
     {
-      "id": 31,
-      "category": "Muzyka",
-      "type": "TEXT",
-      "task": "Kto skomponował \"Cztery pory roku\"?",
-      "answers": [
-        { "id": 0, "content": "Wolfgang Amadeus Mozart" },
-        { "id": 1, "content": "Ludwig van Beethoven" },
-        { "id": 2, "content": "Antonio Vivaldi" },
-        { "id": 3, "content": "Jan Sebastian Bach" }
+      id: 31,
+      category: 'Muzyka',
+      type: 'TEXT',
+      task: 'Kto skomponował "Cztery pory roku"?',
+      answers: [
+        { id: 0, text: 'Wolfgang Amadeus Mozart' },
+        { id: 1, text: 'Ludwig van Beethoven' },
+        { id: 2, text: 'Antonio Vivaldi' },
+        { id: 3, text: 'Jan Sebastian Bach' },
       ],
-      "correctAnswerIds": [2],
-      "difficultyLevel": "MEDIUM"
+      correctAnswerIds: [2],
+      difficultyLevel: 'MEDIUM',
     },
     {
-      "id": 32,
-      "category": "Film",
-      "type": "TEXT",
-      "task": "Kto wyreżyserował film \"Pulp Fiction\"?",
-      "answers": [
-        { "id": 0, "content": "Steven Spielberg" },
-        { "id": 1, "content": "Martin Scorsese" },
-        { "id": 2, "content": "Quentin Tarantino" }
+      id: 32,
+      category: 'Film',
+      type: 'TEXT',
+      task: 'Kto wyreżyserował film "Pulp Fiction"?',
+      answers: [
+        { id: 0, text: 'Steven Spielberg' },
+        { id: 1, text: 'Martin Scorsese' },
+        { id: 2, text: 'Quentin Tarantino' },
       ],
-      "correctAnswerIds": [2],
-      "difficultyLevel": "MEDIUM"
-    }
+      correctAnswerIds: [2],
+      difficultyLevel: 'MEDIUM',
+    },
   ],
-  "categories": [
-    "Matematyka",
-    "Język polski",
-    "Historia",
-    "Geografia",
-    "Biologia",
-    "Chemia",
-    "Sport",
-    "Muzyka",
-    "Film"
+  categories: [
+    'Matematyka',
+    'Język polski',
+    'Historia',
+    'Geografia',
+    'Biologia',
+    'Chemia',
+    'Sport',
+    'Muzyka',
+    'Film',
   ],
-  "tiles": [
-    { "category": "Matematyka", "index": 0 },
-    { "category": "Język polski", "index": 1 },
-    { "category": "Historia", "index": 2 },
-    { "category": "Geografia", "index": 3 },
-    { "category": "Biologia", "index": 4 },
-    { "category": "Chemia", "index": 5 },
-    { "category": "Sport", "index": 6 },
-    { "category": "Muzyka", "index": 7 },
-    { "category": "Film", "index": 8 },
-    { "category": "Historia", "index": 9 }
-  ]
-}
+  tiles: [
+    { category: 'Matematyka', index: 0 },
+    { category: 'Język polski', index: 1 },
+    { category: 'Historia', index: 2 },
+    { category: 'Geografia', index: 3 },
+    { category: 'Biologia', index: 4 },
+    { category: 'Chemia', index: 5 },
+    { category: 'Sport', index: 6 },
+    { category: 'Muzyka', index: 7 },
+    { category: 'Film', index: 8 },
+    { category: 'Historia', index: 9 },
+  ],
+};
+
+export const TEST_GAME_3 = {
+  name: 'Board testowy 1',
+  config: {
+    type: 'BOARD',
+    totalDurationMinutes: 10,
+    endImmediatelyAfterTime: false,
+    questionFilePath: 'questions.json',
+    questionDurationSeconds: 30,
+    pointsPerDifficulty: {
+      EASY: 1,
+      MEDIUM: 2,
+      HARD: 3,
+    },
+    rankingPromotionRules: {
+      Matematyka: 2,
+    },
+  },
+  questions: [
+    {
+      id: 1,
+      category: 'Matematyka',
+      type: 'TEXT',
+      text: '2 + 2 =',
+      answers: [
+        { id: 0, text: '1' },
+        { id: 1, text: '4' },
+        { id: 2, text: '7' },
+        { id: 3, text: '15' },
+      ],
+      correctAnswerIds: [1],
+      difficultyLevel: 'EASY',
+      textFormat: 'PLAIN_TEXT',
+      imageUrl: 'fakeImageUrl',
+      imageBase64: 'fakeImageBase64',
+      tags: ['tag'],
+    },
+    {
+      id: 2,
+      category: 'Matematyka',
+      type: 'TEXT',
+      text: '2 + 3 =',
+      answers: [
+        { id: 0, text: '1' },
+        { id: 1, text: '4' },
+        { id: 2, text: '7' },
+        { id: 3, text: '15' },
+      ],
+      correctAnswerIds: [1],
+      difficultyLevel: 'EASY',
+      textFormat: 'PLAIN_TEXT',
+      imageUrl: 'fakeImageUrl',
+      imageBase64: 'fakeImageBase64',
+      tags: ['tag'],
+    },
+  ],
+  categories: ['Matematyka'],
+  tiles: [
+    {
+      category: 'Matematyka',
+      index: 0,
+    },
+    {
+      category: 'Matematyka',
+      index: 1,
+    },
+    {
+      category: 'Matematyka',
+      index: 2,
+    },
+  ],
+};

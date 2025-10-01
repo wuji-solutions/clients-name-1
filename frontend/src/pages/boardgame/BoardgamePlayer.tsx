@@ -235,7 +235,7 @@ function BoardgamePlayer() {
                   backgroundcolor={getColor(index)}
                   onClick={() => handleAnswerSelected(answer.id)}
                 >
-                  <h2>{answer.content}</h2>
+                  <h2>{answer.text}</h2>
                 </AnswerCard>
               ))}
             </AnswerGrid>

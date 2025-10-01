@@ -265,7 +265,7 @@ function Quiz() {
                     backgroundcolor={getColor(index)}
                     onClick={() => handleAnswerSelected(answer.id)}
                   >
-                    <h2>{answer.content}</h2>
+                    <h2>{answer.text}</h2>
                   </AnswerCard>
                 ))}
               </AnswerColumn>
@@ -305,7 +305,7 @@ function Quiz() {
                   backgroundcolor={getColor(index)}
                   style={{ cursor: 'default' }}
                 >
-                  <h2>{answer.content}</h2>
+                  <h2>{answer.text}</h2>
                 </AnswerCard>
               ))}
             </AnswerGrid>
@@ -327,7 +327,7 @@ function Quiz() {
                     backgroundcolor={getColor(index)}
                     style={{ cursor: 'default', marginTop: '10px' }}
                   >
-                    <h2>{answer.answer.content}</h2>
+                    <h2>{answer.answer.text}</h2>
                   </AnswerCard>
                 </div>
               ))}
