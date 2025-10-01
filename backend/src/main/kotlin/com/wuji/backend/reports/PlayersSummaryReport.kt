@@ -1,6 +1,5 @@
 package com.wuji.backend.reports
 
-import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import com.wuji.backend.config.GameConfig
 import com.wuji.backend.game.common.AbstractGame
 import com.wuji.backend.player.state.PlayerDetails
@@ -20,13 +19,13 @@ object PlayersSummaryReport : Report {
         val rowNames =
             listOf(
                 "Pseudonim",
-                "Czas spędzony odpowiadając na pytanie [s]",
+                "Czas spędzony odpowiadając na pytania [s]",
                 "Liczba prawidłowych odpowiedzi",
                 "Liczba nieprawidłowych odpowiedzi",
                 "Procent poprawnych odpowiedzi [%]")
         val file = File(getGameSubdir(game), PLAYERS_SUMMARY_REPORT_FILENAME)
         file.createNewFile()
-        csvWriter().open(file) {
+        getWriter().open(file) {
             writeRow(rowNames)
             players.forEach { player ->
                 val correctCount =
