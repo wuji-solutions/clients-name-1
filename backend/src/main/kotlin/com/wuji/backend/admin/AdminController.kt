@@ -1,7 +1,7 @@
 package com.wuji.backend.admin
 
-import com.wuji.backend.config.dto.GameConfigDto
 import com.wuji.backend.admin.dto.ParsedQuestionsInfo
+import com.wuji.backend.config.dto.GameConfigDto
 import com.wuji.backend.config.dto.toBoardConfig
 import com.wuji.backend.config.dto.toQuizConfig
 import com.wuji.backend.game.board.BoardService
