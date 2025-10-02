@@ -30,8 +30,8 @@ export const ActionContainer = styled.div(() => ({
   zIndex: 2,
   margin: 'auto',
   textAlign: 'center',
-  top: '25%',
-  left: '50%',
+  top: '10%',
+  left: '25%',
   width: 'fit-content',
   height: 'fit-content',
 }));
@@ -39,7 +39,6 @@ export const ActionContainer = styled.div(() => ({
 export const GameContainer = styled.div(() => ({
   width: '100%',
   height: 'calc(80vh)',
-  overflow: 'hidden',
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
@@ -51,13 +50,13 @@ export const GameContainer = styled.div(() => ({
 }));
 
 export const BoardQuestionCategory = styled.span(() => ({
-  fontSize: mobile ? '20px' : '25px',
+  fontSize: mobile ? '15px' : '25px',
   margin: 'auto',
   fontWeight: 'bold',
 }));
 
 export const BoardQuestionTask = styled.span(() => ({
-  fontSize: mobile ? '25px' : '50px',
+  fontSize: mobile ? '20px' : '50px',
   margin: 'auto',
   fontWeight: 'bold',
 }));
