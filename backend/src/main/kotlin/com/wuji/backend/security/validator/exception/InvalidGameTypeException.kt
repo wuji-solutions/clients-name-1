@@ -7,5 +7,5 @@ import org.springframework.web.bind.annotation.ResponseStatus
 @ResponseStatus(HttpStatus.CONFLICT)
 class InvalidGameTypeException(expected: GameType, actual: GameType) :
     RuntimeException(
-        "Wymagana gra to ${expected.toPolish()}, " +
-            "a aktualna to ${actual.toPolish()}")
+        "Wymagana gra to ${expected.polish}, " +
+            "a aktualna to ${actual.polish}")

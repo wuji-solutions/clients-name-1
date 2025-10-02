@@ -1,17 +1,8 @@
 package com.wuji.backend.game.common
 
-enum class GameState {
-    CREATED,
-    RUNNING,
-    PAUSED,
-    FINISHED,
-}
-
-fun GameState.toPolish(): String {
-    return when (this) {
-        GameState.CREATED -> "STWORZONA"
-        GameState.RUNNING -> "W TOKU"
-        GameState.PAUSED -> "ZAPAUZOWANA"
-        GameState.FINISHED -> "SKONCZONA"
-    }
+enum class GameState(val polish: String) {
+    CREATED("STWORZONA"),
+    RUNNING("W TOKU"),
+    PAUSED("ZAPAUZOWANA"),
+    FINISHED("SKONCZONA"),
 }
