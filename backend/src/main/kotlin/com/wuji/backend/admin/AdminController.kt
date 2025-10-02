@@ -50,7 +50,7 @@ class AdminController(
         boardService.createGame(
             requestDto.name,
             requestDto.config.toBoardConfig(),
-            requestDto.questionsFilePath,
+            requestDto.config.questionFilePath,
             requestDto.numberOfTiles)
         return ResponseEntity.ok().build()
     }
