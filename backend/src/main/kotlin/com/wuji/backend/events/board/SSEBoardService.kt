@@ -19,11 +19,7 @@ class SSEBoardService : SSEService() {
         sendEvent(NEW_BOARD_STATE_CHANNEL, NewBoardStateEvent(state))
     }
 
-    fun sendNewLeaderboardStateEvent(
-        players: List<LeaderboardPlayerDto>,
-        showLeaderboardConfig: Boolean
-    ) {
-        if (showLeaderboardConfig)
-            sendEvent(EVENTS_CHANNEL, NewLeaderboardStateEvent(players))
+    fun sendNewLeaderboardStateEvent(players: List<LeaderboardPlayerDto>) {
+        sendEvent(EVENTS_CHANNEL, NewLeaderboardStateEvent(players))
     }
 }

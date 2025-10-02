@@ -80,13 +80,12 @@ class BoardQuestionService(
                             question.difficultyLevel)
             }
             .also {
-                if (player.details.points >= minimumPoints ||
-                    top5Players.size < 5)
+                if ((player.details.points >= minimumPoints ||
+                    top5Players.size < 5) && game.config.showLeaderboard)
                     sseBoardService.sendNewLeaderboardStateEvent(
                         game.getTop5Players().map {
                             it.toLeaderboardPlayerDto()
-                        },
-                        game.config.showLeaderboard)
+                        })
             }
     }
 

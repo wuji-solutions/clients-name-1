@@ -164,6 +164,7 @@ class BoardQuestionServiceTest {
 
         every { boardGame.config.pointsPerDifficulty } returns
             mapOf(question.difficultyLevel to 20)
+        every { boardGame.config.showLeaderboard } returns true
 
         var mutablePoints = 0
         every { player.details.points = any() } answers
@@ -178,15 +179,13 @@ class BoardQuestionServiceTest {
         // min points = 10, so after scoring 20 player enters top 5
         every { boardGame.getTop5Players() } returns listOf(otherPlayer)
 
-        every {
-            sseBoardService.sendNewLeaderboardStateEvent(any(), any())
-        } just Runs
+        every { sseBoardService.sendNewLeaderboardStateEvent(any()) } just Runs
 
         val result = service.answerBoardQuestion(0, answers)
 
         assertTrue(result)
         assertTrue(mutablePoints >= 20)
-        verify { sseBoardService.sendNewLeaderboardStateEvent(any(), any()) }
+        verify { sseBoardService.sendNewLeaderboardStateEvent(any()) }
     }
 
     @Test
@@ -205,6 +204,7 @@ class BoardQuestionServiceTest {
 
         every { boardGame.config.pointsPerDifficulty } returns
             mapOf(question.difficultyLevel to 5)
+        every { boardGame.config.showLeaderboard } returns true
 
         var mutablePoints = 0
         every { player.details.points = any() } answers
@@ -220,14 +220,12 @@ class BoardQuestionServiceTest {
         every { p2.details.points } returns 50
         every { boardGame.getTop5Players() } returns listOf(p1, p2)
 
-        every {
-            sseBoardService.sendNewLeaderboardStateEvent(any(), any())
-        } just Runs
+        every { sseBoardService.sendNewLeaderboardStateEvent(any()) } just Runs
 
         val result = service.answerBoardQuestion(0, answers)
 
         assertTrue(result)
-        verify { sseBoardService.sendNewLeaderboardStateEvent(any(), any()) }
+        verify { sseBoardService.sendNewLeaderboardStateEvent(any()) }
     }
 
     @Test
@@ -263,16 +261,14 @@ class BoardQuestionServiceTest {
             }
         every { boardGame.getTop5Players() } returns players
 
-        every {
-            sseBoardService.sendNewLeaderboardStateEvent(any(), any())
-        } just Runs
+        every { sseBoardService.sendNewLeaderboardStateEvent(any()) } just Runs
 
         val result = service.answerBoardQuestion(0, answers)
 
         assertTrue(result)
         assertEquals(5, mutablePoints)
         verify(exactly = 0) {
-            sseBoardService.sendNewLeaderboardStateEvent(any(), any())
+            sseBoardService.sendNewLeaderboardStateEvent(any())
         }
     }
 
