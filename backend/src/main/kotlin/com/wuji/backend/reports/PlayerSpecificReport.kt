@@ -1,6 +1,5 @@
 package com.wuji.backend.reports
 
-import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import com.wuji.backend.config.GameConfig
 import com.wuji.backend.game.common.AbstractGame
 import com.wuji.backend.player.state.Player
@@ -48,7 +47,7 @@ object PlayerSpecificReport : Report {
         val file = File(getPlayersReportsSubdir(game), fileName)
         file.createNewFile()
 
-        csvWriter().open(file) {
+        getWriter().open(file) {
             writeRow(rowNames)
 
             player.details.answers.forEach { answer ->
