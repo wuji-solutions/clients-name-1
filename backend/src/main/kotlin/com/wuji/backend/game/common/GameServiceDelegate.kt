@@ -86,4 +86,12 @@ class GameServiceDelegate(
             GameType.BOARD -> (getConfig() as BoardConfig).toBoardConfigDto()
         }
     }
+
+    fun getGameState(): GameState {
+        return gameRegistry.game.gameState
+    }
+
+    fun getGameType(): GameType {
+        return gameRegistry.gameType
+    }
 }

@@ -1,6 +1,5 @@
 package com.wuji.backend.reports
 
-import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import com.wuji.backend.config.GameConfig
 import com.wuji.backend.game.common.AbstractGame
 import com.wuji.backend.player.state.PlayerDetails
@@ -26,7 +25,7 @@ object PlayersSummaryReport : Report {
                 "Procent poprawnych odpowiedzi [%]")
         val file = File(getGameSubdir(game), PLAYERS_SUMMARY_REPORT_FILENAME)
         file.createNewFile()
-        csvWriter().open(file) {
+        getWriter().open(file) {
             writeRow(rowNames)
             players.forEach { player ->
                 val correctCount =
@@ -45,7 +44,8 @@ object PlayersSummaryReport : Report {
                         incorrectCount,
                         "%.2f"
                             .format(
-                                correctCount / (correctCount + incorrectCount) *
+                                correctCount.toDouble() /
+                                    (correctCount + incorrectCount).toDouble() *
                                     100f)))
             }
         }

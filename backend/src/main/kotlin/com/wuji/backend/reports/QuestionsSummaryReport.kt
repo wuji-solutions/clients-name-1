@@ -1,6 +1,5 @@
 package com.wuji.backend.reports
 
-import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import com.wuji.backend.config.GameConfig
 import com.wuji.backend.game.GameType
 import com.wuji.backend.game.board.BoardGame
@@ -46,7 +45,7 @@ object QuestionsSummaryReport : Report {
         val file = File(getGameSubdir(game), QUESTIONS_SUMMARY_REPORT_FILENAME)
         file.createNewFile()
 
-        csvWriter().open(file) {
+        getWriter().open(file) {
             writeRow(rowNames)
             questions.forEach { question ->
                 val (correctCount, incorrectCount) =
@@ -62,7 +61,8 @@ object QuestionsSummaryReport : Report {
                         incorrectCount,
                         "%.2f"
                             .format(
-                                correctCount / (correctCount + incorrectCount) *
+                                correctCount.toDouble() /
+                                    (correctCount + incorrectCount).toDouble() *
                                     100f)))
             }
         }

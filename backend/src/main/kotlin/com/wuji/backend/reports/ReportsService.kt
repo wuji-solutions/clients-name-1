@@ -52,7 +52,7 @@ class ReportsService {
                     .apply {
                         append(game.name)
                         append(" ")
-                        append(game.gameType.toPolish())
+                        append(game.gameType.polish)
                         append(" ")
                         append(
                             dateTimeFormatter.format(

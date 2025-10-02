@@ -12,5 +12,5 @@ class GameInIncorrectStateException(expected: String, actual: String) :
     constructor(
         expected: GameState,
         actual: GameState
-    ) : this(expected.name, actual.name)
+    ) : this(expected.polish, actual.polish)
 }

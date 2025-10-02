@@ -5,9 +5,9 @@ import com.wuji.backend.game.quiz.dto.AnswerQuestionRequestDto
 import com.wuji.backend.question.common.QuestionController
 import com.wuji.backend.question.common.dto.QuestionDto
 import com.wuji.backend.question.common.dto.toQuestionDto
-import com.wuji.backend.security.GameRunning
-import com.wuji.backend.security.RequiresGame
 import com.wuji.backend.security.auth.playerIndex
+import com.wuji.backend.security.validator.GameRunning
+import com.wuji.backend.security.validator.RequiresGame
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication

@@ -1,5 +1,64 @@
 # API Dokumentacja
+# Config
+## 🛠 Endpoints administratora - config
+### 1. Odczytanie istniejącego pliku z konfiguracją
 
+`GET /config/{type}/{config_name}`
+
+**Response (200)** – [`GameConfigDto`](#GameConfigDto)
+
+```json
+{
+	"type": "QUIZ",
+	"totalDurationMinutes": 15,
+	"questionFilePath": "/questions/quiz_questions.json",
+	"questionDurationSeconds": 10,
+	"endImmediatelyAfterTime": true
+}
+```
+
+### 2. Tworzenie nowego pliku z konfiguracją
+
+`POST /config/{type}/{config_name}`
+
+**Body** – [`GameConfigDto`](#GameConfigDto)
+```json
+{
+  "type": "QUIZ",
+  "totalDurationMinutes": 15,
+  "questionFilePath": "/questions/quiz_questions.json",
+  "questionDurationSeconds": 10,
+  "endImmediatelyAfterTime": true
+}
+```
+
+**Response (200)**
+
+```json
+Config test utworzony pomyślnie
+```
+
+### 3. Listowanie plików konfiguracyjnych danego typu
+
+`GET /config/list/{type}`
+
+**Response (200)**
+```json
+[
+  "konfiguracja1",
+  "konfiguracja2",
+  "konfiguracja3"
+]
+```
+
+### 4. Usuwanie pliku z konfiguracją
+
+`DELETE /config/{type}/{config_name}`
+
+**Response (200)**
+```json
+true
+```
 # Quiz
 ## Endpoints gracza
 
@@ -74,7 +133,7 @@ true
 
 ---
 
-## 🛠 Endpoints administratora – pytania
+## Endpoints administratora – pytania
 
 ### 4. Przejście do następnego pytania
 
@@ -115,7 +174,7 @@ true
 
 ---
 
-## 🎮 Endpoints gry (Admin)
+## Endpoints gry (Admin)
 
 ### 6. Utworzenie gry Quiz
 
@@ -204,6 +263,52 @@ true
 JSON z konfiguracją gry zależny od typu gry
 ```
 ---
+
+### 14. Utworzenie gry Board
+
+`POST /manage/board`
+
+**Body** – [`BoardGameCreateRequestDto`](#boardgamecreaterequestdto)
+
+```json
+{
+  "name": "Board testowy 1",
+  "config": {
+    "type": "BOARD",
+    "totalDurationMinutes": 10,
+    "endImmediatelyAfterTime": false,
+    "questionFilePath": "questions.json",
+    "questionDurationSeconds": 30,
+    "pointsPerDifficulty":{
+      "EASY":1,
+      "MEDIUM":2,
+      "HARD":3
+    },
+    "rankingPromotionRules":{
+      "$course$/Sample Quiz Category": 2
+    }
+  },
+  "questionsFilePath": "D:\\PROJEKTY\\clients-name-1\\backend\\src\\test\\resources\\sample_moodle_xml_1.xml",
+  "numberOfTiles": 12
+}
+
+```
+---
+
+### 14. Próba parsowania pliku z pytaniami
+
+`GET /manage/parse-questions?questionsFilePath={path}`
+
+**Response (200)**
+
+```json
+{
+	"categories": [
+		"$course$/Sample Quiz Category"
+	],
+	"numOfQuestions": 2
+}
+```
 
 ## Endpoints gracza – dołączanie do gry
 
@@ -493,6 +598,20 @@ Typy wydarzeń dla boardgame:
 ```
 
 ---
+## `BoardGameCreateRequestDto`
+
+```json
+{
+  "name": "string",
+  "config": {
+    /* pola konfiguracji boardu */
+  },
+  "questionsFilePath": "string",
+  "numberOfTiles": "number"
+}
+```
+
+---
 
 ## `PlayerDto`
 
@@ -552,5 +671,64 @@ Typy wydarzeń dla boardgame:
     },
     ...
   ]
+}
+```
+### `GameConfigDto`
+
+#### `QuizConfigDto`
+
+```json
+{
+  "type": /* string QUIZ/EXAM/BOARD */,
+  "totalDurationMinutes": "number",
+  "questionFilePath": /* string path to the question file */,
+  "questionDurationSeconds": "number",
+  "endImmediatelyAfterTime": "boolean"
+}
+```
+
+#### `ExamConfigDto`
+
+```json
+{
+  "type": /* string QUIZ/EXAM/BOARD */,
+  "totalDurationMinutes": "number",
+  "questionFilePath": /* string path to the question file */,
+  "questionDurationSeconds": "number",
+  "endImmediatelyAfterTime": "boolean",
+  "requiredQuestionCount": "number",
+  "randomizeQuestions": "boolean",
+  "enforceDifficultyBalance": "boolean",
+  "selectedQuestionIds": "List(number)",
+  "zeroPointsOnCheating": "boolean",
+  "markQuestionOnCheating": "boolean",
+  "notifyTeacherOnCheating": "boolean",
+  "pointsPerDifficulty": {
+    "EASY": "number",
+    "MEDIUM": "number",
+    "HARD": "number"
+  },
+  "allowGoingBack": "boolean"
+}
+```
+
+#### `BoardConfigDto`
+
+```json
+{
+  "type": /* string QUIZ/EXAM/BOARD */,
+  "totalDurationMinutes": "number",
+  "questionFilePath": /* string path to the question file */,
+  "questionDurationSeconds": "number",
+  "endImmediatelyAfterTime": "boolean",
+  "pointsPerDifficulty": {
+    "EASY": "number",
+    "MEDIUM": "number",
+    "HARD": "number"
+  },
+  "rankingPromotionRules": {
+    "string": "number"
+    ...
+  }
 }
 ```

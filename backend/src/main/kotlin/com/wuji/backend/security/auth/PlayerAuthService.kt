@@ -29,6 +29,7 @@ class PlayerAuthService(private val sessionRegistry: SessionRegistry) {
 
         val session = request.getSession(true)
         session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext)
+        session.maxInactiveInterval = -1
         sessionRegistry.registerNewSession(session.id, participant)
 
         return participant
