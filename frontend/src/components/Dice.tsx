@@ -99,8 +99,8 @@ function Dice({diceRoll, cheatValue}: {diceRoll?: boolean, cheatValue?: '1' | '2
     } else {
       setDiceRolling(true);
       rollingInterval.current = setInterval(() => {
-        const direction1 = Math.floor(Math.random() * 2) % 2 == 0;
-        const direction2 = Math.floor(Math.random() * 2) % 2 == 0;
+        const direction1 = Math.floor(Math.random() * 2) % 2 == 0; // NOSONAR
+        const direction2 = Math.floor(Math.random() * 2) % 2 == 0; // NOSONAR
         setRotateX((prevState) => prevState + (direction1 ? 90 : 180));
         setRotateY((prevState) => prevState + (direction1 ? 90 : 180));
       }, 200);

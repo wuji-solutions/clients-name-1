@@ -1,4 +1,3 @@
-// GameBoard.tsx
 import React, { useRef, useEffect, useMemo, useState } from 'react';
 import { Stage, Layer, Ellipse, Path, Group } from 'react-konva';
 import Konva from 'konva';
@@ -66,7 +65,6 @@ const GameBoard: React.FC<Props> = ({
     if (stage) {
       const container = stage.container();
 
-      // create panzoom options (store them so animations can temporarily change them)
       const panOptions = {
         bounds: true,
         boundsPaddning: 0.2,
@@ -104,7 +102,6 @@ const GameBoard: React.FC<Props> = ({
     return computeFieldCoordinates(numFields, BOARD_X_RADIUS, BOARD_Y_RADIUS, centerX, centerY);
   }, [width, height, numFields]);
 
-  // extracted animation hook (unchanged pawn/tween logic)
   usePawnAnimations({
     positions,
     previousPositions,

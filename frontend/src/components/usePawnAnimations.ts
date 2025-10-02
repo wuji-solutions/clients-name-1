@@ -1,4 +1,3 @@
-// usePawnAnimations.ts
 import { useEffect, RefObject } from 'react';
 import Konva from 'konva';
 import {
@@ -21,8 +20,8 @@ interface UsePawnAnimationsArgs {
   centerY: number;
   numFields: number;
   positionUpdateBlock?: boolean;
-  pzRef: React.MutableRefObject<any | null>;            // panzoom instance (kept as any for compatibility)
-  panzoomOptionsRef: React.MutableRefObject<any>;       // original panzoom options so we can restore them
+  pzRef: React.MutableRefObject<any | null>;
+  panzoomOptionsRef: React.MutableRefObject<any>;
   stageRef: RefObject<Konva.Stage | null>;
   playerIndex: string | null;
   mobile: boolean;
@@ -53,7 +52,7 @@ export function usePawnAnimations({
         try {
           t.stop();
         } catch {
-          /* ignore */
+          ///ignore
         }
       }
       tweensRef.current.delete(pawnId);
@@ -116,7 +115,6 @@ export function usePawnAnimations({
       );
     });
 
-    // fade out pawns that no longer exist
     previousPositions.forEach((field) => {
       field.forEach((pawnData) => {
         if (!currMap.has(pawnData.index)) {
@@ -204,7 +202,6 @@ export function usePawnAnimations({
           if (!pzRef.current || !stageRef.current) return;
 
           try {
-            // actual center of the visible container
             const rect = stageRef.current.container().getBoundingClientRect();
             const viewX = rect.width / (mobile ? 3.5 : 2.5);
             const viewY = rect.height / (mobile ? 3.5 : 2.5);
@@ -223,7 +220,7 @@ export function usePawnAnimations({
             pzRef.current.zoomAbs(viewX, viewY, scale);
         
           } catch {
-            // swallow errors
+            // ignore
           }
         };
 
@@ -346,7 +343,7 @@ export function usePawnAnimations({
     });
 
     return () => {
-      // intentionally do not stop running tweens here (preserve original behavior)
+      // ignore
     };
   }, [positions, previousPositions, fieldCoordinates]);
 }

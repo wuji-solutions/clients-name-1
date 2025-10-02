@@ -1,4 +1,3 @@
-// gameBoardUtils.ts
 import Konva from 'konva';
 import { FieldCoordinate } from '../common/types';
 import { isMobileView } from '../common/utils';
