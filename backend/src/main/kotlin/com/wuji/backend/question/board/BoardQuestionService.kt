@@ -1,9 +1,9 @@
 package com.wuji.backend.question.board
 
 import com.wuji.backend.events.board.SSEBoardService
+import com.wuji.backend.events.common.dto.toLeaderboardPlayerDto
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.board.BoardGame
-import com.wuji.backend.player.dto.PlayerDto.Companion.toDto
 import com.wuji.backend.question.common.PlayerAnswer
 import com.wuji.backend.question.common.Question
 import com.wuji.backend.question.common.QuestionService
@@ -80,10 +80,12 @@ class BoardQuestionService(
                             question.difficultyLevel)
             }
             .also {
-                if (player.details.points >= minimumPoints ||
-                    top5Players.size < 5)
-                    sseBoardService.sendNewRankingStateEvent(
-                        game.getTop5Players().map { it.toDto() })
+                if ((player.details.points >= minimumPoints ||
+                    top5Players.size < 5) && game.config.showLeaderboard)
+                    sseBoardService.sendNewLeaderboardStateEvent(
+                        game.getTop5Players().map {
+                            it.toLeaderboardPlayerDto()
+                        })
             }
     }
 

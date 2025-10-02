@@ -253,7 +253,18 @@ true
 
 ---
 
-### 13. Utworzenie gry Board
+### 13. Konfiuracja aktualnej rozgrywki
+
+`GET /manage/config`
+
+**Response (200)**
+
+```json
+JSON z konfiguracją gry zależny od typu gry
+```
+---
+
+### 14. Utworzenie gry Board
 
 `POST /manage/board`
 
@@ -399,16 +410,24 @@ true
 
 ---
 
-### 5. Ranking graczy
+### 5. Ranking graczy (Leaderboard)
 
-`GET /games/board/ranking`
+`GET /games/board/leaderboard`
 
-**Response (200)** – [`PlayerDto[]`](#playerdto)
+**Response (200)** – [`LeaderboardPlayerDto[]`](#leaderboardplayerdto)
 
 ```json
 [
-  { "index": 0, "nickname": "Ola" },
-  { "index": 1, "nickname": "Jan" }
+  {
+    "index": 0,
+    "nickname": "Ola",
+    "points": 10
+  },
+  {
+    "index": 1,
+    "nickname": "Jan",
+    "points": 8
+  }
 ]
 ```
 
@@ -482,7 +501,7 @@ Typy wydarzeń dla quizu:
 - `end-question`, dane: `{}`
 
 Typy wydarzeń dla boardgame:
-- `new-ranking-state`, dane: [`PlayerDto[]`](#playerdto)
+- `new-leaderboard-state`, dane: [`PlayerDto[]`](#playerdto)
 
 ---
 
@@ -720,4 +739,12 @@ Typy wydarzeń dla boardgame:
     ...
   }
 }
+```
+#### `LeaderboardPlayerDto`
+```json
+{
+    "index": "number",
+    "nickname": "string",
+    "points": "number"
+  }
 ```

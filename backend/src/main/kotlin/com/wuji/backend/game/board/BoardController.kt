@@ -66,8 +66,8 @@ class BoardController(
         return ResponseEntity.ok(responseDto)
     }
 
-    @GetMapping("/ranking")
-    fun getRanking(): ResponseEntity<List<PlayerDto>> {
-        return ResponseEntity.ok(boardService.getRanking())
+    @GetMapping("/leaderboard")
+    fun getLeaderboard(): ResponseEntity<List<PlayerDto>> {
+        return ResponseEntity.ok(boardService.getLeaderboard())
     }
 }

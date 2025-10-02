@@ -72,10 +72,6 @@ class BoardService(
         sseEventService.sendGameFinish()
     }
 
-    override fun getReport(): String {
-        TODO("Not yet implemented")
-    }
-
     override fun kickPlayer(index: Int, nickname: String) {
         val player = game.findPlayerByIndex(index)
         game.players.remove(player)
@@ -93,6 +89,8 @@ class BoardService(
     override fun getPlayer(index: Int): BoardPlayer {
         return game.findPlayerByIndex(index)
     }
+
+    override fun getConfig(): BoardConfig = game.config
 
     fun getBoardState(): BoardStateDto {
         val tileStateDtos =
@@ -169,5 +167,6 @@ class BoardService(
         return result
     }
 
-    fun getRanking(): List<PlayerDto> = game.getTop5Players().map { it.toDto() }
+    fun getLeaderboard(): List<PlayerDto> =
+        game.getTop5Players().map { it.toDto() }
 }

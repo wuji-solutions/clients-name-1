@@ -149,7 +149,7 @@ class BoardQuestionServiceTest {
     }
 
     @Test
-    fun `answerBoardQuestion should send ranking event if player enters top5 by points`() {
+    fun `answerBoardQuestion should send leaderboard event if player enters top5 by points`() {
         service =
             spyk(
                 BoardQuestionService(gameRegistry, sseBoardService),
@@ -164,6 +164,7 @@ class BoardQuestionServiceTest {
 
         every { boardGame.config.pointsPerDifficulty } returns
             mapOf(question.difficultyLevel to 20)
+        every { boardGame.config.showLeaderboard } returns true
 
         var mutablePoints = 0
         every { player.details.points = any() } answers
@@ -178,17 +179,17 @@ class BoardQuestionServiceTest {
         // min points = 10, so after scoring 20 player enters top 5
         every { boardGame.getTop5Players() } returns listOf(otherPlayer)
 
-        every { sseBoardService.sendNewRankingStateEvent(any()) } just Runs
+        every { sseBoardService.sendNewLeaderboardStateEvent(any()) } just Runs
 
         val result = service.answerBoardQuestion(0, answers)
 
         assertTrue(result)
         assertTrue(mutablePoints >= 20)
-        verify { sseBoardService.sendNewRankingStateEvent(any()) }
+        verify { sseBoardService.sendNewLeaderboardStateEvent(any()) }
     }
 
     @Test
-    fun `answerBoardQuestion should send ranking event if fewer than 5 players exist`() {
+    fun `answerBoardQuestion should send leaderboard event if fewer than 5 players exist`() {
         service =
             spyk(
                 BoardQuestionService(gameRegistry, sseBoardService),
@@ -203,6 +204,7 @@ class BoardQuestionServiceTest {
 
         every { boardGame.config.pointsPerDifficulty } returns
             mapOf(question.difficultyLevel to 5)
+        every { boardGame.config.showLeaderboard } returns true
 
         var mutablePoints = 0
         every { player.details.points = any() } answers
@@ -218,16 +220,16 @@ class BoardQuestionServiceTest {
         every { p2.details.points } returns 50
         every { boardGame.getTop5Players() } returns listOf(p1, p2)
 
-        every { sseBoardService.sendNewRankingStateEvent(any()) } just Runs
+        every { sseBoardService.sendNewLeaderboardStateEvent(any()) } just Runs
 
         val result = service.answerBoardQuestion(0, answers)
 
         assertTrue(result)
-        verify { sseBoardService.sendNewRankingStateEvent(any()) }
+        verify { sseBoardService.sendNewLeaderboardStateEvent(any()) }
     }
 
     @Test
-    fun `answerBoardQuestion should not send ranking event if below threshold and 5 or more players exist`() {
+    fun `answerBoardQuestion should not send leaderboard event if below threshold and 5 or more players exist`() {
         service =
             spyk(
                 BoardQuestionService(gameRegistry, sseBoardService),
@@ -259,13 +261,15 @@ class BoardQuestionServiceTest {
             }
         every { boardGame.getTop5Players() } returns players
 
-        every { sseBoardService.sendNewRankingStateEvent(any()) } just Runs
+        every { sseBoardService.sendNewLeaderboardStateEvent(any()) } just Runs
 
         val result = service.answerBoardQuestion(0, answers)
 
         assertTrue(result)
         assertEquals(5, mutablePoints)
-        verify(exactly = 0) { sseBoardService.sendNewRankingStateEvent(any()) }
+        verify(exactly = 0) {
+            sseBoardService.sendNewLeaderboardStateEvent(any())
+        }
     }
 
     @Test

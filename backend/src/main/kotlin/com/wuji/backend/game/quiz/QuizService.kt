@@ -85,10 +85,6 @@ class QuizService(
         return QuizSummaryResponseDto(questionsWithSummary)
     }
 
-    override fun getReport(): String {
-        TODO("Not yet implemented")
-    }
-
     override fun kickPlayer(index: Int, nickname: String) {
         val player = quizGame.findPlayerByIndexAndNickname(index, nickname)
         quizGame.players.remove(player)
@@ -106,4 +102,6 @@ class QuizService(
     override fun getPlayer(index: Int): Player<out PlayerDetails> {
         return quizGame.findPlayerByIndex(index)
     }
+
+    override fun getConfig(): QuizConfig = quizGame.config
 }

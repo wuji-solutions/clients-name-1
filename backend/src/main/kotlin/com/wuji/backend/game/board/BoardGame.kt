@@ -49,10 +49,6 @@ class BoardGame(
         gameState = GameState.FINISHED
     }
 
-    override fun getReport(): String {
-        TODO("Not yet implemented")
-    }
-
     fun addPlayer(player: BoardPlayer) {
         val playersOnTile =
             boardState[0] ?: throw IllegalStateException("Board state is empty")
