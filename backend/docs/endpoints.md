@@ -414,12 +414,20 @@ JSON z konfiguracją gry zależny od typu gry
 
 `GET /games/board/leaderboard`
 
-**Response (200)** – [`PlayerDto[]`](#playerdto)
+**Response (200)** – [`LeaderboardPlayerDto[]`](#leaderboardplayerdto)
 
 ```json
 [
-  { "index": 0, "nickname": "Ola" },
-  { "index": 1, "nickname": "Jan" }
+  {
+    "index": 0,
+    "nickname": "Ola",
+    "points": 10
+  },
+  {
+    "index": 1,
+    "nickname": "Jan",
+    "points": 8
+  }
 ]
 ```
 
@@ -731,4 +739,12 @@ Typy wydarzeń dla boardgame:
     ...
   }
 }
+```
+#### `LeaderboardPlayerDto`
+```json
+{
+    "index": "number",
+    "nickname": "string",
+    "points": "number"
+  }
 ```
