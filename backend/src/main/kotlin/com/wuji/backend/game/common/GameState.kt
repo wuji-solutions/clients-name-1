@@ -1,8 +1,8 @@
 package com.wuji.backend.game.common
 
-enum class GameState {
-    CREATED,
-    RUNNING,
-    PAUSED,
-    FINISHED,
+enum class GameState(val polish: String) {
+    CREATED("STWORZONA"),
+    RUNNING("W TOKU"),
+    PAUSED("ZAPAUZOWANA"),
+    FINISHED("SKONCZONA"),
 }

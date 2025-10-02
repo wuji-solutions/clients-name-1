@@ -8,9 +8,9 @@ import com.wuji.backend.game.common.dto.JoinGameRequestDto
 import com.wuji.backend.player.dto.BoardPlayerDto
 import com.wuji.backend.player.dto.BoardPlayerDto.Companion.toBoardPlayerDto
 import com.wuji.backend.player.dto.PlayerDto
-import com.wuji.backend.security.RequiresGame
 import com.wuji.backend.security.auth.PlayerAuthService
 import com.wuji.backend.security.auth.playerIndex
+import com.wuji.backend.security.validator.RequiresGame
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @Validated
-@RequiresGame(gametype = GameType.BOARD)
+@RequiresGame(GameType.BOARD)
 @RequestMapping("/games/board")
 class BoardController(
     private val playerAuthService: PlayerAuthService,

@@ -10,11 +10,11 @@ import com.wuji.backend.game.quiz.QuizService
 import com.wuji.backend.game.quiz.dto.QuizGameCreateRequestDto
 import com.wuji.backend.parser.MoodleXmlParser
 import com.wuji.backend.player.dto.PlayerDto
-import com.wuji.backend.security.GameCreated
-import com.wuji.backend.security.GamePaused
-import com.wuji.backend.security.GameRunning
 import com.wuji.backend.security.IsAdmin
 import com.wuji.backend.security.auth.PlayerAuthService
+import com.wuji.backend.security.validator.GameCreated
+import com.wuji.backend.security.validator.GamePaused
+import com.wuji.backend.security.validator.GameRunning
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated

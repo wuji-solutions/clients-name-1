@@ -7,9 +7,9 @@ import com.wuji.backend.game.quiz.dto.QuizSummaryResponseDto
 import com.wuji.backend.player.dto.PlayerDto
 import com.wuji.backend.player.dto.PlayerDto.Companion.toDto
 import com.wuji.backend.security.IsAdmin
-import com.wuji.backend.security.RequiresGame
 import com.wuji.backend.security.auth.PlayerAuthService
 import com.wuji.backend.security.auth.playerIndex
+import com.wuji.backend.security.validator.RequiresGame
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @Validated
-@RequiresGame(gametype = GameType.QUIZ)
+@RequiresGame(GameType.QUIZ)
 @RequestMapping("/games/quiz")
 class QuizController(
     private val quizService: QuizService,
