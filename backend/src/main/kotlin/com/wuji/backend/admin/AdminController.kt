@@ -40,6 +40,7 @@ class AdminController(
             requestDto.name,
             requestDto.config.toQuizConfig(),
             requestDto.questions)
+        authService.clearAllSessions()
         return ResponseEntity.ok().build()
     }
 
@@ -52,6 +53,7 @@ class AdminController(
             requestDto.config.toBoardConfig(),
             requestDto.questionsFilePath,
             requestDto.numberOfTiles)
+        authService.clearAllSessions()
         return ResponseEntity.ok().build()
     }
 

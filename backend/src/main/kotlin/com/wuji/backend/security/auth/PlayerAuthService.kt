@@ -48,6 +48,15 @@ class PlayerAuthService(private val sessionRegistry: SessionRegistry) {
             sessionRegistry.allPrincipals.remove(principal)
         }
     }
+
+    fun clearAllSessions() {
+        sessionRegistry.allPrincipals.forEach { principal ->
+            sessionRegistry.getAllSessions(principal, false).forEach {
+                sessionRegistry.removeSessionInformation(it.sessionId)
+                it.expireNow()
+            }
+        }
+    }
 }
 
 data class Participant(val index: Int, val nickname: String)

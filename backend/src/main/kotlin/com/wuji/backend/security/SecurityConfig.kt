@@ -27,7 +27,9 @@ class SecurityConfig(
         listOf(
             AntPathRequestMatcher("/sse/events"),
             AntPathRequestMatcher("/sse/board/new-state"),
-            AntPathRequestMatcher("/games/*/**"))
+            AntPathRequestMatcher("/games/*/**"),
+            AntPathRequestMatcher("/security/session-status"),
+        )
 
     private final val publicAuthorized =
         listOf(AntPathRequestMatcher("/games/*/join", "POST"))
