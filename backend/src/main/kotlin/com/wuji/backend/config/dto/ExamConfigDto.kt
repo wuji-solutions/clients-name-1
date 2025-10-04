@@ -1,5 +1,6 @@
 package com.wuji.backend.config.dto
 
+import com.wuji.backend.config.DEFAULT_ADDITIONAL_TIME_IN_SECONDS
 import com.wuji.backend.config.DEFAULT_END_IMMEDIATELY_AFTER_TIME
 import com.wuji.backend.config.DEFAULT_TOTAL_DURATION_MINUTES
 import com.wuji.backend.config.DifficultyLevel
@@ -24,6 +25,9 @@ data class ExamConfigDto(
     val pointsPerDifficulty: Map<DifficultyLevel, Int>,
     val allowGoingBack: Boolean,
     val endImmediatelyAfterTime: Boolean = DEFAULT_END_IMMEDIATELY_AFTER_TIME,
+    @field:Min(0, message = "Liczba sekund musi być nieujemna")
+    val additionalTimeToAnswerAfterFinishInSeconds: Long =
+        DEFAULT_ADDITIONAL_TIME_IN_SECONDS
 ) : GameConfigDto()
 
 fun ExamConfigDto.toExamConfig(): ExamConfig {
@@ -41,5 +45,6 @@ fun ExamConfigDto.toExamConfig(): ExamConfig {
         notifyTeacherOnCheating = notifyTeacherOnCheating,
         pointsPerDifficulty = pointsPerDifficulty,
         allowGoingBack = allowGoingBack,
-    )
+        additionalTimeToAnswerAfterFinishInSeconds =
+            additionalTimeToAnswerAfterFinishInSeconds)
 }

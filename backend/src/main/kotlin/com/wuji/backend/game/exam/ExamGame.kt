@@ -20,12 +20,16 @@ class ExamGame(
 
     override fun start() {
         gameState = GameState.RUNNING
-        questionDispenser.initialize(players, questions)
+        questionDispenser.initialize(
+            players,
+            questions,
+            config.requiredQuestionCount,
+            config.randomizeQuestions,
+            config.enforceDifficultyBalance)
     }
 
     override fun pause() {
         gameState = GameState.PAUSED
-        println("Game paused")
     }
 
     override fun resume() {

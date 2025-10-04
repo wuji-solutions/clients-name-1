@@ -21,9 +21,8 @@ class ExamQuestionService(
         return game.findPlayerByIndex(playerIndex).details.answers
     }
 
-    fun getQuestion(playerIndex: Int): Question {
-        return game.questionDispenser.getCurrentQuestion(playerIndex)
-    }
+    fun getQuestion(playerIndex: Int): Question =
+        game.questionDispenser.currentQuestion(playerIndex)
 
     fun getQuestionAndMarkTime(playerIndex: Int): Question {
         val player = game.findPlayerByIndex(playerIndex)
@@ -71,6 +70,7 @@ class ExamQuestionService(
                 if (playerCheated && game.config.notifyTeacherOnCheating)
                     notifyTeacherOnCheating(playerIndex, question.id)
             }
+            .also { sseExamService.sendNewExamStateEvent(game) }
     }
 
     fun getPreviousQuestion(playerIndex: Int): Question {
@@ -80,10 +80,8 @@ class ExamQuestionService(
         TODO()
     }
 
-    fun getNextQuestion(playerIndex: Int): Question {
-        val nextQuestion = game.questionDispenser.moveToNextQuestion()
-        return nextQuestion
-    }
+    fun getNextQuestion(playerIndex: Int): Question =
+        game.questionDispenser.nextQuestion(playerIndex)
 
     fun notifyTeacherOnCheating(playerIndex: Int, questionId: Int) {
         val player = game.findPlayerByIndex(playerIndex)

@@ -13,7 +13,7 @@
 ##  Sprawdzian 
 
 | Pole                       | Typ                         | Opis                                                                               |
-| -------------------------- | --------------------------- | ---------------------------------------------------------------------------------- |
+| -------------------------- |-----------------------------|------------------------------------------------------------------------------------|
 | `requiredQuestionCount`    | `Int`                       | Liczba pytań, na które musi odpowiedzieć uczeń.                                    |
 | `randomizeQuestions`       | `Boolean`                   | Czy pytania mają być losowane z dostępnej puli.                                    |
 | `enforceDifficultyBalance` | `Boolean`                   | Czy losowane pytania powinny być równomiernie rozłożone według poziomów trudności. |
@@ -23,7 +23,7 @@
 | `notifyTeacherOnCheating`  | `Boolean`                   | Czy powiadomić nauczyciela o próbie ściągania.                                     |
 | `pointsPerDifficulty`      | `Map<DifficultyLevel, Int>` | Liczba punktów za pytania w zależności od trudności (`EASY`, `MEDIUM`, `HARD`).    |
 | `allowGoingBack`           | `Boolean`                   | Czy uczeń może wracać do poprzednich pytań.                                        |
-| ``                           |                             |                                                                                    |
+| `additionalTimeToAnswerAfterFinishInSeconds`| `Long`     | Liczba dodatkowych sekund na odpowiedź przy zakończeniu sprawdzianu                |
 
 ---
 
