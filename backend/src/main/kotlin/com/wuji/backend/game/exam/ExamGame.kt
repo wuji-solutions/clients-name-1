@@ -20,12 +20,17 @@ class ExamGame(
 
     override fun start() {
         gameState = GameState.RUNNING
-        questionDispenser.initialize(
-            players,
-            questions,
-            config.requiredQuestionCount,
-            config.randomizeQuestions,
-            config.enforceDifficultyBalance)
+        if (config.selectedQuestionIds.isNotEmpty()) {
+            questionDispenser.initialize(
+                players, questions, config.selectedQuestionIds.toSet())
+        } else {
+            questionDispenser.initialize(
+                players,
+                questions,
+                config.requiredQuestionCount,
+                config.randomizeQuestions,
+                config.enforceDifficultyBalance)
+        }
     }
 
     override fun pause() {

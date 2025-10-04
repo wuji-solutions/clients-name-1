@@ -2,18 +2,20 @@ package com.wuji.backend.dispenser
 
 import com.wuji.backend.question.common.Question
 import kotlin.math.max
-import kotlin.math.min
 
 class PlayerDispenser(
     val baseQuestions: List<Question>,
-    val additionalQuestions: List<Question>,
+    val additionalQuestions: MutableSet<Question>,
 ) {
     private var currentQuestionIndex = 0
 
     fun nextQuestion(): Question {
-        currentQuestionIndex =
-            min(currentQuestionIndex + 1, baseQuestions.size - 1)
-        return baseQuestions[currentQuestionIndex]
+        if (currentQuestionIndex == baseQuestions.lastIndex) {
+            return additionalQuestions.random().also {
+                additionalQuestions.remove(it)
+            }
+        }
+        return baseQuestions[++currentQuestionIndex]
     }
 
     fun currentQuestion(): Question = baseQuestions[currentQuestionIndex]

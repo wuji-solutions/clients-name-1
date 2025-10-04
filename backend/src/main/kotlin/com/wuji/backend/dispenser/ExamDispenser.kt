@@ -24,7 +24,9 @@ class ExamDispenser {
                 player.index,
                 PlayerDispenser(
                     questions.subList(0, requiredQuestionCount),
-                    questions.subList(requiredQuestionCount, questions.size)))
+                    questions
+                        .subList(requiredQuestionCount, questions.size)
+                        .toMutableSet()))
         }
     }
 
@@ -41,7 +43,9 @@ class ExamDispenser {
                 player.index,
                 PlayerDispenser(
                     baseQuestions,
-                    questions.filter { !selectedQuestionIds.contains(it.id) }))
+                    questions
+                        .filter { !selectedQuestionIds.contains(it.id) }
+                        .toMutableSet()))
         }
     }
 
