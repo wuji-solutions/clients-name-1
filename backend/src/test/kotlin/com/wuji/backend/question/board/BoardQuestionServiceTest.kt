@@ -59,7 +59,7 @@ class BoardQuestionServiceTest {
 
     @Test
     fun `getAnswers should return player's answers`() {
-        val answers = mutableListOf(PlayerAnswer(question, setOf(0), 0))
+        val answers = mutableListOf(PlayerAnswer(question, setOf(0), 0, false))
 
         every { player.details.answers } returns answers
         every { boardGame.findPlayerByIndex(0) } returns player

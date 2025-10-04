@@ -23,6 +23,7 @@
 | `notifyTeacherOnCheating`  | `Boolean`                   | Czy powiadomić nauczyciela o próbie ściągania.                                     |
 | `pointsPerDifficulty`      | `Map<DifficultyLevel, Int>` | Liczba punktów za pytania w zależności od trudności (`EASY`, `MEDIUM`, `HARD`).    |
 | `allowGoingBack`           | `Boolean`                   | Czy uczeń może wracać do poprzednich pytań.                                        |
+| ``                           |                             |                                                                                    |
 
 ---
 

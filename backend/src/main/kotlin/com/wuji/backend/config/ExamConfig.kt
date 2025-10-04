@@ -1,8 +1,8 @@
 package com.wuji.backend.config
 
 data class ExamConfig(
-    override val totalDurationMinutes: Int,
-    override val endImmediatelyAfterTime: Boolean,
+    val totalDurationMinutes: Int,
+    val endImmediatelyAfterTime: Boolean,
     override val questionFilePath: String,
     override val questionDurationSeconds: Int,
     val requiredQuestionCount: Int,
@@ -14,4 +14,5 @@ data class ExamConfig(
     val notifyTeacherOnCheating: Boolean,
     val pointsPerDifficulty: Map<DifficultyLevel, Int>,
     val allowGoingBack: Boolean,
+    val additionalTimeToAnswerAfterFinishInSeconds: Long = 10
 ) : GameConfig

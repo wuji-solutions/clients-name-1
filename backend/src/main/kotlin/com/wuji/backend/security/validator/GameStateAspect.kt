@@ -39,6 +39,16 @@ class GameStateAspect(private val gameServiceDelegate: GameServiceDelegate) {
         }
     }
 
+    @Before(
+        "@within(GameRunningOrFinishing) || @annotation(GameRunningOrFinishing)")
+    fun checkRunningOrFinishing() {
+        if (gameServiceDelegate.getGameState() != GameState.FINISHING ||
+            gameServiceDelegate.getGameState() != GameState.RUNNING) {
+            throw GameInIncorrectStateException(
+                GameState.FINISHING, gameServiceDelegate.getGameState())
+        }
+    }
+
     @Before("@within(RequiresGame)")
     fun checkGameType(joinPoint: JoinPoint) {
         val controllerClass = joinPoint.target::class.java
@@ -63,6 +73,10 @@ annotation class GameRunning
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class GamePaused
+
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class GameRunningOrFinishing
 
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)

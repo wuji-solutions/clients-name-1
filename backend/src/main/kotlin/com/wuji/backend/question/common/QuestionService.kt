@@ -12,7 +12,8 @@ abstract class QuestionService {
         player: Player<out PlayerDetails>,
         question: Question,
         answerIds: Set<Int>,
-        answerTimeInMilliseconds: Long = 0
+        answerTimeInMilliseconds: Long = 0,
+        playerCheated: Boolean = false
     ): Boolean {
         if (player.alreadyAnswered(question.id)) {
             throw QuestionAlreadyAnsweredException(question.id)
@@ -26,7 +27,8 @@ abstract class QuestionService {
         }
 
         val playerAnswer =
-            PlayerAnswer(question, answerIds, answerTimeInMilliseconds)
+            PlayerAnswer(
+                question, answerIds, answerTimeInMilliseconds, playerCheated)
         player.details.answers.add(playerAnswer)
         return question.areCorrectAnswerIds(answerIds)
     }

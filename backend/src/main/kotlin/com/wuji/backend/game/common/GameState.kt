@@ -5,4 +5,5 @@ enum class GameState(val polish: String) {
     RUNNING("W TOKU"),
     PAUSED("ZAPAUZOWANA"),
     FINISHED("SKONCZONA"),
+    FINISHING("KONCZY SIE")
 }

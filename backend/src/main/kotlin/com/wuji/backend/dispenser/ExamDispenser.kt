@@ -1,15 +1,20 @@
 package com.wuji.backend.dispenser
 
+import com.wuji.backend.player.state.Player
+import com.wuji.backend.player.state.PlayerDetails
+import com.wuji.backend.player.state.PlayerIndex
 import com.wuji.backend.question.common.Question
 
-class ExamDispenser(players: List<Int>, questions: List<Question>) :
-    GameDispenser() {
-    override val dispensers: MutableMap<Int, Dispenser> = mutableMapOf()
+class ExamDispenser() : GameDispenser() {
+    override val dispensers: MutableMap<PlayerIndex, Dispenser> = mutableMapOf()
 
-    init {
+    fun initialize(
+        players: Set<Player<out PlayerDetails>>,
+        questions: List<Question>
+    ) {
         for (player in players) {
             dispensers.put(
-                player, Dispenser(questions.shuffled().toMutableList()))
+                player.index, Dispenser(questions.shuffled().toMutableList()))
         }
     }
 }
