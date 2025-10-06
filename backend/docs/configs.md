@@ -3,8 +3,6 @@
 ##  Wspólne ustawienia
 | Pole                      | Typ       | Opis                                                                 |
 | ------------------------- | --------- | -------------------------------------------------------------------- |
-| `totalDurationMinutes`    | `Int`     | Całkowity czas trwania gry (w minutach). Musi być dodatni.           |
-| `endImmediatelyAfterTime` | `Boolean` | Czy gra kończy się automatycznie po upływie czasu (`true`), czy nie. |
 | `questionFilePath`        | `String`  | Ścieżka do pliku z pytaniami (np. CSV lub JSON). Nie może być pusta. |
 | `questionDurationSeconds` | `Int`     | Maksymalny czas na odpowiedź na jedno pytanie (w sekundach).         |
 
@@ -24,6 +22,8 @@
 | `pointsPerDifficulty`      | `Map<DifficultyLevel, Int>` | Liczba punktów za pytania w zależności od trudności (`EASY`, `MEDIUM`, `HARD`).    |
 | `allowGoingBack`           | `Boolean`                   | Czy uczeń może wracać do poprzednich pytań.                                        |
 | `additionalTimeToAnswerAfterFinishInSeconds`| `Long`     | Liczba dodatkowych sekund na odpowiedź przy zakończeniu sprawdzianu                |
+| `totalDurationMinutes`    | `Int`     | Całkowity czas trwania gry (w minutach). Musi być dodatni.           |
+| `endImmediatelyAfterTime` | `Boolean` | Czy gra kończy się automatycznie po upływie czasu (`true`), czy nie. |
 
 ---
 
@@ -33,6 +33,8 @@
 | ----------------------- | --------------------------- | ------------------------------------------------------------------------------------ |
 | `pointsPerDifficulty`   | `Map<DifficultyLevel, Int>` | Punkty za pytania w zależności od trudności.                                         |
 | `rankingPromotionRules` | `Map<String, Int>`          | Liczba poprawnych odpowiedzi potrzebnych do awansu w danej kategorii (`nazwa -> N`). |
+| `totalDurationMinutes`    | `Int`     | Całkowity czas trwania gry (w minutach). Musi być dodatni.           |
+| `endImmediatelyAfterTime` | `Boolean` | Czy gra kończy się automatycznie po upływie czasu (`true`), czy nie. |
 
 ---
 

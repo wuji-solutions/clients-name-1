@@ -10,6 +10,8 @@ import com.wuji.backend.events.exam.dto.PlayerCheatedEvent
 import com.wuji.backend.game.exam.ExamGame
 import com.wuji.backend.player.state.Player
 import com.wuji.backend.player.state.PlayerDetails
+import com.wuji.backend.question.common.Question
+import com.wuji.backend.question.common.dto.toQuestionDto
 import com.wuji.backend.reports.common.GameStats
 import org.springframework.stereotype.Service
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
@@ -20,12 +22,13 @@ class SSEExamService : SSEService() {
 
     fun sendPlayerCheatedEvent(
         player: Player<out PlayerDetails>,
-        questionId: Int
+        question: Question
     ) {
         sendEvent(
             ADMIN_EXAM_CHANNEL,
             PlayerCheatedEvent(
-                PlayerCheatedDto(player.nickname, player.index, questionId)))
+                PlayerCheatedDto(
+                    player.nickname, player.index, question.toQuestionDto())))
     }
 
     fun sendNewExamStateEvent(game: ExamGame) {

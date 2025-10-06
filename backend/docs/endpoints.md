@@ -294,8 +294,25 @@ JSON z konfiguracją gry zależny od typu gry
 
 ```
 ---
+### 15. Utworzenie gry Exam
 
-### 14. Próba parsowania pliku z pytaniami
+`POST /manage/exam`
+
+**Body** – [`ExamGameCreateRequestDto`](#boardgamecreaterequestdto)
+
+```json
+{
+  "name": "Board testowy 1",
+  "config": {
+    "type": "EXAM",
+//    ... ExamConfig
+  }
+}
+
+```
+---
+
+### 16. Próba parsowania pliku z pytaniami
 
 `GET /manage/parse-questions?questionsFilePath={path}`
 
@@ -312,7 +329,7 @@ JSON z konfiguracją gry zależny od typu gry
 
 ## Endpoints gracza – dołączanie do gry
 
-### 13. Dołączenie do gry Quiz
+### 17. Dołączenie do gry Quiz
 
 `POST /games/quiz/join`
 
@@ -484,6 +501,85 @@ JSON z konfiguracją gry zależny od typu gry
 
 ---
 
+# Exam
+
+## Endpoints gracza
+
+### 1. Dołączenie do gry Board
+
+`POST /games/exam/join`
+
+**Body** – [`JoinGameRequestDto`](#joingamerequestdto)
+
+```json
+{
+  "index": 0
+}
+```
+
+**Response (200)**
+
+```json
+"Ola"
+```
+
+---
+
+### 2. Pobranie danych gracza
+
+`GET /games/exam/player`
+
+**Response (200)** – [`ExamPlayerDto`](#examplayerdto)
+
+```json
+{
+  "index": 0,
+  "nickname": "Ola",
+  "points": 12
+}
+```
+---
+
+
+### 3. Pobieranie czasu pozostałego do zaplanowanego końca rozgrywki
+
+`GET /games/exam/time-left`
+
+**Response (200)** – [`TimeUntilGameFinishDto`](#TimeUntilGameFinishDto)
+
+```json
+{
+  "minutes": 0,
+  "seconds": 420
+}
+```
+---
+
+nie chce mi sie rozpisywać każdych endpointów do pytań, analogicznie jak do poprzednich trybów, ale tutaj mamy:
+- `/games/exam/questions/current`
+- `/games/exam/questions/previous`
+- `/games/exam/questions/next`
+- `/games/exam/questions/answer`
+
+tyle, że endpointy z dostawaniem pytania zwracają DTO `ExtendedQuestionDto`, wyglądające tak:
+```json
+{
+  "id": "number",
+  "category": "string",
+  "type": "QuestionType",
+  "task": "string",
+  "answers": [
+    // lista <AnswerDto>
+  ],
+  "difficultyLevel": "DifficultyLevel",
+  "playerAlreadyAnswered": "boolean",
+  "playerAnswerDto": "PlayerAnswerDto" || null
+}
+```
+`PlayerAnswerDto`:
+```json
+    "selectedIds": "number[]"
+```
 
 # SSE – Strumieniowanie zdarzeń
 
@@ -519,6 +615,13 @@ Typy wydarzeń dla boardgame:
 
 
 ---
+
+## Exam
+### Wydarzenia
+`GET /sse/exam/admin-events` *(Content-Type: text/event-stream)*
+Typy wydarzeń:
+- `player-cheated`, dane: [`PlayerCheatedDto`]
+- `new-exam-state`, dane: [`NewExamStateDto`]
 
 # Schematy DTO
 
@@ -747,4 +850,51 @@ Typy wydarzeń dla boardgame:
     "nickname": "string",
     "points": "number"
   }
+```
+
+
+### `PlayerCheatedDto`
+```json
+{
+  "nickname": "string",
+  "index": "number",
+  "question": {
+    //QuestionDto
+  }
+}
+```
+
+
+### `NewExamStateDto`
+```json
+{
+  "requiredQuestionCount": "number",
+  "playerState": [
+    {
+      "index": "number",
+      "nickname": "string",
+      "points": "number",
+      "correctAnswers": "string",
+      "incorrectAnswers": "number"
+    },
+    //...
+  ]
+}
+```
+
+### `ExamPlayerDto`
+```json
+{
+  "nickname": "string",
+  "index": "number",
+  "points": "number"
+}
+```
+
+### `TimeUntilGameFinishDto`
+```json
+{
+  "minutes": "number",
+  "seconds": "number"
+}
 ```

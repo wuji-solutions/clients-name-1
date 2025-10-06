@@ -3,6 +3,7 @@ package com.wuji.backend.question.exam
 import com.wuji.backend.events.exam.SSEExamService
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.exam.ExamGame
+import com.wuji.backend.player.state.ExamPlayer
 import com.wuji.backend.question.common.PlayerAnswer
 import com.wuji.backend.question.common.Question
 import com.wuji.backend.question.common.QuestionService
@@ -24,13 +25,16 @@ class ExamQuestionService(
     fun getQuestion(playerIndex: Int): Question =
         game.questionDispenser.currentQuestion(playerIndex)
 
-    fun getQuestionAndMarkTime(playerIndex: Int): Question {
+    fun getQuestionAndMarkTime(
+        playerIndex: Int
+    ): Pair<Question, PlayerAnswer?> {
         val player = game.findPlayerByIndex(playerIndex)
         if (player.details.firstGetCurrentQuestionTime == null) {
             player.details.firstGetCurrentQuestionTime =
                 System.currentTimeMillis()
         }
-        return getQuestion(playerIndex)
+        val question = getQuestion(playerIndex)
+        return question to getPlayerAnswer(playerIndex, question.id)
     }
 
     fun answerExamQuestion(
@@ -49,7 +53,7 @@ class ExamQuestionService(
         val answerTime =
             System.currentTimeMillis() - firstGetCurrentQuestionTime
 
-        return answerQuestion(
+        return answerQuestionWithOverwrite(
                 player,
                 question,
                 answerIds,
@@ -68,23 +72,29 @@ class ExamQuestionService(
             }
             .also {
                 if (playerCheated && game.config.notifyTeacherOnCheating)
-                    notifyTeacherOnCheating(playerIndex, question.id)
+                    notifyTeacherOnCheating(player, question)
             }
             .also { sseExamService.sendNewExamStateEvent(game) }
     }
 
-    fun getPreviousQuestion(playerIndex: Int): Question {
+    fun getPreviousQuestion(playerIndex: Int): Pair<Question, PlayerAnswer?> {
         check(game.config.allowGoingBack) {
             "Nie można cofać się do poprzedniego pytania"
         }
         TODO()
     }
 
-    fun getNextQuestion(playerIndex: Int): Question =
-        game.questionDispenser.nextQuestion(playerIndex)
+    fun getNextQuestion(playerIndex: Int): Pair<Question, PlayerAnswer?> {
+        val question = game.questionDispenser.nextQuestion(playerIndex)
+        return question to getPlayerAnswer(playerIndex, question.id)
+    }
 
-    fun notifyTeacherOnCheating(playerIndex: Int, questionId: Int) {
+    fun notifyTeacherOnCheating(player: ExamPlayer, question: Question) {
+        sseExamService.sendPlayerCheatedEvent(player, question)
+    }
+
+    fun getPlayerAnswer(playerIndex: Int, questionId: Int): PlayerAnswer? {
         val player = game.findPlayerByIndex(playerIndex)
-        sseExamService.sendPlayerCheatedEvent(player, questionId)
+        return player.details.answers.find { it.question.id == questionId }
     }
 }

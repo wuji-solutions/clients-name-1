@@ -2,9 +2,9 @@ package com.wuji.backend.question.exam
 
 import com.wuji.backend.game.GameType
 import com.wuji.backend.question.common.QuestionController
-import com.wuji.backend.question.common.dto.QuestionDto
-import com.wuji.backend.question.common.dto.toQuestionDto
 import com.wuji.backend.question.exam.dto.ExamAnswerQuestionRequestDto
+import com.wuji.backend.question.exam.dto.ExtendedQuestionDto
+import com.wuji.backend.question.exam.dto.toExtendedQuestionDto
 import com.wuji.backend.security.auth.playerIndex
 import com.wuji.backend.security.validator.GameRunning
 import com.wuji.backend.security.validator.GameRunningOrFinishing
@@ -31,30 +31,32 @@ class ExamQuestionController(
     @GetMapping("/current")
     fun getCurrentQuestion(
         authentication: Authentication,
-    ): ResponseEntity<QuestionDto> {
+    ): ResponseEntity<ExtendedQuestionDto> {
         val index = authentication.playerIndex()
-        return ResponseEntity.ok(
-            questionService.getQuestionAndMarkTime(index).toQuestionDto())
+        val (question, playerAnswer) =
+            questionService.getQuestionAndMarkTime(index)
+        return ResponseEntity.ok(question.toExtendedQuestionDto(playerAnswer))
     }
 
     @GameRunning
     @GetMapping("/previous")
     fun getPreviousQuestion(
         authentication: Authentication,
-    ): ResponseEntity<QuestionDto> {
+    ): ResponseEntity<ExtendedQuestionDto> {
         val index = authentication.playerIndex()
-        return ResponseEntity.ok(
-            questionService.getPreviousQuestion(index).toQuestionDto())
+        val (question, playerAnswer) =
+            questionService.getPreviousQuestion(index)
+        return ResponseEntity.ok((question.toExtendedQuestionDto(playerAnswer)))
     }
 
     @GameRunning
     @GetMapping("/next")
     fun getNextQuestion(
         authentication: Authentication,
-    ): ResponseEntity<QuestionDto> {
+    ): ResponseEntity<ExtendedQuestionDto> {
         val index = authentication.playerIndex()
-        return ResponseEntity.ok(
-            questionService.getQuestionAndMarkTime(index).toQuestionDto())
+        val (question, playerAnswer) = questionService.getNextQuestion(index)
+        return ResponseEntity.ok(question.toExtendedQuestionDto(playerAnswer))
     }
 
     @GameRunningOrFinishing
