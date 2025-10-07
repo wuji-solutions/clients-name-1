@@ -1,10 +1,12 @@
 package com.wuji.backend.game.common
 
 import com.wuji.backend.config.BoardConfig
+import com.wuji.backend.config.ExamConfig
 import com.wuji.backend.config.GameConfig
 import com.wuji.backend.config.QuizConfig
 import com.wuji.backend.config.dto.GameConfigDto
 import com.wuji.backend.config.dto.toBoardConfigDto
+import com.wuji.backend.config.dto.toExamConfigDto
 import com.wuji.backend.config.dto.toQuizConfigDto
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.GameType
@@ -82,7 +84,7 @@ class GameServiceDelegate(
     fun getConfigDto(): GameConfigDto {
         return when (gameRegistry.gameType) {
             GameType.QUIZ -> (getConfig() as QuizConfig).toQuizConfigDto()
-            GameType.EXAM -> TODO()
+            GameType.EXAM -> (getConfig() as ExamConfig).toExamConfigDto()
             GameType.BOARD -> (getConfig() as BoardConfig).toBoardConfigDto()
         }
     }

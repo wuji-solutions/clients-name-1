@@ -27,7 +27,7 @@ data class ExamConfigDto(
     val endImmediatelyAfterTime: Boolean = DEFAULT_END_IMMEDIATELY_AFTER_TIME,
     @field:Min(0, message = "Liczba sekund musi być nieujemna")
     val additionalTimeToAnswerAfterFinishInSeconds: Long =
-        DEFAULT_ADDITIONAL_TIME_IN_SECONDS
+        DEFAULT_ADDITIONAL_TIME_IN_SECONDS,
 ) : GameConfigDto()
 
 fun ExamConfigDto.toExamConfig(): ExamConfig {
@@ -35,6 +35,23 @@ fun ExamConfigDto.toExamConfig(): ExamConfig {
         totalDurationMinutes = totalDurationMinutes,
         questionFilePath = questionFilePath,
         questionDurationSeconds = questionDurationSeconds,
+        endImmediatelyAfterTime = endImmediatelyAfterTime,
+        requiredQuestionCount = requiredQuestionCount,
+        randomizeQuestions = randomizeQuestions,
+        enforceDifficultyBalance = enforceDifficultyBalance,
+        selectedQuestionIds = selectedQuestionIds,
+        zeroPointsOnCheating = zeroPointsOnCheating,
+        markQuestionOnCheating = markQuestionOnCheating,
+        notifyTeacherOnCheating = notifyTeacherOnCheating,
+        pointsPerDifficulty = pointsPerDifficulty,
+        allowGoingBack = allowGoingBack,
+        additionalTimeToAnswerAfterFinishInSeconds =
+            additionalTimeToAnswerAfterFinishInSeconds)
+}
+
+fun ExamConfig.toExamConfigDto(): ExamConfigDto {
+    return ExamConfigDto(
+        totalDurationMinutes = totalDurationMinutes,
         endImmediatelyAfterTime = endImmediatelyAfterTime,
         requiredQuestionCount = requiredQuestionCount,
         randomizeQuestions = randomizeQuestions,

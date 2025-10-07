@@ -19,8 +19,6 @@ data class BoardConfigDto(
     @JsonProperty(required = true)
     val rankingPromotionRules: Map<CategoryName, MinCorrectAnswers>,
     @JsonProperty(required = true) val showLeaderboard: Boolean,
-    override val questionFilePath: String,
-    override val questionDurationSeconds: Int,
     val endImmediatelyAfterTime: Boolean = DEFAULT_END_IMMEDIATELY_AFTER_TIME,
 ) : GameConfigDto()
 
@@ -38,8 +36,6 @@ fun BoardConfigDto.toBoardConfig(): BoardConfig {
 fun BoardConfig.toBoardConfigDto(): BoardConfigDto {
     return BoardConfigDto(
         totalDurationMinutes = totalDurationMinutes,
-        questionFilePath = questionFilePath,
-        questionDurationSeconds = questionDurationSeconds,
         endImmediatelyAfterTime = endImmediatelyAfterTime,
         pointsPerDifficulty = pointsPerDifficulty,
         rankingPromotionRules = rankingPromotionRules,
