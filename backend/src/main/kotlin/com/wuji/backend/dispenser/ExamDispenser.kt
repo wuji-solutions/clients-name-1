@@ -49,6 +49,10 @@ class ExamDispenser {
         }
     }
 
+    /**
+     * Moves to the next questions and returns it This question will now be
+     * current question
+     */
     fun nextQuestion(playerIndex: PlayerIndex): Question {
         return dispensers[playerIndex]?.nextQuestion()
             ?: throw IndexOutOfBoundsException()
@@ -58,11 +62,15 @@ class ExamDispenser {
         dispensers[playerIndex]?.currentQuestion()
             ?: throw IndexOutOfBoundsException()
 
+    /**
+     * Moves to the previous questions and returns it This question will now be
+     * current question
+     */
     fun previousQuestion(playerIndex: PlayerIndex): Question =
         dispensers[playerIndex]?.previousQuestion()
             ?: throw IndexOutOfBoundsException()
 
-    fun shuffleQuestions(
+    private fun shuffleQuestions(
         questions: List<Question>,
         randomizeQuestions: Boolean,
         enforceDifficultyBalance: Boolean
@@ -76,7 +84,9 @@ class ExamDispenser {
         }
     }
 
-    fun shuffleBalanceQuestions(questions: List<Question>): List<Question> {
+    private fun shuffleBalanceQuestions(
+        questions: List<Question>
+    ): List<Question> {
         val result = mutableListOf<Question>()
         val tmp = questions.toMutableList()
 

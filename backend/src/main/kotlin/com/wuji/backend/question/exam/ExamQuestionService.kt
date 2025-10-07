@@ -22,18 +22,19 @@ class ExamQuestionService(
         return game.findPlayerByIndex(playerIndex).details.answers
     }
 
-    fun getQuestion(playerIndex: Int): Question =
+    fun getCurrentQuestion(playerIndex: Int): Question =
         game.questionDispenser.currentQuestion(playerIndex)
 
     fun getQuestionAndMarkTime(
-        playerIndex: Int
+        playerIndex: Int,
+        getQuestionFunction: (Int) -> Question
     ): Pair<Question, PlayerAnswer?> {
         val player = game.findPlayerByIndex(playerIndex)
         if (player.details.firstGetCurrentQuestionTime == null) {
             player.details.firstGetCurrentQuestionTime =
                 System.currentTimeMillis()
         }
-        val question = getQuestion(playerIndex)
+        val question = getQuestionFunction(playerIndex)
         return question to getPlayerAnswer(playerIndex, question.id)
     }
 
@@ -42,14 +43,14 @@ class ExamQuestionService(
         answerIds: Set<Int>,
         playerCheated: Boolean
     ): Boolean {
-        val question = getQuestion(playerIndex)
+        val question = getCurrentQuestion(playerIndex)
         val player = game.findPlayerByIndex(playerIndex)
         player.details.askedQuestions.add(question)
 
         val firstGetCurrentQuestionTime =
             player.details.firstGetCurrentQuestionTime
                 ?: throw IllegalStateException(
-                    "It appears you answered the question before retrieving it first")
+                    "Odpowiedziałeś na pytanie bez dostania go wcześniej")
         val answerTime =
             System.currentTimeMillis() - firstGetCurrentQuestionTime
 
@@ -77,17 +78,15 @@ class ExamQuestionService(
             .also { sseExamService.sendNewExamStateEvent(game) }
     }
 
-    fun getPreviousQuestion(playerIndex: Int): Pair<Question, PlayerAnswer?> {
+    fun getPreviousQuestion(playerIndex: Int): Question {
         check(game.config.allowGoingBack) {
             "Nie można cofać się do poprzedniego pytania"
         }
-        TODO()
+        return game.questionDispenser.previousQuestion(playerIndex)
     }
 
-    fun getNextQuestion(playerIndex: Int): Pair<Question, PlayerAnswer?> {
-        val question = game.questionDispenser.nextQuestion(playerIndex)
-        return question to getPlayerAnswer(playerIndex, question.id)
-    }
+    fun getNextQuestion(playerIndex: Int): Question =
+        game.questionDispenser.nextQuestion(playerIndex)
 
     fun notifyTeacherOnCheating(player: ExamPlayer, question: Question) {
         sseExamService.sendPlayerCheatedEvent(player, question)

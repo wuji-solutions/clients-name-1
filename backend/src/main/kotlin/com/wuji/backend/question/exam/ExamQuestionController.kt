@@ -34,7 +34,8 @@ class ExamQuestionController(
     ): ResponseEntity<ExtendedQuestionDto> {
         val index = authentication.playerIndex()
         val (question, playerAnswer) =
-            questionService.getQuestionAndMarkTime(index)
+            questionService.getQuestionAndMarkTime(
+                index, questionService::getCurrentQuestion)
         return ResponseEntity.ok(question.toExtendedQuestionDto(playerAnswer))
     }
 
@@ -45,7 +46,8 @@ class ExamQuestionController(
     ): ResponseEntity<ExtendedQuestionDto> {
         val index = authentication.playerIndex()
         val (question, playerAnswer) =
-            questionService.getPreviousQuestion(index)
+            questionService.getQuestionAndMarkTime(
+                index, questionService::getPreviousQuestion)
         return ResponseEntity.ok((question.toExtendedQuestionDto(playerAnswer)))
     }
 
@@ -55,7 +57,9 @@ class ExamQuestionController(
         authentication: Authentication,
     ): ResponseEntity<ExtendedQuestionDto> {
         val index = authentication.playerIndex()
-        val (question, playerAnswer) = questionService.getNextQuestion(index)
+        val (question, playerAnswer) =
+            questionService.getQuestionAndMarkTime(
+                index, questionService::getNextQuestion)
         return ResponseEntity.ok(question.toExtendedQuestionDto(playerAnswer))
     }
 
