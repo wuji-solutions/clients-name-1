@@ -94,7 +94,7 @@ class ExamDispenserTest {
             enforceDifficultyBalance = false)
 
         assertTrue(dispenser.dispensers.containsKey(playerIndex))
-        val pd = dispenser.dispensers[playerIndex]!!
+        val pd = dispenser.dispensers[playerIndex]!! // NOSONAR
         assertEquals(3, pd.baseQuestions.size)
         assertEquals(1, pd.additionalQuestions.size)
     }
@@ -104,7 +104,7 @@ class ExamDispenserTest {
         dispenser.initialize(
             setOf(player), questions, selectedQuestionIds = setOf(2, 3))
 
-        val pd = dispenser.dispensers[playerIndex]!!
+        val pd = dispenser.dispensers[playerIndex]!! // NOSONAR
         assertEquals(listOf(q2, q3), pd.baseQuestions)
         assertEquals(listOf(q1, q4), pd.additionalQuestions)
     }
