@@ -57,6 +57,10 @@ class ExamService(
 
         val questions = MoodleXmlParser.parse(questionsFile.inputStream())
 
+        check(config.requiredQuestionCount <= questions.size) {
+            "Wymagana liczba pytań musi być mniejsza lub równa liczbie pytań w zestawie"
+        }
+
         gameRegistry.register(ExamGame(name, config, questions))
     }
 

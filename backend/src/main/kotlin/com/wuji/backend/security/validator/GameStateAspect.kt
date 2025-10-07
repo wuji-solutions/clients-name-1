@@ -42,10 +42,11 @@ class GameStateAspect(private val gameServiceDelegate: GameServiceDelegate) {
     @Before(
         "@within(GameRunningOrFinishing) || @annotation(GameRunningOrFinishing)")
     fun checkRunningOrFinishing() {
-        if (gameServiceDelegate.getGameState() != GameState.FINISHING ||
+        if (gameServiceDelegate.getGameState() != GameState.FINISHING &&
             gameServiceDelegate.getGameState() != GameState.RUNNING) {
             throw GameInIncorrectStateException(
-                GameState.FINISHING, gameServiceDelegate.getGameState())
+                "${GameState.RUNNING.polish} lub ${GameState.FINISHING.polish}",
+                gameServiceDelegate.getGameState().polish)
         }
     }
 
