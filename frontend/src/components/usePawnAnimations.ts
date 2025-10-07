@@ -27,6 +27,49 @@ interface UsePawnAnimationsArgs {
   mobile: boolean;
 }
 
+const resolvePawnDidntMove = (
+  fromIndex: number,
+  toIndex: number,
+  fieldCoordinates: FieldCoordinate[],
+  stopTweenIfExists: Function,
+  pawnId: string,
+  toStackIndex: number,
+  field: Pawn[],
+  centerX: number,
+  centerY: number,
+  node: Konva.Node,
+  playerIndex: string | null,
+  stageRef: RefObject<Konva.Stage | null>,
+  mobile: boolean,
+  pzRef: React.MutableRefObject<any | null>,
+  tweensRef: MapRef<any>,
+  animationPromises: Promise<void>[]
+) => {
+  if (fromIndex === toIndex) {
+    const coords = fieldCoordinates[toIndex];
+    if (!coords) return;
+    stopTweenIfExists(pawnId);
+
+    const stackedPos = getStackedPosition(coords, toStackIndex, field.length, centerX, centerY);
+    const p = new Promise<void>((resolve) => {
+      const tween = node.to({
+        x: stackedPos.x,
+        y: stackedPos.y,
+        scaleX: stackedPos.scale,
+        scaleY: stackedPos.scale,
+        duration: 0.2,
+        easing: Konva.Easings.EaseOut,
+        onUpdate: () => smoothCenterOnNode(playerIndex, stageRef, mobile, pzRef, node, pawnId),
+        onFinish: () => resolve(),
+      });
+      tweensRef.current.set(pawnId, tween);
+    });
+
+    animationPromises.push(p);
+    return;
+  }
+};
+
 const resolveStopPromise = (
   node: Konva.Node,
   tweensRef: MapRef<any>,
@@ -233,29 +276,24 @@ function animatePawns({
         return;
       }
 
-      if (fromIndex === toIndex) {
-        const coords = fieldCoordinates[toIndex];
-        if (!coords) return;
-        stopTweenIfExists(pawnId);
-
-        const stackedPos = getStackedPosition(coords, toStackIndex, field.length, centerX, centerY);
-        const p = new Promise<void>((resolve) => {
-          const tween = node.to({
-            x: stackedPos.x,
-            y: stackedPos.y,
-            scaleX: stackedPos.scale,
-            scaleY: stackedPos.scale,
-            duration: 0.2,
-            easing: Konva.Easings.EaseOut,
-            onUpdate: () => smoothCenterOnNode(playerIndex, stageRef, mobile, pzRef, node, pawnId),
-            onFinish: () => resolve(),
-          });
-          tweensRef.current.set(pawnId, tween);
-        });
-
-        animationPromises.push(p);
-        return;
-      }
+      resolvePawnDidntMove(
+        fromIndex,
+        toIndex,
+        fieldCoordinates,
+        stopTweenIfExists,
+        pawnId,
+        toStackIndex,
+        field,
+        centerX,
+        centerY,
+        node,
+        playerIndex,
+        stageRef,
+        mobile,
+        pzRef,
+        tweensRef,
+        animationPromises
+      );
 
       const startCoords = fieldCoordinates[fromIndex];
       const endCoords = fieldCoordinates[toIndex];
