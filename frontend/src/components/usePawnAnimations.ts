@@ -6,7 +6,7 @@ import {
   generateClockwisePathIndices,
   findClosestFieldIndex,
 } from './gameBoardUtils';
-import type { BoardPositions, FieldCoordinate } from '../common/types';
+import type { BoardPositions, FieldCoordinate, Pawn } from '../common/types';
 
 type MapRef<T> = React.MutableRefObject<Map<string, T>>;
 
@@ -27,7 +27,61 @@ interface UsePawnAnimationsArgs {
   mobile: boolean;
 }
 
-export function usePawnAnimations({
+const resolveStopPromise = (
+  node: Konva.Node,
+  tweensRef: MapRef<any>,
+  stopTweenIfExists: Function,
+  pawnData: Pawn
+) => {
+  const promise = new Promise<void>((resolve) => {
+    const tween = node.to({
+      opacity: 0,
+      scaleX: 0,
+      scaleY: 0,
+      duration: 0.2,
+      onFinish: () => resolve(),
+    });
+    tweensRef.current.set(pawnData.index, tween);
+  });
+
+  promise.then(() => stopTweenIfExists(pawnData.index));
+};
+
+const smoothCenterOnNode = (
+  playerIndex: string | null,
+  stageRef: RefObject<Konva.Stage | null>,
+  mobile: boolean,
+  pzRef: React.MutableRefObject<any | null>,
+  node: Konva.Node,
+  index: string,
+  lerp = 0.2
+) => {
+  if (index !== playerIndex) return;
+  if (!pzRef.current || !stageRef.current) return;
+
+  try {
+    const rect = stageRef.current.container().getBoundingClientRect();
+    const viewX = rect.width / (mobile ? 3.5 : 2.5);
+    const viewY = rect.height / (mobile ? 3.5 : 2.5);
+
+    const pawnPos = node.getAbsolutePosition();
+    const transform = pzRef.current.getTransform();
+
+    const targetX = viewX - pawnPos.x * transform.scale;
+    const targetY = viewY - pawnPos.y * transform.scale;
+
+    const newX = transform.x + (targetX - transform.x) * lerp;
+    const newY = transform.y + (targetY - transform.y) * lerp;
+
+    pzRef.current.moveTo(newX, newY);
+    const scale = mobile ? 2.5 : 1.5;
+    pzRef.current.zoomAbs(viewX, viewY, scale);
+  } catch {
+    // ignore
+  }
+};
+
+function animatePawns({
   positions,
   previousPositions,
   fieldCoordinates,
@@ -43,19 +97,21 @@ export function usePawnAnimations({
   playerIndex,
   mobile,
 }: UsePawnAnimationsArgs) {
+  if (!fieldCoordinates.length || positionUpdateBlock) return;
+
   const stopTweenIfExists = (pawnId: string) => {
     const t = tweensRef.current.get(pawnId);
     if (t && typeof t.stop === 'function') {
       try {
         t.stop();
       } catch {
-        // ignore
+        ///ignore
       }
     }
     tweensRef.current.delete(pawnId);
   };
 
-  const setInitialPositions = () => {
+  if (!previousPositions) {
     positions.forEach((field, fieldIndex) => {
       field.forEach((pawnData, stackIndex) => {
         const node = pawnReferences.current.get(pawnData.index);
@@ -75,95 +131,70 @@ export function usePawnAnimations({
 
     const firstNode = pawnReferences.current.values().next().value;
     if (firstNode) firstNode.getLayer()?.batchDraw();
-  };
+    return;
+  }
 
-  const buildPositionMap = (data: BoardPositions) => {
-    const map = new Map<string, { fieldIndex: number; stackIndex: number; totalInStack: number }>();
-    data.forEach((field, fieldIndex) => {
-      field.forEach((pawn, stepIndex) => {
-        map.set(pawn.index, {
-          fieldIndex,
-          stackIndex: stepIndex,
-          totalInStack: field.length,
-        });
-      });
+  const prevMap = new Map<
+    string,
+    { fieldIndex: number; stackIndex: number; totalInStack: number }
+  >();
+  previousPositions.forEach((field, fieldIndex) => {
+    field.forEach((pawn, stepIndex) =>
+      prevMap.set(pawn.index, {
+        fieldIndex,
+        stackIndex: stepIndex,
+        totalInStack: field.length,
+      })
+    );
+  });
+
+  const currMap = new Map<
+    string,
+    { fieldIndex: number; stackIndex: number; totalInStack: number }
+  >();
+  positions.forEach((field, fieldIndex) => {
+    field.forEach((pawn, stepIndex) =>
+      currMap.set(pawn.index, {
+        fieldIndex,
+        stackIndex: stepIndex,
+        totalInStack: field.length,
+      })
+    );
+  });
+
+  previousPositions.forEach((field) => {
+    field.forEach((pawnData) => {
+      if (!currMap.has(pawnData.index)) {
+        const node = pawnReferences.current.get(pawnData.index);
+        if (!node) return;
+        stopTweenIfExists(pawnData.index);
+
+        resolveStopPromise(node, tweensRef, stopTweenIfExists, pawnData);
+      }
     });
-    return map;
-  };
+  });
 
-  const fadeOutRemovedPawns = (prevMap: Map<string, any>, currMap: Map<string, any>) => {
-    previousPositions?.forEach((field) => {
-      field.forEach((pawnData) => {
-        if (!currMap.has(pawnData.index)) {
-          const node = pawnReferences.current.get(pawnData.index);
-          if (!node) return;
-          stopTweenIfExists(pawnData.index);
+  const animationPromises: Promise<void>[] = [];
 
-          const promise = new Promise<void>((resolve) => {
-            const tween = node.to({
-              opacity: 0,
-              scaleX: 0,
-              scaleY: 0,
-              duration: 0.2,
-              onFinish: () => resolve(),
-            });
-            tweensRef.current.set(pawnData.index, tween);
-          });
+  positions.forEach((field, toIndex) => {
+    field.forEach((pawnData, toStackIndex) => {
+      const pawnId = pawnData.index;
+      const node = pawnReferences.current.get(pawnId);
+      if (!node) return;
 
-          promise.then(() => stopTweenIfExists(pawnData.index));
-        }
-      });
-    });
-  };
+      const prev = prevMap.get(pawnId);
 
-  const smoothCenterOnNode = (node: Konva.Node, index: string, lerp = 0.2) => {
-    if (index !== playerIndex) return;
-    if (!pzRef.current || !stageRef.current) return;
-
-    try {
-      const rect = stageRef.current.container().getBoundingClientRect();
-      const viewX = rect.width / (mobile ? 3.5 : 2.5);
-      const viewY = rect.height / (mobile ? 3.5 : 2.5);
-
-      const pawnPos = node.getAbsolutePosition();
-      const transform = pzRef.current.getTransform();
-
-      const targetX = viewX - pawnPos.x * transform.scaleX();
-      const targetY = viewY - pawnPos.y * transform.scaleY();
-
-      const current = transform.translate();
-      const nextX = current.x + (targetX - current.x) * lerp;
-      const nextY = current.y + (targetY - current.y) * lerp;
-
-      pzRef.current.moveTo(nextX, nextY);
-    } catch {
-      // ignore centering errors
-    }
-  };
-
-  const animatePawn = (pawnId: string, fromIndex: number, toIndex: number, toStackIndex: number, totalInStack: number) => {
-    const node = pawnReferences.current.get(pawnId);
-    if (!node) return;
-
-    const pathIndices = generateClockwisePathIndices(fromIndex, toIndex, numFields);
-    const tweenPath = pathIndices.map((idx) => getPawnPositionInField(fieldCoordinates[idx], centerX, centerY));
-
-    stopTweenIfExists(pawnId);
-
-    let currentStep = 0;
-    const totalSteps = tweenPath.length;
-
-    const tween = new Konva.Tween({
-      node,
-      duration: 0.4 * totalSteps,
-      onUpdate: () => {
-        const pos = tweenPath[Math.min(currentStep, totalSteps - 1)];
-        node.setAttrs({ x: pos.x, y: pos.y });
-        currentStep++;
-      },
-      onFinish: () => {
+      if (!prev) {
+        stopTweenIfExists(pawnId);
         const endCoords = fieldCoordinates[toIndex];
-        const stackedPos = getStackedPosition(endCoords, toStackIndex, totalInStack, centerX, centerY);
+        if (!endCoords) return;
+        const stackedPos = getStackedPosition(
+          endCoords,
+          toStackIndex,
+          field.length,
+          centerX,
+          centerY
+        );
         node.setAttrs({
           x: stackedPos.x,
           y: stackedPos.y,
@@ -171,82 +202,187 @@ export function usePawnAnimations({
           scaleY: stackedPos.scale,
           opacity: 1,
         });
-        smoothCenterOnNode(node, pawnId);
-      },
-    });
+        return;
+      }
 
-    tweensRef.current.set(pawnId, tween);
-    tween.play();
-  };
+      let fromIndex = prev.fieldIndex;
+      let fromStackIndex = prev.stackIndex;
 
-  useEffect(() => {
-    if (!fieldCoordinates.length || positionUpdateBlock) return;
+      if (tweensRef.current.has(pawnId)) {
+        const guessed = findClosestFieldIndex(node, fieldCoordinates, centerX, centerY);
+        if (guessed !== -1) fromIndex = guessed;
+      }
 
-    if (!previousPositions) {
-      setInitialPositions();
-      return;
-    }
+      if (fromIndex === -1) {
+        const endCoords = fieldCoordinates[toIndex];
+        if (!endCoords) return;
+        const stackedPos = getStackedPosition(
+          endCoords,
+          toStackIndex,
+          field.length,
+          centerX,
+          centerY
+        );
+        node.setAttrs({
+          x: stackedPos.x,
+          y: stackedPos.y,
+          scaleX: stackedPos.scale,
+          scaleY: stackedPos.scale,
+          opacity: 1,
+        });
+        return;
+      }
 
-    const prevMap = buildPositionMap(previousPositions);
-    const currMap = buildPositionMap(positions);
+      if (fromIndex === toIndex) {
+        const coords = fieldCoordinates[toIndex];
+        if (!coords) return;
+        stopTweenIfExists(pawnId);
 
-    fadeOutRemovedPawns(prevMap, currMap);
-
-    positions.forEach((field, toIndex) => {
-      field.forEach((pawnData, toStackIndex) => {
-        const pawnId = pawnData.index;
-        const node = pawnReferences.current.get(pawnId);
-        if (!node) return;
-
-        const prev = prevMap.get(pawnId);
-        if (!prev) {
-          stopTweenIfExists(pawnId);
-          const endCoords = fieldCoordinates[toIndex];
-          if (!endCoords) return;
-          const stackedPos = getStackedPosition(endCoords, toStackIndex, field.length, centerX, centerY);
-          node.setAttrs({
+        const stackedPos = getStackedPosition(coords, toStackIndex, field.length, centerX, centerY);
+        const p = new Promise<void>((resolve) => {
+          const tween = node.to({
             x: stackedPos.x,
             y: stackedPos.y,
             scaleX: stackedPos.scale,
             scaleY: stackedPos.scale,
-            opacity: 1,
+            duration: 0.2,
+            easing: Konva.Easings.EaseOut,
+            onUpdate: () => smoothCenterOnNode(playerIndex, stageRef, mobile, pzRef, node, pawnId),
+            onFinish: () => resolve(),
           });
-          return;
-        }
+          tweensRef.current.set(pawnId, tween);
+        });
 
-        let fromIndex = prev.fieldIndex;
-        if (tweensRef.current.has(pawnId)) {
-          const guessed = findClosestFieldIndex(node, fieldCoordinates, centerX, centerY);
-          if (guessed !== -1) fromIndex = guessed;
-        }
+        animationPromises.push(p);
+        return;
+      }
 
-        if (fromIndex === -1) {
-          const endCoords = fieldCoordinates[toIndex];
-          if (!endCoords) return;
-          const stackedPos = getStackedPosition(endCoords, toStackIndex, field.length, centerX, centerY);
-          node.setAttrs({
-            x: stackedPos.x,
-            y: stackedPos.y,
-            scaleX: stackedPos.scale,
-            scaleY: stackedPos.scale,
-            opacity: 1,
+      const startCoords = fieldCoordinates[fromIndex];
+      const endCoords = fieldCoordinates[toIndex];
+      if (!startCoords || !endCoords) return;
+
+      stopTweenIfExists(pawnId);
+
+      const pathPromise = new Promise<void>((resolve) => {
+        const prevField = previousPositions[fromIndex] || [];
+        const startStackedPos = getStackedPosition(
+          startCoords,
+          fromStackIndex,
+          prevField.length || 1,
+          centerX,
+          centerY
+        );
+
+        node.setAttrs({
+          x: startStackedPos.x,
+          y: startStackedPos.y,
+          scaleX: startStackedPos.scale,
+          scaleY: startStackedPos.scale,
+          opacity: 1,
+        });
+
+        const stepIndices = generateClockwisePathIndices(fromIndex, toIndex, numFields);
+
+        const animatePath = async () => {
+          for (const stepIndex of stepIndices) {
+            const stepCoords = fieldCoordinates[stepIndex];
+            if (!stepCoords) continue;
+
+            const stepPosition = getPawnPositionInField(stepCoords, centerX, centerY);
+
+            await new Promise<void>((stepResolve) => {
+              const tween = node.to({
+                x: stepPosition.x,
+                y: stepPosition.y,
+                scaleX: stepPosition.scale,
+                scaleY: stepPosition.scale,
+                duration: 0.25,
+                easing: Konva.Easings.EaseInOut,
+                onUpdate: () =>
+                  smoothCenterOnNode(playerIndex, stageRef, mobile, pzRef, node, pawnId),
+                onFinish: () => stepResolve(),
+              });
+
+              tweensRef.current.set(pawnId, tween);
+            });
+          }
+
+          const endStackedPos = getStackedPosition(
+            endCoords,
+            toStackIndex,
+            field.length,
+            centerX,
+            centerY
+          );
+
+          await new Promise<void>((finalResolve) => {
+            const tween = node.to({
+              x: endStackedPos.x,
+              y: endStackedPos.y,
+              scaleX: endStackedPos.scale,
+              scaleY: endStackedPos.scale,
+              duration: 0.25,
+              easing: Konva.Easings.EaseInOut,
+              onUpdate: () =>
+                smoothCenterOnNode(playerIndex, stageRef, mobile, pzRef, node, pawnId),
+              onFinish: () => finalResolve(),
+            });
+
+            tweensRef.current.set(pawnId, tween);
           });
-          return;
-        }
 
-        animatePawn(pawnId, fromIndex, toIndex, toStackIndex, field.length);
+          tweensRef.current.delete(pawnId);
+          resolve();
+        };
+
+        void animatePath();
       });
+
+      animationPromises.push(pathPromise);
     });
-  }, [
-    positions,
-    previousPositions,
-    fieldCoordinates,
-    centerX,
-    centerY,
-    numFields,
-    positionUpdateBlock,
-    playerIndex,
-    mobile,
-  ]);
+  });
+
+  Promise.all(animationPromises).then(() => {
+    const firstNode = pawnReferences.current.values().next().value;
+    if (firstNode) firstNode.getLayer()?.batchDraw();
+  });
 }
 
+export function usePawnAnimations({
+  positions,
+  previousPositions,
+  fieldCoordinates,
+  pawnReferences,
+  tweensRef,
+  centerX,
+  centerY,
+  numFields,
+  positionUpdateBlock = false,
+  pzRef,
+  panzoomOptionsRef,
+  stageRef,
+  playerIndex,
+  mobile,
+}: UsePawnAnimationsArgs) {
+  useEffect(() => {
+    animatePawns({
+      positions,
+      previousPositions,
+      fieldCoordinates,
+      pawnReferences,
+      tweensRef,
+      centerX,
+      centerY,
+      numFields,
+      positionUpdateBlock,
+      pzRef,
+      panzoomOptionsRef,
+      stageRef,
+      playerIndex,
+      mobile,
+    });
+    return () => {
+      // ignore
+    };
+  }, [positions, previousPositions, fieldCoordinates]);
+}
