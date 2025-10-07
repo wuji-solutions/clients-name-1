@@ -3,11 +3,13 @@ import { useDropzone } from 'react-dropzone';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import theme from '../common/theme';
+import { mode } from '../common/types';
 import { ButtonChoose, ButtonCustom } from '../components/Button';
 import { TEST_QUIZ } from '../common/test';
 import { useAppContext } from '../providers/AppContextProvider';
 import AccessRestricted from '../components/AccessRestricted';
 import { service } from '../service/service';
+import GameConfig from '../components/config/GameConfig';
 
 const Container = styled.div({
   width: '100%',
@@ -111,7 +113,7 @@ function Configurations() {
     },
   });
 
-  const [mode, setMode] = useState<string | null>(null);
+  const [mode, setMode] = useState<mode | null>(null);
 
   const startLobby = () => {
     if (!mode) return;
@@ -140,10 +142,10 @@ function Configurations() {
           <ButtonChoose active={mode == 'quiz'} onClick={() => setMode('quiz')}>
             Quiz
           </ButtonChoose>
-          <ButtonChoose active={mode == 'test'} onClick={() => setMode('test')}>
+          <ButtonChoose active={mode == 'exam'} onClick={() => setMode('exam')}>
             Sprawdzian
           </ButtonChoose>
-          <ButtonChoose active={mode == 'game'} onClick={() => setMode('game')}>
+          <ButtonChoose active={mode == 'board'} onClick={() => setMode('board')}>
             Plansza
           </ButtonChoose>
         </ModeContent>
@@ -153,6 +155,7 @@ function Configurations() {
           <input {...getInputProps()} />
           <p>Dodaj pytania...</p>
         </FileSelector>
+        <GameConfig mode={mode} />
         <ActionButtonContainer>
           <ButtonCustom onClick={() => startLobby()}>Otwórz poczekalnię</ButtonCustom>
           <ButtonCustom onClick={() => navigate('/')}>Powrót</ButtonCustom>

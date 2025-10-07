@@ -1,0 +1,81 @@
+import React from 'react';
+import { DifficultyLevel } from '../../common/types';
+import { CenteredLabel, CustomInput, CustomInputFullWidth } from '../Fields';
+import { LabeledCheckboxContainer } from './components/LabeledCheckbox';
+import Dropdown from '../Dropdown';
+
+export type BoardSettings = {
+  pointsPerDifficulty: Record<DifficultyLevel, number>;
+  rankingPromotionRules: Record<string, number>;
+};
+
+interface Props {
+  settings: BoardSettings;
+  setSettings: React.Dispatch<React.SetStateAction<BoardSettings>>;
+}
+
+export default function BoardConfig({ settings, setSettings }: Props) {
+  return (
+    <>
+      <p className="centered" style={{ fontSize: '200%' }}>
+        Ustawienia planszówki
+      </p>
+      <CustomInputFullWidth
+        type="number"
+        placeholder="Liczba pytań, na które musi odpowiedzieć uczeń"
+        onChange={
+          (e) => void {}
+          // setSettings({ ...settings, requiredQuestionCount: Number(e.target.value) })
+        }
+      />
+      <LabeledCheckboxContainer>
+        <CenteredLabel>Ilość punktów za pytanie łatwe</CenteredLabel>
+        <Dropdown
+          options={['1', '2', '3']}
+          onSelect={(e) =>
+            setSettings({
+              ...settings,
+              pointsPerDifficulty: {
+                ...settings.pointsPerDifficulty,
+                EASY: Number(e),
+              },
+            })
+          }
+          placeholder="1"
+        />
+      </LabeledCheckboxContainer>
+      <LabeledCheckboxContainer>
+        <CenteredLabel>Ilość punktów za pytanie średnie</CenteredLabel>
+        <Dropdown
+          options={['1', '2', '3']}
+          onSelect={(e) =>
+            setSettings({
+              ...settings,
+              pointsPerDifficulty: {
+                ...settings.pointsPerDifficulty,
+                MEDIUM: Number(e),
+              },
+            })
+          }
+          placeholder="2"
+        />
+      </LabeledCheckboxContainer>
+      <LabeledCheckboxContainer>
+        <CenteredLabel>Ilość punktów za pytanie trudne</CenteredLabel>
+        <Dropdown
+          options={['1', '2', '3']}
+          onSelect={(e) =>
+            setSettings({
+              ...settings,
+              pointsPerDifficulty: {
+                ...settings.pointsPerDifficulty,
+                HARD: Number(e),
+              },
+            })
+          }
+          placeholder="3"
+        />
+      </LabeledCheckboxContainer>
+    </>
+  );
+}

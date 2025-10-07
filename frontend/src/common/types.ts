@@ -27,3 +27,7 @@ export interface QuestionData {
   correctAnswersCount: number;
   incorrectAnswersCount: number;
 }
+
+export type mode = 'quiz' | 'board' | 'exam' | 'test' | 'game';
+
+export type DifficultyLevel = 'EASY' | 'MEDIUM' | 'HARD';
