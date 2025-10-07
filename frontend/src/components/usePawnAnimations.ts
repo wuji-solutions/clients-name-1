@@ -27,6 +27,102 @@ interface UsePawnAnimationsArgs {
   mobile: boolean;
 }
 
+const resolvePathPromise = (
+  previousPositions: BoardPositions,
+  fromIndex: number,
+  startCoords: FieldCoordinate,
+  fromStackIndex: number,
+  centerX: number,
+  centerY: number,
+  node: Konva.Node,
+  toIndex: number,
+  numFields: number,
+  fieldCoordinates: FieldCoordinate[],
+  playerIndex: string | null,
+  stageRef: RefObject<Konva.Stage | null>,
+  mobile: boolean,
+  pzRef: React.MutableRefObject<any | null>,
+  pawnId: string,
+  tweensRef: MapRef<any>,
+  endCoords: FieldCoordinate,
+  field: Pawn[],
+  toStackIndex: number
+) => {
+  const pathPromise = new Promise<void>((resolve) => {
+    const prevField = previousPositions[fromIndex] || [];
+    const startStackedPos = getStackedPosition(
+      startCoords,
+      fromStackIndex,
+      prevField.length || 1,
+      centerX,
+      centerY
+    );
+
+    node.setAttrs({
+      x: startStackedPos.x,
+      y: startStackedPos.y,
+      scaleX: startStackedPos.scale,
+      scaleY: startStackedPos.scale,
+      opacity: 1,
+    });
+
+    const stepIndices = generateClockwisePathIndices(fromIndex, toIndex, numFields);
+
+    const animatePath = async () => {
+      for (const stepIndex of stepIndices) {
+        const stepCoords = fieldCoordinates[stepIndex];
+        if (!stepCoords) continue;
+
+        const stepPosition = getPawnPositionInField(stepCoords, centerX, centerY);
+
+        await new Promise<void>((stepResolve) => {
+          const tween = node.to({
+            x: stepPosition.x,
+            y: stepPosition.y,
+            scaleX: stepPosition.scale,
+            scaleY: stepPosition.scale,
+            duration: 0.25,
+            easing: Konva.Easings.EaseInOut,
+            onUpdate: () => smoothCenterOnNode(playerIndex, stageRef, mobile, pzRef, node, pawnId),
+            onFinish: () => stepResolve(),
+          });
+
+          tweensRef.current.set(pawnId, tween);
+        });
+      }
+
+      const endStackedPos = getStackedPosition(
+        endCoords,
+        toStackIndex,
+        field.length,
+        centerX,
+        centerY
+      );
+
+      await new Promise<void>((finalResolve) => {
+        const tween = node.to({
+          x: endStackedPos.x,
+          y: endStackedPos.y,
+          scaleX: endStackedPos.scale,
+          scaleY: endStackedPos.scale,
+          duration: 0.25,
+          easing: Konva.Easings.EaseInOut,
+          onUpdate: () => smoothCenterOnNode(playerIndex, stageRef, mobile, pzRef, node, pawnId),
+          onFinish: () => finalResolve(),
+        });
+
+        tweensRef.current.set(pawnId, tween);
+      });
+
+      tweensRef.current.delete(pawnId);
+      resolve();
+    };
+
+    void animatePath();
+  });
+  return pathPromise;
+};
+
 const resolvePawnDidntMove = (
   fromIndex: number,
   toIndex: number,
@@ -301,80 +397,27 @@ function animatePawns({
 
       stopTweenIfExists(pawnId);
 
-      const pathPromise = new Promise<void>((resolve) => {
-        const prevField = previousPositions[fromIndex] || [];
-        const startStackedPos = getStackedPosition(
-          startCoords,
-          fromStackIndex,
-          prevField.length || 1,
-          centerX,
-          centerY
-        );
-
-        node.setAttrs({
-          x: startStackedPos.x,
-          y: startStackedPos.y,
-          scaleX: startStackedPos.scale,
-          scaleY: startStackedPos.scale,
-          opacity: 1,
-        });
-
-        const stepIndices = generateClockwisePathIndices(fromIndex, toIndex, numFields);
-
-        const animatePath = async () => {
-          for (const stepIndex of stepIndices) {
-            const stepCoords = fieldCoordinates[stepIndex];
-            if (!stepCoords) continue;
-
-            const stepPosition = getPawnPositionInField(stepCoords, centerX, centerY);
-
-            await new Promise<void>((stepResolve) => {
-              const tween = node.to({
-                x: stepPosition.x,
-                y: stepPosition.y,
-                scaleX: stepPosition.scale,
-                scaleY: stepPosition.scale,
-                duration: 0.25,
-                easing: Konva.Easings.EaseInOut,
-                onUpdate: () =>
-                  smoothCenterOnNode(playerIndex, stageRef, mobile, pzRef, node, pawnId),
-                onFinish: () => stepResolve(),
-              });
-
-              tweensRef.current.set(pawnId, tween);
-            });
-          }
-
-          const endStackedPos = getStackedPosition(
-            endCoords,
-            toStackIndex,
-            field.length,
-            centerX,
-            centerY
-          );
-
-          await new Promise<void>((finalResolve) => {
-            const tween = node.to({
-              x: endStackedPos.x,
-              y: endStackedPos.y,
-              scaleX: endStackedPos.scale,
-              scaleY: endStackedPos.scale,
-              duration: 0.25,
-              easing: Konva.Easings.EaseInOut,
-              onUpdate: () =>
-                smoothCenterOnNode(playerIndex, stageRef, mobile, pzRef, node, pawnId),
-              onFinish: () => finalResolve(),
-            });
-
-            tweensRef.current.set(pawnId, tween);
-          });
-
-          tweensRef.current.delete(pawnId);
-          resolve();
-        };
-
-        void animatePath();
-      });
+      const pathPromise = resolvePathPromise(
+        previousPositions,
+        fromIndex,
+        startCoords,
+        fromStackIndex,
+        centerX,
+        centerY,
+        node,
+        toIndex,
+        numFields,
+        fieldCoordinates,
+        playerIndex,
+        stageRef,
+        mobile,
+        pzRef,
+        pawnId,
+        tweensRef,
+        endCoords,
+        field,
+        toStackIndex
+      );
 
       animationPromises.push(pathPromise);
     });
