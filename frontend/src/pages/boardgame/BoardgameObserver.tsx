@@ -132,8 +132,6 @@ function BoardgameObserver() {
   const [playerRanking, setPlayerRanking] = useState<Pawn[]>([]);
   const [rankingExpanded, setRankingExpanded] = useState<boolean>(false);
 
-  const [positionUpdateBlock, setPositionUpdateBlock] = useState<boolean>(false);
-
   useEffect(() => {
     service.getBoardState('admin').then((response) => {
       const setup = getBoardSetup(response.data);
@@ -151,8 +149,8 @@ function BoardgameObserver() {
   }, []);
 
   useEffect(() => {
-    if (!positionUpdateBlock) setPositions(positionsBuffer);
-  }, [positionsBuffer, positionUpdateBlock]);
+    setPositions(positionsBuffer);
+  }, [positionsBuffer]);
 
   return (
     <Container>
@@ -165,7 +163,7 @@ function BoardgameObserver() {
             width={dimensions.width}
             height={dimensions.height}
             numFields={numfields}
-            positionUpdateBlock={positionUpdateBlock}
+            positionUpdateBlock={false}
             observerVersion={true}
             boardColorReferences={boardColorReferences}
             tileStates={tileStates}
@@ -181,6 +179,7 @@ function BoardgameObserver() {
           <RankingContent>
             {playerRanking.map((player, position) => (
               <div
+                key={`player_${player.index}`}
                 style={{
                   width: 'fit-content',
                   display: 'flex',

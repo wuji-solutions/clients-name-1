@@ -2,7 +2,7 @@ export const getPercentage = (count: number, total: number) =>
   total > 0 ? (count / total) * 100 : 0;
 
 export function darkenColor(hex: string, amount: number): string {
-  const num = parseInt(hex.slice(1), 16);
+  const num = Number.parseInt(hex.slice(1), 16);
   const amt = Math.round(255 * amount);
   const R = Math.max(0, (num >> 16) - amt);
   const G = Math.max(0, ((num >> 8) & 0x00ff) - amt);

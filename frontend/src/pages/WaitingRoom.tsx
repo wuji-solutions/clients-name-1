@@ -47,7 +47,6 @@ const UserInputContainer = styled.div({
 
 function SSEOnStartListener({onGameStart}: {onGameStart: Function}) {
   const { isAdmin } = useAppContext();
-  const navigate = useNavigate();
   const delegate = useSSEChannel(
     `${isAdmin() ? BACKEND_ENDPOINT : BACKEND_ENDPOINT_EXTERNAL}/sse/events`,
     { withCredentials: true }
@@ -96,7 +95,7 @@ function WaitingRoom() {
   const { isAdmin, username, setUsername } = useAppContext();
   const [identificator, setIdentificator] = useState<number | null>(null);
   const [playerKicked, setPlayerKicked] = useState(false);
-  const [gameMode, setGameMode] = useState((new URLSearchParams(window.location.search)).get('tryb'));
+  const gameMode = (new URLSearchParams(globalThis.location.search)).get('tryb');
   const navigate = useNavigate();
 
   const joinGame = () => {
@@ -160,7 +159,7 @@ function WaitingRoom() {
             <CustomInput
               type="number"
               placeholder="Podaj numer z dziennika / numer grupy"
-              onChange={(e) => setIdentificator(parseInt(e.target.value))}
+              onChange={(e) => setIdentificator(Number.parseInt(e.target.value))}
             />
             <ButtonCustom onClick={() => joinGame()}>Dołącz do gry</ButtonCustom>
           </UserInputContainer>

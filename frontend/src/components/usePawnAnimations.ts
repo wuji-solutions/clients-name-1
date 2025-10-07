@@ -27,27 +27,49 @@ interface UsePawnAnimationsArgs {
   mobile: boolean;
 }
 
-const resolvePathPromise = (
-  previousPositions: BoardPositions,
-  fromIndex: number,
-  startCoords: FieldCoordinate,
-  fromStackIndex: number,
-  centerX: number,
-  centerY: number,
-  node: Konva.Node,
-  toIndex: number,
-  numFields: number,
-  fieldCoordinates: FieldCoordinate[],
-  playerIndex: string | null,
-  stageRef: RefObject<Konva.Stage | null>,
-  mobile: boolean,
-  pzRef: React.MutableRefObject<any | null>,
-  pawnId: string,
-  tweensRef: MapRef<any>,
-  endCoords: FieldCoordinate,
-  field: Pawn[],
-  toStackIndex: number
-) => {
+interface ResolvePathPromiseArgs {
+  previousPositions: BoardPositions;
+  fromIndex: number;
+  startCoords: FieldCoordinate;
+  fromStackIndex: number;
+  centerX: number;
+  centerY: number;
+  node: Konva.Node;
+  toIndex: number;
+  numFields: number;
+  fieldCoordinates: FieldCoordinate[];
+  playerIndex: string | null;
+  stageRef: RefObject<Konva.Stage | null>;
+  mobile: boolean;
+  pzRef: React.MutableRefObject<any | null>;
+  pawnId: string;
+  tweensRef: MapRef<any>;
+  endCoords: FieldCoordinate;
+  field: Pawn[];
+  toStackIndex: number;
+}
+
+const resolvePathPromise = ({
+  previousPositions,
+  fromIndex,
+  startCoords,
+  fromStackIndex,
+  centerX,
+  centerY,
+  node,
+  toIndex,
+  numFields,
+  fieldCoordinates,
+  playerIndex,
+  stageRef,
+  mobile,
+  pzRef,
+  pawnId,
+  tweensRef,
+  endCoords,
+  field,
+  toStackIndex,
+}: ResolvePathPromiseArgs) => {
   const pathPromise = new Promise<void>((resolve) => {
     const prevField = previousPositions[fromIndex] || [];
     const startStackedPos = getStackedPosition(
@@ -123,31 +145,50 @@ const resolvePathPromise = (
   return pathPromise;
 };
 
-const resolvePawnDidntMove = (
-  fromIndex: number,
-  toIndex: number,
-  fieldCoordinates: FieldCoordinate[],
-  stopTweenIfExists: Function,
-  pawnId: string,
-  toStackIndex: number,
-  field: Pawn[],
-  centerX: number,
-  centerY: number,
-  node: Konva.Node,
-  playerIndex: string | null,
-  stageRef: RefObject<Konva.Stage | null>,
-  mobile: boolean,
-  pzRef: React.MutableRefObject<any | null>,
-  tweensRef: MapRef<any>,
-  animationPromises: Promise<void>[]
-) => {
+interface ResolvePawnDidntMoveArgs {
+  fromIndex: number;
+  toIndex: number;
+  fieldCoordinates: FieldCoordinate[];
+  stopTweenIfExists: Function;
+  pawnId: string;
+  toStackIndex: number;
+  field: Pawn[];
+  centerX: number;
+  centerY: number;
+  node: Konva.Node;
+  playerIndex: string | null;
+  stageRef: RefObject<Konva.Stage | null>;
+  mobile: boolean;
+  pzRef: React.MutableRefObject<any | null>;
+  tweensRef: MapRef<any>;
+  animationPromises: Promise<void>[];
+}
+
+const resolvePawnDidntMove = ({
+  fromIndex,
+  toIndex,
+  fieldCoordinates,
+  stopTweenIfExists,
+  pawnId,
+  toStackIndex,
+  field,
+  centerX,
+  centerY,
+  node,
+  playerIndex,
+  stageRef,
+  mobile,
+  pzRef,
+  tweensRef,
+  animationPromises,
+}: ResolvePawnDidntMoveArgs) => {
   if (fromIndex === toIndex) {
     const coords = fieldCoordinates[toIndex];
     if (!coords) return;
     stopTweenIfExists(pawnId);
 
     const stackedPos = getStackedPosition(coords, toStackIndex, field.length, centerX, centerY);
-    const p = new Promise<void>((resolve) => {
+    const movePromise = new Promise<void>((resolve) => {
       const tween = node.to({
         x: stackedPos.x,
         y: stackedPos.y,
@@ -161,8 +202,7 @@ const resolvePawnDidntMove = (
       tweensRef.current.set(pawnId, tween);
     });
 
-    animationPromises.push(p);
-    return;
+    animationPromises.push(movePromise);
   }
 };
 
@@ -372,7 +412,7 @@ function animatePawns({
         return;
       }
 
-      resolvePawnDidntMove(
+      resolvePawnDidntMove({
         fromIndex,
         toIndex,
         fieldCoordinates,
@@ -388,8 +428,8 @@ function animatePawns({
         mobile,
         pzRef,
         tweensRef,
-        animationPromises
-      );
+        animationPromises,
+      });
 
       const startCoords = fieldCoordinates[fromIndex];
       const endCoords = fieldCoordinates[toIndex];
@@ -397,7 +437,7 @@ function animatePawns({
 
       stopTweenIfExists(pawnId);
 
-      const pathPromise = resolvePathPromise(
+      const pathPromise = resolvePathPromise({
         previousPositions,
         fromIndex,
         startCoords,
@@ -416,8 +456,8 @@ function animatePawns({
         tweensRef,
         endCoords,
         field,
-        toStackIndex
-      );
+        toStackIndex,
+      });
 
       animationPromises.push(pathPromise);
     });

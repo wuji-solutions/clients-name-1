@@ -10,6 +10,9 @@ import face6 from '../resources/face6.png';
 
 const mobile = isMobileView()
 
+type FaceNumber = '1' | '2' | '3' | '4' | '5' | '6';
+type CheatValue = '1' | '2' | '3' | '4' | '5' | '6' | null;
+
 const CubeFaceData = {
   '1': {
     x: 0,
@@ -38,7 +41,7 @@ const CubeFaceData = {
 };
 
 const Scene = styled.div(() => ({
-  perspective: mobile ? '400px' : '400px',
+  perspective:'400px',
   width: mobile ? '150px' : '250px',
   height: mobile ? '150px' : '250px',
 }));
@@ -83,31 +86,32 @@ const CubeFace = styled.div<{ faceNumber: '1' | '2' | '3' | '4' | '5' | '6' }>(
   })
 );
 
-function Dice({diceRoll, cheatValue}: {diceRoll?: boolean, cheatValue?: '1' | '2' | '3' | '4' | '5' | '6'}) {
+interface DiceProps {
+  diceRoll?: boolean,
+   cheatValue?: CheatValue
+}
+
+function Dice({diceRoll, cheatValue}: Readonly<DiceProps>) {
   const [rotateY, setRotateY] = useState(0);
   const [rotateX, setRotateX] = useState(0);
-  const [diceRolling, setDiceRolling] = useState(false);
   const rollingInterval = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const toggleDice = (diceRoll?: boolean) => {
-    if (!diceRoll) {
-      if (rollingInterval.current) {
-        clearInterval(rollingInterval.current);
-        rollingInterval.current = null;
-        setDiceRolling(false);
-      }
-    } else {
-      setDiceRolling(true);
+    if (diceRoll) {
       rollingInterval.current = setInterval(() => {
         const direction1 = Math.floor(Math.random() * 2) % 2 == 0; // NOSONAR
-        const direction2 = Math.floor(Math.random() * 2) % 2 == 0; // NOSONAR
         setRotateX((prevState) => prevState + (direction1 ? 90 : 180));
         setRotateY((prevState) => prevState + (direction1 ? 90 : 180));
       }, 200);
+    } else {
+      if (rollingInterval.current) {
+        clearInterval(rollingInterval.current);
+        rollingInterval.current = null;
+      }
     }
   };
 
-  const setValue = (faceNumber: '1' | '2' | '3' | '4' | '5' | '6') => {
+  const setValue = (faceNumber: FaceNumber) => {
     setRotateY(CubeFaceData[faceNumber].y);
     setRotateX(CubeFaceData[faceNumber].x);
   };
@@ -124,22 +128,22 @@ function Dice({diceRoll, cheatValue}: {diceRoll?: boolean, cheatValue?: '1' | '2
     <Scene>
       <Cube rotationY={rotateY} rotationX={rotateX}>
         <CubeFace faceNumber="1">
-          <img src={face1} />
+          <img src={face1} alt={'1'}/>
         </CubeFace>
         <CubeFace faceNumber="2">
-          <img src={face2} />
+          <img src={face2} alt={'2'}/>
         </CubeFace>
         <CubeFace faceNumber="3">
-          <img src={face3} />
+          <img src={face3} alt={'3'}/>
         </CubeFace>
         <CubeFace faceNumber="4">
-          <img src={face4} />
+          <img src={face4} alt={'4'}/>
         </CubeFace>
         <CubeFace faceNumber="5">
-          <img src={face5} />
+          <img src={face5} alt={'5'}/>
         </CubeFace>
         <CubeFace faceNumber="6">
-          <img src={face6} />
+          <img src={face6} alt={'6'}/>
         </CubeFace>
       </Cube>
     </Scene>

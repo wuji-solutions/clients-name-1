@@ -12,7 +12,7 @@ import Summary from './pages/Summary';
 import BoardgamePlayer from './pages/boardgame/BoardgamePlayer';
 import BoardgameObserver from './pages/boardgame/BoardgameObserver';
 
-const context = (window.location.hostname === 'localhost') ? 'admin' : 'user'
+const context = (globalThis.location.hostname === 'localhost') ? 'admin' : 'user'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(

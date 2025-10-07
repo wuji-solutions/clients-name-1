@@ -119,7 +119,6 @@ function BoardgamePlayer() {
   const [showAnswerModal, setShowAnswerModal] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
   const [selectedAnswers, setSelectedAnswers] = useState<Array<string>>([]);
-  const [hasAnsweredQuestion, setHasAnsweredQuestion] = useState(false);
 
   const [isAnswering, setIsAnswering] = useState(false);
 
@@ -164,7 +163,6 @@ function BoardgamePlayer() {
       .then((response) => {
         setCurrentQuestion(response.data);
         setSelectedAnswers([]);
-        setHasAnsweredQuestion(false);
         setShowAnswerModal(true);
       })
       .catch((error) => {
@@ -210,26 +208,16 @@ function BoardgamePlayer() {
   const handleAnswerSent = () => {
     service
       .sendAnswer(
-        selectedAnswers.map((id) => parseInt(id)),
+        selectedAnswers.map((id) => Number.parseInt(id)),
         'board'
       )
       .then((response) => {
-        setHasAnsweredQuestion(true);
         setShowAnswerModal(false);
-        setHasAnsweredQuestion(true);
         setDiceInteractable(true);
         setShowDice(true);
         setIsAnswering(false);
       })
       .catch((error) => console.error(error));
-  };
-
-  const toggleAnswerModal = (mode: 'on' | 'off') => {
-    if (mode === 'on') {
-      setShowAnswerModal(true);
-    } else {
-      setShowAnswerModal(false);
-    }
   };
 
   const toggleDiceRoll = (mode: 'on' | 'off') => {
@@ -255,7 +243,7 @@ function BoardgamePlayer() {
             <AnswerGrid>
               {currentQuestion.answers.map((answer, index) => (
                 <AnswerCard
-                  key={index}
+                  key={`answer_${index}`}
                   isselected={selectedAnswers.includes(answer.id)}
                   backgroundcolor={getColor(index)}
                   onClick={() => handleAnswerSelected(answer.id)}

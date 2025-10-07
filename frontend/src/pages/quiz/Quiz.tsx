@@ -204,7 +204,7 @@ function Quiz() {
     setSendingAnswer(true);
     service
       .sendAnswer(
-        selectedAnswers.map((id) => parseInt(id)),
+        selectedAnswers.map((id) => Number.parseInt(id)),
         'quiz'
       )
       .then((_) => setQuestionAnswered(true))
@@ -233,7 +233,7 @@ function Quiz() {
         const currentQuestion = response.data;
         if (user !== 'admin') {
           service
-            .hasAnsweredQuestion(parseInt(currentQuestion.id))
+            .hasAnsweredQuestion(Number.parseInt(currentQuestion.id))
             .then((response) => {
               if (response.data.alreadyAnswered) {
                 setQuestionAnswered(true);

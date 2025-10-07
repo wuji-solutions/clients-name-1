@@ -69,7 +69,7 @@ export function getPawnPositionInField(
   const dirX = fieldCoords.x - centerX;
   const dirY = fieldCoords.y - centerY;
 
-  const length = Math.sqrt(dirX * dirX + dirY * dirY) || 1;
+  const length = Math.hypot(dirX * dirX + dirY * dirY) || 1;
   const normalizedX = dirX / length;
   const normalizedY = dirY / length;
 
@@ -161,6 +161,7 @@ export function findClosestFieldIndex(
     }
     return best;
   } catch (e) {
+    console.error(`Error during movement rendering: ${e}`)
     return -1;
   }
 }

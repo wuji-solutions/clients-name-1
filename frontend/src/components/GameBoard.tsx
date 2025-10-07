@@ -11,7 +11,6 @@ import { service } from '../service/service';
 import {
   createCheckerboardImage,
   computeFieldCoordinates,
-  getStackedPosition,
 } from './gameBoardUtils';
 
 import { usePawnAnimations } from './usePawnAnimations';
@@ -60,6 +59,15 @@ const GameBoard: React.FC<Props> = ({
   const BOARD_Y_RADIUS = BOARD_X_RADIUS / 3.5;
   const Y_OFFSET = mobile ? 10 : 45;
 
+  const getInitialZoomValue = () => {
+    if (observerVersion) return 0.9
+    if (mobile) {
+      return 1.6
+    } else {
+      return 1
+    }
+  }
+
   useEffect(() => {
     const stage = stageRef.current;
     if (stage) {
@@ -71,7 +79,7 @@ const GameBoard: React.FC<Props> = ({
         minZoom: observerVersion ? 0.5 : 1.5,
         initialX: observerVersion && !mobile ? centerX + 40 : centerX,
         initialY: centerY,
-        initialZoom: observerVersion ? 0.9 : mobile ? 1.6 : 1,
+        initialZoom: getInitialZoomValue(),
         maxZoom: mobile ? 3 : 2.8,
         autocenter: true,
         enableTextSelection: false,
@@ -182,13 +190,17 @@ const GameBoard: React.FC<Props> = ({
             Z
           `;
 
-            const checkerboard = i === 0 ? createCheckerboardImage(mobile ? 8 : 18) : undefined;
+            const checkerboardImage = createCheckerboardImage(mobile ? 8 : 18)
+
+            const checkerboard = i === 0 ? checkerboardImage : undefined;
+
+            const colorReferences = boardColorReferences?.get(tileStates[i])
 
             return (
               <Path
-                key={i}
+                key={`path_data_${i}`}
                 data={pathData}
-                fill={i === 0 ? undefined : (boardColorReferences ? boardColorReferences.get(tileStates[i]) : '#00ffff')}
+                fill={i === 0 ? undefined : colorReferences}
                 fillPatternImage={checkerboard}
                 fillPatternRepeat="repeat"
                 fillPatternScale={{ x: 1, y: 0.92 }}
@@ -212,7 +224,7 @@ const GameBoard: React.FC<Props> = ({
                 x={0}
                 y={0}
                 scale={1}
-                color={colorPalette[parseInt(pawnData.index) % colorPalette.length]}
+                color={colorPalette[Number.parseInt(pawnData.index) % colorPalette.length]}
                 isCurrentPlayer={pawnData.index == playerIndex}
                 nodeRef={(node) => {
                   if (node) {
