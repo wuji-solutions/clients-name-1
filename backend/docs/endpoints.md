@@ -561,7 +561,10 @@ nie chce mi sie rozpisywać każdych endpointów do pytań, analogicznie jak do 
 - `/games/exam/questions/next`
 - `/games/exam/questions/answer`
 
+
+
 tyle, że endpointy z dostawaniem pytania zwracają DTO `ExtendedQuestionDto`, wyglądające tak:
+
 ```json
 {
   "id": "number",
@@ -580,6 +583,10 @@ tyle, że endpointy z dostawaniem pytania zwracają DTO `ExtendedQuestionDto`, w
 ```json
     "selectedIds": "number[]"
 ```
+A przy odpowiadaniu mamy dodatkowe pole `playerCheated` będące `boolem`.
+
+Jeżeli dojdziemy do końca pytań lub będziemy się chcieli cofnąć przed pierwszy element, response to 404 z wiadomością "Nie ma więcej pytań"
+
 
 # SSE – Strumieniowanie zdarzeń
 
