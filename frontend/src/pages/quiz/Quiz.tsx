@@ -31,19 +31,19 @@ export const QuestionHeader = styled.div(() => ({
   gap: '15px',
 }));
 
-export const QuestionCategory = styled.span(() => ({
+const QuestionCategory = styled.span(() => ({
   fontSize: '25px',
   margin: 'auto',
   fontWeight: 'bold',
 }));
 
-export const QuestionTask = styled.span(() => ({
+const QuestionTask = styled.span(() => ({
   fontSize: '50px',
   margin: 'auto',
   fontWeight: 'bold',
 }));
 
-export const AnswerContainer = styled.div(() => ({
+const AnswerContainer = styled.div(() => ({
   display: 'flex',
   flexDirection: 'column',
   textAlign: 'center',
@@ -57,18 +57,18 @@ const AnsweredContainer = styled.div(() => ({
   height: '100vh',
 }));
 
-export const AnswerHeader = styled.h1(() => ({
+const AnswerHeader = styled.h1(() => ({
   marginTop: '30px',
 }));
 
-export const AnswerColumn = styled.div(() => ({
+const AnswerColumn = styled.div(() => ({
   display: 'flex',
   flexDirection: 'column',
   gap: '35px',
   padding: '40px',
 }));
 
-export const AnswerGrid = styled.div(() => ({
+const AnswerGrid = styled.div(() => ({
   display: 'grid',
   gridTemplateColumns: 'repeat(2, 1fr)',
   gap: '35px',
@@ -214,7 +214,7 @@ function Quiz() {
 
   const handleEndCurrentQuestion = () => {
     service
-      .endQuestion()
+      .endQuestion('quiz')
       .then((response) => {
         setQuestionStats(response.data);
         setQuestionEnded(true);
@@ -223,7 +223,7 @@ function Quiz() {
   };
 
   const handleNextQuestion = () => {
-    service.nextQuestion();
+    service.nextQuestion('quiz');
   };
 
   const setQuestion = (user: string) => {

@@ -25,7 +25,7 @@ export const Container = styled.div(() => ({
   overflow: 'hidden',
 }));
 
-export const ActionContainer = styled.div(() => ({
+const ActionContainer = styled.div(() => ({
   position: 'absolute',
   zIndex: 2,
   margin: 'auto',
@@ -49,13 +49,13 @@ export const GameContainer = styled.div(() => ({
   boxSizing: 'border-box',
 }));
 
-export const BoardQuestionCategory = styled.span(() => ({
+const BoardQuestionCategory = styled.span(() => ({
   fontSize: mobile ? '15px' : '25px',
   margin: 'auto',
   fontWeight: 'bold',
 }));
 
-export const BoardQuestionTask = styled.span(() => ({
+const BoardQuestionTask = styled.span(() => ({
   fontSize: mobile ? '20px' : '50px',
   margin: 'auto',
   fontWeight: 'bold',

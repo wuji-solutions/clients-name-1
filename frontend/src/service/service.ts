@@ -7,7 +7,7 @@ const startLobby = (mode: string, quiz: any) => {
   });
 };
 
-const joinGame = (index: number, mode: string = 'quiz') => {
+const joinGame = (index: number, mode: string) => {
   return axios.post(
     BACKEND_ENDPOINT_EXTERNAL + `/games/${mode}/join`,
     { index: index },
@@ -48,11 +48,11 @@ const sendAnswer = (answers: Array<number>, mode: string) => {
   );
 };
 
-const endQuestion = (mode: string = 'quiz') => {
+const endQuestion = (mode: string) => {
   return axios.post(BACKEND_ENDPOINT + `/games/${mode}/questions/end`, {});
 };
 
-const nextQuestion = (mode: string = 'quiz') => {
+const nextQuestion = (mode: string) => {
   return axios.post(BACKEND_ENDPOINT + `/games/${mode}/questions/next`, {});
 };
 
