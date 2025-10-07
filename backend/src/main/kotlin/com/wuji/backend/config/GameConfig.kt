@@ -5,17 +5,10 @@ interface GameConfig {
     val questionDurationSeconds: Int
 }
 
-enum class DifficultyLevel {
-    EASY,
-    MEDIUM,
-    HARD;
+enum class DifficultyLevel(val polish: String) {
+    EASY("Łatwy"),
+    MEDIUM("Średni"),
+    HARD("Trudny");
 
     fun next(): DifficultyLevel = values().getOrNull(this.ordinal + 1) ?: HARD
-
-    fun toPolish(): String =
-        when (this) {
-            EASY -> "Łatwy"
-            MEDIUM -> "Średni"
-            HARD -> "Trudny"
-        }
 }

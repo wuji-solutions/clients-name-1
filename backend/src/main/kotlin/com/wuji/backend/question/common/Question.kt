@@ -53,13 +53,8 @@ data class Question(
     }
 }
 
-enum class QuestionType {
-    TEXT;
-
-    fun toPolish(): String =
-        when (this) {
-            TEXT -> "TEKST"
-        }
+enum class QuestionType(val polish: String) {
+    TEXT("TEKST")
 }
 
 enum class TextFormat {
