@@ -38,6 +38,8 @@ export interface ExamConfig extends CommonSettings, ExamSettings {}
 
 export interface QuizConfig extends CommonSettings {}
 
+export type config = BoardConfig | ExamConfig | QuizConfig;
+
 export type mode = 'quiz' | 'board' | 'exam';
 
 export type DifficultyLevel = 'EASY' | 'MEDIUM' | 'HARD';
