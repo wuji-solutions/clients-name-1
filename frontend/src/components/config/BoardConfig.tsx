@@ -20,14 +20,7 @@ export default function BoardConfig({ settings, setSettings }: Props) {
       <p className="centered" style={{ fontSize: '200%' }}>
         Ustawienia planszówki
       </p>
-      <CustomInputFullWidth
-        type="number"
-        placeholder="Liczba pytań, na które musi odpowiedzieć uczeń"
-        onChange={
-          (e) => void {}
-          // setSettings({ ...settings, requiredQuestionCount: Number(e.target.value) })
-        }
-      />
+      {/* TOOD: currently there is one setting missing */}
       <LabeledCheckboxContainer>
         <CenteredLabel>Ilość punktów za pytanie łatwe</CenteredLabel>
         <Dropdown

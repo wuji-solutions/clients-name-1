@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { mode } from '../../common/types';
 import CommonConfig, { CommonSettings } from './CommonConfig';
 import QuizConfig from './QuizConfig';
@@ -9,39 +8,23 @@ import Divider from '../Divider';
 
 interface Props {
   mode: mode | null;
+  commonSettings: CommonSettings;
+  setCommonSettings: any;
+  examSettings: ExamSettings;
+  setExamSettings: any;
+  boardSettings: BoardSettings;
+  setBoardSettings: any;
 }
 
-export default function GameConfig({ mode }: Props) {
-  const [commonSettings, setCommonSettings] = useState<CommonSettings>({
-    totalDurationMinutes: 30,
-    endImmediatelyAfterTime: true,
-    questionFilePath: '',
-    questionDurationSecond: 30,
-  });
-  const [examSettings, setExamSettings] = useState<ExamSettings>({
-    requiredQuestionCount: 10,
-    randomizeQuestions: true,
-    enforceDifficultyBalance: false,
-    selectedQuestionIds: [],
-    zeroPointsOnCheating: true,
-    markQuestionOnCheating: false,
-    notifyTeacherOnCheating: true,
-    pointsPerDifficulty: {
-      EASY: 1,
-      MEDIUM: 2,
-      HARD: 3,
-    },
-    allowGoingBack: true,
-  });
-  const [boardSettings, setBoardSettings] = useState<BoardSettings>({
-    pointsPerDifficulty: {
-      EASY: 1,
-      MEDIUM: 2,
-      HARD: 3,
-    },
-    rankingPromotionRules: {},
-  });
-
+export default function GameConfig({
+  mode,
+  commonSettings,
+  setCommonSettings,
+  examSettings,
+  setExamSettings,
+  boardSettings,
+  setBoardSettings,
+}: Props) {
   return (
     <div
       style={{
@@ -66,7 +49,7 @@ export default function GameConfig({ mode }: Props) {
           marginTop: '25px',
         }}
       >
-        <div style={{ overflowY: 'auto', overflowX: 'hidden' }}>
+        <div style={{ overflowY: 'scroll', overflowX: 'hidden' }}>
           <Divider />
 
           <CommonConfig commonSettings={commonSettings} setCommonSettings={setCommonSettings} />

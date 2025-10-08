@@ -1,3 +1,7 @@
+import { BoardSettings } from '../components/config/BoardConfig';
+import { CommonSettings } from '../components/config/CommonConfig';
+import { ExamSettings } from '../components/config/ExamConfig';
+
 export interface Answer {
   id: string;
   content: string;
@@ -28,6 +32,12 @@ export interface QuestionData {
   incorrectAnswersCount: number;
 }
 
-export type mode = 'quiz' | 'board' | 'exam' | 'test' | 'game';
+export interface BoardConfig extends CommonSettings, BoardSettings {}
+
+export interface ExamConfig extends CommonSettings, ExamSettings {}
+
+export interface QuizConfig extends CommonSettings {}
+
+export type mode = 'quiz' | 'board' | 'exam';
 
 export type DifficultyLevel = 'EASY' | 'MEDIUM' | 'HARD';

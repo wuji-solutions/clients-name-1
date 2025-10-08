@@ -10,6 +10,10 @@ import { useAppContext } from '../providers/AppContextProvider';
 import AccessRestricted from '../components/AccessRestricted';
 import { service } from '../service/service';
 import GameConfig from '../components/config/GameConfig';
+import { BoardSettings } from '../components/config/BoardConfig';
+import { CommonSettings } from '../components/config/CommonConfig';
+import { ExamSettings } from '../components/config/ExamConfig';
+import { settingsToConfig } from '../components/config/utils';
 
 const Container = styled.div({
   width: '100%',
@@ -117,6 +121,7 @@ function Configurations() {
 
   const startLobby = () => {
     if (!mode) return;
+    const config = settingsToConfig(mode, commonSettings, examSettings, boardSettings);
     service
       .startLobby(mode, { ...TEST_QUIZ })
       .then((response) => {
@@ -125,6 +130,36 @@ function Configurations() {
       })
       .catch((error) => console.log(error));
   };
+
+  const [commonSettings, setCommonSettings] = useState<CommonSettings>({
+    totalDurationMinutes: 30,
+    endImmediatelyAfterTime: true,
+    questionFilePath: '',
+    questionDurationSecond: 30,
+  });
+  const [examSettings, setExamSettings] = useState<ExamSettings>({
+    requiredQuestionCount: 10,
+    randomizeQuestions: true,
+    enforceDifficultyBalance: false,
+    selectedQuestionIds: [],
+    zeroPointsOnCheating: true,
+    markQuestionOnCheating: false,
+    notifyTeacherOnCheating: true,
+    pointsPerDifficulty: {
+      EASY: 1,
+      MEDIUM: 2,
+      HARD: 3,
+    },
+    allowGoingBack: true,
+  });
+  const [boardSettings, setBoardSettings] = useState<BoardSettings>({
+    pointsPerDifficulty: {
+      EASY: 1,
+      MEDIUM: 2,
+      HARD: 3,
+    },
+    rankingPromotionRules: {},
+  });
 
   if (user == 'user') {
     return <AccessRestricted />;
@@ -155,7 +190,15 @@ function Configurations() {
           <input {...getInputProps()} />
           <p>Dodaj pytania...</p>
         </FileSelector>
-        <GameConfig mode={mode} />
+        <GameConfig
+          mode={mode}
+          commonSettings={commonSettings}
+          setCommonSettings={setCommonSettings}
+          examSettings={examSettings}
+          setExamSettings={setExamSettings}
+          boardSettings={boardSettings}
+          setBoardSettings={setBoardSettings}
+        />
         <ActionButtonContainer>
           <ButtonCustom onClick={() => startLobby()}>Otwórz poczekalnię</ButtonCustom>
           <ButtonCustom onClick={() => navigate('/')}>Powrót</ButtonCustom>
