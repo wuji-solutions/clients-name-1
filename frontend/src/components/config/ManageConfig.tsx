@@ -26,27 +26,28 @@ const modeToString = (mode: mode): string => {
 export default function ManageConfig({ mode, setIsEditDialogOpen, setConfig }: Props) {
   const [configList, setConfigList] = useState<string[]>([]);
   const [isError, setIsError] = useState<boolean>(false);
-  const [refreshKey, setRefreshKey] = useState(0);
+  const [refreshKey, setRefreshKey] = useState<boolean>(true);
   useEffect(() => {
+    if (!refreshKey) return;
+
     getConfigNamesByMode(mode)
       .then((configs) => {
         setConfigList(configs.data);
         setIsError(false);
       })
       .catch(() => setIsError(true));
+    setRefreshKey(false);
   }, [mode, refreshKey]);
 
   const removeConfig = (configName: string) => {
     deleteConfig(mode, configName);
-    updateRefreshKey();
+    setRefreshKey(true);
   };
 
   const selectConfig = (configName: string) => {
     loadConfig(mode, configName).then((res) => setConfig(res.data));
     setIsEditDialogOpen(false);
   };
-
-  const updateRefreshKey = () => setRefreshKey(refreshKey + 1);
 
   return (
     <Modal>
@@ -68,7 +69,7 @@ export default function ManageConfig({ mode, setIsEditDialogOpen, setConfig }: P
               <h1>Lista dostępnych konfiguracji dla {modeToString(mode)}</h1>
               <Divider></Divider>
               <div style={{ margin: '25px' }}></div>
-
+              {configList.length === 0 && <h2>Brak zapisanych konfiguracji</h2>}
               {configList.map((configName, index) => {
                 return (
                   <>
