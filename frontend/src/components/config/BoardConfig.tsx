@@ -31,7 +31,7 @@ export default function BoardConfig({ settings, setSettings }: Props) {
               ...settings,
               pointsPerDifficulty: {
                 ...settings.pointsPerDifficulty,
-                EASY: Number(e),
+                EASY: Number.parseInt(e),
               },
             })
           }
@@ -48,7 +48,7 @@ export default function BoardConfig({ settings, setSettings }: Props) {
               ...settings,
               pointsPerDifficulty: {
                 ...settings.pointsPerDifficulty,
-                MEDIUM: Number(e),
+                MEDIUM: Number.parseInt(e),
               },
             })
           }
@@ -65,7 +65,7 @@ export default function BoardConfig({ settings, setSettings }: Props) {
               ...settings,
               pointsPerDifficulty: {
                 ...settings.pointsPerDifficulty,
-                HARD: Number(e),
+                HARD: Number.parseInt(e),
               },
             })
           }

@@ -29,7 +29,10 @@ export default function CommonConfig({ commonSettings, setCommonSettings }: Prop
           max={MAX_GAME_LENGTH}
           value={commonSettings.totalDurationMinutes}
           onChange={(e) =>
-            setCommonSettings({ ...commonSettings, totalDurationMinutes: parseInt(e.target.value) })
+            setCommonSettings({
+              ...commonSettings,
+              totalDurationMinutes: Number.parseInt(e.target.value),
+            })
           }
         />
       </LabeledCheckboxContainer>
@@ -58,7 +61,7 @@ export default function CommonConfig({ commonSettings, setCommonSettings }: Prop
           onChange={(e) =>
             setCommonSettings({
               ...commonSettings,
-              questionDurationSeconds: parseInt(e.target.value),
+              questionDurationSeconds: Number.parseInt(e.target.value),
             })
           }
         />

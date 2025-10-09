@@ -69,10 +69,10 @@ export default function ManageConfig({ mode, setIsEditDialogOpen, setConfig }: P
               <Divider></Divider>
               <div style={{ margin: '25px' }}></div>
 
-              {configList.map((configName) => {
+              {configList.map((configName, index) => {
                 return (
                   <>
-                    <div style={{ display: 'flex', margin: '10px' }}>
+                    <div key={index} style={{ display: 'flex', margin: '10px' }}>
                       <CenteredLabel>{configName}</CenteredLabel>
                       <ButtonCustom
                         style={{ width: '30%', margin: '0 0 0 auto' }}

@@ -20,7 +20,7 @@ export const CheckboxInput = styled(CustomInput)`
 
 export const CenteredLabel = styled.label`
   display: flex;
-  align-items: center; /* centers vertically */
-  height: 50px; /* or whatever height you want */
+  align-items: center;
+  height: 50px;
   font-size: 130%;
 `;

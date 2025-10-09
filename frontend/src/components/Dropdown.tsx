@@ -1,4 +1,3 @@
-// Dropdown.tsx
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
@@ -74,7 +73,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   options,
   onSelect,
   selectedValue,
-  placeholder = 'Select...',
+  placeholder = 'Wybierz...',
 }) => {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<string | null>(selectedValue);
