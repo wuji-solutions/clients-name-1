@@ -51,7 +51,7 @@ class AdminController(
         boardService.createGame(
             requestDto.name,
             requestDto.config.toBoardConfig(),
-            requestDto.questionsFilePath,
+            requestDto.config.questionFilePath,
             requestDto.numberOfTiles)
         authService.clearAllSessions()
         return ResponseEntity.ok().build()

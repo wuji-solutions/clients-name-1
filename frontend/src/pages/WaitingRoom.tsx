@@ -45,9 +45,8 @@ const UserInputContainer = styled.div({
   width: '80vw',
 });
 
-function SSEOnStartListener() {
+function SSEOnStartListener({onGameStart}: {onGameStart: Function}) {
   const { isAdmin } = useAppContext();
-  const navigate = useNavigate();
   const delegate = useSSEChannel(
     `${isAdmin() ? BACKEND_ENDPOINT : BACKEND_ENDPOINT_EXTERNAL}/sse/events`,
     { withCredentials: true }
@@ -55,7 +54,7 @@ function SSEOnStartListener() {
 
   useEffect(() => {
     const unsubscribe = delegate.on('game-start', () => {
-      navigate('/gra/quiz');
+      onGameStart();
     });
     return unsubscribe;
   }, [delegate]);
@@ -96,12 +95,13 @@ function WaitingRoom() {
   const { isAdmin, username, setUsername } = useAppContext();
   const [identificator, setIdentificator] = useState<number | null>(null);
   const [playerKicked, setPlayerKicked] = useState(false);
+  const gameMode = (new URLSearchParams(globalThis.location.search)).get('tryb');
   const navigate = useNavigate();
 
   const joinGame = () => {
-    if (!identificator) return;
+    if (!identificator || !gameMode) return;
     service
-      .joinGame(identificator)
+      .joinGame(identificator, gameMode)
       .then((response) => {
         setUsername(response.data);
         sessionStorage.setItem('username', response.data);
@@ -119,12 +119,25 @@ function WaitingRoom() {
       .catch((error) => console.log(error));
   };
 
+  const moveScreens = () => {
+    switch(gameMode){
+      case 'quiz':
+        navigate('/gra/quiz');
+        break;
+      case 'board':
+        navigate('/gra/planszowa');
+        break;
+      default:
+        console.log('Tryb gry nie został wybrany');
+    }
+  }
+
   if (!isAdmin()) {
     return (
       <Container>
         {username ? (
           <UserInputContainer>
-            <SSEOnStartListener />
+            <SSEOnStartListener onGameStart={moveScreens} />
             <PlayerKickListener userHandler={setUsername} onKick={setPlayerKicked} />
             <h4>Witaj {username}!</h4>
             Czekaj na rozpoczęcie rozgrywki
@@ -146,7 +159,7 @@ function WaitingRoom() {
             <CustomInput
               type="number"
               placeholder="Podaj numer z dziennika / numer grupy"
-              onChange={(e) => setIdentificator(parseInt(e.target.value))}
+              onChange={(e) => setIdentificator(Number.parseInt(e.target.value))}
             />
             <ButtonCustom onClick={() => joinGame()}>Dołącz do gry</ButtonCustom>
           </UserInputContainer>
@@ -157,11 +170,11 @@ function WaitingRoom() {
 
   return (
     <Container>
-      <SSEOnStartListener />
+      <SSEOnStartListener onGameStart={moveScreens}/>
       <PlayerList />
       <QRContainer>
         <QRCode
-          value={'http://192.168.137.1:3000/waiting-room'} // NOSONAR
+          value={`http://192.168.137.1:3000/waiting-room?tryb=${gameMode}`} // NOSONAR
         />
       </QRContainer>
       <ActionButtonContainer>

@@ -97,7 +97,7 @@ const QuestionCard = ({ data }: Props) => {
             key={answer.id}
             isselected={false}
           >
-            {answer.content}
+            {answer.text}
           </AnswerCard>
         ))}
       </AnswerList>

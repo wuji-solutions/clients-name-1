@@ -5,7 +5,7 @@ import { styled } from 'styled-components';
 import theme from '../common/theme';
 import { mode } from '../common/types';
 import { ButtonChoose, ButtonCustom } from '../components/Button';
-import { TEST_QUIZ } from '../common/test';
+import { TEST_GAME, TEST_QUIZ } from '../common/test';
 import { useAppContext } from '../providers/AppContextProvider';
 import AccessRestricted from '../components/AccessRestricted';
 import { service } from '../service/service';
@@ -123,10 +123,10 @@ function Configurations() {
     if (!mode) return;
     const config = settingsToConfig(mode, commonSettings, examSettings, boardSettings);
     service
-      .startLobby(mode, { ...TEST_QUIZ })
+      .startLobby(mode, mode === 'quiz' ? { ...TEST_QUIZ } : { ... TEST_GAME })
       .then((response) => {
         console.log('Successfully created new game');
-        navigate('/waiting-room');
+        navigate(`/waiting-room?tryb=${mode}`);
       })
       .catch((error) => console.log(error));
   };

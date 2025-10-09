@@ -4,7 +4,7 @@ import { ExamSettings } from '../components/config/ExamConfig';
 
 export interface Answer {
   id: string;
-  content: string;
+  text: string;
   isCorrect?: boolean;
 }
 
@@ -30,6 +30,19 @@ export interface QuestionData {
   };
   correctAnswersCount: number;
   incorrectAnswersCount: number;
+}
+
+export interface Pawn {
+  index: string;
+  nickname: string;
+}
+
+export type BoardPositions = Pawn[][];
+
+export interface FieldCoordinate {
+  x: number;
+  y: number;
+  scale: number;
 }
 
 export interface BoardConfig extends CommonSettings, BoardSettings {}

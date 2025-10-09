@@ -17,14 +17,14 @@ const Container = styled.div(() => ({
   margin: 'auto',
 }));
 
-const QuestionContainer = styled.div(() => ({
+export const QuestionContainer = styled.div(() => ({
   padding: '20px',
   display: 'flex',
   flexDirection: 'column',
   textAlign: 'center',
 }));
 
-const QuestionHeader = styled.div(() => ({
+export const QuestionHeader = styled.div(() => ({
   margin: 'auto',
   display: 'flex',
   flexDirection: 'column',
@@ -32,13 +32,13 @@ const QuestionHeader = styled.div(() => ({
 }));
 
 const QuestionCategory = styled.span(() => ({
-  fontSize: '35px',
+  fontSize: '25px',
   margin: 'auto',
   fontWeight: 'bold',
 }));
 
 const QuestionTask = styled.span(() => ({
-  fontSize: '80px',
+  fontSize: '50px',
   margin: 'auto',
   fontWeight: 'bold',
 }));
@@ -204,7 +204,7 @@ function Quiz() {
     setSendingAnswer(true);
     service
       .sendAnswer(
-        selectedAnswers.map((id) => parseInt(id)),
+        selectedAnswers.map((id) => Number.parseInt(id)),
         'quiz'
       )
       .then((_) => setQuestionAnswered(true))
@@ -214,7 +214,7 @@ function Quiz() {
 
   const handleEndCurrentQuestion = () => {
     service
-      .endQuestion()
+      .endQuestion('quiz')
       .then((response) => {
         setQuestionStats(response.data);
         setQuestionEnded(true);
@@ -223,7 +223,7 @@ function Quiz() {
   };
 
   const handleNextQuestion = () => {
-    service.nextQuestion();
+    service.nextQuestion('quiz');
   };
 
   const setQuestion = (user: string) => {
@@ -233,7 +233,7 @@ function Quiz() {
         const currentQuestion = response.data;
         if (user !== 'admin') {
           service
-            .hasAnsweredQuestion(parseInt(currentQuestion.id))
+            .hasAnsweredQuestion(Number.parseInt(currentQuestion.id))
             .then((response) => {
               if (response.data.alreadyAnswered) {
                 setQuestionAnswered(true);
@@ -265,7 +265,7 @@ function Quiz() {
                     backgroundcolor={getColor(index)}
                     onClick={() => handleAnswerSelected(answer.id)}
                   >
-                    <h2>{answer.content}</h2>
+                    <h2>{answer.text}</h2>
                   </AnswerCard>
                 ))}
               </AnswerColumn>
@@ -305,7 +305,7 @@ function Quiz() {
                   backgroundcolor={getColor(index)}
                   style={{ cursor: 'default' }}
                 >
-                  <h2>{answer.content}</h2>
+                  <h2>{answer.text}</h2>
                 </AnswerCard>
               ))}
             </AnswerGrid>
@@ -327,7 +327,7 @@ function Quiz() {
                     backgroundcolor={getColor(index)}
                     style={{ cursor: 'default', marginTop: '10px' }}
                   >
-                    <h2>{answer.answer.content}</h2>
+                    <h2>{answer.answer.text}</h2>
                   </AnswerCard>
                 </div>
               ))}
