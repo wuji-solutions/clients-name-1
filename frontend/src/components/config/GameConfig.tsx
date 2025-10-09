@@ -1,13 +1,16 @@
-import { mode } from '../../common/types';
+import { ConfigDTO, mode } from '../../common/types';
 import CommonConfig, { CommonSettings } from './CommonConfig';
 import QuizConfig from './QuizConfig';
 import ExamConfig, { ExamSettings } from './ExamConfig';
 import BoardConfig, { BoardSettings } from './BoardConfig';
 import { ButtonCustom } from '../Button';
 import Divider from '../Divider';
+import { useState } from 'react';
+import EditConfig from './EditConfig';
+import { applySettingsFromDto } from './utils';
 
 interface Props {
-  mode: mode | null;
+  mode: mode;
   commonSettings: CommonSettings;
   setCommonSettings: any;
   examSettings: ExamSettings;
@@ -25,6 +28,17 @@ export default function GameConfig({
   boardSettings,
   setBoardSettings,
 }: Props) {
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
+  const editConfig = () => {
+    setIsEditDialogOpen(true);
+  };
+
+  const setConfig = (dto: ConfigDTO) => {
+    applySettingsFromDto(dto, setCommonSettings, setExamSettings, setBoardSettings);
+  };
+
+  if (!isEditDialogOpen) {
+  }
   return (
     <div
       style={{
@@ -37,10 +51,15 @@ export default function GameConfig({
         width: '95%',
       }}
     >
+      {isEditDialogOpen && (
+        <EditConfig setConfig={setConfig} mode={mode} setIsEditDialogOpen={setIsEditDialogOpen} />
+      )}
       <h1 className="centered" style={{ fontSize: '300%' }}>
         Ustawienia
       </h1>
-      <ButtonCustom style={{ width: '40%' }}>Wczytaj</ButtonCustom>
+      <ButtonCustom style={{ width: '40%' }} onClick={editConfig}>
+        Zarządzaj
+      </ButtonCustom>
       <div
         style={{
           height: '50vh',

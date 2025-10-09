@@ -109,7 +109,7 @@ export default function ExamConfig({ settings, setSettings }: ExamConfigProps) {
           }
         />
       </LabeledCheckboxContainer>
-      <LabeledCheckboxContainer>
+      {/* <LabeledCheckboxContainer>
         <CenteredLabel>Lista ID pytań wybranych ręcznie (oddzielone przecinkami)</CenteredLabel>
         <CleanInput
           type="text"
@@ -124,7 +124,7 @@ export default function ExamConfig({ settings, setSettings }: ExamConfigProps) {
             })
           }
         />
-      </LabeledCheckboxContainer>
+      </LabeledCheckboxContainer> */}
       <LabeledCheckboxContainer>
         <CenteredLabel>Ilość punktów za pytanie łatwe</CenteredLabel>
         <Dropdown

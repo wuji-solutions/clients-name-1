@@ -51,7 +51,12 @@ export interface ExamConfig extends CommonSettings, ExamSettings {}
 
 export interface QuizConfig extends CommonSettings {}
 
-export type config = BoardConfig | ExamConfig | QuizConfig;
+export type ConfigDTO =
+  | ({ type: 'quiz' } & CommonSettings)
+  | ({ type: 'exam' } & CommonSettings & ExamSettings)
+  | ({ type: 'board' } & CommonSettings & BoardSettings);
+
+export type CreateConfigDto = Omit<ConfigDTO, 'type'>;
 
 export type mode = 'quiz' | 'board' | 'exam';
 

@@ -117,13 +117,13 @@ function Configurations() {
     },
   });
 
-  const [mode, setMode] = useState<mode | null>(null);
+  const [mode, setMode] = useState<mode>('quiz');
 
   const startLobby = () => {
     if (!mode) return;
     const config = settingsToConfig(mode, commonSettings, examSettings, boardSettings);
     service
-      .startLobby(mode, mode === 'quiz' ? { ...TEST_QUIZ } : { ... TEST_GAME })
+      .startLobby(mode, mode === 'quiz' ? { ...TEST_QUIZ } : { ...TEST_GAME })
       .then((response) => {
         console.log('Successfully created new game');
         navigate(`/waiting-room?tryb=${mode}`);
