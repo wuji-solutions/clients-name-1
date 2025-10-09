@@ -19,7 +19,7 @@ interface Props {
 export default function CommonConfig({ commonSettings, setCommonSettings }: Props) {
   return (
     <div>
-      <p className="centered" style={{ fontSize: '200%' }}>
+      <p className="centered" style={{ fontSize: '2em' }}>
         Wspólne ustawienia
       </p>
       <LabeledCheckboxContainer>

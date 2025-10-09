@@ -26,7 +26,7 @@ interface ExamConfigProps {
 export default function ExamConfig({ settings, setSettings }: ExamConfigProps) {
   return (
     <>
-      <p className="centered" style={{ fontSize: '200%' }}>
+      <p className="centered" style={{ fontSize: '2em' }}>
         Ustawienia sprawdzianu
       </p>
 

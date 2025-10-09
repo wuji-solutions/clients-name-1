@@ -17,7 +17,7 @@ interface Props {
 export default function BoardConfig({ settings, setSettings }: Props) {
   return (
     <>
-      <p className="centered" style={{ fontSize: '200%' }}>
+      <p className="centered" style={{ fontSize: '2em' }}>
         Ustawienia planszówki
       </p>
       {/* TOOD: currently there is one setting missing */}
