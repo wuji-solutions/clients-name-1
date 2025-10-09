@@ -7,9 +7,9 @@ const startLobby = (mode: string, quiz: any) => {
   });
 };
 
-const joinGame = (index: number) => {
+const joinGame = (index: number, mode: string) => {
   return axios.post(
-    BACKEND_ENDPOINT_EXTERNAL + '/games/quiz/join',
+    BACKEND_ENDPOINT_EXTERNAL + `/games/${mode}/join`,
     { index: index },
     {
       withCredentials: true,
@@ -48,11 +48,11 @@ const sendAnswer = (answers: Array<number>, mode: string) => {
   );
 };
 
-const endQuestion = (mode: string = 'quiz') => {
+const endQuestion = (mode: string) => {
   return axios.post(BACKEND_ENDPOINT + `/games/${mode}/questions/end`, {});
 };
 
-const nextQuestion = (mode: string = 'quiz') => {
+const nextQuestion = (mode: string) => {
   return axios.post(BACKEND_ENDPOINT + `/games/${mode}/questions/next`, {});
 };
 
@@ -73,6 +73,29 @@ const hasAnsweredQuestion = (questionId: number) => {
   );
 };
 
+const getBoardState = (user: string) => {
+  return axios.get(
+    (user === 'admin' ? BACKEND_ENDPOINT : BACKEND_ENDPOINT_EXTERNAL) + '/games/board/state',
+    { withCredentials: true }
+  );
+};
+
+const makeMove = () => {
+  return axios.post(
+    BACKEND_ENDPOINT_EXTERNAL + '/games/board/player/move',
+    {},
+    { withCredentials: true }
+  );
+};
+
+const getPlayerId = () => {
+  return axios.get(BACKEND_ENDPOINT_EXTERNAL + '/games/board/player', { withCredentials: true });
+};
+
+const getPlayerRanking = () => {
+  return axios.get(BACKEND_ENDPOINT + '/games/board/ranking', { withCredentials: true });
+};
+
 export const service = {
   startLobby: startLobby,
   joinGame: joinGame,
@@ -86,4 +109,8 @@ export const service = {
   kickPlayer: kickPlayer,
   getPlayerList: getPlayerList,
   hasAnsweredQuestion: hasAnsweredQuestion,
+  getBoardState: getBoardState,
+  makeMove: makeMove,
+  getPlayerId: getPlayerId,
+  getPlayerRanking: getPlayerRanking,
 };
