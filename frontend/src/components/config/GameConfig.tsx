@@ -6,8 +6,9 @@ import BoardConfig, { BoardSettings } from './BoardConfig';
 import { ButtonCustom } from '../Button';
 import Divider from '../Divider';
 import { useState } from 'react';
-import EditConfig from './EditConfig';
-import { applySettingsFromDto } from './utils';
+import EditConfig from './ManageConfig';
+import { applySettingsFromDto, settingsToConfig } from './utils';
+import { createConfig } from '../../service/configService';
 
 interface Props {
   mode: mode;
@@ -35,10 +36,16 @@ export default function GameConfig({
 
   const setConfig = (dto: ConfigDTO) => {
     applySettingsFromDto(dto, setCommonSettings, setExamSettings, setBoardSettings);
+    setTimeout(() => console.log(commonSettings), 1000);
   };
 
-  if (!isEditDialogOpen) {
-  }
+  const saveConfig = (configName: string) => {
+    const config = settingsToConfig(mode, commonSettings, examSettings, boardSettings);
+    createConfig(mode, configName, config)
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
+  };
+
   return (
     <div
       style={{
@@ -81,7 +88,9 @@ export default function GameConfig({
         </div>
       </div>
 
-      <ButtonCustom style={{ width: '40%' }}>Zapisz</ButtonCustom>
+      <ButtonCustom style={{ width: '40%' }} onClick={() => saveConfig('name3')}>
+        Zapisz
+      </ButtonCustom>
     </div>
   );
 }

@@ -109,6 +109,7 @@ export default function ExamConfig({ settings, setSettings }: ExamConfigProps) {
           }
         />
       </LabeledCheckboxContainer>
+      {/* TODO: currently list of questions is disabled even though backend takes it as parameter. */}
       {/* <LabeledCheckboxContainer>
         <CenteredLabel>Lista ID pytań wybranych ręcznie (oddzielone przecinkami)</CenteredLabel>
         <CleanInput
@@ -129,6 +130,7 @@ export default function ExamConfig({ settings, setSettings }: ExamConfigProps) {
         <CenteredLabel>Ilość punktów za pytanie łatwe</CenteredLabel>
         <Dropdown
           options={['1', '2', '3']}
+          selectedValue={String(settings.pointsPerDifficulty.EASY)}
           onSelect={(e) =>
             setSettings({
               ...settings,
@@ -145,6 +147,7 @@ export default function ExamConfig({ settings, setSettings }: ExamConfigProps) {
         <CenteredLabel>Ilość punktów za pytanie średnie</CenteredLabel>
         <Dropdown
           options={['1', '2', '3']}
+          selectedValue={String(settings.pointsPerDifficulty.MEDIUM)}
           onSelect={(e) =>
             setSettings({
               ...settings,
@@ -161,6 +164,7 @@ export default function ExamConfig({ settings, setSettings }: ExamConfigProps) {
         <CenteredLabel>Ilość punktów za pytanie trudne</CenteredLabel>
         <Dropdown
           options={['1', '2', '3']}
+          selectedValue={String(settings.pointsPerDifficulty.HARD)}
           onSelect={(e) =>
             setSettings({
               ...settings,

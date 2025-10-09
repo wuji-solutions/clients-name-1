@@ -1,30 +1,33 @@
 import { BoardSettings } from './BoardConfig';
 import { CommonSettings } from './CommonConfig';
 import { ExamSettings } from './ExamConfig';
-import { mode, ConfigDTO, CreateConfigDto } from '../../common/types';
+import { mode, ConfigDTO } from '../../common/types';
 
 export const settingsToConfig = (
   mode: mode,
   commonSettings: CommonSettings,
   examSettings: ExamSettings,
   boardSettings: BoardSettings
-): CreateConfigDto => {
+): ConfigDTO => {
   switch (mode) {
     case 'board':
       return {
         ...commonSettings,
         ...boardSettings,
+        type: 'BOARD',
       };
 
     case 'exam':
       return {
         ...commonSettings,
         ...examSettings,
+        type: 'EXAM',
       };
 
     case 'quiz':
       return {
         ...commonSettings,
+        type: 'QUIZ',
       };
   }
 };
@@ -39,13 +42,13 @@ export const applySettingsFromDto = (
     totalDurationMinutes: dto.totalDurationMinutes,
     endImmediatelyAfterTime: dto.endImmediatelyAfterTime,
     questionFilePath: dto.questionFilePath,
-    questionDurationSecond: dto.questionDurationSecond,
+    questionDurationSeconds: dto.questionDurationSeconds,
   };
 
   setCommonSettings(common);
 
   switch (dto.type) {
-    case 'exam':
+    case 'EXAM':
       setExamSettings({
         requiredQuestionCount: dto.requiredQuestionCount,
         randomizeQuestions: dto.randomizeQuestions,
@@ -59,14 +62,14 @@ export const applySettingsFromDto = (
       });
       break;
 
-    case 'board':
+    case 'BOARD':
       setBoardSettings({
         pointsPerDifficulty: dto.pointsPerDifficulty,
         rankingPromotionRules: dto.rankingPromotionRules,
       });
       break;
 
-    case 'quiz':
+    case 'QUIZ':
       // quiz only uses common settings, so nothing else to set
       break;
   }

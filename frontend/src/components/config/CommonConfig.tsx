@@ -8,7 +8,7 @@ export interface CommonSettings {
   totalDurationMinutes: number;
   endImmediatelyAfterTime: boolean;
   questionFilePath: string;
-  questionDurationSecond: number;
+  questionDurationSeconds: number;
 }
 
 interface Props {
@@ -27,6 +27,7 @@ export default function CommonConfig({ commonSettings, setCommonSettings }: Prop
         <CleanInput
           type="number"
           max={MAX_GAME_LENGTH}
+          value={commonSettings.totalDurationMinutes}
           onChange={(e) =>
             setCommonSettings({ ...commonSettings, totalDurationMinutes: parseInt(e.target.value) })
           }
@@ -41,6 +42,7 @@ export default function CommonConfig({ commonSettings, setCommonSettings }: Prop
           type="checkbox"
           id="setEndImmediatelyAfterTime"
           style={{ width: '3rem', margin: 0 }}
+          checked={commonSettings.endImmediatelyAfterTime}
           onChange={(e) =>
             setCommonSettings({ ...commonSettings, endImmediatelyAfterTime: e.target.checked })
           }
@@ -52,10 +54,11 @@ export default function CommonConfig({ commonSettings, setCommonSettings }: Prop
         <CleanInput
           type="number"
           max={MAX_QUESTION_DURATION_LENGTH_SECONDS}
+          value={commonSettings.questionDurationSeconds}
           onChange={(e) =>
             setCommonSettings({
               ...commonSettings,
-              questionDurationSecond: parseInt(e.target.value),
+              questionDurationSeconds: parseInt(e.target.value),
             })
           }
         />

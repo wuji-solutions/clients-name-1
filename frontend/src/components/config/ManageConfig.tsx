@@ -3,6 +3,8 @@ import { mode } from '../../common/types';
 import { getConfigNamesByMode, deleteConfig, loadConfig } from '../../service/configService';
 import { ButtonCustom } from '../Button';
 import Modal from '../Modal';
+import { CenteredLabel } from '../Fields';
+import Divider from '../Divider';
 
 interface Props {
   mode: mode;
@@ -21,7 +23,7 @@ const modeToString = (mode: mode): string => {
   }
 };
 
-export default function EditConfig({ mode, setIsEditDialogOpen, setConfig }: Props) {
+export default function ManageConfig({ mode, setIsEditDialogOpen, setConfig }: Props) {
   const [configList, setConfigList] = useState<string[]>([]);
   const [isError, setIsError] = useState<boolean>(false);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -64,15 +66,32 @@ export default function EditConfig({ mode, setIsEditDialogOpen, setConfig }: Pro
           ) : (
             <>
               <h1>Lista dostępnych konfiguracji dla {modeToString(mode)}</h1>
-              {configList.map((configName, idx) => {
+              <Divider></Divider>
+              <div style={{ margin: '25px' }}></div>
+
+              {configList.map((configName) => {
                 return (
-                  <div style={{ display: 'flex', margin: '10px' }}>
-                    {configName}
-                    <ButtonCustom onClick={() => selectConfig(configName)}>Wczytaj</ButtonCustom>
-                    <ButtonCustom onClick={() => removeConfig(configName)}>Usuń</ButtonCustom>
-                  </div>
+                  <>
+                    <div style={{ display: 'flex', margin: '10px' }}>
+                      <CenteredLabel>{configName}</CenteredLabel>
+                      <ButtonCustom
+                        style={{ width: '30%', margin: '0 0 0 auto' }}
+                        onClick={() => selectConfig(configName)}
+                      >
+                        Wczytaj
+                      </ButtonCustom>
+                      <ButtonCustom
+                        style={{ width: '30%', margin: 0 }}
+                        onClick={() => removeConfig(configName)}
+                      >
+                        Usuń
+                      </ButtonCustom>
+                    </div>
+                  </>
                 );
               })}
+              <div style={{ margin: '25px' }}></div>
+              <Divider></Divider>
             </>
           )}
 

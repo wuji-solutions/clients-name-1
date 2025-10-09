@@ -135,7 +135,7 @@ function Configurations() {
     totalDurationMinutes: 30,
     endImmediatelyAfterTime: true,
     questionFilePath: '',
-    questionDurationSecond: 30,
+    questionDurationSeconds: 30,
   });
   const [examSettings, setExamSettings] = useState<ExamSettings>({
     requiredQuestionCount: 10,

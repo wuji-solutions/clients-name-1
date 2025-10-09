@@ -3,7 +3,7 @@ import { BACKEND_ENDPOINT } from '../common/config';
 import { mode } from '../common/types';
 
 export const createConfig = (mode: mode, configName: string, config: any) => {
-  return axios.post(BACKEND_ENDPOINT + `/config/${mode.toUpperCase()}${configName}`, config, {
+  return axios.post(BACKEND_ENDPOINT + `/config/${mode.toUpperCase()}/${configName}`, config, {
     headers: { 'Content-Type': 'application/json' },
   });
 };
@@ -17,5 +17,5 @@ export const getConfigNamesByMode = (mode: mode) => {
 };
 
 export const deleteConfig = (mode: mode, configName: string) => {
-  return axios.delete(BACKEND_ENDPOINT + `/config/{${mode.toUpperCase()}/${configName}}`);
+  return axios.delete(BACKEND_ENDPOINT + `/config/${mode.toUpperCase()}/${configName}`);
 };

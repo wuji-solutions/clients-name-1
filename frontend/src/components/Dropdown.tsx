@@ -5,6 +5,7 @@ import styled from 'styled-components';
 interface DropdownProps {
   options: string[];
   onSelect: (value: string) => void;
+  selectedValue: string;
   placeholder?: string;
 }
 
@@ -69,9 +70,14 @@ const DropdownItem = styled.li`
   }
 `;
 
-const Dropdown: React.FC<DropdownProps> = ({ options, onSelect, placeholder = 'Select...' }) => {
+const Dropdown: React.FC<DropdownProps> = ({
+  options,
+  onSelect,
+  selectedValue,
+  placeholder = 'Select...',
+}) => {
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState<string | null>(null);
+  const [selected, setSelected] = useState<string | null>(selectedValue);
 
   const handleSelect = (value: string) => {
     setSelected(value);
