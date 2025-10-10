@@ -2,7 +2,7 @@ export const getPercentage = (count: number, total: number) =>
   total > 0 ? (count / total) * 100 : 0;
 
 export function darkenColor(hex: string, amount: number): string {
-  const num = parseInt(hex.slice(1), 16);
+  const num = Number.parseInt(hex.slice(1), 16);
   const amt = Math.round(255 * amount);
   const R = Math.max(0, (num >> 16) - amt);
   const G = Math.max(0, ((num >> 8) & 0x00ff) - amt);
@@ -19,8 +19,35 @@ export const colorPalette = [
   '#DDA0DD',
   '#1a24f7',
   '#804040',
+  '#e67300',
+  '#800040',
+  '#408080',
+];
+
+export const boardgameColorPalette = [
+  '#FFC96B',
+  '#00BBBf',
+  '#F2440D',
+  '#6A21CD',
+  '#78237C',
+  '#B992AA',
+  '#dd94f7',
+  '#802210',
+  '#AD7911',
+  '#888040',
+  '#992080',
+  '#BAAFFA',
+  '#CC211F',
+  '#972FFF',
+  '#A3D922',
+  '#AAFFFF',
+  '#11EE0A',
 ];
 
 export function getColor(identifier: number) {
   return colorPalette[identifier % colorPalette.length];
+};
+
+export function isMobileView() {
+  return window.innerWidth <= 968;
 }

@@ -40,7 +40,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
     const storedUsername = sessionStorage.getItem('username');
 
     if (storedUserIndex && storedUsername) {
-      const parsedIndex = parseInt(storedUserIndex, 10);
+      const parsedIndex = Number.parseInt(storedUserIndex, 10);
       if (!isNaN(parsedIndex)) {
         setUserindex(parsedIndex);
       } else {
