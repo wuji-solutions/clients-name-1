@@ -45,7 +45,6 @@ class AdminController(
             requestDto.config.toQuizConfig(),
             requestDto.config.questionFilePath)
         authService.clearAllSessions()
-            )
         return ResponseEntity.ok().build()
     }
 
