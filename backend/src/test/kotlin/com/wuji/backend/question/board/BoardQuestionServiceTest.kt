@@ -59,7 +59,7 @@ class BoardQuestionServiceTest {
 
     @Test
     fun `getAnswers should return player's answers`() {
-        val answers = mutableListOf(PlayerAnswer(question, setOf(0), 0))
+        val answers = mutableListOf(PlayerAnswer(question, setOf(0), 0, false))
 
         every { player.details.answers } returns answers
         every { boardGame.findPlayerByIndex(0) } returns player
@@ -109,7 +109,9 @@ class BoardQuestionServiceTest {
         every { service.getQuestion(0) } returns question
         every { boardGame.findPlayerByIndex(0) } returns player
         every { player.details.askedQuestions.add(question) } returns true
-        every { service.answerQuestion(player, question, answers) } returns true
+        every {
+            service.answerQuestion(player, question, answers, any())
+        } returns true
         every { boardGame.getTop5Players() } returns listOf(player)
         every {
             boardGame.config.pointsPerDifficulty.getValue(
@@ -159,7 +161,9 @@ class BoardQuestionServiceTest {
         every { service.getQuestion(0) } returns question
         every { boardGame.findPlayerByIndex(0) } returns player
         every { player.details.askedQuestions.add(question) } returns true
-        every { service.answerQuestion(player, question, answers) } returns true
+        every {
+            service.answerQuestion(player, question, answers, any())
+        } returns true
         justRun { service.checkForDifficultyPromotion(0) }
 
         every { boardGame.config.pointsPerDifficulty } returns
@@ -199,7 +203,9 @@ class BoardQuestionServiceTest {
         every { service.getQuestion(0) } returns question
         every { boardGame.findPlayerByIndex(0) } returns player
         every { player.details.askedQuestions.add(question) } returns true
-        every { service.answerQuestion(player, question, answers) } returns true
+        every {
+            service.answerQuestion(player, question, answers, any())
+        } returns true
         justRun { service.checkForDifficultyPromotion(0) }
 
         every { boardGame.config.pointsPerDifficulty } returns
@@ -239,7 +245,9 @@ class BoardQuestionServiceTest {
         every { service.getQuestion(0) } returns question
         every { boardGame.findPlayerByIndex(0) } returns player
         every { player.details.askedQuestions.add(question) } returns true
-        every { service.answerQuestion(player, question, answers) } returns true
+        every {
+            service.answerQuestion(player, question, answers, any())
+        } returns true
         justRun { service.checkForDifficultyPromotion(0) }
 
         every { boardGame.config.pointsPerDifficulty } returns
