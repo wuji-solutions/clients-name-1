@@ -12,7 +12,7 @@ abstract class QuestionService {
         player: Player<out PlayerDetails>,
         question: Question,
         answerIds: Set<Int>,
-        answerTimeInMilliseconds: Long = 0,
+        answerTimeInMilliseconds: Long,
         playerCheated: Boolean = false
     ): Boolean {
         if (player.alreadyAnswered(question.id)) {
@@ -37,7 +37,7 @@ abstract class QuestionService {
         player: Player<out PlayerDetails>,
         question: Question,
         answerIds: Set<Int>,
-        answerTimeInMilliseconds: Long = 0,
+        answerTimeInMilliseconds: Long,
         playerCheated: Boolean = false
     ): Boolean {
         val invalidAnswerId =
