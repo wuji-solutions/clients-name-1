@@ -62,7 +62,7 @@ class BoardQuestionService(
         val firstGetCurrentQuestionTime =
             player.details.firstGetCurrentQuestionTime
                 ?: throw IllegalStateException(
-                    "It appears you answered the question before retrieving it first")
+                    "Odpowiedziałeś na pytanie bez dostania go wcześniej")
         val answerTime =
             System.currentTimeMillis() - firstGetCurrentQuestionTime
 

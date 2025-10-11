@@ -32,28 +32,21 @@ class ConfigManagerServiceTest {
     fun `createConfig should successfully create a new config`() {
         val config =
             QuizConfigDto(
-                totalDurationMinutes = 10,
-                questionFilePath = "question.xml",
-                questionDurationSeconds = 5,
-                endImmediatelyAfterTime = true)
+                questionFilePath = "question.xml", questionDurationSeconds = 5)
         service.createConfig(config, GameType.QUIZ, "quiz")
         val file = File(tempDir, "quiz/quiz.json")
         assertTrue(file.exists())
         val content = file.readText()
-        assertTrue(content.contains("totalDurationMinutes"))
         assertTrue(content.contains("questionFilePath"))
         assertTrue(content.contains("questionDurationSeconds"))
-        assertTrue(content.contains("endImmediatelyAfterTime"))
     }
 
     @Test
     fun `readConfig should load existing quiz config`() {
         val config =
             QuizConfigDto(
-                totalDurationMinutes = 15,
                 questionFilePath = "questions.xml",
-                questionDurationSeconds = 10,
-                endImmediatelyAfterTime = false)
+                questionDurationSeconds = 10)
 
         val file = File(tempDir, "quiz/quiz.json")
         file.parentFile.mkdirs()
@@ -61,12 +54,9 @@ class ConfigManagerServiceTest {
 
         val result = service.readConfig(GameType.QUIZ, "quiz")
 
-        assertEquals(config.totalDurationMinutes, result.totalDurationMinutes)
         assertEquals(config.questionFilePath, result.questionFilePath)
         assertEquals(
             config.questionDurationSeconds, result.questionDurationSeconds)
-        assertEquals(
-            config.endImmediatelyAfterTime, result.endImmediatelyAfterTime)
     }
 
     @Test

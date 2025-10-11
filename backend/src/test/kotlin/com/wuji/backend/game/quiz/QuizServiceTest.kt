@@ -90,9 +90,10 @@ class QuizServiceTest {
     @Test
     fun `createGame should register a new quiz game`() {
         val config = mockk<QuizConfig>()
-        val questions = listOf(mockk<Question>())
+        val resource =
+            this::class.java.getResource("/sample_moodle_xml_1.xml")!!.path
 
-        quizService.createGame("test", config, questions)
+        quizService.createGame("test", config, resource)
 
         verify {
             gameRegistry.register(

@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+    <!-- First Category: Programming Basics -->
+    <question type="category">
+        <category>
+            <text>Programming Basics</text>
+        </category>
+    </question>
+
+    <!-- MultiChoice: Programming Basics -->
+    <question type="multichoice">
+        <name>
+            <text>MCQ: Programming Language Types</text>
+        </name>
+        <questiontext format="html">
+            <text><![CDATA[<p>Which of the following is a compiled language?</p>]]></text>
+        </questiontext>
+        <generalfeedback>
+            <text><![CDATA[<p>Compiled languages are translated to machine code before execution, while interpreted languages are executed line by line.</p>]]></text>
+        </generalfeedback>
+        <defaultgrade>1.0</defaultgrade>
+        <penalty>0.33</penalty>
+        <hidden>0</hidden>
+        <single>true</single>
+        <shuffleanswers>1</shuffleanswers>
+        <answernumbering>abc</answernumbering>
+        <answer fraction="100">
+            <text>C++</text>
+            <feedback><text>Correct! C++ is a compiled language.</text></feedback>
+        </answer>
+        <answer fraction="0">
+            <text>Python</text>
+            <feedback><text>Python is an interpreted language.</text></feedback>
+        </answer>
+        <answer fraction="0">
+            <text>JavaScript</text>
+            <feedback><text>JavaScript is typically interpreted or JIT compiled.</text></feedback>
+        </answer>
+        <answer fraction="0">
+            <text>PHP</text>
+            <feedback><text>PHP is an interpreted language.</text></feedback>
+        </answer>
+    </question>
+
+    <!-- ShortAnswer: Programming Basics -->
+    <question type="shortanswer">
+        <name>
+            <text>SA: Loop Type</text>
+        </name>
+        <questiontext format="html">
+            <text><![CDATA[<p>What type of loop executes at least once, even if the condition is false initially?</p>]]></text>
+        </questiontext>
+        <generalfeedback>
+            <text><![CDATA[<p>A do-while loop checks the condition after executing the loop body, ensuring it runs at least once.</p>]]></text>
+        </generalfeedback>
+        <defaultgrade>1.0</defaultgrade>
+        <penalty>0.33</penalty>
+        <hidden>0</hidden>
+        <usecase>0</usecase>
+        <answer fraction="100">
+            <text>do-while</text>
+            <feedback><text>Correct! Do-while loops always execute at least once.</text></feedback>
+        </answer>
+        <answer fraction="100">
+            <text>do while</text>
+            <feedback><text>Correct! Do while loops always execute at least once.</text></feedback>
+        </answer>
+        <answer fraction="80">
+            <text>Do-While</text>
+            <feedback><text>Correct, but watch the capitalization.</text></feedback>
+        </answer>
+    </question>
+
+    <!-- MultiChoice with Multiple Correct Answers -->
+    <question type="multichoice">
+        <name>
+            <text>MCQ: Data Types</text>
+        </name>
+        <questiontext format="html">
+            <text><![CDATA[<p>Which of the following are primitive data types in Java? (Select all that apply)</p>]]></text>
+        </questiontext>
+        <single>false</single>
+        <shuffleanswers>1</shuffleanswers>
+        <answernumbering>123</answernumbering>
+        <answer fraction="100">
+            <text>int</text>
+            <feedback><text>Correct! int is a primitive type.</text></feedback>
+        </answer>
+        <answer fraction="100">
+            <text>boolean</text>
+            <feedback><text>Correct! boolean is a primitive type.</text></feedback>
+        </answer>
+        <answer fraction="0">
+            <text>String</text>
+            <feedback><text>String is a class, not a primitive type.</text></feedback>
+        </answer>
+        <answer fraction="100">
+            <text>char</text>
+            <feedback><text>Correct! char is a primitive type.</text></feedback>
+        </answer>
+        <answer fraction="0">
+            <text>ArrayList</text>
+            <feedback><text>ArrayList is a class from the collections framework.</text></feedback>
+        </answer>
+    </question>
+
+    <!-- Second Category: Web Development -->
+    <question type="category">
+        <category>
+            <text>Web Development</text>
+        </category>
+    </question>
+
+    <!-- MultiChoice: Web Development -->
+    <question type="multichoice">
+        <name>
+            <text>MCQ: CSS Purpose</text>
+        </name>
+        <questiontext format="html">
+            <text><![CDATA[<p>What is the primary purpose of CSS?</p>]]></text>
+        </questiontext>
+        <single>true</single>
+        <shuffleanswers>1</shuffleanswers>
+        <answernumbering>abc</answernumbering>
+        <answer fraction="0">
+            <text>To add interactivity to web pages</text>
+            <feedback><text>That's JavaScript's role.</text></feedback>
+        </answer>
+        <answer fraction="100">
+            <text>To style and layout web pages</text>
+            <feedback><text>Correct! CSS handles presentation.</text></feedback>
+        </answer>
+        <answer fraction="0">
+            <text>To store data on the server</text>
+            <feedback><text>That's handled by databases and server-side languages.</text></feedback>
+        </answer>
+        <answer fraction="0">
+            <text>To define the structure of web pages</text>
+            <feedback><text>That's HTML's primary role.</text></feedback>
+        </answer>
+    </question>
+
+    <!-- ShortAnswer: Web Development -->
+    <question type="shortanswer">
+        <name>
+            <text>SA: HTTP Status Code</text>
+        </name>
+        <questiontext format="html">
+            <text><![CDATA[<p>What HTTP status code indicates "Not Found"?</p>]]></text>
+        </questiontext>
+        <usecase>0</usecase>
+        <answer fraction="100">
+            <text>404</text>
+            <feedback><text>Correct! 404 means Not Found.</text></feedback>
+        </answer>
+        <answer fraction="50">
+            <text>four hundred four</text>
+            <feedback><text>Correct meaning, but use the numeric code.</text></feedback>
+        </answer>
+        <answer fraction="0">
+            <text>200</text>
+            <feedback><text>200 means OK/Success.</text></feedback>
+        </answer>
+        <answer fraction="0">
+            <text>500</text>
+            <feedback><text>500 means Internal Server Error.</text></feedback>
+        </answer>
+    </question>
+
+    <!-- Third Category: Database Concepts -->
+    <question type="category">
+        <category>
+            <text>Database Concepts</text>
+        </category>
+    </question>
+
+    <!-- MultiChoice: Database Concepts -->
+    <question type="multichoice">
+        <name>
+            <text>MCQ: SQL Command Types</text>
+        </name>
+        <questiontext format="html">
+            <text><![CDATA[<p>Which SQL command is used to modify existing data in a table?</p>]]></text>
+        </questiontext>
+        <single>true</single>
+        <shuffleanswers>0</shuffleanswers>
+        <answernumbering>ABC</answernumbering>
+        <answer fraction="0">
+            <text>SELECT</text>
+            <feedback><text>SELECT is for querying data, not modifying it.</text></feedback>
+        </answer>
+        <answer fraction="0">
+            <text>INSERT</text>
+            <feedback><text>INSERT adds new records, doesn't modify existing ones.</text></feedback>
+        </answer>
+        <answer fraction="100">
+            <text>UPDATE</text>
+            <feedback><text>Correct! UPDATE modifies existing records.</text></feedback>
+        </answer>
+        <answer fraction="0">
+            <text>CREATE</text>
+            <feedback><text>CREATE is for creating database objects.</text></feedback>
+        </answer>
+    </question>
+
+    <!-- ShortAnswer: Database Concepts -->
+    <question type="shortanswer">
+        <name>
+            <text>SA: Database Key</text>
+        </name>
+        <questiontext format="html">
+            <text><![CDATA[<p>What type of key uniquely identifies each record in a database table?</p>]]></text>
+        </questiontext>
+        <usecase>0</usecase>
+        <answer fraction="100">
+            <text>primary key</text>
+            <feedback><text>Correct! Primary key uniquely identifies each record.</text></feedback>
+        </answer>
+        <answer fraction="100">
+            <text>primary</text>
+            <feedback><text>Correct! Primary key is the answer.</text></feedback>
+        </answer>
+        <answer fraction="80">
+            <text>Primary Key</text>
+            <feedback><text>Correct, but capitalization doesn't matter here.</text></feedback>
+        </answer>
+        <answer fraction="0">
+            <text>foreign key</text>
+            <feedback><text>Foreign key establishes relationships between tables.</text></feedback>
+        </answer>
+    </question>
+
+    <!-- MultiChoice with Complex HTML -->
+    <question type="multichoice">
+        <name>
+            <text>MCQ: HTML Elements</text>
+        </name>
+        <questiontext format="html">
+            <text><![CDATA[<p>Which HTML element is used for the <strong>largest</strong> heading?</p>
+            <p><code>&lt;h1&gt;This is a heading&lt;/h1&gt;</code></p>]]></text>
+        </questiontext>
+        <single>true</single>
+        <shuffleanswers>1</shuffleanswers>
+        <answer fraction="100">
+            <text><![CDATA[<h1>]]></text>
+            <feedback><text>Correct! h1 is the largest heading.</text></feedback>
+        </answer>
+        <answer fraction="0">
+            <text><![CDATA[<h6>]]></text>
+            <feedback><text>h6 is the smallest heading.</text></feedback>
+        </answer>
+        <answer fraction="0">
+            <text><![CDATA[<head>]]></text>
+            <feedback><text>head contains metadata, not visible content.</text></feedback>
+        </answer>
+        <answer fraction="0">
+            <text><![CDATA[<header>]]></text>
+            <feedback><text>header is a semantic container, not a heading level.</text></feedback>
+        </answer>
+    </question>
+
+    <!-- ShortAnswer with Special Characters -->
+    <question type="shortanswer">
+        <name>
+            <text>SA: Special Characters</text>
+        </name>
+        <questiontext format="html">
+            <text><![CDATA[<p>What symbol is used for "not equal" in many programming languages?</p>]]></text>
+        </questiontext>
+        <usecase>1</usecase>
+        <answer fraction="100">
+            <text>!=</text>
+            <feedback><text>Correct! != means not equal.</text></feedback>
+        </answer>
+        <answer fraction="100">
+            <text><![CDATA[<>]]></text>
+            <feedback><text>Correct! &lt;&gt; is used in some languages like SQL.</text></feedback>
+        </answer>
+        <answer fraction="0">
+            <text>==</text>
+            <feedback><text>== means equal to, not not equal.</text></feedback>
+        </answer>
+    </question>
+
+    <!-- Fourth Category: Empty Category Test -->
+    <question type="category">
+        <category>
+            <text>Empty Subcategory</text>
+        </category>
+    </question>
+
+    <!-- MultiChoice with No Shuffle -->
+    <question type="multichoice">
+        <name>
+            <text>MCQ: No Shuffle</text>
+        </name>
+        <questiontext format="html">
+            <text><![CDATA[<p>What comes first in alphabetical order?</p>]]></text>
+        </questiontext>
+        <single>true</single>
+        <shuffleanswers>0</shuffleanswers>
+        <answernumbering>none</answernumbering>
+        <answer fraction="100">
+            <text>Apple</text>
+        </answer>
+        <answer fraction="0">
+            <text>Banana</text>
+        </answer>
+        <answer fraction="0">
+            <text>Cherry</text>
+        </answer>
+    </question>
+
+    <!-- ShortAnswer with Case Sensitivity -->
+    <question type="shortanswer">
+        <name>
+            <text>SA: Case Sensitive</text>
+        </name>
+        <questiontext format="html">
+            <text><![CDATA[<p>What is the correct capitalization for the language "JavaScript"?</p>]]></text>
+        </questiontext>
+        <usecase>1</usecase>
+        <answer fraction="100">
+            <text>JavaScript</text>
+            <feedback><text>Perfect! Correct capitalization.</text></feedback>
+        </answer>
+        <answer fraction="0">
+            <text>javascript</text>
+            <feedback><text>Incorrect capitalization for the language name.</text></feedback>
+        </answer>
+        <answer fraction="0">
+            <text>JAVASCRIPT</text>
+            <feedback><text>Incorrect - it's not all caps.</text></feedback>
+        </answer>
+    </question>
+</quiz>

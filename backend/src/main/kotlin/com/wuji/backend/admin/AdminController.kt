@@ -3,10 +3,13 @@ package com.wuji.backend.admin
 import com.wuji.backend.admin.dto.ParsedQuestionsInfo
 import com.wuji.backend.config.dto.GameConfigDto
 import com.wuji.backend.config.dto.toBoardConfig
+import com.wuji.backend.config.dto.toExamConfig
 import com.wuji.backend.config.dto.toQuizConfig
 import com.wuji.backend.game.board.BoardService
 import com.wuji.backend.game.board.dto.BoardGameCreateRequestDto
 import com.wuji.backend.game.common.GameServiceDelegate
+import com.wuji.backend.game.exam.ExamService
+import com.wuji.backend.game.exam.dto.ExamGameCreateRequestDto
 import com.wuji.backend.game.quiz.QuizService
 import com.wuji.backend.game.quiz.dto.QuizGameCreateRequestDto
 import com.wuji.backend.parser.MoodleXmlParser
@@ -28,6 +31,7 @@ import org.springframework.web.bind.annotation.*
 class AdminController(
     private val quizService: QuizService,
     private val boardService: BoardService,
+    private val examService: ExamService,
     private val gameServiceDelegate: GameServiceDelegate,
     private val authService: PlayerAuthService
 ) {
@@ -39,7 +43,7 @@ class AdminController(
         quizService.createGame(
             requestDto.name,
             requestDto.config.toQuizConfig(),
-            requestDto.questions)
+            requestDto.config.questionFilePath)
         authService.clearAllSessions()
         return ResponseEntity.ok().build()
     }
@@ -54,6 +58,17 @@ class AdminController(
             requestDto.config.questionFilePath,
             requestDto.numberOfTiles)
         authService.clearAllSessions()
+        return ResponseEntity.ok().build()
+    }
+
+    @PostMapping("/exam")
+    fun createExamGame(
+        @Valid @RequestBody requestDto: ExamGameCreateRequestDto
+    ): ResponseEntity<Nothing> {
+        examService.createGame(
+            requestDto.name,
+            requestDto.config.toExamConfig(),
+            requestDto.config.questionFilePath)
         return ResponseEntity.ok().build()
     }
 

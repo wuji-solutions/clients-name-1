@@ -1,5 +1,8 @@
 package com.wuji.backend.config.dto
 
+import com.wuji.backend.config.DEFAULT_ADDITIONAL_TIME_IN_SECONDS
+import com.wuji.backend.config.DEFAULT_END_IMMEDIATELY_AFTER_TIME
+import com.wuji.backend.config.DEFAULT_TOTAL_DURATION_MINUTES
 import com.wuji.backend.config.DifficultyLevel
 import com.wuji.backend.config.ExamConfig
 import com.wuji.backend.security.validator.ValidExamConfig
@@ -7,6 +10,8 @@ import jakarta.validation.constraints.Min
 
 @ValidExamConfig
 data class ExamConfigDto(
+    @field:Min(1, message = "Całkowity czas na rozgrywkę musi być dodatni")
+    val totalDurationMinutes: Int = DEFAULT_TOTAL_DURATION_MINUTES,
     @field:Min(
         1,
         message = "Liczba wymaganych pytań do odpowiedzenia musi być dodatnia")
@@ -19,6 +24,10 @@ data class ExamConfigDto(
     val notifyTeacherOnCheating: Boolean,
     val pointsPerDifficulty: Map<DifficultyLevel, Int>,
     val allowGoingBack: Boolean,
+    val endImmediatelyAfterTime: Boolean = DEFAULT_END_IMMEDIATELY_AFTER_TIME,
+    @field:Min(0, message = "Liczba sekund musi być nieujemna")
+    val additionalTimeToAnswerAfterFinishInSeconds: Long =
+        DEFAULT_ADDITIONAL_TIME_IN_SECONDS,
 ) : GameConfigDto()
 
 fun ExamConfigDto.toExamConfig(): ExamConfig {
@@ -36,5 +45,23 @@ fun ExamConfigDto.toExamConfig(): ExamConfig {
         notifyTeacherOnCheating = notifyTeacherOnCheating,
         pointsPerDifficulty = pointsPerDifficulty,
         allowGoingBack = allowGoingBack,
-    )
+        additionalTimeToAnswerAfterFinishInSeconds =
+            additionalTimeToAnswerAfterFinishInSeconds)
+}
+
+fun ExamConfig.toExamConfigDto(): ExamConfigDto {
+    return ExamConfigDto(
+        totalDurationMinutes = totalDurationMinutes,
+        endImmediatelyAfterTime = endImmediatelyAfterTime,
+        requiredQuestionCount = requiredQuestionCount,
+        randomizeQuestions = randomizeQuestions,
+        enforceDifficultyBalance = enforceDifficultyBalance,
+        selectedQuestionIds = selectedQuestionIds,
+        zeroPointsOnCheating = zeroPointsOnCheating,
+        markQuestionOnCheating = markQuestionOnCheating,
+        notifyTeacherOnCheating = notifyTeacherOnCheating,
+        pointsPerDifficulty = pointsPerDifficulty,
+        allowGoingBack = allowGoingBack,
+        additionalTimeToAnswerAfterFinishInSeconds =
+            additionalTimeToAnswerAfterFinishInSeconds)
 }
