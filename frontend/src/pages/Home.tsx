@@ -44,12 +44,16 @@ function Home() {
     return <AccessRestricted />;
   }
 
+  const openRaportMenu = () => {
+    window.electronAPI.openRaportsFolder()
+  }
+
   return (
     <Container>
       <Logo>LOGO</Logo>
       <OptionContainer>
         <ButtonCustom onClick={() => navigate('/konfiguracja')}>Rozpocznij</ButtonCustom>
-        <ButtonCustom>Raporty</ButtonCustom>
+        <ButtonCustom onClick={openRaportMenu} >Raporty</ButtonCustom>
         <ButtonCustom>Wyjdź</ButtonCustom>
       </OptionContainer>
     </Container>
