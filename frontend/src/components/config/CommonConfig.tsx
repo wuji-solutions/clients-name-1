@@ -1,14 +1,10 @@
-import { CenteredLabel, CheckboxInput, CustomInput, CustomInputFullWidth } from '../Fields';
-import { MAX_GAME_LENGTH, MAX_QUESTION_DURATION_LENGTH_SECONDS } from './constants';
+import { CenteredLabel, CheckboxInput } from '../Fields';
 import './config-styles.css';
 import { LabeledCheckboxContainer } from './components/LabeledCheckbox';
-import { CleanInput } from './components/ConfigInput';
 
 export interface CommonSettings {
-  totalDurationMinutes: number;
   endImmediatelyAfterTime: boolean;
   questionFilePath: string;
-  questionDurationSeconds: number;
 }
 
 interface Props {
@@ -23,16 +19,14 @@ export default function CommonConfig({ commonSettings, setCommonSettings }: Prop
         Wspólne ustawienia
       </p>
       <LabeledCheckboxContainer>
-        <CenteredLabel>Podaj łączny czas trwania gry w minutach</CenteredLabel>
-        <CleanInput
-          type="number"
-          max={MAX_GAME_LENGTH}
-          value={commonSettings.totalDurationMinutes}
+        <CenteredLabel htmlFor="setEndImmediatelyAfterTime">Wybierz plik z pytaniami</CenteredLabel>
+        <CheckboxInput
+          type="checkbox"
+          id="setEndImmediatelyAfterTime"
+          style={{ width: '3rem', margin: 0 }}
+          checked={commonSettings.endImmediatelyAfterTime}
           onChange={(e) =>
-            setCommonSettings({
-              ...commonSettings,
-              totalDurationMinutes: Number.parseInt(e.target.value),
-            })
+            setCommonSettings({ ...commonSettings, endImmediatelyAfterTime: e.target.checked })
           }
         />
       </LabeledCheckboxContainer>
@@ -48,21 +42,6 @@ export default function CommonConfig({ commonSettings, setCommonSettings }: Prop
           checked={commonSettings.endImmediatelyAfterTime}
           onChange={(e) =>
             setCommonSettings({ ...commonSettings, endImmediatelyAfterTime: e.target.checked })
-          }
-        />
-      </LabeledCheckboxContainer>
-      <LabeledCheckboxContainer>
-        <CenteredLabel>Podaj czas na odpowiedź na jedno pytanie w sekundach</CenteredLabel>
-
-        <CleanInput
-          type="number"
-          max={MAX_QUESTION_DURATION_LENGTH_SECONDS}
-          value={commonSettings.questionDurationSeconds}
-          onChange={(e) =>
-            setCommonSettings({
-              ...commonSettings,
-              questionDurationSeconds: Number.parseInt(e.target.value),
-            })
           }
         />
       </LabeledCheckboxContainer>

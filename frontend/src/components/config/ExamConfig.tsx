@@ -5,8 +5,11 @@ import { LabeledCheckboxContainer } from './components/LabeledCheckbox';
 import './config-styles.css';
 import Dropdown from '../Dropdown';
 import { CleanInput } from './components/ConfigInput';
+import { MAX_GAME_LENGTH, MAX_QUESTION_DURATION_LENGTH_SECONDS } from './constants';
 
 export type ExamSettings = {
+  totalDurationMinutes: number;
+  questionDurationSeconds: number;
   requiredQuestionCount: number;
   randomizeQuestions: boolean;
   enforceDifficultyBalance: boolean;
@@ -30,6 +33,35 @@ export default function ExamConfig({ settings, setSettings }: ExamConfigProps) {
         Ustawienia sprawdzianu
       </p>
 
+      <LabeledCheckboxContainer>
+        <CenteredLabel>Podaj łączny czas trwania gry w minutach</CenteredLabel>
+        <CleanInput
+          type="number"
+          max={MAX_GAME_LENGTH}
+          value={settings.totalDurationMinutes}
+          onChange={(e) =>
+            setSettings({
+              ...settings,
+              totalDurationMinutes: Number.parseInt(e.target.value),
+            })
+          }
+        />
+      </LabeledCheckboxContainer>
+      <LabeledCheckboxContainer>
+        <CenteredLabel>Podaj czas na odpowiedź na jedno pytanie w sekundach</CenteredLabel>
+
+        <CleanInput
+          type="number"
+          max={MAX_QUESTION_DURATION_LENGTH_SECONDS}
+          value={settings.questionDurationSeconds}
+          onChange={(e) =>
+            setSettings({
+              ...settings,
+              questionDurationSeconds: Number.parseInt(e.target.value),
+            })
+          }
+        />
+      </LabeledCheckboxContainer>
       <LabeledCheckboxContainer>
         <CenteredLabel htmlFor="setRandomizeQuestions">
           Czy gra ma skończyć się automatycznie po upływie czasu

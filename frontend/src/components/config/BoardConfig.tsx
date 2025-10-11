@@ -1,10 +1,14 @@
 import React from 'react';
 import { DifficultyLevel } from '../../common/types';
-import { CenteredLabel, CustomInput, CustomInputFullWidth } from '../Fields';
+import { CenteredLabel } from '../Fields';
 import { LabeledCheckboxContainer } from './components/LabeledCheckbox';
 import Dropdown from '../Dropdown';
+import { CleanInput } from './components/ConfigInput';
+import { MAX_GAME_LENGTH, MAX_QUESTION_DURATION_LENGTH_SECONDS } from './constants';
 
 export type BoardSettings = {
+  totalDurationMinutes: number;
+  questionDurationSeconds: number;
   pointsPerDifficulty: Record<DifficultyLevel, number>;
   rankingPromotionRules: Record<string, number>;
 };
@@ -21,6 +25,35 @@ export default function BoardConfig({ settings, setSettings }: Props) {
         Ustawienia planszówki
       </p>
       {/* TOOD: currently there is one setting missing */}
+      <LabeledCheckboxContainer>
+        <CenteredLabel>Podaj łączny czas trwania gry w minutach</CenteredLabel>
+        <CleanInput
+          type="number"
+          max={MAX_GAME_LENGTH}
+          value={settings.totalDurationMinutes}
+          onChange={(e) =>
+            setSettings({
+              ...settings,
+              totalDurationMinutes: Number.parseInt(e.target.value),
+            })
+          }
+        />
+      </LabeledCheckboxContainer>
+      <LabeledCheckboxContainer>
+        <CenteredLabel>Podaj czas na odpowiedź na jedno pytanie w sekundach</CenteredLabel>
+
+        <CleanInput
+          type="number"
+          max={MAX_QUESTION_DURATION_LENGTH_SECONDS}
+          value={settings.questionDurationSeconds}
+          onChange={(e) =>
+            setSettings({
+              ...settings,
+              questionDurationSeconds: Number.parseInt(e.target.value),
+            })
+          }
+        />
+      </LabeledCheckboxContainer>
       <LabeledCheckboxContainer>
         <CenteredLabel>Ilość punktów za pytanie łatwe</CenteredLabel>
         <Dropdown
