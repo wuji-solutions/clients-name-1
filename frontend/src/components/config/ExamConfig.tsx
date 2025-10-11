@@ -1,15 +1,15 @@
 import React from 'react';
 import { DifficultyLevel } from '../../common/types';
-import { CenteredLabel, CheckboxInput, CustomInput, CustomInputFullWidth } from '../Fields';
+import { CenteredLabel, CheckboxInput } from '../Fields';
 import { LabeledCheckboxContainer } from './components/LabeledCheckbox';
 import './config-styles.css';
 import Dropdown from '../Dropdown';
 import { CleanInput } from './components/ConfigInput';
-import { MAX_GAME_LENGTH, MAX_QUESTION_DURATION_LENGTH_SECONDS } from './constants';
+import { MAX_GAME_LENGTH } from './constants';
 
 export type ExamSettings = {
   totalDurationMinutes: number;
-  questionDurationSeconds: number;
+  endImmediatelyAfterTime: boolean;
   requiredQuestionCount: number;
   randomizeQuestions: boolean;
   enforceDifficultyBalance: boolean;
@@ -48,18 +48,15 @@ export default function ExamConfig({ settings, setSettings }: ExamConfigProps) {
         />
       </LabeledCheckboxContainer>
       <LabeledCheckboxContainer>
-        <CenteredLabel>Podaj czas na odpowiedź na jedno pytanie w sekundach</CenteredLabel>
-
-        <CleanInput
-          type="number"
-          max={MAX_QUESTION_DURATION_LENGTH_SECONDS}
-          value={settings.questionDurationSeconds}
-          onChange={(e) =>
-            setSettings({
-              ...settings,
-              questionDurationSeconds: Number.parseInt(e.target.value),
-            })
-          }
+        <CenteredLabel htmlFor="setEndImmediatelyAfterTime">
+          Czy gra ma skończyć się automatycznie po upływie czasu
+        </CenteredLabel>
+        <CheckboxInput
+          type="checkbox"
+          id="setEndImmediatelyAfterTime"
+          style={{ width: '3rem', margin: 0 }}
+          checked={settings.endImmediatelyAfterTime}
+          onChange={(e) => setSettings({ ...settings, endImmediatelyAfterTime: e.target.checked })}
         />
       </LabeledCheckboxContainer>
       <LabeledCheckboxContainer>

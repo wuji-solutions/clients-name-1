@@ -39,8 +39,8 @@ export const applySettingsFromDto = (
   setBoardSettings: React.Dispatch<React.SetStateAction<BoardSettings>>
 ) => {
   const common: CommonSettings = {
-    endImmediatelyAfterTime: dto.endImmediatelyAfterTime,
     questionFilePath: dto.questionFilePath,
+    questionDurationSeconds: dto.questionDurationSeconds,
   };
 
   setCommonSettings(common);
@@ -49,7 +49,7 @@ export const applySettingsFromDto = (
     case 'EXAM':
       setExamSettings({
         totalDurationMinutes: dto.totalDurationMinutes,
-        questionDurationSeconds: dto.questionDurationSeconds,
+        endImmediatelyAfterTime: dto.endImmediatelyAfterTime,
         requiredQuestionCount: dto.requiredQuestionCount,
         randomizeQuestions: dto.randomizeQuestions,
         enforceDifficultyBalance: dto.enforceDifficultyBalance,
@@ -65,7 +65,8 @@ export const applySettingsFromDto = (
     case 'BOARD':
       setBoardSettings({
         totalDurationMinutes: dto.totalDurationMinutes,
-        questionDurationSeconds: dto.questionDurationSeconds,
+        endImmediatelyAfterTime: dto.endImmediatelyAfterTime,
+        showLeaderboard: dto.showLeaderboard,
         pointsPerDifficulty: dto.pointsPerDifficulty,
         rankingPromotionRules: dto.rankingPromotionRules,
       });

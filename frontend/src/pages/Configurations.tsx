@@ -132,13 +132,13 @@ function Configurations() {
   };
 
   const [commonSettings, setCommonSettings] = useState<CommonSettings>({
-    endImmediatelyAfterTime: true,
+    questionDurationSeconds: 30,
     questionFilePath: '',
   });
   const [examSettings, setExamSettings] = useState<ExamSettings>({
     requiredQuestionCount: 10,
+    endImmediatelyAfterTime: true,
     totalDurationMinutes: 30,
-    questionDurationSeconds: 30,
     randomizeQuestions: true,
     enforceDifficultyBalance: false,
     selectedQuestionIds: [],
@@ -154,7 +154,8 @@ function Configurations() {
   });
   const [boardSettings, setBoardSettings] = useState<BoardSettings>({
     totalDurationMinutes: 30,
-    questionDurationSeconds: 30,
+    endImmediatelyAfterTime: true,
+    showLeaderboard: true,
     pointsPerDifficulty: {
       EASY: 1,
       MEDIUM: 2,

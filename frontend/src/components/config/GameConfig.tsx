@@ -8,7 +8,7 @@ import Divider from '../Divider';
 import { useState } from 'react';
 import EditConfig from './ManageConfig';
 import { applySettingsFromDto, settingsToConfig } from './utils';
-import { createConfig } from '../../service/configService';
+import CreateConfig from './CreateConfig';
 
 interface Props {
   mode: mode;
@@ -30,6 +30,7 @@ export default function GameConfig({
   setBoardSettings,
 }: Props) {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
+  const [isOpenSaveConfig, setIsOpenSaveConfig] = useState<boolean>(false);
   const editConfig = () => {
     setIsEditDialogOpen(true);
   };
@@ -39,11 +40,11 @@ export default function GameConfig({
     setTimeout(() => console.log(commonSettings), 1000);
   };
 
+  let config: ConfigDTO = settingsToConfig(mode, commonSettings, examSettings, boardSettings);
+
   const saveConfig = (configName: string) => {
-    const config = settingsToConfig(mode, commonSettings, examSettings, boardSettings);
-    createConfig(mode, configName, config)
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
+    config = settingsToConfig(mode, commonSettings, examSettings, boardSettings);
+    setIsOpenSaveConfig(true);
   };
 
   return (
@@ -61,6 +62,10 @@ export default function GameConfig({
       {isEditDialogOpen && (
         <EditConfig setConfig={setConfig} mode={mode} setIsEditDialogOpen={setIsEditDialogOpen} />
       )}
+      {isOpenSaveConfig && (
+        <CreateConfig config={config} mode={mode} setIsOpen={setIsOpenSaveConfig} />
+      )}
+
       <h1 className="centered" style={{ fontSize: '300%' }}>
         Ustawienia
       </h1>

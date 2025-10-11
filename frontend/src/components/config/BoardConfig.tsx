@@ -1,14 +1,15 @@
 import React from 'react';
 import { DifficultyLevel } from '../../common/types';
-import { CenteredLabel } from '../Fields';
+import { CenteredLabel, CheckboxInput } from '../Fields';
 import { LabeledCheckboxContainer } from './components/LabeledCheckbox';
 import Dropdown from '../Dropdown';
 import { CleanInput } from './components/ConfigInput';
-import { MAX_GAME_LENGTH, MAX_QUESTION_DURATION_LENGTH_SECONDS } from './constants';
+import { MAX_GAME_LENGTH } from './constants';
 
 export type BoardSettings = {
   totalDurationMinutes: number;
-  questionDurationSeconds: number;
+  endImmediatelyAfterTime: boolean;
+  showLeaderboard: boolean;
   pointsPerDifficulty: Record<DifficultyLevel, number>;
   rankingPromotionRules: Record<string, number>;
 };
@@ -40,18 +41,27 @@ export default function BoardConfig({ settings, setSettings }: Props) {
         />
       </LabeledCheckboxContainer>
       <LabeledCheckboxContainer>
-        <CenteredLabel>Podaj czas na odpowiedź na jedno pytanie w sekundach</CenteredLabel>
-
-        <CleanInput
-          type="number"
-          max={MAX_QUESTION_DURATION_LENGTH_SECONDS}
-          value={settings.questionDurationSeconds}
-          onChange={(e) =>
-            setSettings({
-              ...settings,
-              questionDurationSeconds: Number.parseInt(e.target.value),
-            })
-          }
+        <CenteredLabel htmlFor="setEndImmediatelyAfterTime">
+          Czy gra ma skończyć się automatycznie po upływie czasu
+        </CenteredLabel>
+        <CheckboxInput
+          type="checkbox"
+          id="setEndImmediatelyAfterTime"
+          style={{ width: '3rem', margin: 0 }}
+          checked={settings.endImmediatelyAfterTime}
+          onChange={(e) => setSettings({ ...settings, endImmediatelyAfterTime: e.target.checked })}
+        />
+      </LabeledCheckboxContainer>
+      <LabeledCheckboxContainer>
+        <CenteredLabel htmlFor="setShowLeaderboard">
+          Czy ranking uczniów powinien się wyświetlać
+        </CenteredLabel>
+        <CheckboxInput
+          type="checkbox"
+          id="setShowLeaderboard"
+          style={{ width: '3rem', margin: 0 }}
+          checked={settings.showLeaderboard}
+          onChange={(e) => setSettings({ ...settings, showLeaderboard: e.target.checked })}
         />
       </LabeledCheckboxContainer>
       <LabeledCheckboxContainer>
