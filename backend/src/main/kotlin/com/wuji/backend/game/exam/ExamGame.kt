@@ -13,10 +13,18 @@ class ExamGame(
     config: ExamConfig,
     val questions: List<Question>
 ) : AbstractGame<ExamPlayerDetails, ExamConfig>(name, GameType.EXAM, config) {
-    val plannedFinishTimeEpoch =
-        timeOfCreationEpoch + config.totalDurationMinutes * 60 * 1000
 
     val questionDispenser = ExamDispenser()
+
+    private var _plannedFinishTimeEpoch: Long? = null
+    var plannedFinishTimeEpoch: Long
+        get() =
+            _plannedFinishTimeEpoch
+                ?: throw IllegalStateException(
+                    "Zaplanowany czas zakończenia nie został zainicjalizowany")
+        set(value) {
+            _plannedFinishTimeEpoch = value
+        }
 
     override fun start() {
         gameState = GameState.RUNNING
@@ -30,6 +38,8 @@ class ExamGame(
         else
             questionDispenser.initialize(
                 players, questions, config.selectedQuestionIds.toSet())
+        _plannedFinishTimeEpoch =
+            System.currentTimeMillis() + config.totalDurationMinutes * 60 * 1000
     }
 
     override fun pause() {
