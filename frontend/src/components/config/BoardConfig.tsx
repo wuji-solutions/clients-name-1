@@ -4,7 +4,6 @@ import { CenteredLabel, CheckboxInput } from '../Fields';
 import { LabeledCheckboxContainer } from './components/LabeledCheckbox';
 import Dropdown from '../Dropdown';
 import { CleanInput } from './components/ConfigInput';
-import { MAX_GAME_LENGTH } from './constants';
 
 export type BoardSettings = {
   totalDurationMinutes: number;
@@ -30,7 +29,6 @@ export default function BoardConfig({ settings, setSettings }: Props) {
         <CenteredLabel>Podaj łączny czas trwania gry w minutach</CenteredLabel>
         <CleanInput
           type="number"
-          max={MAX_GAME_LENGTH}
           value={settings.totalDurationMinutes}
           onChange={(e) =>
             setSettings({

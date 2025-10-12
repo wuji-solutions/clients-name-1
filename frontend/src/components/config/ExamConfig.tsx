@@ -5,7 +5,6 @@ import { LabeledCheckboxContainer } from './components/LabeledCheckbox';
 import './config-styles.css';
 import Dropdown from '../Dropdown';
 import { CleanInput } from './components/ConfigInput';
-import { MAX_GAME_LENGTH } from './constants';
 
 export type ExamSettings = {
   totalDurationMinutes: number;
@@ -22,8 +21,8 @@ export type ExamSettings = {
 };
 
 interface ExamConfigProps {
-  settings: ExamSettings;
-  setSettings: React.Dispatch<React.SetStateAction<ExamSettings>>;
+  readonly settings: ExamSettings;
+  readonly setSettings: React.Dispatch<React.SetStateAction<ExamSettings>>;
 }
 
 export default function ExamConfig({ settings, setSettings }: ExamConfigProps) {
@@ -37,7 +36,6 @@ export default function ExamConfig({ settings, setSettings }: ExamConfigProps) {
         <CenteredLabel>Podaj łączny czas trwania gry w minutach</CenteredLabel>
         <CleanInput
           type="number"
-          max={MAX_GAME_LENGTH}
           value={settings.totalDurationMinutes}
           onChange={(e) =>
             setSettings({

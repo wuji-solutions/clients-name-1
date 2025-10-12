@@ -1,9 +1,8 @@
-import { CenteredLabel, CheckboxInput } from '../Fields';
+import { CenteredLabel } from '../Fields';
 import './config-styles.css';
 import { LabeledCheckboxContainer } from './components/LabeledCheckbox';
 import { ButtonCustom } from '../Button';
 import { CleanInput } from './components/ConfigInput';
-import { MAX_QUESTION_DURATION_LENGTH_SECONDS } from './constants';
 
 export interface CommonSettings {
   questionDurationSeconds: number;
@@ -48,7 +47,6 @@ export default function CommonConfig({ commonSettings, setCommonSettings }: Prop
 
         <CleanInput
           type="number"
-          max={MAX_QUESTION_DURATION_LENGTH_SECONDS}
           value={commonSettings.questionDurationSeconds}
           onChange={(e) =>
             setCommonSettings({

@@ -67,10 +67,10 @@ export default function ManageConfig({ mode, setIsEditDialogOpen, setConfig }: P
               <Divider></Divider>
               <div style={{ margin: '25px' }}></div>
               {configList.length === 0 && <h2>Brak zapisanych konfiguracji</h2>}
-              {configList.map((configName, index) => {
+              {configList.map((configName) => {
                 return (
                   <div
-                    key={`nazwa_konfiguracji_${index}`}
+                    key={`nazwa_konfiguracji_${configList}`}
                     style={{ display: 'flex', margin: '10px' }}
                   >
                     <CenteredLabel>{configName}</CenteredLabel>

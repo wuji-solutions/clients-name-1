@@ -121,7 +121,6 @@ function Configurations() {
 
   const startLobby = () => {
     if (!mode) return;
-    /* eslint-disable-next-line no-unused-vars */
     const config = settingsToConfig(mode, commonSettings, examSettings, boardSettings);
     service
       .startLobby(mode, mode === 'quiz' ? { ...TEST_QUIZ } : { ...TEST_GAME })
