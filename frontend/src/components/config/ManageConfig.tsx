@@ -28,20 +28,17 @@ export default function ManageConfig({ mode, setIsEditDialogOpen, setConfig }: P
   const [isError, setIsError] = useState<boolean>(false);
   const [refreshKey, setRefreshKey] = useState<boolean>(true);
   useEffect(() => {
-    if (!refreshKey) return;
-
     getConfigNamesByMode(mode)
       .then((configs) => {
         setConfigList(configs.data);
         setIsError(false);
       })
       .catch(() => setIsError(true));
-    setRefreshKey(false);
   }, [mode, refreshKey]);
 
   const removeConfig = (configName: string) => {
     deleteConfig(mode, configName);
-    setRefreshKey(true);
+    setRefreshKey((prev) => !prev);
   };
 
   const selectConfig = (configName: string) => {
@@ -73,7 +70,10 @@ export default function ManageConfig({ mode, setIsEditDialogOpen, setConfig }: P
               {configList.map((configName, index) => {
                 return (
                   <>
-                    <div key={index} style={{ display: 'flex', margin: '10px' }}>
+                    <div
+                      key={`nazwa_konfiguracji_${index}`}
+                      style={{ display: 'flex', margin: '10px' }}
+                    >
                       <CenteredLabel>{configName}</CenteredLabel>
                       <ButtonCustom
                         style={{ width: '30%', margin: '0 0 0 auto' }}

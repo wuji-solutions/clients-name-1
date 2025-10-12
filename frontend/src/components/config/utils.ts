@@ -73,7 +73,9 @@ export const applySettingsFromDto = (
       break;
 
     case 'QUIZ':
-      // quiz only uses common settings, so nothing else to set
       break;
+
+    default:
+      throw new Error('Tryb gry jest niewspierany!');
   }
 };

@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ConfigDTO, mode } from '../../common/types';
 import { createConfig } from '../../service/configService';
-import { CenteredLabel, CustomInputFullWidth } from '../Fields';
-import { LabeledCheckboxContainer } from './components/LabeledCheckbox';
+import { CenteredLabel } from '../Fields';
 import Modal from '../Modal';
 import { CleanInput } from './components/ConfigInput';
 import { ButtonCustom } from '../Button';
@@ -16,9 +15,7 @@ interface Props {
 export default function CreateConfig({ mode, config, setIsOpen }: Props) {
   const [configName, setConfigName] = useState<string>('');
   const create = () => {
-    createConfig(mode, configName, config)
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
+    createConfig(mode, configName, config).catch((error) => console.log(error));
     setIsOpen(false);
   };
 

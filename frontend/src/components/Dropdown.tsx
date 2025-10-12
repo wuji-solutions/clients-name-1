@@ -69,12 +69,12 @@ const DropdownItem = styled.li`
   }
 `;
 
-const Dropdown: React.FC<DropdownProps> = ({
+export function Dropdown({
   options,
   onSelect,
   selectedValue,
   placeholder = 'Wybierz...',
-}) => {
+}: DropdownProps) {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<string | null>(selectedValue);
 
@@ -98,6 +98,6 @@ const Dropdown: React.FC<DropdownProps> = ({
       </DropdownList>
     </DropdownWrapper>
   );
-};
+}
 
 export default Dropdown;

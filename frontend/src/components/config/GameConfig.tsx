@@ -37,12 +37,11 @@ export default function GameConfig({
 
   const setConfig = (dto: ConfigDTO) => {
     applySettingsFromDto(dto, setCommonSettings, setExamSettings, setBoardSettings);
-    setTimeout(() => console.log(commonSettings), 1000);
   };
 
   let config: ConfigDTO = settingsToConfig(mode, commonSettings, examSettings, boardSettings);
 
-  const saveConfig = (configName: string) => {
+  const saveConfig = () => {
     config = settingsToConfig(mode, commonSettings, examSettings, boardSettings);
     setIsOpenSaveConfig(true);
   };
@@ -93,7 +92,7 @@ export default function GameConfig({
         </div>
       </div>
 
-      <ButtonCustom style={{ width: '40%' }} onClick={() => saveConfig('name3')}>
+      <ButtonCustom style={{ width: '40%' }} onClick={saveConfig}>
         Zapisz
       </ButtonCustom>
     </div>
