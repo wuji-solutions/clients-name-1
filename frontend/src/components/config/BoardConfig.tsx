@@ -15,8 +15,8 @@ export type BoardSettings = {
 };
 
 interface Props {
-  settings: BoardSettings;
-  setSettings: React.Dispatch<React.SetStateAction<BoardSettings>>;
+  readonly settings: BoardSettings;
+  readonly setSettings: React.Dispatch<React.SetStateAction<BoardSettings>>;
 }
 
 export default function BoardConfig({ settings, setSettings }: Props) {

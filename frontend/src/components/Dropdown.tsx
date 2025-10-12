@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 
 interface DropdownProps {
-  options: string[];
-  onSelect: (value: string) => void;
-  selectedValue: string;
-  placeholder?: string;
+  readonly options: string[];
+  readonly onSelect: (value: string) => void;
+  readonly selectedValue: string;
+  readonly placeholder?: string;
 }
 
 const DropdownWrapper = styled.div`
@@ -91,7 +91,7 @@ export function Dropdown({
       </DropdownButton>
       <DropdownList open={open}>
         {options.map((option, index) => (
-          <DropdownItem key={index} onClick={() => handleSelect(option)}>
+          <DropdownItem key={`dropdown_${option}_${index}`} onClick={() => handleSelect(option)}>
             {option}
           </DropdownItem>
         ))}

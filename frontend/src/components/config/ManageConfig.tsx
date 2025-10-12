@@ -7,9 +7,9 @@ import { CenteredLabel } from '../Fields';
 import Divider from '../Divider';
 
 interface Props {
-  mode: mode;
-  setIsEditDialogOpen: any;
-  setConfig: any;
+  readonly mode: mode;
+  readonly setIsEditDialogOpen: any;
+  readonly setConfig: any;
 }
 
 const modeToString = (mode: mode): string => {
@@ -69,26 +69,24 @@ export default function ManageConfig({ mode, setIsEditDialogOpen, setConfig }: P
               {configList.length === 0 && <h2>Brak zapisanych konfiguracji</h2>}
               {configList.map((configName, index) => {
                 return (
-                  <>
-                    <div
-                      key={`nazwa_konfiguracji_${index}`}
-                      style={{ display: 'flex', margin: '10px' }}
+                  <div
+                    key={`nazwa_konfiguracji_${index}`}
+                    style={{ display: 'flex', margin: '10px' }}
+                  >
+                    <CenteredLabel>{configName}</CenteredLabel>
+                    <ButtonCustom
+                      style={{ width: '30%', margin: '0 0 0 auto' }}
+                      onClick={() => selectConfig(configName)}
                     >
-                      <CenteredLabel>{configName}</CenteredLabel>
-                      <ButtonCustom
-                        style={{ width: '30%', margin: '0 0 0 auto' }}
-                        onClick={() => selectConfig(configName)}
-                      >
-                        Wczytaj
-                      </ButtonCustom>
-                      <ButtonCustom
-                        style={{ width: '30%', margin: 0 }}
-                        onClick={() => removeConfig(configName)}
-                      >
-                        Usuń
-                      </ButtonCustom>
-                    </div>
-                  </>
+                      Wczytaj
+                    </ButtonCustom>
+                    <ButtonCustom
+                      style={{ width: '30%', margin: 0 }}
+                      onClick={() => removeConfig(configName)}
+                    >
+                      Usuń
+                    </ButtonCustom>
+                  </div>
                 );
               })}
               <div style={{ margin: '25px' }}></div>

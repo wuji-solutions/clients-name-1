@@ -7,9 +7,9 @@ import { CleanInput } from './components/ConfigInput';
 import { ButtonCustom } from '../Button';
 
 interface Props {
-  mode: mode;
-  config: ConfigDTO;
-  setIsOpen: any;
+  readonly mode: mode;
+  readonly config: ConfigDTO;
+  readonly setIsOpen: any;
 }
 
 export default function CreateConfig({ mode, config, setIsOpen }: Props) {

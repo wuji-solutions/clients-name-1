@@ -11,13 +11,13 @@ import { applySettingsFromDto, settingsToConfig } from './utils';
 import CreateConfig from './CreateConfig';
 
 interface Props {
-  mode: mode;
-  commonSettings: CommonSettings;
-  setCommonSettings: any;
-  examSettings: ExamSettings;
-  setExamSettings: any;
-  boardSettings: BoardSettings;
-  setBoardSettings: any;
+  readonly mode: mode;
+  readonly commonSettings: CommonSettings;
+  readonly setCommonSettings: any;
+  readonly examSettings: ExamSettings;
+  readonly setExamSettings: any;
+  readonly boardSettings: BoardSettings;
+  readonly setBoardSettings: any;
 }
 
 export default function GameConfig({

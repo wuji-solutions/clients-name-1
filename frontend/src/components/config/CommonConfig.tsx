@@ -11,8 +11,8 @@ export interface CommonSettings {
 }
 
 interface Props {
-  commonSettings: CommonSettings;
-  setCommonSettings: React.Dispatch<React.SetStateAction<CommonSettings>>;
+  readonly commonSettings: CommonSettings;
+  readonly setCommonSettings: React.Dispatch<React.SetStateAction<CommonSettings>>;
 }
 
 export default function CommonConfig({ commonSettings, setCommonSettings }: Props) {

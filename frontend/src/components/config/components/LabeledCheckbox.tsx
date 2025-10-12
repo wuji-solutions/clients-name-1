@@ -7,6 +7,6 @@ export const LabeledCheckboxContainer = styled.div({
   margin: '0.5rem 0',
 
   '& > :first-child': {
-    flex: '0 0 88%', // don’t grow/shrink, fixed 80%
+    flex: '0 0 88%',
   },
 });
