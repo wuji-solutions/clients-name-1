@@ -1,8 +1,9 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, shell } from 'electron';
 import * as path from 'path';
 import * as isDev from 'electron-is-dev';
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import { ChildProcessWithoutNullStreams } from 'child_process';
+import { existsSync, mkdirSync } from 'fs';
 
 let win: BrowserWindow | null = null;
 let child: ChildProcessWithoutNullStreams;
@@ -13,6 +14,7 @@ function createWindow() {
     height: 600,
     webPreferences: {
       nodeIntegration: true,
+      preload: path.join(__dirname, '..', '..', 'electron', 'preload.js'),
     },
   });
 
@@ -75,6 +77,16 @@ ipcMain.on('app/quit', () => {
     kill(child.pid);
   }
   process.exit();
+});
+
+ipcMain.on('open-raports-folder', () => {
+  const raportsPath = path.join(app.getPath('documents'), 'Raporty');
+
+  if (!existsSync(raportsPath)) {
+    mkdirSync(raportsPath, { recursive: true });
+  }
+
+  shell.openPath(raportsPath);
 });
 
 process.on('exit', () => {
