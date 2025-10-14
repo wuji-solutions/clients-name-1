@@ -29,4 +29,8 @@ class PlayerDispenser(
         } else {
             throw NoMoreQuestionsException()
         }
+
+    fun getCurrentQuestionNumber(): Int = currentBaseIndex
+
+    fun getBaseSize(): Int = baseQuestions.size
 }

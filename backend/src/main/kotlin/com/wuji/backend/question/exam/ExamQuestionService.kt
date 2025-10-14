@@ -4,6 +4,7 @@ import com.wuji.backend.events.exam.SSEExamService
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.exam.ExamGame
 import com.wuji.backend.player.state.ExamPlayer
+import com.wuji.backend.player.state.PlayerIndex
 import com.wuji.backend.question.common.PlayerAnswer
 import com.wuji.backend.question.common.Question
 import com.wuji.backend.question.common.QuestionService
@@ -21,6 +22,12 @@ class ExamQuestionService(
     override fun getAnswers(playerIndex: Int): List<PlayerAnswer> {
         return game.findPlayerByIndex(playerIndex).details.answers
     }
+
+    fun getCurrentQuestionNumber(playerIndex: PlayerIndex): Int =
+        game.questionDispenser.getCurrentQuestionNumber(playerIndex)
+
+    fun getBaseQuestionsSize(playerIndex: PlayerIndex): Int =
+        game.questionDispenser.getBaseSize(playerIndex)
 
     fun getCurrentQuestion(playerIndex: Int): Question =
         game.questionDispenser.currentQuestion(playerIndex)

@@ -16,11 +16,17 @@ data class ExtendedQuestionDto(
     val task: String,
     val answers: List<AnswerDto>,
     val difficultyLevel: DifficultyLevel,
+    val questionNumber: Int,
+    val totalBaseQuestions: Int,
     val playerAlreadyAnswered: Boolean,
     val playerAnswerDto: PlayerAnswerDto?
 )
 
-fun Question.toExtendedQuestionDto(playerAnswer: PlayerAnswer?) =
+fun Question.toExtendedQuestionDto(
+    playerAnswer: PlayerAnswer?,
+    questionNumber: Int,
+    totalBaseQuestions: Int
+) =
     ExtendedQuestionDto(
         id = this.id,
         category = this.category,
@@ -30,4 +36,6 @@ fun Question.toExtendedQuestionDto(playerAnswer: PlayerAnswer?) =
         difficultyLevel = this.difficultyLevel,
         playerAlreadyAnswered = playerAnswer != null,
         playerAnswerDto = playerAnswer?.toDto(),
+        questionNumber = questionNumber,
+        totalBaseQuestions = totalBaseQuestions,
     )

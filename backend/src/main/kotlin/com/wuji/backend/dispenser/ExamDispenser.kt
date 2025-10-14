@@ -104,4 +104,12 @@ class ExamDispenser {
         }
         return result
     }
+
+    fun getCurrentQuestionNumber(playerIndex: PlayerIndex): Int =
+        dispensers[playerIndex]?.getCurrentQuestionNumber()
+            ?: throw IndexOutOfBoundsException()
+
+    fun getBaseSize(playerIndex: PlayerIndex): Int =
+        dispensers[playerIndex]?.getBaseSize()
+            ?: throw IndexOutOfBoundsException()
 }
