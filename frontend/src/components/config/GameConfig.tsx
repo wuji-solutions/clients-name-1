@@ -50,7 +50,7 @@ export default function GameConfig({
   };
 
   useEffect(() => {
-    if (!commonSettings.questionFilePath) return;
+    if (!commonSettings.questionFilePath || mode != 'board') return;
     service
       .parseQuestions(commonSettings.questionFilePath)
       .then((res) => {
@@ -63,7 +63,7 @@ export default function GameConfig({
         });
       })
       .catch(() => setQuestionFileParseError(true));
-  }, [commonSettings.questionFilePath]);
+  }, [commonSettings.questionFilePath, mode]);
 
   return (
     <div

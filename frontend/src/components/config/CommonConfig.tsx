@@ -30,7 +30,7 @@ export default function CommonConfig({ commonSettings, setCommonSettings }: Prop
         <CenteredLabel htmlFor="setEndImmediatelyAfterTime">Wybierz plik z pytaniami</CenteredLabel>
         <ButtonCustom
           onClick={openFilePicker}
-          style={{ position: 'relative', overflow: 'hidden', width: '150px', fontSize: '0.5em' }}
+          style={{ position: 'relative', overflow: 'hidden', width: '150px', fontSize: '0.75em' }}
         >
           Wybierz
         </ButtonCustom>

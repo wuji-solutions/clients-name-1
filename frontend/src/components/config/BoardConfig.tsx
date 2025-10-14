@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { DifficultyLevel } from '../../common/types';
 import { CenteredLabel, CheckboxInput } from '../Fields';
 import { LabeledCheckboxContainer } from './components/LabeledCheckbox';
@@ -24,7 +24,6 @@ interface Props {
 
 export default function BoardConfig({ settings, setSettings, categoryNames, parseError }: Props) {
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState<boolean>(false);
-  useEffect(() => {}, []);
   return (
     <>
       <p className="centered" style={{ fontSize: '2em' }}>
@@ -132,7 +131,9 @@ export default function BoardConfig({ settings, setSettings, categoryNames, pars
         <CenteredLabel htmlFor="setEndImmediatelyAfterTime">
           Liczba poprawnych odpowiedzi potrzebnych do awansu w danej kategorii
         </CenteredLabel>
-        <ButtonCustom onClick={() => setIsCategoryModalOpen(true)} />
+        <ButtonCustom onClick={() => setIsCategoryModalOpen(true)} style={{ fontSize: '0.75em' }}>
+          Edytuj
+        </ButtonCustom>
       </LabeledCheckboxContainer>
     </>
   );

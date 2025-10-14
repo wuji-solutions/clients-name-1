@@ -4,6 +4,7 @@ import { CenteredLabel } from '../Fields';
 import Modal from '../Modal';
 import { CleanInput } from './components/ConfigInput';
 import { BoardSettings } from './BoardConfig';
+import { LabeledCheckboxContainer } from './components/LabeledCheckbox';
 
 interface Props {
   setIsCategoryModalOpen: any;
@@ -43,26 +44,23 @@ export default function PerCategoryPromotionModal({
               {categoryList.length === 0 && <h2>Brak dostępnych kategorii</h2>}
               {categoryList.map((categoryName) => {
                 return (
-                  <div
-                    key={`nazwa_konfiguracji_${categoryName}`}
-                    style={{ display: 'flex', margin: '10px' }}
-                  >
-                    <CenteredLabel>{categoryName}</CenteredLabel>
+                  <div key={categoryName} style={{ display: 'flex', margin: '10px' }}>
+                    <CenteredLabel style={{ width: '70%' }}>{categoryName}</CenteredLabel>
                     <CleanInput
                       type="number"
                       style={{ width: '30%', margin: 0 }}
+                      value={settings.rankingPromotionRules[categoryName]}
+                      placeholder="Wartość"
                       onChange={(e) =>
                         setSettings({
                           ...settings,
                           rankingPromotionRules: {
                             ...settings.rankingPromotionRules,
-                            categoryName: Number.parseInt(e.target.value),
+                            [categoryName]: Number.parseInt(e.target.value),
                           },
                         })
                       }
-                    >
-                      Usuń
-                    </CleanInput>
+                    />
                   </div>
                 );
               })}
