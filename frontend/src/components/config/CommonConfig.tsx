@@ -3,7 +3,6 @@ import './config-styles.css';
 import { LabeledCheckboxContainer } from './components/LabeledCheckbox';
 import { ButtonCustom } from '../Button';
 import { CleanInput } from './components/ConfigInput';
-import { contextBridge, webUtils } from 'electron';
 
 export interface CommonSettings {
   questionDurationSeconds: number;
@@ -16,6 +15,12 @@ interface Props {
 }
 
 export default function CommonConfig({ commonSettings, setCommonSettings }: Props) {
+  const openFilePicker = async () => {
+    const filePath = await window.electronAPI.openFile();
+    if (filePath) {
+      setCommonSettings({ ...commonSettings, questionFilePath: filePath });
+    }
+  };
   return (
     <div>
       <p className="centered" style={{ fontSize: '2em' }}>
@@ -23,24 +28,11 @@ export default function CommonConfig({ commonSettings, setCommonSettings }: Prop
       </p>
       <LabeledCheckboxContainer>
         <CenteredLabel htmlFor="setEndImmediatelyAfterTime">Wybierz plik z pytaniami</CenteredLabel>
-        <ButtonCustom style={{ position: 'relative', overflow: 'hidden', width: '150px' }}>
-          <span style={{ fontSize: '0.5em' }}>Wybierz</span>
-          <input
-            type="file"
-            accept="application/xml,text/xml,.xml"
-            onChange={(file) =>
-              setCommonSettings({ ...commonSettings, questionFilePath: file.target.value })
-            }
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '150px',
-              height: '100%',
-              opacity: 0,
-              cursor: 'pointer',
-            }}
-          />
+        <ButtonCustom
+          onClick={openFilePicker}
+          style={{ position: 'relative', overflow: 'hidden', width: '150px', fontSize: '0.5em' }}
+        >
+          Wybierz
         </ButtonCustom>
       </LabeledCheckboxContainer>
       <LabeledCheckboxContainer>
