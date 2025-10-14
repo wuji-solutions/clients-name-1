@@ -5,10 +5,11 @@ import ExamConfig, { ExamSettings } from './ExamConfig';
 import BoardConfig, { BoardSettings } from './BoardConfig';
 import { ButtonCustom } from '../Button';
 import Divider from '../Divider';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import EditConfig from './ManageConfig';
 import { applySettingsFromDto, settingsToConfig } from './utils';
 import CreateConfig from './CreateConfig';
+import { service } from '../../service/service';
 
 interface Props {
   readonly mode: mode;
@@ -31,6 +32,8 @@ export default function GameConfig({
 }: Props) {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
   const [isOpenSaveConfig, setIsOpenSaveConfig] = useState<boolean>(false);
+  const [categoryNames, setCategoryNames] = useState<string[]>([]);
+  const [questionFileParseError, setQuestionFileParseError] = useState<boolean>(false);
   const editConfig = () => {
     setIsEditDialogOpen(true);
   };
@@ -45,6 +48,22 @@ export default function GameConfig({
     config = settingsToConfig(mode, commonSettings, examSettings, boardSettings);
     setIsOpenSaveConfig(true);
   };
+
+  useEffect(() => {
+    if (!commonSettings.questionFilePath) return;
+    service
+      .parseQuestions(commonSettings.questionFilePath)
+      .then((res) => {
+        const categories: string[] = res.data.categories;
+        setCategoryNames(categories);
+        setQuestionFileParseError(false);
+        setBoardSettings({
+          ...boardSettings,
+          rankingPromotionRules: Object.fromEntries(categories.map((cat) => [cat, 1])),
+        });
+      })
+      .catch(() => setQuestionFileParseError(true));
+  }, [commonSettings.questionFilePath]);
 
   return (
     <div
@@ -86,7 +105,12 @@ export default function GameConfig({
           <Divider />
           {mode === 'quiz' && <QuizConfig />}
           {mode === 'board' && (
-            <BoardConfig settings={boardSettings} setSettings={setBoardSettings} />
+            <BoardConfig
+              settings={boardSettings}
+              setSettings={setBoardSettings}
+              categoryNames={categoryNames}
+              parseError={questionFileParseError}
+            />
           )}
           {mode === 'exam' && <ExamConfig settings={examSettings} setSettings={setExamSettings} />}
         </div>

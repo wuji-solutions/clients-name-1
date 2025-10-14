@@ -96,6 +96,12 @@ const getPlayerRanking = () => {
   return axios.get(BACKEND_ENDPOINT + '/games/board/ranking', { withCredentials: true });
 };
 
+const parseQuestions = (filePath: string) => {
+  return axios.get(BACKEND_ENDPOINT + '/manage/parse-questions', {
+    params: { questionsFilePath: filePath },
+  });
+};
+
 export const service = {
   startLobby: startLobby,
   joinGame: joinGame,
@@ -113,4 +119,5 @@ export const service = {
   makeMove: makeMove,
   getPlayerId: getPlayerId,
   getPlayerRanking: getPlayerRanking,
+  parseQuestions: parseQuestions,
 };

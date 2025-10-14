@@ -3,6 +3,7 @@ import './config-styles.css';
 import { LabeledCheckboxContainer } from './components/LabeledCheckbox';
 import { ButtonCustom } from '../Button';
 import { CleanInput } from './components/ConfigInput';
+import { contextBridge, webUtils } from 'electron';
 
 export interface CommonSettings {
   questionDurationSeconds: number;
