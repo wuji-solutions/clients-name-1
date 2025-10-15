@@ -61,7 +61,7 @@ class ReportsService {
                     .toString()
             val gameSubDir = File(getReportsDir(), reportDirName)
             if (!gameSubDir.exists()) {
-                println("${gameSubDir.absolutePath} doesn't exist")
+                println("${gameSubDir.absolutePath} doesn't exist, creating")
                 gameSubDir.mkdirs()
             }
             return gameSubDir

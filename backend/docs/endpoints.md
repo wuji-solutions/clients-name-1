@@ -575,6 +575,9 @@ tyle, że endpointy z dostawaniem pytania zwracają DTO `ExtendedQuestionDto`, w
     // lista <AnswerDto>
   ],
   "difficultyLevel": "DifficultyLevel",
+  "questionNumber": "number",
+  "totalBaseQuestions": "number",
+  "allowGoingBack": "boolean",
   "playerAlreadyAnswered": "boolean",
   "playerAnswerDto": "PlayerAnswerDto" || null
 }
