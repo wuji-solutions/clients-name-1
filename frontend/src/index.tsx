@@ -11,6 +11,8 @@ import { SSEProvider } from './providers/SSEProvider';
 import Summary from './pages/Summary';
 import BoardgamePlayer from './pages/boardgame/BoardgamePlayer';
 import BoardgameObserver from './pages/boardgame/BoardgameObserver';
+import ExamParticipant from './pages/exam/ExamParticipant';
+import ExamObserver from './pages/exam/ExamObserver';
 
 const context = (globalThis.location.hostname === 'localhost') ? 'admin' : 'user'
 
@@ -26,6 +28,7 @@ root.render(
             <Route path="/waiting-room" element={<WaitingRoom />} />
             <Route path="/gra/quiz" element={<Quiz />} />
             <Route path="/gra/planszowa" element={ context === 'user' ? <BoardgamePlayer /> : <BoardgameObserver /> } />
+            <Route path="/sprawdzian" element={ context === 'user' ? <ExamParticipant /> : <ExamObserver /> } />
             <Route path="/podsumowanie" element={<Summary />} />
           </Routes>
         </Router>

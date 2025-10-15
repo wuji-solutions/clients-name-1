@@ -19,11 +19,13 @@ html {
 body {
   margin: 0;
   font-family: 'Nunito', monospace;
+  font-weight: 850;
   color: rgb(235, 225, 225);
   text-shadow: 1px 1px 1px #000000;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-image: url('../src/resources/bckgrnd.png');
+  /* background-image: url('../src/resources/bckgrnd.png'); */
+  background-color: #0b1b25;
   scrollbar-width: thin;
   scrollbar-color: #2d2e30 transparent;
 }

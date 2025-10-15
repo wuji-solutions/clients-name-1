@@ -38,23 +38,35 @@ const getCurrentQuestion = (user: string, mode: string) => {
   );
 };
 
-const sendAnswer = (answers: Array<number>, mode: string) => {
-  return axios.post(
-    BACKEND_ENDPOINT_EXTERNAL + `/games/${mode}/questions/answer`,
-    {
+const sendAnswer = (answers: Array<number>, mode: string, hasCheated?: boolean) => {
+  let payload;
+  if (hasCheated != undefined) {
+    payload = {
       answerIds: answers,
-    },
-    { withCredentials: true }
-  );
+      playerCheated: hasCheated,
+    };
+  } else {
+    payload = {
+      answerIds: answers,
+    };
+  }
+  return axios.post(BACKEND_ENDPOINT_EXTERNAL + `/games/${mode}/questions/answer`, payload, {
+    withCredentials: true,
+  });
 };
 
 const endQuestion = (mode: string) => {
-  return axios.post(BACKEND_ENDPOINT + `/games/${mode}/questions/end`, {});
+  return axios.post(BACKEND_ENDPOINT + `/games/${mode}/questions/end`, { withCredentials: true });
 };
 
 const nextQuestion = (mode: string) => {
-  return axios.post(BACKEND_ENDPOINT + `/games/${mode}/questions/next`, {});
+  return axios.post(BACKEND_ENDPOINT + `/games/${mode}/questions/next`, { withCredentials: true });
 };
+
+const nextQuestionExam = () => {
+  return axios.get(BACKEND_ENDPOINT_EXTERNAL + `/games/exam/questions/next`, { withCredentials: true });
+};
+
 
 const kickPlayer = (index: number, nickname: string) => {
   return axios.post(
@@ -96,6 +108,18 @@ const getPlayerRanking = () => {
   return axios.get(BACKEND_ENDPOINT + '/games/board/ranking', { withCredentials: true });
 };
 
+const getExamTimeRemainingUser = () => {
+  return axios.get(BACKEND_ENDPOINT_EXTERNAL + '/games/exam/time-left', { withCredentials: true });
+};
+
+const getExamTimeRemainingAdmin = () => {
+  return axios.get(BACKEND_ENDPOINT + '/games/exam/time-left', { withCredentials: true });
+};
+
+const getModeConfig = () => {
+  return axios.get(BACKEND_ENDPOINT + '/manage/config', { withCredentials: true });
+};
+
 export const service = {
   startLobby: startLobby,
   joinGame: joinGame,
@@ -106,6 +130,7 @@ export const service = {
   sendAnswer: sendAnswer,
   endQuestion: endQuestion,
   nextQuestion: nextQuestion,
+  nextQuestionExam: nextQuestionExam,
   kickPlayer: kickPlayer,
   getPlayerList: getPlayerList,
   hasAnsweredQuestion: hasAnsweredQuestion,
@@ -113,4 +138,7 @@ export const service = {
   makeMove: makeMove,
   getPlayerId: getPlayerId,
   getPlayerRanking: getPlayerRanking,
+  getExamTimeRemainingUser: getExamTimeRemainingUser,
+  getExamTimeRemainingAdmin: getExamTimeRemainingAdmin,
+  getModeConfig: getModeConfig,
 };

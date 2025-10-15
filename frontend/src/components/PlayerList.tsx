@@ -135,6 +135,13 @@ function PlayerList() {
   const delegate = useSSEChannel(`${BACKEND_ENDPOINT}/sse/users`);
 
   useEffect(() => {
+    service
+      .getPlayerList()
+      .then((response) => addPlayers(response.data, players, setPlayers, setNewPlayers))
+      .catch((error) => console.log(error));
+  }, [])
+
+  useEffect(() => {
     const unsubscribe = delegate.on('player-list', (data) => {
       addPlayers(data, players, setPlayers, setNewPlayers);
     });
@@ -159,7 +166,7 @@ function PlayerList() {
       <PlayerContainer>
         {players.map((player) => (
           <PlayerEntry key={player.nickname} isNew={newPlayers.has(player.nickname)}>
-            {player.nickname}
+            {player.nickname} {` (${player.index})`}
             <CloseIcon onClick={() => kickPlayer(player.index, player.nickname)}>X</CloseIcon>
           </PlayerEntry>
         ))}

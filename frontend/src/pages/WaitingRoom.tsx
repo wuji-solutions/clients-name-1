@@ -3,7 +3,7 @@ import QRCode from 'react-qr-code';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import theme from '../common/theme';
-import { ButtonCustom } from '../components/Button';
+import { ButtonCustom, FullScreenButton } from '../components/Button';
 import PlayerList from '../components/PlayerList';
 import { useAppContext } from '../providers/AppContextProvider';
 import { CustomInput } from '../components/Fields';
@@ -21,8 +21,8 @@ const Container = styled.div({
 
 const QRContainer = styled.div({
   margin: 'auto',
-  background: theme.palette.main.background,
-  padding: '25px',
+  background: '#fff',
+  padding: '15px',
   borderRadius: '5px',
   border: '5px solid #000',
 });
@@ -45,7 +45,13 @@ const UserInputContainer = styled.div({
   width: '80vw',
 });
 
-function SSEOnStartListener({onGameStart}: {onGameStart: Function}) {
+const ExamWarningContainer = styled.div({
+  fontSize: 'larger',
+  color: '#ff4539',
+  fontWeight: 'bolder'
+});
+
+function SSEOnStartListener({ onGameStart }: { onGameStart: Function }) {
   const { isAdmin } = useAppContext();
   const delegate = useSSEChannel(
     `${isAdmin() ? BACKEND_ENDPOINT : BACKEND_ENDPOINT_EXTERNAL}/sse/events`,
@@ -61,6 +67,8 @@ function SSEOnStartListener({onGameStart}: {onGameStart: Function}) {
 
   return <></>;
 }
+
+const allowedGameModes = ['board', 'exam', 'quiz'];
 
 function PlayerKickListener({
   userHandler,
@@ -95,7 +103,7 @@ function WaitingRoom() {
   const { isAdmin, username, setUsername } = useAppContext();
   const [identificator, setIdentificator] = useState<number | null>(null);
   const [playerKicked, setPlayerKicked] = useState(false);
-  const gameMode = (new URLSearchParams(globalThis.location.search)).get('tryb');
+  const gameMode = new URLSearchParams(globalThis.location.search).get('tryb');
   const navigate = useNavigate();
 
   const joinGame = () => {
@@ -120,26 +128,45 @@ function WaitingRoom() {
   };
 
   const moveScreens = () => {
-    switch(gameMode){
+    switch (gameMode) {
       case 'quiz':
         navigate('/gra/quiz');
         break;
       case 'board':
         navigate('/gra/planszowa');
         break;
+      case 'exam':
+        navigate('/sprawdzian');
+        break;
       default:
         console.log('Tryb gry nie został wybrany');
     }
-  }
+  };
 
   if (!isAdmin()) {
+    if (!gameMode || !allowedGameModes.includes(gameMode))
+      return (
+        <Container>
+          <UserInputContainer>
+            Wybrano nieprawidłowy tryb, spróbuj dołączyć ponownie
+          </UserInputContainer>
+        </Container>
+      );
+
     return (
       <Container>
+        <FullScreenButton />
         {username ? (
           <UserInputContainer>
             <SSEOnStartListener onGameStart={moveScreens} />
             <PlayerKickListener userHandler={setUsername} onKick={setPlayerKicked} />
-            <h4>Witaj {username}!</h4>
+            <h3>Witaj {username}!</h3>
+            {gameMode === 'exam' && (
+              <ExamWarningContainer>
+                Pamiętaj że podczas sprawdzianu zabronione jest zmienianie karty w przeglądarce. Każda
+                taka próba zostanie oznaczona jako oszustwo, a twoje podejście zostanie zakończone
+              </ExamWarningContainer>
+            )}
             Czekaj na rozpoczęcie rozgrywki
           </UserInputContainer>
         ) : playerKicked ? (
@@ -170,7 +197,7 @@ function WaitingRoom() {
 
   return (
     <Container>
-      <SSEOnStartListener onGameStart={moveScreens}/>
+      <SSEOnStartListener onGameStart={moveScreens} />
       <PlayerList />
       <QRContainer>
         <QRCode

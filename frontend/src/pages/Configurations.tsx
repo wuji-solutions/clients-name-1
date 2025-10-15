@@ -140,7 +140,7 @@ function Configurations() {
           <ButtonChoose active={mode == 'quiz'} onClick={() => setMode('quiz')}>
             Quiz
           </ButtonChoose>
-          <ButtonChoose active={mode == 'test'} onClick={() => setMode('test')}>
+          <ButtonChoose active={mode == 'exam'} onClick={() => setMode('exam')}>
             Sprawdzian
           </ButtonChoose>
           <ButtonChoose active={mode == 'board'} onClick={() => setMode('board')}>
