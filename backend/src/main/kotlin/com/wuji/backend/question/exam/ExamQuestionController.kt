@@ -77,6 +77,9 @@ class ExamQuestionController(
 
         return ResponseEntity.ok(
             question.toExtendedQuestionDto(
-                playerAnswer, questionNumber, totalQuestions))
+                playerAnswer,
+                questionNumber,
+                totalQuestions,
+                questionService.getAllowGoingBack()))
     }
 }

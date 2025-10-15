@@ -32,6 +32,8 @@ class ExamQuestionService(
     fun getCurrentQuestion(playerIndex: Int): Question =
         game.questionDispenser.currentQuestion(playerIndex)
 
+    fun getAllowGoingBack() = game.config.allowGoingBack
+
     fun getQuestionAndMarkTime(
         playerIndex: Int,
         getQuestionFunction: (Int) -> Question
