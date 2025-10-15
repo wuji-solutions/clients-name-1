@@ -17,7 +17,7 @@ def get_map_diff(inp):
         raise ValueError("All values must be integers")
     return {"EASY": splitted[0], "MEDIUM": splitted[1], "HARD": splitted[2]}
 
-def get_map_cat(_):
+def get_map_cat():
     res = {}
     while True:
         inp = input('Input category name and minimum correct answers [String Int] (or input "quit 0", to end): ')
