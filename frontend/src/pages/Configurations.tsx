@@ -151,6 +151,7 @@ function Configurations() {
       HARD: 3,
     },
     allowGoingBack: true,
+    additionalTimeToAnswerAfterFinishInSeconds: 30,
   });
   const [boardSettings, setBoardSettings] = useState<BoardSettings>({
     totalDurationMinutes: 30,

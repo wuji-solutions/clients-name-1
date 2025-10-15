@@ -18,6 +18,7 @@ export type ExamSettings = {
   notifyTeacherOnCheating: boolean;
   pointsPerDifficulty: Record<DifficultyLevel, number>;
   allowGoingBack: boolean;
+  additionalTimeToAnswerAfterFinishInSeconds: number;
 };
 
 interface ExamConfigProps {
@@ -131,6 +132,7 @@ export default function ExamConfig({ settings, setSettings }: ExamConfigProps) {
         <CenteredLabel>Liczba pytań, na które musi odpowiedzieć uczeń</CenteredLabel>
         <CleanInput
           type="number"
+          value={settings.requiredQuestionCount}
           onChange={(e) =>
             setSettings({ ...settings, requiredQuestionCount: Number(e.target.value) })
           }
@@ -153,6 +155,21 @@ export default function ExamConfig({ settings, setSettings }: ExamConfigProps) {
           }
         />
       </LabeledCheckboxContainer> */}
+      <LabeledCheckboxContainer>
+        <CenteredLabel>
+          Liczba dodatkowych sekund na odpowiedź przy zakończeniu sprawdzianu
+        </CenteredLabel>
+        <CleanInput
+          type="number"
+          value={settings.additionalTimeToAnswerAfterFinishInSeconds}
+          onChange={(e) =>
+            setSettings({
+              ...settings,
+              additionalTimeToAnswerAfterFinishInSeconds: Number(e.target.value),
+            })
+          }
+        />
+      </LabeledCheckboxContainer>
       <LabeledCheckboxContainer>
         <CenteredLabel>Ilość punktów za pytanie łatwe</CenteredLabel>
         <Dropdown
