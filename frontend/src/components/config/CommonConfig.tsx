@@ -16,7 +16,7 @@ interface Props {
 
 export default function CommonConfig({ commonSettings, setCommonSettings }: Props) {
   const openFilePicker = async () => {
-    const filePath = await window.electronAPI.openFile();
+    const filePath = window.electronAPI.openFile();
     if (filePath) {
       setCommonSettings({ ...commonSettings, questionFilePath: filePath });
     }

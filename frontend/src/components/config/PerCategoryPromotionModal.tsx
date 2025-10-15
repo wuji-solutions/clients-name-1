@@ -4,14 +4,13 @@ import { CenteredLabel } from '../Fields';
 import Modal from '../Modal';
 import { CleanInput } from './components/ConfigInput';
 import { BoardSettings } from './BoardConfig';
-import { LabeledCheckboxContainer } from './components/LabeledCheckbox';
 
 interface Props {
-  setIsCategoryModalOpen: any;
-  isError: boolean;
-  categoryList: string[];
-  settings: BoardSettings;
-  setSettings: any;
+  readonly setIsCategoryModalOpen: any;
+  readonly isError: boolean;
+  readonly categoryList: string[];
+  readonly settings: BoardSettings;
+  readonly setSettings: any;
 }
 
 export default function PerCategoryPromotionModal({

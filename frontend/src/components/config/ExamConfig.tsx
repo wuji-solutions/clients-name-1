@@ -138,23 +138,6 @@ export default function ExamConfig({ settings, setSettings }: ExamConfigProps) {
           }
         />
       </LabeledCheckboxContainer>
-      {/* TODO: currently list of questions is disabled even though backend takes it as parameter. */}
-      {/* <LabeledCheckboxContainer>
-        <CenteredLabel>Lista ID pytań wybranych ręcznie (oddzielone przecinkami)</CenteredLabel>
-        <CleanInput
-          type="text"
-          value={settings.selectedQuestionIds.join(',')}
-          onChange={(e) =>
-            setSettings({
-              ...settings,
-              selectedQuestionIds: e.target.value
-                .split(',')
-                .map((id) => Number(id.trim()))
-                .filter((id) => !isNaN(id)),
-            })
-          }
-        />
-      </LabeledCheckboxContainer> */}
       <LabeledCheckboxContainer>
         <CenteredLabel>
           Liczba dodatkowych sekund na odpowiedź przy zakończeniu sprawdzianu
