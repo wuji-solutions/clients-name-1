@@ -1,6 +1,7 @@
 package com.wuji.backend.question.exam
 
 import com.wuji.backend.game.GameType
+import com.wuji.backend.question.common.Question
 import com.wuji.backend.question.common.QuestionController
 import com.wuji.backend.question.exam.dto.ExamAnswerQuestionRequestDto
 import com.wuji.backend.question.exam.dto.ExtendedQuestionDto
@@ -30,38 +31,25 @@ class ExamQuestionController(
     @GameRunningOrFinishing
     @GetMapping("/current")
     fun getCurrentQuestion(
-        authentication: Authentication,
-    ): ResponseEntity<ExtendedQuestionDto> {
-        val index = authentication.playerIndex()
-        val (question, playerAnswer) =
-            questionService.getQuestionAndMarkTime(
-                index, questionService::getCurrentQuestion)
-        return ResponseEntity.ok(question.toExtendedQuestionDto(playerAnswer))
-    }
+        authentication: Authentication
+    ): ResponseEntity<ExtendedQuestionDto> =
+        handleQuestionRequest(
+            authentication, questionService::getCurrentQuestion)
 
     @GameRunning
     @GetMapping("/previous")
     fun getPreviousQuestion(
-        authentication: Authentication,
-    ): ResponseEntity<ExtendedQuestionDto> {
-        val index = authentication.playerIndex()
-        val (question, playerAnswer) =
-            questionService.getQuestionAndMarkTime(
-                index, questionService::getPreviousQuestion)
-        return ResponseEntity.ok((question.toExtendedQuestionDto(playerAnswer)))
-    }
+        authentication: Authentication
+    ): ResponseEntity<ExtendedQuestionDto> =
+        handleQuestionRequest(
+            authentication, questionService::getPreviousQuestion)
 
     @GameRunning
     @GetMapping("/next")
     fun getNextQuestion(
-        authentication: Authentication,
-    ): ResponseEntity<ExtendedQuestionDto> {
-        val index = authentication.playerIndex()
-        val (question, playerAnswer) =
-            questionService.getQuestionAndMarkTime(
-                index, questionService::getNextQuestion)
-        return ResponseEntity.ok(question.toExtendedQuestionDto(playerAnswer))
-    }
+        authentication: Authentication
+    ): ResponseEntity<ExtendedQuestionDto> =
+        handleQuestionRequest(authentication, questionService::getNextQuestion)
 
     @GameRunningOrFinishing
     @PostMapping("/answer")
@@ -75,5 +63,20 @@ class ExamQuestionController(
                 index, answerDto.answerIds, answerDto.playerCheated)
 
         return ResponseEntity.ok(correct)
+    }
+
+    private fun handleQuestionRequest(
+        authentication: Authentication,
+        questionFetcher: (Int) -> Question
+    ): ResponseEntity<ExtendedQuestionDto> {
+        val index = authentication.playerIndex()
+        val (question, playerAnswer) =
+            questionService.getQuestionAndMarkTime(index, questionFetcher)
+        val questionNumber = questionService.getCurrentQuestionNumber(index)
+        val totalQuestions = questionService.getBaseQuestionsSize(index)
+
+        return ResponseEntity.ok(
+            question.toExtendedQuestionDto(
+                playerAnswer, questionNumber, totalQuestions))
     }
 }
