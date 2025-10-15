@@ -42,7 +42,7 @@ abstract class GameStats {
                     countCorrectAnswersForPlayer(game as QuizGame, playerIndex)
                 else -> {
                     val player = game.findPlayerByIndex(playerIndex)
-                    player.details.answers.count { !it.isCorrect }
+                    player.details.answers.count { it.isCorrect }
                 }
             }
         }
