@@ -5,6 +5,8 @@ import { LabeledCheckboxContainer } from './components/LabeledCheckbox';
 import './config-styles.css';
 import Dropdown from '../Dropdown';
 import { CleanInput } from './components/ConfigInput';
+import DifficultyPoints from './components/DifficultyPoints';
+import OtherStuff from './components/BoardAndExamCommonFields';
 
 export type ExamSettings = {
   totalDurationMinutes: number;
@@ -32,32 +34,7 @@ export default function ExamConfig({ settings, setSettings }: ExamConfigProps) {
       <p className="centered" style={{ fontSize: '2em' }}>
         Ustawienia sprawdzianu
       </p>
-
-      <LabeledCheckboxContainer>
-        <CenteredLabel>Podaj łączny czas trwania gry w minutach</CenteredLabel>
-        <CleanInput
-          type="number"
-          value={settings.totalDurationMinutes}
-          onChange={(e) =>
-            setSettings({
-              ...settings,
-              totalDurationMinutes: Number.parseInt(e.target.value),
-            })
-          }
-        />
-      </LabeledCheckboxContainer>
-      <LabeledCheckboxContainer>
-        <CenteredLabel htmlFor="setEndImmediatelyAfterTime">
-          Czy gra ma skończyć się automatycznie po upływie czasu
-        </CenteredLabel>
-        <CheckboxInput
-          type="checkbox"
-          id="setEndImmediatelyAfterTime"
-          style={{ width: '3rem', margin: 0 }}
-          checked={settings.endImmediatelyAfterTime}
-          onChange={(e) => setSettings({ ...settings, endImmediatelyAfterTime: e.target.checked })}
-        />
-      </LabeledCheckboxContainer>
+      <OtherStuff settings={settings} setSettings={setSettings} />
       <LabeledCheckboxContainer>
         <CenteredLabel htmlFor="setRandomizeQuestions">
           Czy gra ma skończyć się automatycznie po upływie czasu
@@ -153,57 +130,7 @@ export default function ExamConfig({ settings, setSettings }: ExamConfigProps) {
           }
         />
       </LabeledCheckboxContainer>
-      <LabeledCheckboxContainer>
-        <CenteredLabel>Ilość punktów za pytanie łatwe</CenteredLabel>
-        <Dropdown
-          options={['1', '2', '3']}
-          selectedValue={String(settings.pointsPerDifficulty.EASY)}
-          onSelect={(e) =>
-            setSettings({
-              ...settings,
-              pointsPerDifficulty: {
-                ...settings.pointsPerDifficulty,
-                EASY: Number.parseInt(e),
-              },
-            })
-          }
-          placeholder="1"
-        />
-      </LabeledCheckboxContainer>
-      <LabeledCheckboxContainer>
-        <CenteredLabel>Ilość punktów za pytanie średnie</CenteredLabel>
-        <Dropdown
-          options={['1', '2', '3']}
-          selectedValue={String(settings.pointsPerDifficulty.MEDIUM)}
-          onSelect={(e) =>
-            setSettings({
-              ...settings,
-              pointsPerDifficulty: {
-                ...settings.pointsPerDifficulty,
-                MEDIUM: Number.parseInt(e),
-              },
-            })
-          }
-          placeholder="2"
-        />
-      </LabeledCheckboxContainer>
-      <LabeledCheckboxContainer>
-        <CenteredLabel>Ilość punktów za pytanie trudne</CenteredLabel>
-        <Dropdown
-          options={['1', '2', '3']}
-          selectedValue={String(settings.pointsPerDifficulty.HARD)}
-          onSelect={(e) =>
-            setSettings({
-              ...settings,
-              pointsPerDifficulty: {
-                ...settings.pointsPerDifficulty,
-                HARD: Number.parseInt(e),
-              },
-            })
-          }
-          placeholder="3"
-        />
-      </LabeledCheckboxContainer>
+      <DifficultyPoints settings={settings} setSettings={setSettings} />
     </>
   );
 }
