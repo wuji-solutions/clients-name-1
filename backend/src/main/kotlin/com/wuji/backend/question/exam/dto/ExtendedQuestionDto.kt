@@ -18,6 +18,7 @@ data class ExtendedQuestionDto(
     val difficultyLevel: DifficultyLevel,
     val questionNumber: Int,
     val totalBaseQuestions: Int,
+    val allowGoingBack: Boolean,
     val playerAlreadyAnswered: Boolean,
     val playerAnswerDto: PlayerAnswerDto?
 )
@@ -25,7 +26,8 @@ data class ExtendedQuestionDto(
 fun Question.toExtendedQuestionDto(
     playerAnswer: PlayerAnswer?,
     questionNumber: Int,
-    totalBaseQuestions: Int
+    totalBaseQuestions: Int,
+    allowGoingBack: Boolean
 ) =
     ExtendedQuestionDto(
         id = this.id,
@@ -38,4 +40,4 @@ fun Question.toExtendedQuestionDto(
         playerAnswerDto = playerAnswer?.toDto(),
         questionNumber = questionNumber,
         totalBaseQuestions = totalBaseQuestions,
-    )
+        allowGoingBack = allowGoingBack)
