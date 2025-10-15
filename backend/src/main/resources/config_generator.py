@@ -5,22 +5,22 @@ def get_list(inp):
     try:
         return [int(x) for x in splitted]
     except ValueError:
-        raise ValueError("Lista musi zawierać liczby całkowite oddzielone przecinkiem i spacją (np. 1, 2, 3)")
+        raise ValueError("List must be separeted with comma and space (ex. 1, 2, 3)")
 
 def get_map_diff(inp):
     splitted = inp.split(", ")
     if len(splitted) != 3:
-        raise ValueError("Podaj dokładnie 3 liczby w formacie: EASY, MEDIUM, HARD (np. 1, 2, 3)")
+        raise ValueError("Input exactly 3 numbers separeted with comma and space: EASY, MEDIUM, HARD (ex. 1, 2, 3)")
     try:
         splitted = [int(x) for x in splitted]
     except ValueError:
-        raise ValueError("Wszystkie wartości muszą być liczbami całkowitymi")
+        raise ValueError("All values must be integers")
     return {"EASY": splitted[0], "MEDIUM": splitted[1], "HARD": splitted[2]}
 
 def get_map_cat(_):
     res = {}
     while True:
-        inp = input('Podaj kategorię i minimalną liczbę poprawnych odpowiedzi [String Int] (lub wpisz "quit 0", aby zakończyć): ')
+        inp = input('Input category name and minimum correct answers [String Int] (or input "quit 0", to end): ')
         name, value = inp.split()
         if name == "quit":
             break
@@ -71,7 +71,7 @@ input_typer = {
 
 config = {}
 
-config_type = input("Podaj typ konfiguracji (QUIZ / EXAM / BOARD): ").strip().upper()
+config_type = input("Config Type (QUIZ / EXAM / BOARD): ").strip().upper()
 
 if config_type == "QUIZ":
     curr_attr = game_attributes
@@ -80,16 +80,16 @@ elif config_type == "EXAM":
 elif config_type == "BOARD":
     curr_attr = game_attributes + board_attributes
 else:
-    raise ValueError("Nieznany typ konfiguracji! Dozwolone: QUIZ, EXAM, BOARD")
+    raise ValueError("Unknown Type! Allowed: QUIZ, EXAM, BOARD")
 
-print(f"\nTworzenie konfiguracji typu {config_type}:\n")
+print(f"\nCreating Config of type: {config_type}:\n")
 
 for attr_name, attr_type in curr_attr:
     if attr_name == "type":
         continue
     
     if "map<CategoryName" in attr_type:
-        print(f"{attr_name} ({attr_type}) -> specjalny input:")
+        print(f"{attr_name} ({attr_type}) -> special input:")
         value = input_typer[attr_type]()
     else:
         user_input = input(f"{attr_name} ({attr_type}): ")
