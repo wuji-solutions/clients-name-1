@@ -14,7 +14,7 @@ interface Props {
 }
 
 export default function EnableQuestionConfig({ settings, setSettings, setIsOpen, isError, questionList }: Props) {
-    const containsQuestionId = (questionId: string): boolean => Number.parseInt(questionId) in settings.selectedQuestionIds
+    const containsQuestionId = (questionId: string): boolean => settings.selectedQuestionIds.includes(Number.parseInt(questionId))
 
     const handleSelect = (questionId: string): void => {
         const questionIdNum = Number.parseInt(questionId);
@@ -36,9 +36,10 @@ export default function EnableQuestionConfig({ settings, setSettings, setIsOpen,
           alignItems: 'center',
           height: '100vh',
           textAlign: 'center',
+          overflowY: "hidden"
         }}
       >
-        <div style={{ height: '40%' }}>
+        <div style={{ height:"40%" }}>
           {isError ? (
             <h1>Upewnij się, że plik z pytaniami jest poprawny</h1>
           ) : (
@@ -47,16 +48,18 @@ export default function EnableQuestionConfig({ settings, setSettings, setIsOpen,
               <Divider></Divider>
               <div style={{ margin: '25px' }}></div>
               {questionList.length === 0 && <h2>Brak pytań</h2>}
-              {questionList.map((question) => {
+              <div style={{overflowY: "scroll", maxHeight: "70%"}}>
+              {questionList.map((question, index) => {
                 return (
                   <div key={question.id} style={{ display: 'flex', margin: '10px' }}>
-                    <CenteredLabel style={{ width: '70%' }}>{question.task}</CenteredLabel>
+                    <CenteredLabel style={{ width: '70%' }}>{index+1}. {question.task}</CenteredLabel>
                     <ButtonCustom
-                        onChange={(e) => handleSelect(String(question.id))}
-                    >{containsQuestionId(String(question.id)) ? "Wybrano" : "Nie wybrano"}</ButtonCustom>
+                        onClick={(e) => handleSelect(String(question.id))}
+                        >{containsQuestionId(String(question.id)) ? "Wybrano" : "Nie wybrano"}</ButtonCustom>
                   </div>
                 );
               })}
+              </div>
               <div style={{ margin: '25px' }}></div>
               <Divider></Divider>
             </>

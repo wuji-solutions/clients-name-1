@@ -33,7 +33,6 @@ interface ExamConfigProps {
 
 export default function ExamConfig({ settings, setSettings, questionList, questionListError }: ExamConfigProps) {
   const [isQuestionIdSelectorOpen, setIsQuestionIdSelectorOpen] = useState<boolean>(false);
-  console.log(isQuestionIdSelectorOpen)
   return (
     <>
       <p className="centered" style={{ fontSize: '2em' }}>

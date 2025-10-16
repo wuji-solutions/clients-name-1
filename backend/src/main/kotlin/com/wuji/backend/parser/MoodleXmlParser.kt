@@ -7,6 +7,7 @@ import com.wuji.backend.question.common.Question
 import com.wuji.backend.question.common.QuestionType
 import com.wuji.backend.question.common.TextFormat
 import com.wuji.backend.question.common.TextFormat.PLAIN_TEXT
+import com.wuji.backend.question.common.dto.toQuestionDto
 import com.wuji.backend.util.ext.getCategories
 import java.io.File
 import java.io.FileNotFoundException
@@ -69,7 +70,7 @@ object MoodleXmlParser {
         }
         val questions = parse(file.inputStream())
         val categories = questions.getCategories()
-        return ParsedQuestionsInfo(categories, questions.size)
+        return ParsedQuestionsInfo(categories, questions.size, questions.map {it.toQuestionDto()})
     }
 
     private fun parseCategoryQuestion(reader: XMLStreamReader): String? {

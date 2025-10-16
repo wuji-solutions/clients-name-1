@@ -60,7 +60,8 @@ export default function GameConfig({
   }
 
   const updateQuestionList = (questions: Question[]) => {
-    setExamSettings({...examSettings, selectedQuestionIds: questions})
+    setQuestionList(questions);
+    setExamSettings({...examSettings, selectedQuestionIds: questions.map((question) => (question.id))});
   }
 
   useEffect(() => {
@@ -69,6 +70,7 @@ export default function GameConfig({
       .parseQuestions(commonSettings.questionFilePath)
       .then((res) => {
         const data = res.data;
+        console.log(data.questions);
         updateCategories(data.categories);
         updateQuestionList(data.questions);
       })
