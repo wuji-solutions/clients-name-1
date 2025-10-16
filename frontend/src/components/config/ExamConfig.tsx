@@ -1,12 +1,13 @@
-import React from 'react';
-import { DifficultyLevel } from '../../common/types';
+import React, { useState } from 'react';
+import { DifficultyLevel, Question } from '../../common/types';
 import { CenteredLabel, CheckboxInput } from '../Fields';
 import { LabeledCheckboxContainer } from './components/LabeledCheckbox';
 import './config-styles.css';
-import Dropdown from '../Dropdown';
 import { CleanInput } from './components/ConfigInput';
 import DifficultyPoints from './components/DifficultyPoints';
 import OtherStuff from './components/BoardAndExamCommonFields';
+import EnableQuestionConfig from './EnableQuestionConfig';
+import { ButtonCustom } from '../Button';
 
 export type ExamSettings = {
   totalDurationMinutes: number;
@@ -26,9 +27,13 @@ export type ExamSettings = {
 interface ExamConfigProps {
   readonly settings: ExamSettings;
   readonly setSettings: React.Dispatch<React.SetStateAction<ExamSettings>>;
+  readonly questionListError: boolean;
+  readonly questionList: Question[]
 }
 
-export default function ExamConfig({ settings, setSettings }: ExamConfigProps) {
+export default function ExamConfig({ settings, setSettings, questionList, questionListError }: ExamConfigProps) {
+  const [isQuestionIdSelectorOpen, setIsQuestionIdSelectorOpen] = useState<boolean>(false);
+  console.log(isQuestionIdSelectorOpen)
   return (
     <>
       <p className="centered" style={{ fontSize: '2em' }}>
@@ -130,6 +135,16 @@ export default function ExamConfig({ settings, setSettings }: ExamConfigProps) {
           }
         />
       </LabeledCheckboxContainer>
+       <LabeledCheckboxContainer>
+        <CenteredLabel>
+          Wybierz pytania które mają zostać użyte
+        </CenteredLabel>
+        <ButtonCustom style={{fontSize: "0.75em"}} onClick={(e) => setIsQuestionIdSelectorOpen(true)}>Wybierz</ButtonCustom>
+      { isQuestionIdSelectorOpen &&
+        <EnableQuestionConfig settings={settings} setSettings={setSettings} setIsOpen={setIsQuestionIdSelectorOpen} isError={questionListError} questionList={questionList}/>
+        }
+      </LabeledCheckboxContainer>
+      
       <DifficultyPoints settings={settings} setSettings={setSettings} />
     </>
   );

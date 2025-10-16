@@ -1,4 +1,4 @@
-import { ConfigDTO, mode } from '../../common/types';
+import { ConfigDTO, mode, Question } from '../../common/types';
 import CommonConfig, { CommonSettings } from './CommonConfig';
 import QuizConfig from './QuizConfig';
 import ExamConfig, { ExamSettings } from './ExamConfig';
@@ -33,6 +33,7 @@ export default function GameConfig({
   const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
   const [isOpenSaveConfig, setIsOpenSaveConfig] = useState<boolean>(false);
   const [categoryNames, setCategoryNames] = useState<string[]>([]);
+  const [questionList, setQuestionList] = useState<Question[]>([]);
   const [questionFileParseError, setQuestionFileParseError] = useState<boolean>(false);
   const editConfig = () => {
     setIsEditDialogOpen(true);
@@ -49,18 +50,27 @@ export default function GameConfig({
     setIsOpenSaveConfig(true);
   };
 
+  const updateCategories = (categoryNames: string[]) => {
+    setCategoryNames(categoryNames);
+    setQuestionFileParseError(false);
+    setBoardSettings({
+      ...boardSettings,
+      rankingPromotionRules: Object.fromEntries(categoryNames.map((cat) => [cat, 1])),
+    });
+  }
+
+  const updateQuestionList = (questions: Question[]) => {
+    setExamSettings({...examSettings, selectedQuestionIds: questions})
+  }
+
   useEffect(() => {
-    if (!commonSettings.questionFilePath || mode != 'board') return;
+    if (!commonSettings.questionFilePath) return;
     service
       .parseQuestions(commonSettings.questionFilePath)
       .then((res) => {
-        const categories: string[] = res.data.categories;
-        setCategoryNames(categories);
-        setQuestionFileParseError(false);
-        setBoardSettings({
-          ...boardSettings,
-          rankingPromotionRules: Object.fromEntries(categories.map((cat) => [cat, 1])),
-        });
+        const data = res.data;
+        updateCategories(data.categories);
+        updateQuestionList(data.questions);
       })
       .catch(() => setQuestionFileParseError(true));
   }, [commonSettings.questionFilePath, mode]);
@@ -112,7 +122,7 @@ export default function GameConfig({
               parseError={questionFileParseError}
             />
           )}
-          {mode === 'exam' && <ExamConfig settings={examSettings} setSettings={setExamSettings} />}
+          {mode === 'exam' && <ExamConfig settings={examSettings} setSettings={setExamSettings} questionList={questionList} questionListError={questionFileParseError}/>}
         </div>
       </div>
 
