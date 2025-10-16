@@ -70,7 +70,8 @@ object MoodleXmlParser {
         }
         val questions = parse(file.inputStream())
         val categories = questions.getCategories()
-        return ParsedQuestionsInfo(categories, questions.size, questions.map {it.toQuestionDto()})
+        return ParsedQuestionsInfo(
+            categories, questions.size, questions.map { it.toQuestionDto() })
     }
 
     private fun parseCategoryQuestion(reader: XMLStreamReader): String? {
