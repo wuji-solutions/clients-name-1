@@ -16,7 +16,8 @@ const AnswerCard = styled.div<{ backgroundcolor: string; isselected: boolean | u
     return {
       color: isselected ? '#dee0e0' : '#fff',
       borderRadius: '20px',
-      minHeight: '25px',
+      minHeight: '15px',
+      maxHeight: '20px',
       width: 'fit-content',
       minWidth: '100px',
       maxWidth: '300px',

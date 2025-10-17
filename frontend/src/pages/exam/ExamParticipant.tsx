@@ -49,8 +49,9 @@ const QuestionCategory = styled.div({
 const QuestionTask = styled.div({
   width: 'fit-content',
   maxWidth: '340px',
+  maxHeight: '150px',
   margin: 'auto',
-  fontSize: '20px',
+  fontSize: '18px',
   textAlign: 'center',
 });
 
@@ -124,11 +125,42 @@ function ExamParticipant() {
         } else {
           setSelectedAnswers([]);
         }
+        setAllowGoingBack(response.data?.allowGoingBack);
         setCurrentQuestion(response.data);
         setHasAnsweredQuestion(response.data.playerAlreadyAnswered);
       });
     }
   }, []);
+
+  const handleChangeQuestion = (next: boolean) => {
+    if (next) {
+      service.nextQuestionExam().then((response) => {
+        if (response.status == 200) {
+          if (response.data.playerAlreadyAnswered) {
+            setSelectedAnswers(response.data.playerAnswerDto.selectedIds);
+          } else {
+            setSelectedAnswers([]);
+          }
+          setAllowGoingBack(response.data?.allowGoingBack);
+          setCurrentQuestion(response.data);
+          setHasAnsweredQuestion(response.data.playerAlreadyAnswered);
+        }
+      });
+    } else {
+      service.previousQuestionExam().then((response) => {
+        if (response.status == 200) {
+          if (response.data.playerAlreadyAnswered) {
+            setSelectedAnswers(response.data.playerAnswerDto.selectedIds);
+          } else {
+            setSelectedAnswers([]);
+          }
+          setAllowGoingBack(response.data?.allowGoingBack);
+          setCurrentQuestion(response.data);
+          setHasAnsweredQuestion(response.data.playerAlreadyAnswered);
+        } 
+      });
+    }
+  }
 
   useEffect(() => {
     const handleVisibilityChange = () => {
@@ -230,8 +262,8 @@ function ExamParticipant() {
             )}
             {allowGoingBack && (
               <ButtonOptionContainer>
-                <ButtonCustom>{'< POWRÓT'}</ButtonCustom>
-                <ButtonCustom>{'NASTĘPNE >'}</ButtonCustom>
+                <ButtonCustom onClick={() => handleChangeQuestion(false)}>{'< Powrót'}</ButtonCustom>
+                <ButtonCustom onClick={() => handleChangeQuestion(true)}>{'Następne >'}</ButtonCustom>
               </ButtonOptionContainer>
             )}
           </ButtonContainer>

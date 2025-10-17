@@ -67,6 +67,9 @@ const nextQuestionExam = () => {
   return axios.get(BACKEND_ENDPOINT_EXTERNAL + `/games/exam/questions/next`, { withCredentials: true });
 };
 
+const previousQuestionExam = () => {
+  return axios.get(BACKEND_ENDPOINT_EXTERNAL + `/games/exam/questions/previous`, { withCredentials: true });
+};
 
 const kickPlayer = (index: number, nickname: string) => {
   return axios.post(
@@ -137,6 +140,7 @@ export const service = {
   endQuestion: endQuestion,
   nextQuestion: nextQuestion,
   nextQuestionExam: nextQuestionExam,
+  previousQuestionExam: previousQuestionExam,
   kickPlayer: kickPlayer,
   getPlayerList: getPlayerList,
   hasAnsweredQuestion: hasAnsweredQuestion,
