@@ -120,6 +120,12 @@ const getModeConfig = () => {
   return axios.get(BACKEND_ENDPOINT + '/manage/config', { withCredentials: true });
 };
 
+const parseQuestions = (filePath: string) => {
+  return axios.get(BACKEND_ENDPOINT + '/manage/parse-questions', {
+    params: { questionsFilePath: filePath },
+  });
+};
+
 export const service = {
   startLobby: startLobby,
   joinGame: joinGame,
@@ -141,4 +147,5 @@ export const service = {
   getExamTimeRemainingUser: getExamTimeRemainingUser,
   getExamTimeRemainingAdmin: getExamTimeRemainingAdmin,
   getModeConfig: getModeConfig,
+  parseQuestions: parseQuestions,
 };

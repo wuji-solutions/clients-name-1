@@ -3,11 +3,17 @@ import { useDropzone } from 'react-dropzone';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import theme from '../common/theme';
+import { mode } from '../common/types';
 import { ButtonChoose, ButtonCustom } from '../components/Button';
 import { TEST_GAME, TEST_QUIZ } from '../common/test';
 import { useAppContext } from '../providers/AppContextProvider';
 import AccessRestricted from '../components/AccessRestricted';
 import { service } from '../service/service';
+import GameConfig from '../components/config/GameConfig';
+import { BoardSettings } from '../components/config/BoardConfig';
+import { CommonSettings } from '../components/config/CommonConfig';
+import { ExamSettings } from '../components/config/ExamConfig';
+import { settingsToConfig } from '../components/config/utils';
 
 const Container = styled.div({
   width: '100%',
@@ -111,18 +117,53 @@ function Configurations() {
     },
   });
 
-  const [mode, setMode] = useState<string | null>(null);
+  const [mode, setMode] = useState<mode>('quiz');
 
   const startLobby = () => {
     if (!mode) return;
+    const config = settingsToConfig(mode, commonSettings, examSettings, boardSettings);
     service
-      .startLobby(mode, mode === 'quiz' ? { ...TEST_QUIZ } : { ... TEST_GAME })
+      .startLobby(mode, mode === 'quiz' ? { ...TEST_QUIZ } : { ...TEST_GAME })
       .then((response) => {
         console.log('Successfully created new game');
         navigate(`/waiting-room?tryb=${mode}`);
       })
       .catch((error) => console.log(error));
   };
+
+  const [commonSettings, setCommonSettings] = useState<CommonSettings>({
+    questionDurationSeconds: 30,
+    questionFilePath: '',
+  });
+  const [examSettings, setExamSettings] = useState<ExamSettings>({
+    requiredQuestionCount: 10,
+    endImmediatelyAfterTime: true,
+    totalDurationMinutes: 30,
+    randomizeQuestions: true,
+    enforceDifficultyBalance: false,
+    selectedQuestionIds: [],
+    zeroPointsOnCheating: true,
+    markQuestionOnCheating: false,
+    notifyTeacherOnCheating: true,
+    pointsPerDifficulty: {
+      EASY: 1,
+      MEDIUM: 2,
+      HARD: 3,
+    },
+    allowGoingBack: true,
+    additionalTimeToAnswerAfterFinishInSeconds: 30,
+  });
+  const [boardSettings, setBoardSettings] = useState<BoardSettings>({
+    totalDurationMinutes: 30,
+    endImmediatelyAfterTime: true,
+    showLeaderboard: true,
+    pointsPerDifficulty: {
+      EASY: 1,
+      MEDIUM: 2,
+      HARD: 3,
+    },
+    rankingPromotionRules: {},
+  });
 
   if (user == 'user') {
     return <AccessRestricted />;
@@ -153,6 +194,15 @@ function Configurations() {
           <input {...getInputProps()} />
           <p>Dodaj pytania...</p>
         </FileSelector>
+        <GameConfig
+          mode={mode}
+          commonSettings={commonSettings}
+          setCommonSettings={setCommonSettings}
+          examSettings={examSettings}
+          setExamSettings={setExamSettings}
+          boardSettings={boardSettings}
+          setBoardSettings={setBoardSettings}
+        />
         <ActionButtonContainer>
           <ButtonCustom onClick={() => startLobby()}>Otwórz poczekalnię</ButtonCustom>
           <ButtonCustom onClick={() => navigate('/')}>Powrót</ButtonCustom>
