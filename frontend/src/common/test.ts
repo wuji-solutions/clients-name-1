@@ -53,7 +53,8 @@ export const TEST_GAME = {
     },
         "requiredQuestionCount": 4,
         "randomizeQuestions": true,
-        "allowGoingBack":true
+        "allowGoingBack":true,
+        "notifyTeacherOnCheating": true
   }
 }
 

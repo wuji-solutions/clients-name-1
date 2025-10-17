@@ -43,7 +43,11 @@ function Timer({isAdmin}: {isAdmin?: boolean}) {
   }, []);
 
   useEffect(() => {
-    if (initialSeconds) endTimeRef.current = Date.now() + initialSeconds * 1000;
+    if (initialSeconds) {
+      endTimeRef.current = Date.now() + initialSeconds * 1000;
+    } else {
+      return;
+    }
 
     const tick = () => {
       const now = Date.now();
@@ -56,7 +60,7 @@ function Timer({isAdmin}: {isAdmin?: boolean}) {
     };
 
     const interval = setInterval(tick, 1000);
-    tick(); // call immediately so UI updates without delay
+    tick();
 
     return () => clearInterval(interval);
   }, [initialSeconds]);
@@ -65,7 +69,7 @@ function Timer({isAdmin}: {isAdmin?: boolean}) {
     <>
       {examTimeRemaining != null && initialSeconds && (
         <Clock timeLeft={examTimeRemaining}>
-          {`${Math.floor(examTimeRemaining / 60)}:${examTimeRemaining % 60 >= 10 ? examTimeRemaining % 60 : '0' + (examTimeRemaining % 60)}`}
+          {examTimeRemaining > 0 ? `${Math.floor(examTimeRemaining / 60)}:${examTimeRemaining % 60 >= 10 ? examTimeRemaining % 60 : '0' + (examTimeRemaining % 60)}` : '-- : --'}
         </Clock>
       )}
     </>

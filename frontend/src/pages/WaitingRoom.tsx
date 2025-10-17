@@ -3,7 +3,7 @@ import QRCode from 'react-qr-code';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import theme from '../common/theme';
-import { ButtonCustom, FullScreenButton } from '../components/Button';
+import { ButtonCustom } from '../components/Button';
 import PlayerList from '../components/PlayerList';
 import { useAppContext } from '../providers/AppContextProvider';
 import { CustomInput } from '../components/Fields';
@@ -19,12 +19,21 @@ const Container = styled.div({
   flexDirection: 'row',
 });
 
+const QRWrapper = styled.div({
+  padding: '10px',
+  border: `5px solid ${theme.palette.main.accent}`,
+  height: 'fit-content',
+  width: 'fit-content',
+  borderRadius: '15px',
+  margin: 'auto',
+});
+
 const QRContainer = styled.div({
   margin: 'auto',
   background: '#fff',
   padding: '15px',
-  borderRadius: '5px',
-  border: '5px solid #000',
+  borderRadius: '15px',
+  border: '5px solid #fff',
 });
 
 const ActionButtonContainer = styled.div({
@@ -34,7 +43,7 @@ const ActionButtonContainer = styled.div({
   display: 'flex',
   flexDirection: 'column',
   gap: '10px',
-  width: '30%',
+  width: '20%',
 });
 
 const UserInputContainer = styled.div({
@@ -155,7 +164,6 @@ function WaitingRoom() {
 
     return (
       <Container>
-        <FullScreenButton />
         {username ? (
           <UserInputContainer>
             <SSEOnStartListener onGameStart={moveScreens} />
@@ -164,7 +172,7 @@ function WaitingRoom() {
             {gameMode === 'exam' && (
               <ExamWarningContainer>
                 Pamiętaj że podczas sprawdzianu zabronione jest zmienianie karty w przeglądarce. Każda
-                taka próba zostanie oznaczona jako oszustwo, a twoje podejście zostanie zakończone
+                taka próba zostanie oznaczona jako oszustwo, a twoje punkty mogą zostać wyzerowane
               </ExamWarningContainer>
             )}
             Czekaj na rozpoczęcie rozgrywki
@@ -199,11 +207,14 @@ function WaitingRoom() {
     <Container>
       <SSEOnStartListener onGameStart={moveScreens} />
       <PlayerList />
-      <QRContainer>
-        <QRCode
-          value={`http://192.168.137.1:3000/waiting-room?tryb=${gameMode}`} // NOSONAR
-        />
-      </QRContainer>
+      <QRWrapper>
+        <QRContainer>
+          <QRCode
+            size={400}
+            value={`http://192.168.137.1:3000/waiting-room?tryb=${gameMode}`} // NOSONAR
+          />
+        </QRContainer>
+      </QRWrapper>
       <ActionButtonContainer>
         <ButtonCustom onClick={() => startGame()}>Zacznij grę</ButtonCustom>
         <ButtonCustom onClick={() => navigate('/konfiguracja')}>Powrót</ButtonCustom>

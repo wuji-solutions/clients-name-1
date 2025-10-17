@@ -22,11 +22,11 @@ const startGame = () => {
 };
 
 const finishGame = () => {
-  return axios.post(BACKEND_ENDPOINT + '/finish');
+  return axios.post(BACKEND_ENDPOINT + '/manage/finish');
 };
 
-const getGameSummary = () => {
-  return axios.get(BACKEND_ENDPOINT + '/games/quiz/summarize'); // TODO: CHANGE HARD CODED QUIZ TO SPECIFIC VALUE WHEN MORE GAMES TYPES ARE AVAILABLE
+const getGameSummary = (mode: string) => {
+  return axios.get(BACKEND_ENDPOINT + `/games/${mode}/summarize`);
 };
 
 const getCurrentQuestion = (user: string, mode: string) => {

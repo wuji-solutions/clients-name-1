@@ -13,6 +13,7 @@ import BoardgamePlayer from './pages/boardgame/BoardgamePlayer';
 import BoardgameObserver from './pages/boardgame/BoardgameObserver';
 import ExamParticipant from './pages/exam/ExamParticipant';
 import ExamObserver from './pages/exam/ExamObserver';
+import { FullScreenButton } from './components/Button';
 
 const context = (globalThis.location.hostname === 'localhost') ? 'admin' : 'user'
 
@@ -20,6 +21,7 @@ const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   <React.StrictMode>
     <AppProvider>
+      <FullScreenButton />
       <SSEProvider>
         <Router>
           <Routes>

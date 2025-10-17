@@ -10,13 +10,12 @@ const Contaier = styled.div({
   marginBottom: 'auto',
   marginLeft: '20px',
   height: '88vh',
-  width: '27%',
+  width: '37%',
   padding: '20px',
   display: 'flex',
   flexDirection: 'column',
   border: `2px solid #000`,
   borderRadius: '25px',
-  background: theme.palette.button.primary,
 });
 
 const Header = styled.span({
@@ -36,7 +35,7 @@ const PlayerContainer = styled.div({
   fontSize: '20px',
   textAlign: 'start',
   overflowY: 'auto',
-  overflowX: 'scroll',
+  overflowX: 'hidden',
   height: '100%',
 });
 

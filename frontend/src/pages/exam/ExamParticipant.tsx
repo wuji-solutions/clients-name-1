@@ -4,7 +4,7 @@ import theme from '../../common/theme';
 import { ExtendedQuestion } from '../../common/types';
 import { getParsedDifficultyLevel } from '../../common/utils';
 import AnswerCard from '../../components/AnswerCard';
-import { ButtonCustom, FullScreenButton } from '../../components/Button';
+import { ButtonCustom } from '../../components/Button';
 import Timer from '../../components/Timer';
 import { useAppContext } from '../../providers/AppContextProvider';
 import { service } from '../../service/service';
@@ -112,17 +112,15 @@ function ExamParticipant() {
   const [answerCorrect, setAnswerCorrect] = useState<boolean | null>(null);
 
   useEffect(() => {
-    const hasPlayerCheated = sessionStorage.getItem('playerCheated')
+    const hasPlayerCheated = sessionStorage.getItem('playerCheated');
     setPlayerCheated(!!hasPlayerCheated);
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (!examFinished) {
       service.getCurrentQuestion('user', 'exam').then((response) => {
         if (response.data.playerAlreadyAnswered) {
-          setSelectedAnswers(
-            response.data.playerAnswerDto.selectedIds
-          );
+          setSelectedAnswers(response.data.playerAnswerDto.selectedIds);
         } else {
           setSelectedAnswers([]);
         }
@@ -163,16 +161,14 @@ function ExamParticipant() {
   const setFetchNextQuestion = () => {
     service.nextQuestionExam().then((response) => {
       if (response.data.playerAlreadyAnswered) {
-        setSelectedAnswers(
-          response.data.playerAnswerDto.selectedIds
-        );
+        setSelectedAnswers(response.data.playerAnswerDto.selectedIds);
       } else {
         setSelectedAnswers([]);
       }
       setCurrentQuestion(response.data);
       setHasAnsweredQuestion(response.data.playerAlreadyAnswered);
     });
-  }
+  };
 
   const handleAnswerSent = () => {
     setAnswerSent(true);
@@ -183,25 +179,26 @@ function ExamParticipant() {
         playerCheated,
       )
       .then((response) => {
-        console.log(response.data)
-        setFetchNextQuestion()
+        if (response.status === 204) {
+          setExamFinished(true);
+          console.log('FINISHED');
+          return;
+        }
+  
+        console.log(response.data);
+        setFetchNextQuestion();
       })
       .catch((e) => {
-        if (e.data.status == 404 && e.data.message === 'Nie ma więcej pytań') {
-          setExamFinished(true);
-        } else {
-          console.log(e)
-        }
+        console.error('Unexpected error while sending answer:', e);
       })
       .finally(() => {
         setAnswerSent(false);
-      })
+      });
   };
 
   return (
     <Container>
       <TimerContainer>
-        <FullScreenButton />
         <Timer />
       </TimerContainer>
       {currentQuestion ? (
@@ -226,7 +223,11 @@ function ExamParticipant() {
             ))}
           </QuestionAnswerGrid>
           <ButtonContainer>
-            {!hasAnsweredQuestion && <ButtonCustom disabled={answerSent} onClick={handleAnswerSent} >Odpowiedz</ButtonCustom>}
+            {!hasAnsweredQuestion && (
+              <ButtonCustom disabled={answerSent} onClick={handleAnswerSent}>
+                Odpowiedz
+              </ButtonCustom>
+            )}
             {allowGoingBack && (
               <ButtonOptionContainer>
                 <ButtonCustom>{'< POWRÓT'}</ButtonCustom>

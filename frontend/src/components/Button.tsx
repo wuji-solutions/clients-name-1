@@ -1,5 +1,6 @@
 import { styled } from 'styled-components';
 import theme from '../common/theme';
+import { darkenColor } from '../common/utils';
 
 export const ButtonCustom = styled.button({
   width: '250px',
@@ -8,11 +9,14 @@ export const ButtonCustom = styled.button({
   marginRight: 'auto',
   background: theme.palette.button.primary,
   border: `1px solid ${theme.palette.button.primary}`,
+  boxShadow: `0 5px 0 0 ${theme.palette.button.accent}`,
   color: '#FFF',
   borderRadius: '10px',
-  boxShadow: `0 5px 0 0 ${theme.palette.button.accent}`,
   '&:hover': {
-    zoom: 1.025,
+    background: darkenColor(theme.palette.button.primary, 0.01),
+  border: `1px solid ${darkenColor(theme.palette.button.primary, 0.01)}`,
+  boxShadow: `0 5px 0 0 #101069`,
+  cursor: 'pointer',
   },
   '-webkit-transition-duration': '0.2s',
   transitionDuration: '0.2s',
@@ -65,13 +69,15 @@ const FullScreenButtonPure = styled.button({
   height: '32px',
   marginLeft: 'auto',
   marginRight: 'auto',
-  background: theme.palette.button.primary,
+  background: theme.palette.main.primary,
   color: '#FFF',
   border: '0px solid #000',
   borderRadius: '50%',
-  boxShadow: '0 2px 0 0 rgba(0,0,0,0.7)',
+  boxShadow: `0 3px 0 0 ${darkenColor(theme.palette.main.primary, 0.1)}`,
   '&:hover': {
-    zoom: 1.025,
+    background: darkenColor(theme.palette.main.primary, 0.1),
+    boxShadow: `0 3px 0 0 ${darkenColor(theme.palette.main.primary, 0.2)}`,
+    cursor: 'pointer',
   },
   '-webkit-transition-duration': '0.2s',
   transitionDuration: '0.2s',
@@ -85,5 +91,6 @@ const FullScreenButtonPure = styled.button({
 });
 
 export const FullScreenButton = () => {
-  return (<FullScreenButtonPure onClick={toggleFullscreen}>{'<->'}</FullScreenButtonPure>)
+
+  return (<FullScreenButtonPure onClick={toggleFullscreen}>{'< >'}</FullScreenButtonPure>)
 }

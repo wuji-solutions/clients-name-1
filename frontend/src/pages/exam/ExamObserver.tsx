@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { BACKEND_ENDPOINT } from '../../common/config';
 import theme from '../../common/theme';
 import { ExamState, QuizConfig } from '../../common/types';
 import { lightenColor } from '../../common/utils';
-import { ButtonCustom, FullScreenButton } from '../../components/Button';
+import { ButtonCustom } from '../../components/Button';
 import Timer from '../../components/Timer';
 import { useSSEChannel } from '../../providers/SSEProvider';
 import { service } from '../../service/service';
@@ -65,32 +66,42 @@ const GameConfigContainer = styled.div({
 const ButtonContainer = styled.div({
   textAlign: 'center',
   alignContent: 'center',
+  marginBottom: '20px',
 });
 
 const ExamConfigDetails = styled.div({
   display: 'flex',
   flexDirection: 'column',
+  gap: '30px',
 });
 
 const ProgressBarContainer = styled.div({
-  width: "200px",
-  height: "20px",
-  backgroundColor: "#eee",
-  borderRadius: "10px",
-  overflow: "hidden",
-  display: "flex",
+  width: '300px',
+  height: '30px',
+  backgroundColor: '#eee',
+  borderRadius: '15px',
+  overflow: 'hidden',
+  display: 'flex',
+  fontSize: '15px',
+  textAlign: 'center',
+  alignContent: 'center',
 });
 
 const CorrectBar = styled.div<{ widthPercent: number }>(({ widthPercent }) => ({
   width: `${widthPercent}%`,
-  backgroundColor: "#4caf50",
-  transition: "width 0.3s ease",
+  backgroundColor: theme.palette.main.success,
+  transition: 'width 0.3s ease',
+  textAlign: 'center',
+  alignContent: 'center',
 }));
 
 const IncorrectBar = styled.div<{ widthPercent: number }>(({ widthPercent }) => ({
-  width: `${widthPercent}%`,
-  backgroundColor: "#f44336",
-  transition: "width 0.3s ease",
+  width: `calc(${widthPercent}% + 1px)`,
+  background: `linear-gradient(to right, ${theme.palette.main.success} 0%, ${theme.palette.main.error} 15%)`,
+  transition: 'width 0.3s ease',
+  textAlign: 'center',
+  alignContent: 'center',
+  marginLeft: -1,
 }));
 
 const PlayerContainer = styled.div({
@@ -100,15 +111,48 @@ const PlayerContainer = styled.div({
   gap: '20px',
 });
 
-function SSEOnExamChangeListener({ setExamState }: { setExamState: Function }) {
+const Detail = styled.div({
+  fontSize: '20px',
+  display: 'flex',
+  flexDirection: 'row',
+  gap: '25px',
+  margin: 'auto',
+});
+
+const DetailKey = styled.div({
+  color: lightenColor(theme.palette.main.accent, 0.1),
+  textShadow: 'none',
+});
+
+const DetailValue = styled.div({});
+
+function SSEOnExamChangeListener({
+  setExamState,
+  setCheaters,
+}: {
+  setExamState: Function;
+  setCheaters: Function;
+}) {
   const delegate = useSSEChannel(BACKEND_ENDPOINT + '/sse/exam/admin-events', {
     withCredentials: true,
   });
 
   useEffect(() => {
     const unsubscribe = delegate.on('new-exam-state', (data: ExamState) => {
-      console.log(data);
       setExamState(data);
+    });
+    return unsubscribe;
+  }, [delegate]);
+
+  useEffect(() => {
+    const unsubscribe = delegate.on('player-cheated', (data) => {
+      console.log(data.data);
+      setCheaters((prev: any) => ({
+        ...prev,
+        [data.nickname]: {
+          ...data,
+        },
+      }));
     });
     return unsubscribe;
   }, [delegate]);
@@ -116,22 +160,41 @@ function SSEOnExamChangeListener({ setExamState }: { setExamState: Function }) {
   return <></>;
 }
 
+interface Dictionary<T> {
+  [Key: string]: T;
+}
+
 function ExamObserver() {
   const [examState, setExamState] = useState<ExamState>();
   const [examConfig, setExamConfig] = useState<QuizConfig>();
+  const [examFinished, setExamFinished] = useState<boolean>(false);
+  const [cheaters, setCheaters] = useState<Dictionary<string>>({});
+  const navigate = useNavigate();
 
   useEffect(() => {
     service.getModeConfig().then((response) => {
-      console.log(response.data);
-      setExamConfig(response.data)
+      setExamConfig(response.data);
     });
   }, []);
 
+  useEffect(() => {
+    console.log(cheaters);
+  }, [cheaters]);
+
+  const handleExamEnd = () => {
+    service
+      .finishGame()
+      .then((response) => {
+        console.log(response);
+        setExamFinished(true);
+      })
+      .catch((e) => console.error(e));
+  };
+
   return (
     <Container>
-      <SSEOnExamChangeListener setExamState={setExamState} />
+      <SSEOnExamChangeListener setExamState={setExamState} setCheaters={setCheaters} />
       <TimerContainer>
-        <FullScreenButton />
         Pozostały czas:
         <Timer isAdmin={true} />
       </TimerContainer>
@@ -142,31 +205,82 @@ function ExamObserver() {
               {examState?.playerState.map((playerState) => {
                 const total = playerState.correctAnswers + playerState.incorrectAnswers;
                 const correctPercent = total === 0 ? 0 : (playerState.correctAnswers / total) * 100;
-                const incorrectPercent = total === 0 ? 0 : (playerState.incorrectAnswers / total) * 100;
+                const incorrectPercent =
+                  total === 0 ? 0 : (playerState.incorrectAnswers / total) * 100;
                 return (
-              <PlayerContainer>
-                <strong>{playerState.nickname} {'(' + playerState.index + ')'}</strong>
-                <ProgressBarContainer>
-                  <CorrectBar widthPercent={correctPercent} />
-                  <IncorrectBar widthPercent={incorrectPercent} />
-                </ProgressBarContainer>
-                <strong>PUNKTY: {playerState.points}</strong>
-              </PlayerContainer>
-            )})}
+                  <PlayerContainer>
+                    <strong style={{ fontSize: '22px' }}>
+                      {playerState.nickname} {'(' + playerState.index + ')'}
+                    </strong>
+                    <ProgressBarContainer>
+                      <CorrectBar widthPercent={correctPercent}>
+                        {correctPercent > 19 && correctPercent.toFixed(1) + '%'}
+                      </CorrectBar>
+                      <IncorrectBar widthPercent={incorrectPercent}>
+                        {incorrectPercent > 19 && incorrectPercent.toFixed(1) + '%'}
+                      </IncorrectBar>
+                    </ProgressBarContainer>
+                    <strong style={{ fontSize: '20px' }}>PUNKTY: {playerState.points}</strong>
+                    { cheaters[playerState.nickname] && <strong style={{ fontSize: '20px', color: theme.palette.main.error }}>Oszukiwał</strong>}
+                  </PlayerContainer>
+                );
+              })}
             </>
           ) : (
             <EmptyStats>W tym miejscu pojawią się statystyki uczestników</EmptyStats>
           )}
         </UserStatsContainer>
         <GameConfigContainer>
-          <span style={{ color: lightenColor(theme.palette.main.accent, 0.1), textShadow: 'none', textAlign: 'center', fontSize: '20px' }}>
+          <span
+            style={{
+              color: lightenColor(theme.palette.main.accent, 0.1),
+              textShadow: 'none',
+              textAlign: 'center',
+              fontSize: '20px',
+              marginTop: '30px',
+            }}
+          >
             Zarządzanie sprawdzianem
           </span>
           <ExamConfigDetails>
-            
+            {examConfig && (
+              <div
+                style={{
+                  padding: '0px 20px 0px 20px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '20px',
+                }}
+              >
+                <Detail>
+                  <DetailKey>Czas trwania: </DetailKey>
+                  <DetailValue>{examConfig.totalDurationMinutes}min</DetailValue>
+                </Detail>
+                <Detail>
+                  <DetailKey>Czas na odpowiedź: </DetailKey>
+                  <DetailValue>{examConfig.questionDurationSeconds}s</DetailValue>
+                </Detail>
+                <Detail>
+                  <DetailKey>Losowe pytania: </DetailKey>
+                  <DetailValue>{examConfig.randomizeQuestions ? 'Tak' : 'Nie'}</DetailValue>
+                </Detail>
+                <Detail>
+                  <DetailKey>Zerowanie punktów w razie oszustwa: </DetailKey>
+                  <DetailValue>{examConfig.zeroPointsOnCheating ? 'Tak' : 'Nie'}</DetailValue>
+                </Detail>
+                <Detail>
+                  <DetailKey>Zezwalaj na powrót: </DetailKey>
+                  <DetailValue>{examConfig.allowGoingBack ? 'Tak' : 'Nie'}</DetailValue>
+                </Detail>
+              </div>
+            )}
           </ExamConfigDetails>
           <ButtonContainer>
-            <ButtonCustom>Zakończ sprawdzian</ButtonCustom>
+            {examFinished ? (
+              <ButtonCustom onClick={() => navigate('/konfiguracja')}>Wróć do menu</ButtonCustom>
+            ) : (
+              <ButtonCustom onClick={handleExamEnd}>Zakończ sprawdzian</ButtonCustom>
+            )}
           </ButtonContainer>
         </GameConfigContainer>
       </PanelContainer>
