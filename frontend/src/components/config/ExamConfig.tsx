@@ -28,10 +28,15 @@ interface ExamConfigProps {
   readonly settings: ExamSettings;
   readonly setSettings: React.Dispatch<React.SetStateAction<ExamSettings>>;
   readonly questionListError: boolean;
-  readonly questionList: Question[]
+  readonly questionList: Question[];
 }
 
-export default function ExamConfig({ settings, setSettings, questionList, questionListError }: ExamConfigProps) {
+export default function ExamConfig({
+  settings,
+  setSettings,
+  questionList,
+  questionListError,
+}: ExamConfigProps) {
   const [isQuestionIdSelectorOpen, setIsQuestionIdSelectorOpen] = useState<boolean>(false);
   return (
     <>
@@ -39,18 +44,6 @@ export default function ExamConfig({ settings, setSettings, questionList, questi
         Ustawienia sprawdzianu
       </p>
       <OtherStuff settings={settings} setSettings={setSettings} />
-      <LabeledCheckboxContainer>
-        <CenteredLabel htmlFor="setRandomizeQuestions">
-          Czy gra ma skończyć się automatycznie po upływie czasu
-        </CenteredLabel>
-        <CheckboxInput
-          type="checkbox"
-          style={{ width: '3rem', margin: 0 }}
-          checked={settings.randomizeQuestions}
-          onChange={(e) => setSettings({ ...settings, randomizeQuestions: e.target.checked })}
-        />
-      </LabeledCheckboxContainer>
-
       <LabeledCheckboxContainer>
         <CenteredLabel htmlFor="setEnforceDifficultyBalance">
           Czy losowane pytania powinny być równomiernie rozłożone według trudności
@@ -134,16 +127,25 @@ export default function ExamConfig({ settings, setSettings, questionList, questi
           }
         />
       </LabeledCheckboxContainer>
-       <LabeledCheckboxContainer>
-        <CenteredLabel>
-          Wybierz pytania które mają zostać użyte
-        </CenteredLabel>
-        <ButtonCustom style={{fontSize: "0.75em"}} onClick={(e) => setIsQuestionIdSelectorOpen(true)}>Wybierz</ButtonCustom>
-      { isQuestionIdSelectorOpen &&
-        <EnableQuestionConfig settings={settings} setSettings={setSettings} setIsOpen={setIsQuestionIdSelectorOpen} isError={questionListError} questionList={questionList}/>
-        }
+      <LabeledCheckboxContainer>
+        <CenteredLabel>Wybierz pytania które mają zostać użyte</CenteredLabel>
+        <ButtonCustom
+          style={{ fontSize: '0.75em' }}
+          onClick={(e) => setIsQuestionIdSelectorOpen(true)}
+        >
+          Wybierz
+        </ButtonCustom>
+        {isQuestionIdSelectorOpen && (
+          <EnableQuestionConfig
+            settings={settings}
+            setSettings={setSettings}
+            setIsOpen={setIsQuestionIdSelectorOpen}
+            isError={questionListError}
+            questionList={questionList}
+          />
+        )}
       </LabeledCheckboxContainer>
-      
+
       <DifficultyPoints settings={settings} setSettings={setSettings} />
     </>
   );
