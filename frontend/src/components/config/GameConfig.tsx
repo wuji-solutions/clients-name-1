@@ -57,12 +57,15 @@ export default function GameConfig({
       ...boardSettings,
       rankingPromotionRules: Object.fromEntries(categoryNames.map((cat) => [cat, 1])),
     });
-  }
+  };
 
   const updateQuestionList = (questions: Question[]) => {
     setQuestionList(questions);
-    setExamSettings({...examSettings, selectedQuestionIds: questions.map((question) => (question.id))});
-  }
+    setExamSettings({
+      ...examSettings,
+      selectedQuestionIds: questions.map((question) => question.id),
+    });
+  };
 
   useEffect(() => {
     if (!commonSettings.questionFilePath) return;
@@ -124,7 +127,14 @@ export default function GameConfig({
               parseError={questionFileParseError}
             />
           )}
-          {mode === 'exam' && <ExamConfig settings={examSettings} setSettings={setExamSettings} questionList={questionList} questionListError={questionFileParseError}/>}
+          {mode === 'exam' && (
+            <ExamConfig
+              settings={examSettings}
+              setSettings={setExamSettings}
+              questionList={questionList}
+              questionListError={questionFileParseError}
+            />
+          )}
         </div>
       </div>
 

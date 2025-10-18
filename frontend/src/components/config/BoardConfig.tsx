@@ -29,7 +29,6 @@ export default function BoardConfig({ settings, setSettings, categoryNames, pars
       <p className="centered" style={{ fontSize: '2em' }}>
         Ustawienia planszówki
       </p>
-      {/* TOOD: currently there is one setting missing */}
       <OtherStuff settings={settings} setSettings={setSettings} />
       <LabeledCheckboxContainer>
         <CenteredLabel htmlFor="setShowLeaderboard">

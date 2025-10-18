@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { BACKEND_ENDPOINT, BACKEND_ENDPOINT_EXTERNAL } from '../common/config';
+import { CreateGameDTO } from '../common/types';
 
-const startLobby = (mode: string, quiz: any) => {
-  return axios.post(BACKEND_ENDPOINT + '/manage/' + mode, quiz, {
+const startLobby = (mode: string, details: CreateGameDTO) => {
+  return axios.post(BACKEND_ENDPOINT + '/manage/' + mode, details, {
     headers: { 'Content-Type': 'application/json' },
   });
 };
@@ -64,11 +65,15 @@ const nextQuestion = (mode: string) => {
 };
 
 const nextQuestionExam = () => {
-  return axios.get(BACKEND_ENDPOINT_EXTERNAL + `/games/exam/questions/next`, { withCredentials: true });
+  return axios.get(BACKEND_ENDPOINT_EXTERNAL + `/games/exam/questions/next`, {
+    withCredentials: true,
+  });
 };
 
 const previousQuestionExam = () => {
-  return axios.get(BACKEND_ENDPOINT_EXTERNAL + `/games/exam/questions/previous`, { withCredentials: true });
+  return axios.get(BACKEND_ENDPOINT_EXTERNAL + `/games/exam/questions/previous`, {
+    withCredentials: true,
+  });
 };
 
 const kickPlayer = (index: number, nickname: string) => {
@@ -107,8 +112,8 @@ const getPlayerId = () => {
   return axios.get(BACKEND_ENDPOINT_EXTERNAL + '/games/board/player', { withCredentials: true });
 };
 
-const getPlayerRanking = () => {
-  return axios.get(BACKEND_ENDPOINT + '/games/board/ranking', { withCredentials: true });
+const getPlayerLeaderboard = () => {
+  return axios.get(BACKEND_ENDPOINT + '/games/board/leaderboard', { withCredentials: true });
 };
 
 const getExamTimeRemainingUser = () => {
@@ -143,7 +148,7 @@ export const service = {
   getBoardState: getBoardState,
   makeMove: makeMove,
   getPlayerId: getPlayerId,
-  getPlayerRanking: getPlayerRanking,
+  getPlayerLeaderboard: getPlayerLeaderboard,
   getExamTimeRemainingUser: getExamTimeRemainingUser,
   getExamTimeRemainingAdmin: getExamTimeRemainingAdmin,
   parseQuestions: parseQuestions,

@@ -28,8 +28,8 @@ interface PlayerAnswerDto {
 export interface ExtendedQuestion extends Question {
   playerAlreadyAnswered: boolean;
   playerAnswerDto: PlayerAnswerDto;
-  questionNumber: number,
-  totalBaseQuestions: number,
+  questionNumber: number;
+  totalBaseQuestions: number;
 }
 
 export interface QuestionData {
@@ -58,16 +58,16 @@ export interface FieldCoordinate {
 }
 
 interface PlayerState {
-  index: number,
-  nickname: string,
-  points: number,
-  correctAnswers: number,
-  incorrectAnswers: number,
+  index: number;
+  nickname: string;
+  points: number;
+  correctAnswers: number;
+  incorrectAnswers: number;
 }
 
 export interface ExamState {
-  requiredQuestionCount: number,
-  playerState: PlayerState[]
+  requiredQuestionCount: number;
+  playerState: PlayerState[];
 }
 export interface BoardConfig extends CommonSettings, BoardSettings {}
 
@@ -79,6 +79,8 @@ export type ConfigDTO =
   | ({ type: 'QUIZ' } & CommonSettings)
   | ({ type: 'EXAM' } & CommonSettings & ExamSettings)
   | ({ type: 'BOARD' } & CommonSettings & BoardSettings);
+
+export type CreateGameDTO = { name: string } & { config: ConfigDTO };
 
 export type mode = 'quiz' | 'board' | 'exam';
 

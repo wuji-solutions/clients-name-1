@@ -143,7 +143,7 @@ function BoardgameObserver() {
   }, []);
 
   useEffect(() => {
-    service.getPlayerRanking().then((response) => {
+    service.getPlayerLeaderboard().then((response) => {
       setPlayerRanking(response.data);
     });
   }, []);

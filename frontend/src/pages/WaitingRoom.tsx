@@ -12,6 +12,7 @@ import { service } from '../service/service';
 import { useSSEChannel } from '../providers/SSEProvider';
 import { BACKEND_ENDPOINT, BACKEND_ENDPOINT_EXTERNAL } from '../common/config';
 import { mode } from '../common/types';
+import ErrorPopup from '../components/ErrorPopup';
 
 const Container = styled.div({
   width: '100%',
@@ -58,7 +59,7 @@ const UserInputContainer = styled.div({
 const ExamWarningContainer = styled.div({
   fontSize: 'larger',
   color: '#ff4539',
-  fontWeight: 'bolder'
+  fontWeight: 'bolder',
 });
 
 function SSEOnStartListener({ onGameStart }: { onGameStart: Function }) {
@@ -113,6 +114,7 @@ function WaitingRoom() {
   const { isAdmin, username, setUsername } = useAppContext();
   const [identificator, setIdentificator] = useState<number | null>(null);
   const [playerKicked, setPlayerKicked] = useState(false);
+  const [startGameError, setStartGameError] = useState<string>('');
   const gameMode = new URLSearchParams(globalThis.location.search).get('tryb');
   const navigate = useNavigate();
 
@@ -134,7 +136,9 @@ function WaitingRoom() {
       .then(() => {
         console.log('Game successfully started');
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        setStartGameError(error.response.data.message);
+      });
   };
 
   const moveScreens = () => {
@@ -172,8 +176,9 @@ function WaitingRoom() {
             <h3>Witaj {username}!</h3>
             {gameMode === 'exam' && (
               <ExamWarningContainer>
-                Pamiętaj że podczas sprawdzianu zabronione jest zmienianie karty w przeglądarce. Każda
-                taka próba zostanie oznaczona jako oszustwo, a twoje punkty mogą zostać wyzerowane
+                Pamiętaj że podczas sprawdzianu zabronione jest zmienianie karty w przeglądarce.
+                Każda taka próba zostanie oznaczona jako oszustwo, a twoje punkty mogą zostać
+                wyzerowane
               </ExamWarningContainer>
             )}
             Czekaj na rozpoczęcie rozgrywki
@@ -216,6 +221,7 @@ function WaitingRoom() {
           />
         </QRContainer>
       </QRWrapper>
+      <ErrorPopup error={startGameError} onClose={() => setStartGameError('')} />
       <ActionButtonContainer>
         <ButtonCustom onClick={() => startGame()}>Zacznij grę</ButtonCustom>
         <ButtonCustom onClick={() => navigate('/konfiguracja')}>Powrót</ButtonCustom>

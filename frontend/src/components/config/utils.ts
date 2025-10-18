@@ -21,6 +21,13 @@ export const settingsToConfig = (
       return {
         ...commonSettings,
         ...examSettings,
+        selectedQuestionIds: examSettings.randomizeQuestions
+          ? []
+          : examSettings.selectedQuestionIds,
+        requiredQuestionCount: Math.min(
+          examSettings.requiredQuestionCount,
+          examSettings.selectedQuestionIds.length
+        ),
         type: 'EXAM',
       };
 
