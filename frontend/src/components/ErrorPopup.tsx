@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 interface ErrorPopupProps {
@@ -61,8 +61,13 @@ const CloseButton = styled.button`
   }
 `;
 
-const ErrorPopup: React.FC<ErrorPopupProps> = ({ error, onClose }) => {
-  const [visible, setVisible] = React.useState(false);
+interface Props {
+  error: string;
+  onClose: any;
+}
+
+export function ErrorPopup({ error, onClose }: Props) {
+  const [visible, setVisible] = useState(false);
 
   React.useEffect(() => {
     if (error) {
@@ -83,6 +88,6 @@ const ErrorPopup: React.FC<ErrorPopupProps> = ({ error, onClose }) => {
       </PopupContainer>
     </PopupWrapper>
   );
-};
+}
 
 export default ErrorPopup;
