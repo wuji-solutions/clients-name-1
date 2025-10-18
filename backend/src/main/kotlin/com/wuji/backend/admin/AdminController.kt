@@ -69,6 +69,7 @@ class AdminController(
             requestDto.name,
             requestDto.config.toExamConfig(),
             requestDto.config.questionFilePath)
+        authService.clearAllSessions()
         return ResponseEntity.ok().build()
     }
 
