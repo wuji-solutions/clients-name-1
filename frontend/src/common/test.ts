@@ -39,23 +39,23 @@ export const TEST_QUIZ = {
 };
 
 export const TEST_GAME = {
-  "name": "Board testowy 1",
+  "name": "Exam testowy 1",
   "config": {
-    "type": "BOARD",
+    "type": "EXAM",
     "totalDurationMinutes": 10,
     "endImmediatelyAfterTime": false,
-    "questionFilePath": "C:\\inzynierka\\clients-name-1\\backend\\src\\test\\resources\\sample_moodle_xml_3.xml",
+    "questionFilePath": "C:\\inzynierka\\clients-name-1\\backend\\src\\test\\resources\\big_sample_moodle_xml_4.xml",
     "questionDurationSeconds": 30,
     "pointsPerDifficulty": {
       "EASY": 1,
       "MEDIUM": 2,
       "HARD": 3
     },
-    "rankingPromotionRules": {
-      "$course$/Test Category/Subcategory & More": 2
-    }
-  },
-    "numberOfTiles": 10
+        "requiredQuestionCount": 4,
+        "randomizeQuestions": true,
+        "allowGoingBack":true,
+        "notifyTeacherOnCheating": true
+  }
 }
 
 export const TEST_GAME_2 = {

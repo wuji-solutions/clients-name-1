@@ -4,24 +4,26 @@ import { styled } from 'styled-components';
 import { useSSEChannel } from '../providers/SSEProvider';
 import theme from '../common/theme';
 import { service } from '../service/service';
+import { lightenColor } from '../common/utils';
 
 const Contaier = styled.div({
   marginTop: 'auto',
   marginBottom: 'auto',
   marginLeft: '20px',
-  height: '88vh',
-  width: '27%',
+  height: '70vh',
+  width: '37%',
   padding: '20px',
   display: 'flex',
   flexDirection: 'column',
-  border: `2px solid #000`,
+  border: `5px solid ${theme.palette.main.accent}`,
   borderRadius: '25px',
-  background: theme.palette.button.primary,
 });
 
 const Header = styled.span({
   fontWeight: 700,
   fontSize: '40px',
+  color: lightenColor(theme.palette.main.accent, 0.1),
+  textShadow: 'none',
   marginLeft: 'auto',
   marginRight: 'auto',
   marginTop: '15px',
@@ -36,7 +38,7 @@ const PlayerContainer = styled.div({
   fontSize: '20px',
   textAlign: 'start',
   overflowY: 'auto',
-  overflowX: 'scroll',
+  overflowX: 'hidden',
   height: '100%',
 });
 
@@ -135,6 +137,13 @@ function PlayerList() {
   const delegate = useSSEChannel(`${BACKEND_ENDPOINT}/sse/users`);
 
   useEffect(() => {
+    service
+      .getPlayerList()
+      .then((response) => addPlayers(response.data, players, setPlayers, setNewPlayers))
+      .catch((error) => console.log(error));
+  }, [])
+
+  useEffect(() => {
     const unsubscribe = delegate.on('player-list', (data) => {
       addPlayers(data, players, setPlayers, setNewPlayers);
     });
@@ -159,7 +168,7 @@ function PlayerList() {
       <PlayerContainer>
         {players.map((player) => (
           <PlayerEntry key={player.nickname} isNew={newPlayers.has(player.nickname)}>
-            {player.nickname}
+            {player.nickname} {` (${player.index})`}
             <CloseIcon onClick={() => kickPlayer(player.index, player.nickname)}>X</CloseIcon>
           </PlayerEntry>
         ))}

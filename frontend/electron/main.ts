@@ -1,5 +1,6 @@
 import { app, BrowserWindow, ipcMain, shell, dialog } from 'electron';
 import * as path from 'path';
+import * as os from 'os';
 import * as isDev from 'electron-is-dev';
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import { ChildProcessWithoutNullStreams } from 'child_process';
@@ -80,7 +81,8 @@ ipcMain.on('app/quit', () => {
 });
 
 ipcMain.on('open-raports-folder', () => {
-  const raportsPath = path.join(app.getPath('documents'), 'Raporty');
+  const userHome = os.homedir();
+  const raportsPath = path.join(userHome, 'Documents', 'Raporty');
 
   if (!existsSync(raportsPath)) {
     mkdirSync(raportsPath, { recursive: true });

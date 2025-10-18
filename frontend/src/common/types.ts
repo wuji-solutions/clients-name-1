@@ -18,6 +18,18 @@ export interface Question {
   type: string;
   task: string;
   answers: Array<Answer>;
+  difficultyLevel: DifficultyLevel;
+}
+
+interface PlayerAnswerDto {
+  selectedIds: number[];
+}
+
+export interface ExtendedQuestion extends Question {
+  playerAlreadyAnswered: boolean;
+  playerAnswerDto: PlayerAnswerDto;
+  questionNumber: number,
+  totalBaseQuestions: number,
 }
 
 export interface QuestionData {
@@ -45,6 +57,18 @@ export interface FieldCoordinate {
   scale: number;
 }
 
+interface PlayerState {
+  index: number,
+  nickname: string,
+  points: number,
+  correctAnswers: number,
+  incorrectAnswers: number,
+}
+
+export interface ExamState {
+  requiredQuestionCount: number,
+  playerState: PlayerState[]
+}
 export interface BoardConfig extends CommonSettings, BoardSettings {}
 
 export interface ExamConfig extends CommonSettings, ExamSettings {}

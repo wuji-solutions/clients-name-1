@@ -884,7 +884,7 @@ Typy wydarzeń:
       "index": "number",
       "nickname": "string",
       "points": "number",
-      "correctAnswers": "string",
+      "correctAnswers": "number",
       "incorrectAnswers": "number"
     },
     //...

@@ -1,17 +1,20 @@
+import { darkenColor } from "./utils";
+
 const theme = {
   palette: {
     main: {
-      background: '#F8FAFC',
+      background: '#0b1b25',
       panel: '#FFFFFF',
-      primary: '#2d2e30',
+      primary: '#0e8c68',
       secondary: '#64748B',
-      accent: '#FACC15',
+      accent: '#1c2c36',
       success: '#22C55E',
       error: '#EF4444',
       additional: '#A855F7',
     },
     button: {
-      primary: '#2d2e30',
+      primary: '#1349eb',
+      accent: darkenColor('#1349eb', 0.1),
       background: 'secondary',
     },
   },
