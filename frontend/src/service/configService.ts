@@ -19,3 +19,7 @@ export const getConfigNamesByMode = (mode: mode) => {
 export const deleteConfig = (mode: mode, configName: string) => {
   return axios.delete(BACKEND_ENDPOINT + `/config/${mode.toUpperCase()}/${configName}`);
 };
+
+export const getModeConfig = () => {
+  return axios.get(BACKEND_ENDPOINT + '/manage/config', { withCredentials: true });
+};

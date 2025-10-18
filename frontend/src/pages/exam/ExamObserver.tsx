@@ -8,6 +8,7 @@ import { lightenColor } from '../../common/utils';
 import { ButtonCustom } from '../../components/Button';
 import Timer from '../../components/Timer';
 import { useSSEChannel } from '../../providers/SSEProvider';
+import { getModeConfig } from '../../service/configService';
 import { service } from '../../service/service';
 
 const Container = styled.div(() => ({
@@ -172,7 +173,7 @@ function ExamObserver() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    service.getModeConfig().then((response) => {
+    getModeConfig().then((response) => {
       setExamConfig(response.data);
     });
   }, []);

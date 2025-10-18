@@ -119,10 +119,6 @@ const getExamTimeRemainingAdmin = () => {
   return axios.get(BACKEND_ENDPOINT + '/games/exam/time-left', { withCredentials: true });
 };
 
-const getModeConfig = () => {
-  return axios.get(BACKEND_ENDPOINT + '/manage/config', { withCredentials: true });
-};
-
 const parseQuestions = (filePath: string) => {
   return axios.get(BACKEND_ENDPOINT + '/manage/parse-questions', {
     params: { questionsFilePath: filePath },
@@ -150,6 +146,5 @@ export const service = {
   getPlayerRanking: getPlayerRanking,
   getExamTimeRemainingUser: getExamTimeRemainingUser,
   getExamTimeRemainingAdmin: getExamTimeRemainingAdmin,
-  getModeConfig: getModeConfig,
   parseQuestions: parseQuestions,
 };
