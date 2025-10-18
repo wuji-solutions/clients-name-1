@@ -18,7 +18,7 @@ export interface Question {
   type: string;
   task: string;
   answers: Array<Answer>;
-  difficultyLevel: string;
+  difficultyLevel: DifficultyLevel;
 }
 
 interface PlayerAnswerDto {
@@ -28,6 +28,8 @@ interface PlayerAnswerDto {
 export interface ExtendedQuestion extends Question {
   playerAlreadyAnswered: boolean;
   playerAnswerDto: PlayerAnswerDto;
+  questionNumber: number,
+  totalBaseQuestions: number,
 }
 
 export interface QuestionData {
@@ -66,27 +68,6 @@ interface PlayerState {
 export interface ExamState {
   requiredQuestionCount: number,
   playerState: PlayerState[]
-}
-
-export interface QuizConfig {
-  type: string;
-  totalDurationMinutes: number;
-  questionFilePath: string;
-  questionDurationSeconds: number;
-  endImmediatelyAfterTime: boolean;
-  requiredQuestionCount: number;
-  randomizeQuestions: boolean;
-  enforceDifficultyBalance: boolean;
-  selectedQuestionIds: number[];
-  zeroPointsOnCheating: boolean;
-  markQuestionOnCheating: boolean;
-  notifyTeacherOnCheating: boolean;
-  pointsPerDifficulty: {
-    EASY: number;
-    MEDIUM: number;
-    HARD: number;
-  };
-  allowGoingBack: boolean;
 }
 export interface BoardConfig extends CommonSettings, BoardSettings {}
 

@@ -23,31 +23,20 @@ function Timer({isAdmin}: {isAdmin?: boolean}) {
   const endTimeRef = useRef<number | null>(null);
 
   useEffect(() => {
-    if (isAdmin) {
-      service.getExamTimeRemainingAdmin().then((response) => {
-        if (response.data.minutes + response.data.seconds < 0) {
-          setInitialSeconds(0);
-        } else {
-          setInitialSeconds(response.data.minutes * 60 + response.data.seconds);
-        }
-      });
-    } else {
-      service.getExamTimeRemainingUser().then((response) => {
-        if (response.data.minutes + response.data.seconds < 0) {
-          setInitialSeconds(0);
-        } else {
-          setInitialSeconds(response.data.minutes * 60 + response.data.seconds);
-        }
-      });
-    }
+    const timeService = isAdmin ? service.getExamTimeRemainingAdmin : service.getExamTimeRemainingUser;
+    timeService().then((response) => {
+      if (response.data.minutes + response.data.seconds < 0) {
+        setInitialSeconds(0);
+      } else {
+        setInitialSeconds(response.data.minutes * 60 + response.data.seconds);
+      }
+    });
   }, []);
 
   useEffect(() => {
-    if (initialSeconds) {
-      endTimeRef.current = Date.now() + initialSeconds * 1000;
-    } else {
-      return;
-    }
+    if (!initialSeconds) return;
+    
+    endTimeRef.current = Date.now() + initialSeconds * 1000;
 
     const tick = () => {
       const now = Date.now();

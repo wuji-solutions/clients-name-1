@@ -13,9 +13,9 @@ export const ButtonCustom = styled.button({
   color: '#FFF',
   borderRadius: '10px',
   '&:hover': {
-    background: darkenColor(theme.palette.button.primary, 0.01),
-  border: `1px solid ${darkenColor(theme.palette.button.primary, 0.01)}`,
-  boxShadow: `0 5px 0 0 #101069`,
+    background: darkenColor(theme.palette.button.primary, 0.05),
+  border: `1px solid ${darkenColor(theme.palette.button.primary, 0.05)}`,
+  boxShadow: `0 5px 0 0 ${theme.palette.button.accent}`,
   cursor: 'pointer',
   },
   '-webkit-transition-duration': '0.2s',
@@ -23,6 +23,7 @@ export const ButtonCustom = styled.button({
   padding: '7px',
   fontSize: '20px',
   fontWeight: '700',
+  textShadow: '1px 1px 1px #000000',
 });
 
 interface ButtonChoseProps {

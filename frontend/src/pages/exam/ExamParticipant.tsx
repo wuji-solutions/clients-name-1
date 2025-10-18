@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { styled } from 'styled-components';
+import { BACKEND_ENDPOINT_EXTERNAL } from '../../common/config';
 import theme from '../../common/theme';
 import { ExtendedQuestion } from '../../common/types';
-import { getParsedDifficultyLevel } from '../../common/utils';
+import { getParsedDifficultyLevel, lightenColor } from '../../common/utils';
 import AnswerCard from '../../components/AnswerCard';
 import { ButtonCustom } from '../../components/Button';
 import Timer from '../../components/Timer';
 import { useAppContext } from '../../providers/AppContextProvider';
+import { useSSEChannel } from '../../providers/SSEProvider';
 import { service } from '../../service/service';
 
 export const Container = styled.div(() => ({
@@ -36,6 +38,24 @@ const QuestionHeader = styled.div({
   gap: '10px',
   boxShadow: `0 3px 0 0 ${theme.palette.main.accent}`,
   padding: '0 0 20px 0',
+});
+
+const AdditionalInfo = styled.div({
+  color: lightenColor(theme.palette.main.accent, 0.1),
+  textAlign: 'center',
+  textShadow: 'none',
+});
+
+const ExamFinishedContainer = styled.div({
+  color: lightenColor(theme.palette.main.accent, 0.1),
+  textAlign: 'center',
+  textShadow: 'none',
+  height: '100%',
+  width: '100%',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  fontSize: '22px',
 });
 
 const QuestionCategory = styled.div({
@@ -98,6 +118,21 @@ const ButtonOptionContainer = styled.div({
   gap: '20px',
 });
 
+function SSEOnEventListener({ setExamFinished }: { setExamFinished: Function }) {
+  const delegate = useSSEChannel(BACKEND_ENDPOINT_EXTERNAL + '/sse/events', {
+    withCredentials: true,
+  });
+
+  useEffect(() => {
+    const unsubscribe = delegate.on('game-finish', () => {
+      setExamFinished(true);
+    });
+    return unsubscribe;
+  }, [delegate]);
+
+  return <></>;
+}
+
 function ExamParticipant() {
   const [currentQuestion, setCurrentQuestion] = useState<ExtendedQuestion | null>(null);
   const [examFinished, setExamFinished] = useState<boolean>(false);
@@ -110,7 +145,7 @@ function ExamParticipant() {
 
   const [answerSent, setAnswerSent] = useState<boolean>(false);
 
-  const [answerCorrect, setAnswerCorrect] = useState<boolean | null>(null);
+  const [forceFetchCurrentQuestion, setForceFetchCurrentQuestion] = useState<boolean>(false);
 
   useEffect(() => {
     const hasPlayerCheated = sessionStorage.getItem('playerCheated');
@@ -128,39 +163,29 @@ function ExamParticipant() {
         setAllowGoingBack(response.data?.allowGoingBack);
         setCurrentQuestion(response.data);
         setHasAnsweredQuestion(response.data.playerAlreadyAnswered);
-      });
-    }
-  }, []);
-
-  const handleChangeQuestion = (next: boolean) => {
-    if (next) {
-      service.nextQuestionExam().then((response) => {
-        if (response.status == 200) {
-          if (response.data.playerAlreadyAnswered) {
-            setSelectedAnswers(response.data.playerAnswerDto.selectedIds);
-          } else {
-            setSelectedAnswers([]);
-          }
-          setAllowGoingBack(response.data?.allowGoingBack);
-          setCurrentQuestion(response.data);
-          setHasAnsweredQuestion(response.data.playerAlreadyAnswered);
+      }).catch((error) => {
+        if (error.status === 409) {
+          setExamFinished(true);
         }
       });
-    } else {
-      service.previousQuestionExam().then((response) => {
-        if (response.status == 200) {
-          if (response.data.playerAlreadyAnswered) {
-            setSelectedAnswers(response.data.playerAnswerDto.selectedIds);
-          } else {
-            setSelectedAnswers([]);
-          }
-          setAllowGoingBack(response.data?.allowGoingBack);
-          setCurrentQuestion(response.data);
-          setHasAnsweredQuestion(response.data.playerAlreadyAnswered);
-        } 
-      });
     }
-  }
+  }, [forceFetchCurrentQuestion]);
+
+  const handleChangeQuestion = (next: boolean) => {
+    const questionService = next ? service.nextQuestionExam : service.previousQuestionExam;
+    questionService().then((response) => {
+      if (response.status == 200) {
+        if (response.data.playerAlreadyAnswered) {
+          setSelectedAnswers(response.data.playerAnswerDto.selectedIds);
+        } else {
+          setSelectedAnswers([]);
+        }
+        setAllowGoingBack(response.data?.allowGoingBack);
+        setCurrentQuestion(response.data);
+        setHasAnsweredQuestion(response.data.playerAlreadyAnswered);
+      }
+    });
+  };
 
   useEffect(() => {
     const handleVisibilityChange = () => {
@@ -190,7 +215,7 @@ function ExamParticipant() {
     });
   };
 
-  const setFetchNextQuestion = () => {
+  const fetchNextQuestion = () => {
     service.nextQuestionExam().then((response) => {
       if (response.data.playerAlreadyAnswered) {
         setSelectedAnswers(response.data.playerAnswerDto.selectedIds);
@@ -208,17 +233,18 @@ function ExamParticipant() {
       .sendAnswer(
         selectedAnswers.map((id) => Number.parseInt(id)),
         'exam',
-        playerCheated,
+        playerCheated
       )
       .then((response) => {
         if (response.status === 204) {
           setExamFinished(true);
-          console.log('FINISHED');
           return;
         }
-  
-        console.log(response.data);
-        setFetchNextQuestion();
+        if (currentQuestion && currentQuestion.questionNumber != currentQuestion.totalBaseQuestions) {
+          fetchNextQuestion();
+        } else {
+          setForceFetchCurrentQuestion(!forceFetchCurrentQuestion);
+        }
       })
       .catch((e) => {
         console.error('Unexpected error while sending answer:', e);
@@ -228,14 +254,26 @@ function ExamParticipant() {
       });
   };
 
+  if (examFinished) return (
+    <Container style={{height: '80vh'}}>
+      <ExamFinishedContainer>
+          Sprawdzian się zakończył
+        </ExamFinishedContainer>
+    </Container>
+  );
+
   return (
     <Container>
+      <SSEOnEventListener setExamFinished={setExamFinished} />
       <TimerContainer>
         <Timer />
       </TimerContainer>
       {currentQuestion ? (
         <QuestionContainer>
           <QuestionHeader>
+            {currentQuestion.questionNumber <= currentQuestion.totalBaseQuestions && (
+              <AdditionalInfo>{`${currentQuestion.questionNumber}/${currentQuestion.totalBaseQuestions}`}</AdditionalInfo>
+            )}
             <QuestionCategory>{currentQuestion.category}</QuestionCategory>
             <QuestionTask>{currentQuestion.task}</QuestionTask>
             <QuestionDifficulty>
@@ -255,15 +293,31 @@ function ExamParticipant() {
             ))}
           </QuestionAnswerGrid>
           <ButtonContainer>
-            {!hasAnsweredQuestion && (
+            {!hasAnsweredQuestion ? (
               <ButtonCustom disabled={answerSent} onClick={handleAnswerSent}>
                 Odpowiedz
               </ButtonCustom>
+            ) : (
+              <AdditionalInfo>Odpowiedziałeś na to pytanie</AdditionalInfo>
             )}
             {allowGoingBack && (
               <ButtonOptionContainer>
-                <ButtonCustom onClick={() => handleChangeQuestion(false)}>{'< Powrót'}</ButtonCustom>
-                <ButtonCustom onClick={() => handleChangeQuestion(true)}>{'Następne >'}</ButtonCustom>
+                {currentQuestion.questionNumber > 1 && (
+                  <ButtonCustom
+                    onClick={() => handleChangeQuestion(false)}
+                    style={{ maxWidth: '130px' }}
+                  >
+                    {'< Powrót'}
+                  </ButtonCustom>
+                )}
+                {currentQuestion.questionNumber < currentQuestion.totalBaseQuestions && (
+                  <ButtonCustom
+                    onClick={() => handleChangeQuestion(true)}
+                    style={{ maxWidth: '130px' }}
+                  >
+                    {'Następne >'}
+                  </ButtonCustom>
+                )}
               </ButtonOptionContainer>
             )}
           </ButtonContainer>

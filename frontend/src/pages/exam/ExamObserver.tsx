@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { BACKEND_ENDPOINT } from '../../common/config';
 import theme from '../../common/theme';
-import { ExamState, QuizConfig } from '../../common/types';
+import { ExamConfig, ExamState } from '../../common/types';
 import { lightenColor } from '../../common/utils';
 import { ButtonCustom } from '../../components/Button';
 import Timer from '../../components/Timer';
@@ -14,7 +14,7 @@ const Container = styled.div(() => ({
   width: 'calc(100%-20px)',
   height: '100%',
   margin: 'auto',
-  overflow: 'hidden',
+  overflowY: 'scroll',
   padding: '0 20px 0 20px',
 }));
 
@@ -32,6 +32,7 @@ const PanelContainer = styled.div({
   display: 'flex',
   flexDirection: 'row',
   justifyContent: 'space-between',
+  marginTop: '30px',
 });
 
 const UserStatsContainer = styled.div({
@@ -112,7 +113,7 @@ const PlayerContainer = styled.div({
 });
 
 const Detail = styled.div({
-  fontSize: '20px',
+  fontSize: '1.25em',
   display: 'flex',
   flexDirection: 'row',
   gap: '25px',
@@ -146,7 +147,6 @@ function SSEOnExamChangeListener({
 
   useEffect(() => {
     const unsubscribe = delegate.on('player-cheated', (data) => {
-      console.log(data.data);
       setCheaters((prev: any) => ({
         ...prev,
         [data.nickname]: {
@@ -166,7 +166,7 @@ interface Dictionary<T> {
 
 function ExamObserver() {
   const [examState, setExamState] = useState<ExamState>();
-  const [examConfig, setExamConfig] = useState<QuizConfig>();
+  const [examConfig, setExamConfig] = useState<ExamConfig>();
   const [examFinished, setExamFinished] = useState<boolean>(false);
   const [cheaters, setCheaters] = useState<Dictionary<string>>({});
   const navigate = useNavigate();
@@ -177,15 +177,10 @@ function ExamObserver() {
     });
   }, []);
 
-  useEffect(() => {
-    console.log(cheaters);
-  }, [cheaters]);
-
   const handleExamEnd = () => {
     service
       .finishGame()
       .then((response) => {
-        console.log(response);
         setExamFinished(true);
       })
       .catch((e) => console.error(e));
@@ -221,7 +216,11 @@ function ExamObserver() {
                       </IncorrectBar>
                     </ProgressBarContainer>
                     <strong style={{ fontSize: '20px' }}>PUNKTY: {playerState.points}</strong>
-                    { cheaters[playerState.nickname] && <strong style={{ fontSize: '20px', color: theme.palette.main.error }}>Oszukiwał</strong>}
+                    {cheaters[playerState.nickname] && (
+                      <strong style={{ fontSize: '20px', color: theme.palette.main.error }}>
+                        Oszukiwał
+                      </strong>
+                    )}
                   </PlayerContainer>
                 );
               })}
@@ -259,6 +258,18 @@ function ExamObserver() {
                 <Detail>
                   <DetailKey>Czas na odpowiedź: </DetailKey>
                   <DetailValue>{examConfig.questionDurationSeconds}s</DetailValue>
+                </Detail>
+                <Detail>
+                  <DetailKey>Zakończ po upłynięciu czasu: </DetailKey>
+                  <DetailValue>
+                    {examConfig.additionalTimeToAnswerAfterFinishInSeconds ? 'Tak' : 'Nie'}
+                  </DetailValue>
+                </Detail>
+                <Detail>
+                  <DetailKey>Czas na odpowiedź po zakończeniu: </DetailKey>
+                  <DetailValue>
+                    {examConfig.additionalTimeToAnswerAfterFinishInSeconds}s
+                  </DetailValue>
                 </Detail>
                 <Detail>
                   <DetailKey>Losowe pytania: </DetailKey>

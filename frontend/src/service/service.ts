@@ -25,8 +25,8 @@ const finishGame = () => {
   return axios.post(BACKEND_ENDPOINT + '/manage/finish');
 };
 
-const getGameSummary = (mode: string) => {
-  return axios.get(BACKEND_ENDPOINT + `/games/${mode}/summarize`);
+const getGameSummary = () => {
+  return axios.get(BACKEND_ENDPOINT + `/games/quiz/summarize`);
 };
 
 const getCurrentQuestion = (user: string, mode: string) => {

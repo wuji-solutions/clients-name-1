@@ -120,7 +120,7 @@ function Summary() {
 
   useEffect(() => {
     service
-      .getGameSummary('quiz')
+      .getGameSummary()
       .then((response) => setSummary(response.data))
       .catch((error) => console.log(error));
   }, []);

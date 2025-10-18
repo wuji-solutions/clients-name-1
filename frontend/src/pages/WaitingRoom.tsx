@@ -11,6 +11,7 @@ import '../service/service';
 import { service } from '../service/service';
 import { useSSEChannel } from '../providers/SSEProvider';
 import { BACKEND_ENDPOINT, BACKEND_ENDPOINT_EXTERNAL } from '../common/config';
+import { mode } from '../common/types';
 
 const Container = styled.div({
   width: '100%',
@@ -153,7 +154,7 @@ function WaitingRoom() {
   };
 
   if (!isAdmin()) {
-    if (!gameMode || !allowedGameModes.includes(gameMode))
+    if (!gameMode || !['quiz', 'board', 'exam'].includes(gameMode))
       return (
         <Container>
           <UserInputContainer>

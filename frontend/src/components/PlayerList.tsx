@@ -4,23 +4,26 @@ import { styled } from 'styled-components';
 import { useSSEChannel } from '../providers/SSEProvider';
 import theme from '../common/theme';
 import { service } from '../service/service';
+import { lightenColor } from '../common/utils';
 
 const Contaier = styled.div({
   marginTop: 'auto',
   marginBottom: 'auto',
   marginLeft: '20px',
-  height: '88vh',
+  height: '70vh',
   width: '37%',
   padding: '20px',
   display: 'flex',
   flexDirection: 'column',
-  border: `2px solid #000`,
+  border: `5px solid ${theme.palette.main.accent}`,
   borderRadius: '25px',
 });
 
 const Header = styled.span({
   fontWeight: 700,
   fontSize: '40px',
+  color: lightenColor(theme.palette.main.accent, 0.1),
+  textShadow: 'none',
   marginLeft: 'auto',
   marginRight: 'auto',
   marginTop: '15px',
