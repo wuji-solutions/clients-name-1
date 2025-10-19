@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useMemo, useState } from 'react';
+import { useRef, useEffect, useMemo, useState } from 'react';
 import { Stage, Layer, Ellipse, Path, Group } from 'react-konva';
 import Konva from 'konva';
 import panzoom from 'panzoom';
@@ -8,10 +8,7 @@ import { colorPalette, isMobileView } from '../common/utils';
 import Pawn from './Pawn';
 import { service } from '../service/service';
 
-import {
-  createCheckerboardImage,
-  computeFieldCoordinates,
-} from './gameBoardUtils';
+import { createCheckerboardImage, computeFieldCoordinates } from './gameBoardUtils';
 
 import { usePawnAnimations } from './usePawnAnimations';
 import theme from '../common/theme';
@@ -28,7 +25,7 @@ interface Props {
   observerVersion?: boolean;
 }
 
-const GameBoard: React.FC<Props> = ({
+function GameBoard({
   positions,
   width,
   height,
@@ -38,7 +35,7 @@ const GameBoard: React.FC<Props> = ({
   observerVersion = false,
   boardColorReferences,
   tileStates = [],
-}) => {
+}: Props) {
   const stageRef = useRef<Konva.Stage | null>(null);
   const pawnReferences = useRef<Map<string, Konva.Group>>(new Map());
   const tweensRef = useRef<Map<string, any>>(new Map());
@@ -61,13 +58,13 @@ const GameBoard: React.FC<Props> = ({
   const Y_OFFSET = mobile ? 10 : 45;
 
   const getInitialZoomValue = () => {
-    if (observerVersion) return 0.9
+    if (observerVersion) return 0.9;
     if (mobile) {
-      return 1.6
+      return 1.6;
     } else {
-      return 1
+      return 1;
     }
-  }
+  };
 
   useEffect(() => {
     const stage = stageRef.current;
@@ -88,7 +85,6 @@ const GameBoard: React.FC<Props> = ({
         beforeMouseDown: () => true,
       };
 
-      
       const pz = panzoom(container, panOptions);
       panzoomOptionsRef.current = panOptions;
       pz.pause();
@@ -191,11 +187,11 @@ const GameBoard: React.FC<Props> = ({
             Z
           `;
 
-            const checkerboardImage = createCheckerboardImage(mobile ? 8 : 18)
+            const checkerboardImage = createCheckerboardImage(mobile ? 8 : 18);
 
             const checkerboard = i === 0 ? checkerboardImage : undefined;
 
-            const colorReferences = boardColorReferences?.get(tileStates[i])
+            const colorReferences = boardColorReferences?.get(tileStates[i]);
 
             return (
               <Path
@@ -241,6 +237,6 @@ const GameBoard: React.FC<Props> = ({
       </Layer>
     </Stage>
   );
-};
+}
 
 export default GameBoard;

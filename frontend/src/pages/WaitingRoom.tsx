@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Dispatch, SetStateAction } from 'react';
 import QRCode from 'react-qr-code';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
@@ -85,8 +85,8 @@ function PlayerKickListener({
   userHandler,
   onKick,
 }: {
-  userHandler: React.Dispatch<React.SetStateAction<string | null>>;
-  onKick: React.Dispatch<React.SetStateAction<boolean>>;
+  userHandler: Dispatch<SetStateAction<string | null>>;
+  onKick: Dispatch<SetStateAction<boolean>>;
 }) {
   const delegate = useSSEChannel(`${BACKEND_ENDPOINT_EXTERNAL}/sse/events`, {
     withCredentials: true,

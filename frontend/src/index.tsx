@@ -1,4 +1,4 @@
-import React from 'react';
+import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import Home from './pages/Home';
@@ -15,11 +15,11 @@ import ExamParticipant from './pages/exam/ExamParticipant';
 import ExamObserver from './pages/exam/ExamObserver';
 import { FullScreenButton } from './components/Button';
 
-const context = (globalThis.location.hostname === 'localhost') ? 'admin' : 'user'
+const context = globalThis.location.hostname === 'localhost' ? 'admin' : 'user';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
-  <React.StrictMode>
+  <StrictMode>
     <AppProvider>
       <FullScreenButton />
       <SSEProvider>
@@ -29,12 +29,18 @@ root.render(
             <Route path="/konfiguracja" element={<Configurations />} />
             <Route path="/waiting-room" element={<WaitingRoom />} />
             <Route path="/gra/quiz" element={<Quiz />} />
-            <Route path="/gra/planszowa" element={ context === 'user' ? <BoardgamePlayer /> : <BoardgameObserver /> } />
-            <Route path="/sprawdzian" element={ context === 'user' ? <ExamParticipant /> : <ExamObserver /> } />
+            <Route
+              path="/gra/planszowa"
+              element={context === 'user' ? <BoardgamePlayer /> : <BoardgameObserver />}
+            />
+            <Route
+              path="/sprawdzian"
+              element={context === 'user' ? <ExamParticipant /> : <ExamObserver />}
+            />
             <Route path="/podsumowanie" element={<Summary />} />
           </Routes>
         </Router>
       </SSEProvider>
     </AppProvider>
-  </React.StrictMode>
+  </StrictMode>
 );

@@ -1,4 +1,4 @@
-import { useEffect, RefObject } from 'react';
+import { useEffect, RefObject, MutableRefObject } from 'react';
 import Konva from 'konva';
 import {
   getStackedPosition,
@@ -8,7 +8,7 @@ import {
 } from './gameBoardUtils';
 import type { BoardPositions, FieldCoordinate, Pawn } from '../common/types';
 
-type MapRef<T> = React.MutableRefObject<Map<string, T>>;
+type MapRef<T> = MutableRefObject<Map<string, T>>;
 
 interface UsePawnAnimationsArgs {
   positions: BoardPositions;
@@ -20,8 +20,8 @@ interface UsePawnAnimationsArgs {
   centerY: number;
   numFields: number;
   positionUpdateBlock?: boolean;
-  pzRef: React.MutableRefObject<any | null>;
-  panzoomOptionsRef: React.MutableRefObject<any>;
+  pzRef: MutableRefObject<any | null>;
+  panzoomOptionsRef: MutableRefObject<any>;
   stageRef: RefObject<Konva.Stage | null>;
   playerIndex: string | null;
   mobile: boolean;
@@ -41,7 +41,7 @@ interface ResolvePathPromiseArgs {
   playerIndex: string | null;
   stageRef: RefObject<Konva.Stage | null>;
   mobile: boolean;
-  pzRef: React.MutableRefObject<any | null>;
+  pzRef: MutableRefObject<any | null>;
   pawnId: string;
   tweensRef: MapRef<any>;
   endCoords: FieldCoordinate;
@@ -159,7 +159,7 @@ interface ResolvePawnDidntMoveArgs {
   playerIndex: string | null;
   stageRef: RefObject<Konva.Stage | null>;
   mobile: boolean;
-  pzRef: React.MutableRefObject<any | null>;
+  pzRef: MutableRefObject<any | null>;
   tweensRef: MapRef<any>;
   animationPromises: Promise<void>[];
 }
@@ -230,7 +230,7 @@ const smoothCenterOnNode = (
   playerIndex: string | null,
   stageRef: RefObject<Konva.Stage | null>,
   mobile: boolean,
-  pzRef: React.MutableRefObject<any | null>,
+  pzRef: MutableRefObject<any | null>,
   node: Konva.Node,
   index: string,
   lerp = 0.2

@@ -1,19 +1,14 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 
-interface ErrorPopupProps {
-  error: string | null;
-  onClose: () => void;
-}
-
 const fadeIn = keyframes`
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translate(-50%, -20px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
 `;
 
 const fadeOut = keyframes`
-  from { opacity: 1; transform: translateY(0); }
-  to { opacity: 0; transform: translateY(-20px); }
+  from { opacity: 1; transform: translate(-50%, 0); }
+  to { opacity: 0; transform: translate(-50%, -20px); }
 `;
 
 const PopupWrapper = styled.div<{ visible: boolean }>`
@@ -32,19 +27,24 @@ const PopupContainer = styled.div`
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   padding: 16px 24px;
   display: flex;
-  align-items: center;
-  max-width: 420px;
+  align-items: flex-start;
+  max-width: 600px;
+  min-width: 400px;
   font-family: 'Inter', Arial, sans-serif;
   font-size: 14px;
+  word-wrap: break-word;
 `;
 
 const Icon = styled.div`
   font-size: 20px;
-  margin-right: 10px;
+  margin-right: 12px;
+  flex-shrink: 0;
+  margin-top: 1px;
 `;
 
 const Message = styled.div`
   flex: 1;
+  line-height: 1.4;
 `;
 
 const CloseButton = styled.button`
@@ -53,8 +53,14 @@ const CloseButton = styled.button`
   color: #aaa;
   font-size: 20px;
   cursor: pointer;
-  margin-left: 10px;
   line-height: 1;
+  flex-shrink: 0;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
     color: #fff;
@@ -69,7 +75,7 @@ interface Props {
 export function ErrorPopup({ error, onClose }: Props) {
   const [visible, setVisible] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (error) {
       setVisible(true);
     } else {

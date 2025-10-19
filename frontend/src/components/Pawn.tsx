@@ -114,6 +114,6 @@ const Pawn = ({ id, x, y, scale, color, isCurrentPlayer, nodeRef }: PawnProps) =
       )}
     </Group>
   );
-};
+}
 
 export default Pawn;

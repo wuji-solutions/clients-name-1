@@ -1,13 +1,22 @@
 import Cookies from 'js-cookie';
-import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 import { service } from '../service/service';
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  Dispatch,
+  SetStateAction,
+} from 'react';
 
 interface AppContextType {
   user: string | null;
   username: string | null;
-  setUsername: React.Dispatch<React.SetStateAction<string | null>>;
+  setUsername: Dispatch<SetStateAction<string | null>>;
   userindex: number | null;
-  setUserindex: React.Dispatch<React.SetStateAction<number | null>>;
+  setUserindex: Dispatch<SetStateAction<number | null>>;
   isAdmin: () => boolean;
 }
 

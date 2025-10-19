@@ -1,9 +1,13 @@
-import React, { createContext, useContext, useEffect, useRef } from 'react';
+import { createContext, useContext, useEffect, useRef, ReactNode } from 'react';
 import { SSEManager } from '../delegate/SSEManager';
 
 const SSEContext = createContext<SSEManager | null>(null);
 
-export const SSEProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+interface Props {
+  children: ReactNode;
+}
+
+export function SSEProvider({ children }: Props) {
   const managerRef = useRef(new SSEManager());
 
   useEffect(() => {
@@ -13,7 +17,7 @@ export const SSEProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   }, []);
 
   return <SSEContext.Provider value={managerRef.current}>{children}</SSEContext.Provider>;
-};
+}
 
 export function useSSEChannel(url: string, opts?: EventSourceInit) {
   const manager = useContext(SSEContext);
