@@ -40,7 +40,7 @@ class GameStateAspect(private val gameServiceDelegate: GameServiceDelegate) {
     }
 
     @Before("@within(GameRunningOrPaused) || @annotation(GameRunningOrPaused)")
-    fun checkRunningOrFinishing() {
+    fun checkRunningOrPaused() {
         if (gameServiceDelegate.getGameState() != GameState.PAUSED &&
             gameServiceDelegate.getGameState() != GameState.RUNNING) {
             throw GameInIncorrectStateException(
@@ -51,7 +51,7 @@ class GameStateAspect(private val gameServiceDelegate: GameServiceDelegate) {
 
     @Before(
         "@within(GameRunningOrFinishing) || @annotation(GameRunningOrFinishing)")
-    fun checkRunningOrPaused() {
+    fun checkRunningOrFinishing() {
         if (gameServiceDelegate.getGameState() != GameState.FINISHING &&
             gameServiceDelegate.getGameState() != GameState.RUNNING) {
             throw GameInIncorrectStateException(
