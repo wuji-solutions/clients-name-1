@@ -14,6 +14,7 @@ import { BoardSettings } from '../components/config/BoardConfig';
 import { CommonSettings } from '../components/config/CommonConfig';
 import { ExamSettings } from '../components/config/ExamConfig';
 import { settingsToConfig } from '../components/config/utils';
+import ErrorPopup from '../components/ErrorPopup';
 
 const Container = styled.div({
   width: '100%',
@@ -135,6 +136,8 @@ function Configurations() {
 
   const [mode, setMode] = useState<mode>('quiz');
 
+  const [error, setError] = useState<string>('');
+
   const startLobby = () => {
     if (!mode) return;
     const createGameDto = getConfig(mode, commonSettings, examSettings, boardSettings);
@@ -143,7 +146,7 @@ function Configurations() {
       .then((response) => {
         navigate(`/waiting-room?tryb=${mode}`);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => setError(error.response.data.message));
   };
 
   const [commonSettings, setCommonSettings] = useState<CommonSettings>({
@@ -218,6 +221,7 @@ function Configurations() {
           boardSettings={boardSettings}
           setBoardSettings={setBoardSettings}
         />
+        <ErrorPopup error={error} onClose={() => setError('')} />
         <ActionButtonContainer>
           <ButtonCustom onClick={() => startLobby()}>Otwórz poczekalnię</ButtonCustom>
           <ButtonCustom onClick={() => navigate('/')}>Powrót</ButtonCustom>
