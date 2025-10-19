@@ -46,7 +46,9 @@ class ExamController(
     ): ResponseEntity<ExamPlayerDto> {
         val playerIndex = authentication.playerIndex()
         return ResponseEntity.ok(
-            examService.getPlayer(playerIndex).toExamPlayerDto())
+            examService
+                .getPlayer(playerIndex)
+                .toExamPlayerDto(examService.getConfig()))
     }
 
     @GetMapping("/time-left")

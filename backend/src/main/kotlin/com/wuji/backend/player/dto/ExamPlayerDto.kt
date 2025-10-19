@@ -1,5 +1,6 @@
 package com.wuji.backend.player.dto
 
+import com.wuji.backend.config.ExamConfig
 import com.wuji.backend.player.state.ExamPlayer
 
 class ExamPlayerDto(
@@ -8,9 +9,14 @@ class ExamPlayerDto(
     val points: Int,
 ) : IPlayerDto {
     companion object {
-        fun ExamPlayer.toExamPlayerDto(): ExamPlayerDto {
+        fun ExamPlayer.toExamPlayerDto(config: ExamConfig): ExamPlayerDto {
             return ExamPlayerDto(
-                index = index, nickname = nickname, points = details.points)
+                index = index,
+                nickname = nickname,
+                points =
+                    details.getPoints(
+                        config.pointsPerDifficulty,
+                        config.zeroPointsOnCheating))
         }
     }
 }
