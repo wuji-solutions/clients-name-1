@@ -8,7 +8,7 @@ import AccessRestricted from '../components/AccessRestricted';
 import { ButtonCustom } from '../components/Button';
 import { useNavigate } from 'react-router-dom';
 import { QuestionData } from '../common/types';
-import { getColor, getPercentage } from '../common/utils';
+import { getColor, getPercentage, lightenColor } from '../common/utils';
 
 interface Props {
   data: QuestionData;
@@ -29,9 +29,9 @@ const Card = styled.div(() => ({
   maxWidth: '600px',
   padding: '16px',
   borderRadius: '16px',
-  border: '1px solid #000',
-  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-  backgroundColor: theme.palette.main.primary,
+  border: `4px solid ${theme.palette.main.accent}`,
+  boxShadow: `0 5px ${theme.palette.main.accent}`,
+  backgroundColor: 'transparent',
   margin: 'auto',
   marginBottom: '16px',
 }));
@@ -69,6 +69,7 @@ const ProgressBar = styled.div<{ color: string; widthPercent: number }>(
     height: '100%',
     backgroundColor: color,
     width: `${widthPercent}%`,
+    boxShadow: `0 5px ${theme.palette.main.accent}`,
   })
 );
 
@@ -92,11 +93,7 @@ const QuestionCard = ({ data }: Props) => {
       <Category>Kategoria: {question.category}</Category>
       <AnswerList>
         {question.answers.map((answer, index) => (
-          <AnswerCard
-            backgroundcolor={getColor(index)}
-            key={answer.id}
-            isselected={false}
-          >
+          <AnswerCard backgroundcolor={getColor(index)} key={answer.id} isselected={false}>
             {answer.text}
           </AnswerCard>
         ))}
@@ -106,8 +103,12 @@ const QuestionCard = ({ data }: Props) => {
         <ProgressBar color="red" widthPercent={incorrectPercent} />
       </ProgressContainer>
       <Stats>
-        <span>Poprawne: {correctAnswersCount}</span>
-        <span>Niepoprawne: {incorrectAnswersCount}</span>
+        <span style={{ textShadow: 'none', color: lightenColor(theme.palette.main.accent, 0.1) }}>
+          Poprawne: {correctAnswersCount}
+        </span>
+        <span style={{ textShadow: 'none', color: lightenColor(theme.palette.main.accent, 0.1) }}>
+          Niepoprawne: {incorrectAnswersCount}
+        </span>
       </Stats>
     </Card>
   );
@@ -129,8 +130,18 @@ function Summary() {
 
   return (
     <Container>
-      <div style={{ width: '100%', height: '50px' }}>
-        <ButtonCustom onClick={() => navigate('/konfiguracja')}>Powrót</ButtonCustom>
+      <div
+        style={{
+          width: '100%',
+          height: '50px',
+          marginBottom: '20px',
+          display: 'flex',
+          justifyContent: 'flex-end',
+        }}
+      >
+        <ButtonCustom onClick={() => navigate('/konfiguracja')} style={{ margin: 0 }}>
+          Powrót
+        </ButtonCustom>
       </div>
       <div>{summary && summary.questions.map((question) => <QuestionCard data={question} />)}</div>
     </Container>

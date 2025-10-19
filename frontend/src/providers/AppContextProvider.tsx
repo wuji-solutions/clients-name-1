@@ -38,7 +38,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
   }, []);
 
   useEffect(() => {
-    if (!Cookies.get('JSESSIONID')) return;
+    if (!Cookies.get('JSESSIONID') || window.location.hostname === 'localhost' ) return;
 
     service.validateSessionID()
       .then()

@@ -10,7 +10,7 @@ import theme from '../../common/theme';
 import AnswerCard from '../../components/AnswerCard';
 import { useNavigate } from 'react-router-dom';
 import { SSEDelegate } from '../../delegate/SSEDelegate';
-import { getPercentage, getColor } from '../../common/utils';
+import { getPercentage, getColor, getParsedDifficultyLevel } from '../../common/utils';
 
 const Container = styled.div(() => ({
   width: '90%',
@@ -18,7 +18,7 @@ const Container = styled.div(() => ({
 }));
 
 export const QuestionContainer = styled.div(() => ({
-  padding: '20px',
+  padding: '60px 20px 20px 20px',
   display: 'flex',
   flexDirection: 'column',
   textAlign: 'center',
@@ -29,6 +29,7 @@ export const QuestionHeader = styled.div(() => ({
   display: 'flex',
   flexDirection: 'column',
   gap: '15px',
+  boxShadow: `0 3px 0 0 ${theme.palette.main.accent}`,
 }));
 
 const QuestionCategory = styled.span(() => ({
@@ -58,14 +59,18 @@ const AnsweredContainer = styled.div(() => ({
 }));
 
 const AnswerHeader = styled.h1(() => ({
-  marginTop: '30px',
+  marginTop: '55px',
+  boxShadow: `0 3px 0 0 ${theme.palette.main.accent}`,
+  padding: '20px',
 }));
 
 const AnswerColumn = styled.div(() => ({
   display: 'flex',
   flexDirection: 'column',
   gap: '35px',
-  padding: '40px',
+  padding: '10px 0 40px 0',
+  boxShadow: `0 3px 0 0 ${theme.palette.main.accent}`,
+  marginBottom: '35px',
 }));
 
 const AnswerGrid = styled.div(() => ({
@@ -74,7 +79,17 @@ const AnswerGrid = styled.div(() => ({
   gap: '35px',
   padding: '40px',
   justifyItems: 'center',
+  boxShadow: `0 3px 0 0 ${theme.palette.main.accent}`,
+  marginBottom: '40px',
 }));
+
+const QuestionDifficulty = styled.div({
+  width: 'fit-content',
+  maxWidth: '340px',
+  margin: 'auto',
+  textAlign: 'center',
+  fontSize: '22px',
+});
 
 const AnswerProgressBar = ({
   count,
@@ -294,6 +309,9 @@ function Quiz() {
           <QuestionHeader>
             <QuestionCategory>{currentQuestion.category}</QuestionCategory>
             <QuestionTask>{currentQuestion.task}</QuestionTask>
+            <QuestionDifficulty>
+              {getParsedDifficultyLevel(currentQuestion.difficultyLevel)}
+            </QuestionDifficulty>
             <h3>Ilość odpowiedzi: {answerCount}</h3>
           </QuestionHeader>
           {!questionStats ? (
@@ -303,9 +321,20 @@ function Quiz() {
                   key={index}
                   isselected={false}
                   backgroundcolor={getColor(index)}
-                  style={{ cursor: 'default' }}
+                  style={{ cursor: 'default', width: '400px', height: '70px', maxHeight: '70px' }}
                 >
-                  <h2>{answer.text}</h2>
+                  <span
+                    style={{
+                      fontSize: `${Math.max(14, 40 - answer.text.length / 2)}px`,
+                      width: '100%',
+                      height: '100%',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      display: 'flex',
+                    }}
+                  >
+                    {answer.text}
+                  </span>
                 </AnswerCard>
               ))}
             </AnswerGrid>
@@ -325,9 +354,20 @@ function Quiz() {
                   <AnswerCard
                     isselected={answer.answer.isCorrect}
                     backgroundcolor={getColor(index)}
-                    style={{ cursor: 'default', marginTop: '10px' }}
+                    style={{ cursor: 'default', width: '400px', height: '70px', maxHeight: '70px' }}
+                    >
+                    <span
+                    style={{
+                      fontSize: `${Math.max(14, 40 - answer.answer.text.length / 2)}px`,
+                      width: '100%',
+                      height: '100%',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      display: 'flex',
+                    }}
                   >
-                    <h2>{answer.answer.text}</h2>
+                    {answer.answer.text}
+                  </span>
                   </AnswerCard>
                 </div>
               ))}

@@ -203,7 +203,6 @@ function ExamParticipant() {
   }, []);
 
   const handleAnswerSelected = (id: string) => {
-    if (hasAnsweredQuestion) return;
     setSelectedAnswers((prevState) => {
       const answers = [...prevState];
       if (answers.includes(id)) {
@@ -293,13 +292,9 @@ function ExamParticipant() {
             ))}
           </QuestionAnswerGrid>
           <ButtonContainer>
-            {!hasAnsweredQuestion ? (
               <ButtonCustom disabled={answerSent} onClick={handleAnswerSent}>
                 Odpowiedz
               </ButtonCustom>
-            ) : (
-              <AdditionalInfo>Odpowiedziałeś na to pytanie</AdditionalInfo>
-            )}
             {allowGoingBack && (
               <ButtonOptionContainer>
                 {currentQuestion.questionNumber > 1 && (

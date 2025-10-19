@@ -23,7 +23,7 @@ interface Props {
   numFields: number;
   tileStates?: string[];
   boardColorReferences?: Map<string, string | undefined>;
-  storedPlayerIndex?: string;
+  storedPlayerIndex?: string | null;
   positionUpdateBlock?: boolean;
   observerVersion?: boolean;
 }
