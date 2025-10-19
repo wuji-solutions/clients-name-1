@@ -1,4 +1,6 @@
+import Cookies from 'js-cookie';
 import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
+import { service } from '../service/service';
 
 interface AppContextType {
   user: string | null;
@@ -36,6 +38,19 @@ export const AppProvider = ({ children }: AppProviderProps) => {
   }, []);
 
   useEffect(() => {
+    if (!Cookies.get('JSESSIONID')) return;
+
+    service.validateSessionID()
+      .then()
+      .catch((error) => {
+        if (error.status == 401) {
+          Cookies.remove('JSESSIONID')
+          sessionStorage.removeItem('userindex');
+          sessionStorage.removeItem('username');
+          return;
+        }
+      })
+
     const storedUserIndex = sessionStorage.getItem('userindex');
     const storedUsername = sessionStorage.getItem('username');
 

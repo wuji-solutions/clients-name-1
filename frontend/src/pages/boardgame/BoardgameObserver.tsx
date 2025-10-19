@@ -7,7 +7,10 @@ import { service } from '../../service/service';
 import { useSSEChannel } from '../../providers/SSEProvider';
 import { BACKEND_ENDPOINT } from '../../common/config';
 import { Container, GameContainer } from './BoardgamePlayer';
-import { boardgameColorPalette } from '../../common/utils';
+import { boardgameColorPalette, darkenColor } from '../../common/utils';
+import theme from '../../common/theme';
+import { ButtonCustom } from '../../components/Button';
+import { useNavigate } from 'react-router-dom';
 
 function parsePlayerPositions(
   positions: [{ tileIndex: number; players: [Pawn]; category: string }]
@@ -24,7 +27,7 @@ function getBoardSetup(data: {
     if (tile.category in categoryColorReferences) return;
     categoryColorReferences.set(
       tile.category,
-      boardgameColorPalette[i + (2 % boardgameColorPalette.length)]
+      boardgameColorPalette[i % boardgameColorPalette.length]
     );
   });
   return {
@@ -66,7 +69,8 @@ function SSEBoardGameRankingChangeListener({ setRanking }: { setRanking: Functio
 }
 
 const RankingContainer = styled.div<{ expanded: boolean }>(({ expanded }) => ({
-  width: '100%',
+  width: '99%',
+  margin: 'auto',
   height: expanded ? '500px' : '20px',
   position: 'absolute',
   bottom: '0px',
@@ -74,14 +78,14 @@ const RankingContainer = styled.div<{ expanded: boolean }>(({ expanded }) => ({
   transition: 'height 0.3s ease-in-out',
   zIndex: '99',
   borderRadius: '10px 10px 0 0',
-  border: '1px solid #000',
+  borderTop: `3px solid ${theme.palette.main.accent}`,
 }));
 
 const RankingToggleButton = styled.div(() => ({
   width: '200px',
-  height: '41px',
+  height: '40px',
   position: 'absolute',
-  top: '-40px',
+  top: '-42px',
   left: 'calc(50% - 100px)',
   backgroundColor: 'rgba(0, 0, 0, 0.9)',
   textAlign: 'center',
@@ -94,17 +98,22 @@ const RankingToggleButton = styled.div(() => ({
   clipPath: 'polygon(5% 0, 90% 0, 100% 5%, 100% 100%, 0% 100%, 0% 20%)',
 
   cursor: 'pointer',
-  border: '1px solid #000',
+  borderTop: `3px solid ${theme.palette.main.accent}`,
+  borderLeft: `3px solid ${theme.palette.main.accent}`,
+  borderRight: `3px solid ${theme.palette.main.accent}`,
 }));
 
 const RankingContent = styled.div(() => ({
+  display: 'flex',
+  flexDirection: 'column',
   textAlign: 'center',
   lineHeight: '40px',
   fontWeight: 'bold',
   marginTop: '50px',
-  fontSize: 'x-large',
+  fontSize: '28px',
   alignItems: 'center',
   justifyContent: 'center',
+  gap: '20px',
 }));
 
 const positionMap = ['#FFD700', '#C0C0C0', '#996515'];
@@ -112,6 +121,7 @@ const positionMap = ['#FFD700', '#C0C0C0', '#996515'];
 const PositionIndicator = styled.div<{ position: number }>(({ position }) => ({
   borderRadius: '50%',
   backgroundColor: position >= 0 && position < 3 ? positionMap[position] : '#CFC0CF',
+  boxShadow: `0 5px 0px 0px ${darkenColor(position >= 0 && position < 3 ? positionMap[position] : '#CFC0CF', 0.2)}`,
   height: '50px',
   width: '50px',
   display: 'flex',
@@ -120,6 +130,16 @@ const PositionIndicator = styled.div<{ position: number }>(({ position }) => ({
   color: '#fff',
   fontSize: '30px',
 }));
+
+const ActionButtonContainer = styled.div({
+  position: 'absolute',
+  right: '20px',
+  top: '20px',
+  zIndex: '999',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '20px',
+});
 
 function BoardgameObserver() {
   const [positionsBuffer, setPositionsBuffer] = useState<BoardPositions>([]);
@@ -131,6 +151,8 @@ function BoardgameObserver() {
     useState<Map<string, string | undefined>>();
   const [playerRanking, setPlayerRanking] = useState<Pawn[]>([]);
   const [rankingExpanded, setRankingExpanded] = useState<boolean>(false);
+  const [gameFinished, setGameFinished] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     service.getBoardState('admin').then((response) => {
@@ -152,8 +174,25 @@ function BoardgameObserver() {
     setPositions(positionsBuffer);
   }, [positionsBuffer]);
 
+  const handleExamEnd = () => {
+    service
+      .finishGame()
+      .then(() => {
+        setGameFinished(true);
+      })
+      .catch((e) => console.error(e));
+  };
+
   return (
     <Container>
+      <ActionButtonContainer>
+        <ButtonCustom onClick={handleExamEnd} disabled={gameFinished}>
+          Zakończ
+        </ButtonCustom>
+        {gameFinished && (
+          <ButtonCustom onClick={() => navigate('/konfiguracja')}>Wróć do menu</ButtonCustom>
+        )}
+      </ActionButtonContainer>
       <SSEOnBoardgameStateChangeListener setPositions={setPositionsBuffer} />
       <SSEBoardGameRankingChangeListener setRanking={setPlayerRanking} />
       <GameContainer ref={gameContainerRef}>
@@ -177,7 +216,7 @@ function BoardgameObserver() {
 
         {rankingExpanded && (
           <RankingContent>
-            {playerRanking.map((player, position) => (
+            {playerRanking.slice(0, 5).map((player, position) => (
               <div
                 key={`player_${player.index}`}
                 style={{
@@ -185,7 +224,7 @@ function BoardgameObserver() {
                   display: 'flex',
                   flexDirection: 'row',
                   alignItems: 'center',
-                  gap: '20px',
+                  gap: '40px',
                   margin: 'auto',
                 }}
               >

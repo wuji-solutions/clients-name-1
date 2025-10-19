@@ -9,17 +9,15 @@ import { BACKEND_ENDPOINT_EXTERNAL } from '../../common/config';
 import Dice from '../../components/Dice';
 import Modal from '../../components/Modal';
 import AnswerCard from '../../components/AnswerCard';
-import { boardgameColorPalette, getColor, isMobileView } from '../../common/utils';
-import {
-  QuestionContainer,
-  QuestionHeader,
-} from '../quiz/Quiz';
+import { boardgameColorPalette, darkenColor, getColor, isMobileView, lightenColor } from '../../common/utils';
+import { QuestionContainer, QuestionHeader } from '../quiz/Quiz';
 import { ButtonCustom } from '../../components/Button';
+import theme from '../../common/theme';
 
 const mobile = isMobileView();
 
 export const Container = styled.div(() => ({
-  width: '100%',
+  width: '99%',
   height: '100%',
   margin: 'auto',
   overflow: 'hidden',
@@ -37,7 +35,7 @@ const ActionContainer = styled.div(() => ({
 }));
 
 export const GameContainer = styled.div(() => ({
-  width: '100%',
+  width: '99%',
   height: 'calc(80vh)',
   display: 'flex',
   flexDirection: 'column',
@@ -69,6 +67,46 @@ const AnswerGrid = styled.div(() => ({
   justifyItems: 'center',
 }));
 
+const ToggleModalButton = styled.button({
+  width: '32px',
+  height: '32px',
+  marginLeft: 'auto',
+  marginRight: 'auto',
+  background: theme.palette.button.primary,
+  color: '#FFF',
+  border: '0px solid #000',
+  borderRadius: '50%',
+  boxShadow: `0 3px 0 0 ${darkenColor(theme.palette.button.primary, 0.1)}`,
+  '&:hover': {
+    background: darkenColor(theme.palette.button.primary, 0.1),
+    boxShadow: `0 3px 0 0 ${darkenColor(theme.palette.button.primary, 0.2)}`,
+    cursor: 'pointer',
+  },
+  '-webkit-transition-duration': '0.2s',
+  transitionDuration: '0.2s',
+  padding: '7px',
+  fontSize: '15px',
+  fontWeight: '700',
+
+  position: 'absolute',
+  right: '20px',
+  top: '20px',
+  zIndex: '9999',
+});
+
+
+const GameFinishedContainer = styled.div({
+  color: lightenColor(theme.palette.main.accent, 0.1),
+  textAlign: 'center',
+  textShadow: 'none',
+  height: '100%',
+  width: '100%',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  fontSize: '22px',
+});
+
 function parsePlayerPositions(
   positions: [{ tileIndex: number; players: [Pawn]; category: string }]
 ) {
@@ -82,9 +120,17 @@ function getBoardSetup(data: {
   const categoryColorReferences = new Map<string, string | undefined>();
   data.tileStates.map((tile, i) => {
     if (tile.category in categoryColorReferences) return;
-    categoryColorReferences.set(tile.category, boardgameColorPalette[ i + 2 % boardgameColorPalette.length]);
-  })
-  return { positions: positions, numfields: positions.length, tileColors: categoryColorReferences, tileStates: data.tileStates.map((entry) => entry.category) };
+    categoryColorReferences.set(
+      tile.category,
+      boardgameColorPalette[i % boardgameColorPalette.length]
+    );
+  });
+  return {
+    positions: positions,
+    numfields: positions.length,
+    tileColors: categoryColorReferences,
+    tileStates: data.tileStates.map((entry) => entry.category),
+  };
 }
 
 function SSEOnBoardgameStateChangeListener({ setPositions }: { setPositions: Function }) {
@@ -95,6 +141,21 @@ function SSEOnBoardgameStateChangeListener({ setPositions }: { setPositions: Fun
   useEffect(() => {
     const unsubscribe = delegate.on('new-board-state', (data) => {
       setPositions(parsePlayerPositions(data.tileStates));
+    });
+    return unsubscribe;
+  }, [delegate]);
+
+  return <></>;
+}
+
+function SSEOnEventListener({ setGameFinished }: { setGameFinished: Function }) {
+  const delegate = useSSEChannel(BACKEND_ENDPOINT_EXTERNAL + '/sse/events', {
+    withCredentials: true,
+  });
+
+  useEffect(() => {
+    const unsubscribe = delegate.on('game-finish', () => {
+      setGameFinished(true);
     });
     return unsubscribe;
   }, [delegate]);
@@ -117,20 +178,27 @@ function BoardgamePlayer() {
   const [showDice, setShowDice] = useState<boolean>(false);
 
   const [showAnswerModal, setShowAnswerModal] = useState(false);
+  const [modalClosing, setModalClosing] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
   const [selectedAnswers, setSelectedAnswers] = useState<Array<string>>([]);
 
   const [isAnswering, setIsAnswering] = useState(false);
 
   const [tileStates, setTileStates] = useState<string[]>();
-  const [boardColorReferences, setBoardColorReferences] = useState<Map<string, string | undefined>>();
+  const [boardColorReferences, setBoardColorReferences] =
+    useState<Map<string, string | undefined>>();
+
+  const [playerPoints, setPlayerPoints] = useState<number>();
+
+  const [gameFinished, setGameFinished] = useState<boolean>(false);
 
   useEffect(() => {
     if (!playerIndex) {
       service.getPlayerId().then((response) => {
-        setPlayerIndex(response.data.index as string)
-        setIsAnswering(response.data.state === 'ANSWERING')
-        setShowDice(response.data.state !== 'ANSWERING')
+        setPlayerIndex(response.data.index as string);
+        setIsAnswering(response.data.state === 'ANSWERING');
+        setShowDice(response.data.state !== 'ANSWERING');
+        setPlayerPoints(response.data.points);
       });
     }
   }, []);
@@ -152,7 +220,6 @@ function BoardgamePlayer() {
     });
   }, []);
 
-
   useEffect(() => {
     if (!positionUpdateBlock) setPositions(positionsBuffer);
   }, [positionsBuffer, positionUpdateBlock]);
@@ -161,12 +228,19 @@ function BoardgamePlayer() {
     service
       .getCurrentQuestion('user', 'board')
       .then((response) => {
+        setIsAnswering(true);
         setCurrentQuestion(response.data);
         setSelectedAnswers([]);
-        setShowAnswerModal(true);
+        setTimeout(() => {
+          setShowAnswerModal(true);
+        }, 2000)
       })
       .catch((error) => {
         console.log(error);
+        if (error.status === 409) {
+          setGameFinished(true);
+          return;
+        }
         setDiceInteractable(true);
         setShowDice(true);
       });
@@ -180,17 +254,25 @@ function BoardgamePlayer() {
       .makeMove()
       .then((response) => {
         setTimeout(() => {
-          setDiceRoll(false);
           setCheatValue(response.data.diceRoll);
-          setPositionUpdateBlock(false);
         }, 1000);
         setTimeout(() => {
-          setShowDice(false);
+          setDiceRoll(false);
+        }, 1500);
+        setTimeout(() => {
           setDiceInteractable(true);
           getQuestion();
+          setPositionUpdateBlock(false);
         }, 2000);
+        setTimeout(() => {
+          setShowDice(false);
+        }, 3000);
       })
-      .catch(() => setTimeout(() => { setDiceRoll(false) }, 1000));
+      .catch(() =>
+        setTimeout(() => {
+          setDiceRoll(false);
+        }, 1000)
+      );
   };
 
   const handleAnswerSelected = (id: string) => {
@@ -212,6 +294,8 @@ function BoardgamePlayer() {
         'board'
       )
       .then((response) => {
+        const answerCorrect = response.data;
+        setIsAnswering(false);
         setShowAnswerModal(false);
         setDiceInteractable(true);
         setShowDice(true);
@@ -231,10 +315,38 @@ function BoardgamePlayer() {
     }
   };
 
+  const toggleAnswerModal = () => {
+    if (showAnswerModal) {
+      setModalClosing(true);
+      setTimeout(() => {
+        setModalClosing(false);
+        setShowAnswerModal(false);
+      }, 500)
+    } else {
+      setShowAnswerModal(true);
+    }
+  }
+
+  if (gameFinished) {
+    return (
+    <Container style={{height: '80vh'}}>
+      <GameFinishedContainer>
+          Gra się zakończyła
+        </GameFinishedContainer>
+    </Container>
+    )
+  };
+
   return (
     <Container>
+      <SSEOnEventListener setGameFinished={setGameFinished} />
+      {isAnswering && (
+        <ToggleModalButton onClick={toggleAnswerModal} disabled={modalClosing}>
+          {showAnswerModal ? '^' : 'v'}
+        </ToggleModalButton>
+      )}
       {showAnswerModal && currentQuestion && (
-        <Modal>
+        <Modal isClosing={modalClosing}>
           <QuestionContainer>
             <QuestionHeader>
               <BoardQuestionCategory>{currentQuestion.category}</BoardQuestionCategory>

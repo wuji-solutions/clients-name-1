@@ -14,6 +14,7 @@ import {
 } from './gameBoardUtils';
 
 import { usePawnAnimations } from './usePawnAnimations';
+import theme from '../common/theme';
 
 interface Props {
   positions: BoardPositions;
@@ -90,7 +91,7 @@ const GameBoard: React.FC<Props> = ({
       
       const pz = panzoom(container, panOptions);
       panzoomOptionsRef.current = panOptions;
-      pz.pause(); // keep existing behavior
+      pz.pause();
 
       pzRef.current = pz;
 
@@ -139,8 +140,8 @@ const GameBoard: React.FC<Props> = ({
           fillRadialGradientStartRadius={0}
           fillRadialGradientEndPoint={{ x: 0, y: 0 }}
           fillRadialGradientEndRadius={BOARD_Y_RADIUS - 50}
-          stroke="white"
-          strokeWidth={mobile ? 2 : 4}
+          stroke={theme.palette.main.accent}
+          strokeWidth={mobile ? 4 : 5}
         />
         <Group
           clipFunc={(ctx) => {
@@ -205,8 +206,8 @@ const GameBoard: React.FC<Props> = ({
                 fillPatternRepeat="repeat"
                 fillPatternScale={{ x: 1, y: 0.92 }}
                 fillPatternRotation={10}
-                stroke="rgba(255, 255, 255, 1)"
-                strokeWidth={1}
+                stroke={theme.palette.main.accent}
+                strokeWidth={mobile ? 2 : 5}
                 listening={false}
               />
             );
@@ -220,7 +221,7 @@ const GameBoard: React.FC<Props> = ({
             return (
               <Pawn
                 key={pawnData.index}
-                id={pawnData.index}
+                id={observerVersion ? pawnData.index : ''}
                 x={0}
                 y={0}
                 scale={1}

@@ -37,16 +37,16 @@ function createWindow() {
 
   win.on('closed', () => (win = null));
 
-  child.stdout.on('data', (data) => {
+  child.stdout.on('data', (data: any) => {
     console.log(`[BACKEND STDOUT]: ${data}`);
   });
-  child.stderr.on('data', (data) => {
+  child.stderr.on('data', (data: any) => {
     console.error(`[BACKEND STDERR]: ${data}`);
   });
-  child.on('error', (err) => {
+  child.on('error', (err: any) => {
     console.error('Failed to start backend subprocess:', err);
   });
-  child.on('exit', (code) => {
+  child.on('exit', (code: any) => {
     console.log(`Backend exited with code ${code}`);
   });
 
@@ -62,8 +62,8 @@ function createWindow() {
 
   // DevTools
   installExtension(REACT_DEVELOPER_TOOLS)
-    .then((name) => console.log(`Added Extension:  ${name}`))
-    .catch((err) => console.log('An error occurred: ', err));
+    .then((name: any) => console.log(`Added Extension:  ${name}`))
+    .catch((err: any) => console.log('An error occurred: ', err));
 
   if (isDev) {
     win.webContents.openDevTools();
@@ -71,6 +71,10 @@ function createWindow() {
 }
 
 app.on('ready', createWindow);
+
+app.on('will-quit', () => {
+  if (child) child.kill();
+});
 
 ipcMain.on('app/quit', () => {
   if (child) {

@@ -100,14 +100,15 @@ function Dice({diceRoll, cheatValue}: Readonly<DiceProps>) {
     if (diceRoll) {
       rollingInterval.current = setInterval(() => {
         const direction1 = Math.floor(Math.random() * 2) % 2 == 0; // NOSONAR
-        setRotateX((prevState) => prevState + (direction1 ? 90 : 180));
-        setRotateY((prevState) => prevState + (direction1 ? 90 : 180));
-      }, 200);
+        setRotateX((prevState) => prevState + (direction1 ? 45 : 60));
+        setRotateY((prevState) => prevState + (direction1 ? 45 : 60));
+      }, 150);
     } else {
       if (rollingInterval.current) {
         clearInterval(rollingInterval.current);
         rollingInterval.current = null;
       }
+      if (cheatValue) setValue(cheatValue);
     }
   };
 
@@ -120,9 +121,9 @@ function Dice({diceRoll, cheatValue}: Readonly<DiceProps>) {
     if (diceRoll != undefined) toggleDice(diceRoll);
   }, [diceRoll]);
 
-  useEffect(() => {
-    if (cheatValue) setValue(cheatValue);
-  }, [cheatValue])
+  // useEffect(() => {
+  //   if (cheatValue) setValue(cheatValue);
+  // }, [cheatValue])
 
   return (
     <Scene>

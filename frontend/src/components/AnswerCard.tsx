@@ -7,8 +7,8 @@ const AnswerCard = styled.div<{ backgroundcolor: string; isselected: boolean | u
     let bg;
     if (usegradient) {
       bg = isselected
-        ? `linear-gradient(135deg, ${darkenColor(base, 0.2)}, ${darkenColor(base, 0.35)})`
-        : `linear-gradient(135deg, ${base}, ${darkenColor(base, 0.15)})`;
+        ? `linear-gradient(135deg, ${darkenColor(base, 0.3)}, ${darkenColor(base, 0.45)})`
+        : `linear-gradient(135deg, ${base}, ${darkenColor(base, 0.25)})`;
     } else {
       bg = isselected ? darkenColor(base, 0.1) :  base;
     }
@@ -17,7 +17,7 @@ const AnswerCard = styled.div<{ backgroundcolor: string; isselected: boolean | u
       color: isselected ? '#dee0e0' : '#fff',
       borderRadius: '20px',
       minHeight: '15px',
-      maxHeight: '20px',
+      maxHeight: '25px',
       width: 'fit-content',
       minWidth: '100px',
       maxWidth: '300px',
@@ -38,7 +38,7 @@ const AnswerCard = styled.div<{ backgroundcolor: string; isselected: boolean | u
       textAlign: 'center',
       '& h2': {
         margin: 0,
-        fontSize: '1rem',
+        fontSize: '0.8rem',
       },
     };
   }
