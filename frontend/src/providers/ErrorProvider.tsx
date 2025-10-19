@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode, useMemo } from 'react';
 
 type ErrorContextType = {
   error: string | null;
@@ -10,7 +10,9 @@ const ErrorContext = createContext<ErrorContextType | undefined>(undefined);
 export const ErrorProvider = ({ children }: { children: ReactNode }) => {
   const [error, setError] = useState<string | null>(null);
 
-  return <ErrorContext.Provider value={{ error, setError }}>{children}</ErrorContext.Provider>;
+  const value = useMemo(() => ({ error, setError }), [error]);
+
+  return <ErrorContext.Provider value={value}>{children}</ErrorContext.Provider>;
 };
 
 export function useError() {
