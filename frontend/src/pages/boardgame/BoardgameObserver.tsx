@@ -9,13 +9,13 @@ import { BACKEND_ENDPOINT } from '../../common/config';
 import { Container, GameContainer } from './BoardgamePlayer';
 import { boardgameColorPalette } from '../../common/utils';
 
-function parsePlayerPositions(
+export function parsePlayerPositions(
   positions: [{ tileIndex: number; players: [Pawn]; category: string }]
 ) {
   return positions.map((tileState) => tileState.players);
 }
 
-function getBoardSetup(data: {
+export function getBoardSetup(data: {
   tileStates: [{ players: [Pawn]; tileIndex: number; category: string }];
 }) {
   const positions = parsePlayerPositions(data.tileStates);

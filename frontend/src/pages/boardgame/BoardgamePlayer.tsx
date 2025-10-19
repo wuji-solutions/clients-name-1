@@ -13,6 +13,7 @@ import { boardgameColorPalette, getColor, isMobileView } from '../../common/util
 import { QuestionContainer, QuestionHeader } from '../quiz/Quiz';
 import { ButtonCustom } from '../../components/Button';
 import { useError } from '../../providers/ErrorProvider';
+import { getBoardSetup, parsePlayerPositions } from './BoardgameObserver';
 
 const mobile = isMobileView();
 
@@ -66,32 +67,6 @@ const AnswerGrid = styled.div(() => ({
   padding: '40px',
   justifyItems: 'center',
 }));
-
-function parsePlayerPositions(
-  positions: [{ tileIndex: number; players: [Pawn]; category: string }]
-) {
-  return positions.map((tileState) => tileState.players);
-}
-
-function getBoardSetup(data: {
-  tileStates: [{ players: [Pawn]; tileIndex: number; category: string }];
-}) {
-  const positions = parsePlayerPositions(data.tileStates);
-  const categoryColorReferences = new Map<string, string | undefined>();
-  data.tileStates.map((tile, i) => {
-    if (tile.category in categoryColorReferences) return;
-    categoryColorReferences.set(
-      tile.category,
-      boardgameColorPalette[i + (2 % boardgameColorPalette.length)]
-    );
-  });
-  return {
-    positions: positions,
-    numfields: positions.length,
-    tileColors: categoryColorReferences,
-    tileStates: data.tileStates.map((entry) => entry.category),
-  };
-}
 
 function SSEOnBoardgameStateChangeListener({ setPositions }: { setPositions: Function }) {
   const delegate = useSSEChannel(BACKEND_ENDPOINT_EXTERNAL + '/sse/board/new-state', {
