@@ -137,8 +137,6 @@ function Configurations() {
 
   const [mode, setMode] = useState<mode>('quiz');
 
-  const [error, setError] = useState<string>('');
-
   const startLobby = () => {
     if (!mode) return;
     const createGameDto = getConfig(mode, commonSettings, examSettings, boardSettings);
@@ -224,7 +222,6 @@ function Configurations() {
           boardSettings={boardSettings}
           setBoardSettings={setBoardSettings}
         />
-        <ErrorPopup error={error} onClose={() => setError('')} />
         <ActionButtonContainer>
           <ButtonCustom onClick={() => startLobby()}>Otwórz poczekalnię</ButtonCustom>
           <ButtonCustom onClick={() => navigate('/')}>Powrót</ButtonCustom>
