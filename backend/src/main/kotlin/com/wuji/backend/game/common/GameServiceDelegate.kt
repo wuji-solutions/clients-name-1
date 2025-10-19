@@ -11,6 +11,7 @@ import com.wuji.backend.config.dto.toQuizConfigDto
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.GameType
 import com.wuji.backend.game.board.BoardService
+import com.wuji.backend.game.common.exception.NotEnoughPlayersException
 import com.wuji.backend.game.exam.ExamService
 import com.wuji.backend.game.quiz.QuizService
 import com.wuji.backend.player.dto.PlayerDto
@@ -51,6 +52,8 @@ class GameServiceDelegate(
     }
 
     override fun startGame() {
+        if (currentService.listPlayers().isEmpty())
+            throw NotEnoughPlayersException()
         currentService.startGame()
     }
 

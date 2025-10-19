@@ -108,6 +108,22 @@ const ActionButtonContainer = styled.div({
   gap: '10px',
 });
 
+const getConfig = (
+  mode: mode,
+  commonSettings: CommonSettings,
+  examSettings: ExamSettings,
+  boardSettings: BoardSettings
+) => {
+  const config = settingsToConfig(mode, commonSettings, examSettings, boardSettings);
+  const createGameDto = { config: config, name: 'Przykładowa gra' };
+  return mode !== 'board'
+    ? createGameDto
+    : {
+        ...createGameDto,
+        numberOfTiles: Object.keys(boardSettings.rankingPromotionRules).length * 3,
+      };
+};
+
 function Configurations() {
   const { user } = useAppContext();
   const navigate = useNavigate();
@@ -121,11 +137,10 @@ function Configurations() {
 
   const startLobby = () => {
     if (!mode) return;
-    const config = settingsToConfig(mode, commonSettings, examSettings, boardSettings);
+    const createGameDto = getConfig(mode, commonSettings, examSettings, boardSettings);
     service
-      .startLobby(mode, mode === 'quiz' ? { ...TEST_QUIZ } : { ...TEST_GAME })
+      .startLobby(mode, createGameDto)
       .then((response) => {
-        console.log('Successfully created new game');
         navigate(`/waiting-room?tryb=${mode}`);
       })
       .catch((error) => console.log(error));
