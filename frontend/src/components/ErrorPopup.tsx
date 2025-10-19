@@ -1,10 +1,5 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
-
-interface ErrorPopupProps {
-  error: string | null;
-  onClose: () => void;
-}
 
 const fadeIn = keyframes`
   from { opacity: 0; transform: translate(-50%, -20px); }
@@ -80,7 +75,7 @@ interface Props {
 export function ErrorPopup({ error, onClose }: Props) {
   const [visible, setVisible] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (error) {
       setVisible(true);
     } else {

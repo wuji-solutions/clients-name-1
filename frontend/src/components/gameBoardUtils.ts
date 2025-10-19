@@ -161,7 +161,7 @@ export function findClosestFieldIndex(
     }
     return best;
   } catch (e) {
-    console.error(`Error during movement rendering: ${e}`)
+    console.error(`Error during movement rendering: ${e}`);
     return -1;
   }
 }

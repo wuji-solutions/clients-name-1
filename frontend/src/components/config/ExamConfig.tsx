@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, Dispatch, SetStateAction } from 'react';
 import { DifficultyLevel, Question } from '../../common/types';
 import { CenteredLabel, CheckboxInput } from '../Fields';
 import { LabeledCheckboxContainer } from './components/LabeledCheckbox';
@@ -26,7 +26,7 @@ export type ExamSettings = {
 
 interface ExamConfigProps {
   readonly settings: ExamSettings;
-  readonly setSettings: React.Dispatch<React.SetStateAction<ExamSettings>>;
+  readonly setSettings: Dispatch<SetStateAction<ExamSettings>>;
   readonly questionListError: boolean;
   readonly questionList: Question[];
 }
