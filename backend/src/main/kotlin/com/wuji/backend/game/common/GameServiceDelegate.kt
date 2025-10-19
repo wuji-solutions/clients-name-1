@@ -32,15 +32,13 @@ class GameServiceDelegate(
         mapOf(
             GameType.QUIZ to quizService,
             GameType.EXAM to examService,
-            GameType.BOARD to boardService
-        )
+            GameType.BOARD to boardService)
 
     private val currentService: GameService
         get() =
             services[gameRegistry.gameType]
                 ?: throw IllegalStateException(
-                    "Unknown game type: ${gameRegistry.gameType}"
-                )
+                    "Unknown game type: ${gameRegistry.gameType}")
 
     override fun joinGame(
         index: Int,
