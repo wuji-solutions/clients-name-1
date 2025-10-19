@@ -9,6 +9,7 @@ import { ButtonCustom } from '../components/Button';
 import { useNavigate } from 'react-router-dom';
 import { QuestionData } from '../common/types';
 import { getColor, getPercentage, lightenColor } from '../common/utils';
+import { useError } from '../providers/ErrorProvider';
 
 interface Props {
   data: QuestionData;
@@ -118,12 +119,17 @@ function Summary() {
   const { user } = useAppContext();
   const navigate = useNavigate();
   const [summary, setSummary] = useState<Summary | null>(null);
+  const { setError } = useError();
 
   useEffect(() => {
     service
       .getGameSummary()
       .then((response) => setSummary(response.data))
-      .catch((error) => console.log(error));
+      .catch((error) =>
+        setError(
+          'Wystąpił błąd podczas pobierania podsumowania gry:\n' + error.response.data.message
+        )
+      );
   }, []);
 
   if (user !== 'admin') return <AccessRestricted />;

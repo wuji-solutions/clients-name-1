@@ -11,14 +11,15 @@ import { boardgameColorPalette, darkenColor } from '../../common/utils';
 import theme from '../../common/theme';
 import { ButtonCustom } from '../../components/Button';
 import { useNavigate } from 'react-router-dom';
+import { useError } from '../../providers/ErrorProvider';
 
-function parsePlayerPositions(
+export function parsePlayerPositions(
   positions: [{ tileIndex: number; players: [Pawn]; category: string }]
 ) {
   return positions.map((tileState) => tileState.players);
 }
 
-function getBoardSetup(data: {
+export function getBoardSetup(data: {
   tileStates: [{ players: [Pawn]; tileIndex: number; category: string }];
 }) {
   const positions = parsePlayerPositions(data.tileStates);
@@ -153,6 +154,7 @@ function BoardgameObserver() {
   const [rankingExpanded, setRankingExpanded] = useState<boolean>(false);
   const [gameFinished, setGameFinished] = useState<boolean>(false);
   const navigate = useNavigate();
+  const { setError } = useError();
 
   useEffect(() => {
     service.getBoardState('admin').then((response) => {
@@ -180,7 +182,7 @@ function BoardgameObserver() {
       .then(() => {
         setGameFinished(true);
       })
-      .catch((e) => console.error(e));
+      .catch((e) => setError('Wystąpił błąd podczas kończenia egzaminu:\n' + e.response.data.message));
   };
 
   return (

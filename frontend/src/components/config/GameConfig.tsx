@@ -10,6 +10,7 @@ import EditConfig from './ManageConfig';
 import { applySettingsFromDto, settingsToConfig } from './utils';
 import CreateConfig from './CreateConfig';
 import { service } from '../../service/service';
+import { useError } from '../../providers/ErrorProvider';
 
 interface Props {
   readonly mode: mode;
@@ -35,6 +36,7 @@ export default function GameConfig({
   const [categoryNames, setCategoryNames] = useState<string[]>([]);
   const [questionList, setQuestionList] = useState<Question[]>([]);
   const [questionFileParseError, setQuestionFileParseError] = useState<boolean>(false);
+  const { setError } = useError();
   const editConfig = () => {
     setIsEditDialogOpen(true);
   };
@@ -77,7 +79,11 @@ export default function GameConfig({
         updateCategories(data.categories);
         updateQuestionList(data.questions);
       })
-      .catch(() => setQuestionFileParseError(true));
+      .catch((error) =>
+        setError(
+          'Wystąpił błąd podczas wczytywania pliku z pytaniami:\n' + error.response.data.message
+        )
+      );
   }, [commonSettings.questionFilePath, mode]);
 
   return (

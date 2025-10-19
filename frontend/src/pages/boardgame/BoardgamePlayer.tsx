@@ -14,6 +14,8 @@ import { QuestionContainer, QuestionHeader } from '../quiz/Quiz';
 import { ButtonCustom } from '../../components/Button';
 import theme from '../../common/theme';
 import Star from '../../components/StarRating';
+import { useError } from '../../providers/ErrorProvider';
+import { getBoardSetup, parsePlayerPositions } from './BoardgameObserver';
 
 const mobile = isMobileView();
 
@@ -166,32 +168,6 @@ export function PointsPopup({ onComplete }: {onComplete: Function}) {
   return <Popup><Star /></Popup>;
 }
 
-function parsePlayerPositions(
-  positions: [{ tileIndex: number; players: [Pawn]; category: string }]
-) {
-  return positions.map((tileState) => tileState.players);
-}
-
-function getBoardSetup(data: {
-  tileStates: [{ players: [Pawn]; tileIndex: number; category: string }];
-}) {
-  const positions = parsePlayerPositions(data.tileStates);
-  const categoryColorReferences = new Map<string, string | undefined>();
-  data.tileStates.map((tile, i) => {
-    if (tile.category in categoryColorReferences) return;
-    categoryColorReferences.set(
-      tile.category,
-      boardgameColorPalette[i % boardgameColorPalette.length]
-    );
-  });
-  return {
-    positions: positions,
-    numfields: positions.length,
-    tileColors: categoryColorReferences,
-    tileStates: data.tileStates.map((entry) => entry.category),
-  };
-}
-
 function SSEOnBoardgameStateChangeListener({ setPositions }: { setPositions: Function }) {
   const delegate = useSSEChannel(BACKEND_ENDPOINT_EXTERNAL + '/sse/board/new-state', {
     withCredentials: true,
@@ -252,6 +228,7 @@ function BoardgamePlayer() {
   const [gameFinished, setGameFinished] = useState<boolean>(false);
 
   const [showAnswerPopup, setShowAnswerPopup] = useState<boolean>(false);
+  const { setError } = useError();
 
   useEffect(() => {
     if (!playerIndex) {
@@ -297,11 +274,7 @@ function BoardgamePlayer() {
         }, 2000)
       })
       .catch((error) => {
-        console.log(error);
-        if (error.status === 409) {
-          setGameFinished(true);
-          return;
-        }
+        setError('Wystąpił błąd podczas pobierania pytania:\n' + error.response.data.message);
         setDiceInteractable(true);
         setShowDice(true);
       });
@@ -329,11 +302,12 @@ function BoardgamePlayer() {
           setShowDice(false);
         }, 3000);
       })
-      .catch(() =>
+      .catch((error) => {
+        setError('Wystąpił błąd podczas wykonywania ruchu:\n' + error.response.data.message);
         setTimeout(() => {
           setDiceRoll(false);
-        }, 1000)
-      );
+        }, 1000);
+      });
   };
 
   const handleAnswerSelected = (id: string) => {
@@ -367,7 +341,9 @@ function BoardgamePlayer() {
         setShowDice(true);
         setIsAnswering(false);
       })
-      .catch((error) => console.error(error));
+      .catch((error) =>
+        setError('Wystąpił błąd podczas wysyłania odpowiedzi:\n' + error.response.data.message)
+      );
   };
 
   const toggleDiceRoll = (mode: 'on' | 'off') => {

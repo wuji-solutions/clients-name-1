@@ -14,6 +14,8 @@ import BoardgameObserver from './pages/boardgame/BoardgameObserver';
 import ExamParticipant from './pages/exam/ExamParticipant';
 import ExamObserver from './pages/exam/ExamObserver';
 import { FullScreenButton } from './components/Button';
+import { ErrorProvider } from './providers/ErrorProvider';
+import ErrorPopup from './components/ErrorPopup';
 
 const context = globalThis.location.hostname === 'localhost' ? 'admin' : 'user';
 
@@ -23,23 +25,26 @@ root.render(
     <AppProvider>
       <FullScreenButton />
       <SSEProvider>
-        <Router>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/konfiguracja" element={<Configurations />} />
-            <Route path="/waiting-room" element={<WaitingRoom />} />
-            <Route path="/gra/quiz" element={<Quiz />} />
-            <Route
-              path="/gra/planszowa"
-              element={context === 'user' ? <BoardgamePlayer /> : <BoardgameObserver />}
-            />
-            <Route
-              path="/sprawdzian"
-              element={context === 'user' ? <ExamParticipant /> : <ExamObserver />}
-            />
-            <Route path="/podsumowanie" element={<Summary />} />
-          </Routes>
-        </Router>
+        <ErrorProvider>
+          <ErrorPopup />
+          <Router>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/konfiguracja" element={<Configurations />} />
+              <Route path="/waiting-room" element={<WaitingRoom />} />
+              <Route path="/gra/quiz" element={<Quiz />} />
+              <Route
+                path="/gra/planszowa"
+                element={context === 'user' ? <BoardgamePlayer /> : <BoardgameObserver />}
+              />
+              <Route
+                path="/sprawdzian"
+                element={context === 'user' ? <ExamParticipant /> : <ExamObserver />}
+              />
+              <Route path="/podsumowanie" element={<Summary />} />
+            </Routes>
+          </Router>
+        </ErrorProvider>
       </SSEProvider>
     </AppProvider>
   </StrictMode>

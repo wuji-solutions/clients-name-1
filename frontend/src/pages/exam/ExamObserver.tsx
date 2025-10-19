@@ -10,6 +10,7 @@ import Timer from '../../components/Timer';
 import { useSSEChannel } from '../../providers/SSEProvider';
 import { getModeConfig } from '../../service/configService';
 import { service } from '../../service/service';
+import { useError } from '../../providers/ErrorProvider';
 
 const Container = styled.div(() => ({
   width: 'calc(100%-20px)',
@@ -171,6 +172,7 @@ function ExamObserver() {
   const [examFinished, setExamFinished] = useState<boolean>(false);
   const [cheaters, setCheaters] = useState<Dictionary<string>>({});
   const navigate = useNavigate();
+  const { setError } = useError();
 
   useEffect(() => {
     getModeConfig().then((response) => {
@@ -184,7 +186,9 @@ function ExamObserver() {
       .then((response) => {
         setExamFinished(true);
       })
-      .catch((e) => console.error(e));
+      .catch((error) =>
+        setError('Wystąpił błąd podczas wysyłania odpowiedzi:\n' + error.response.data.message)
+      );
   };
 
   return (

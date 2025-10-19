@@ -5,6 +5,7 @@ import { ButtonCustom } from '../Button';
 import Modal from '../Modal';
 import { CenteredLabel } from '../Fields';
 import Divider from '../Divider';
+import { useError } from '../../providers/ErrorProvider';
 
 interface Props {
   readonly mode: mode;
@@ -27,13 +28,19 @@ export default function ManageConfig({ mode, setIsEditDialogOpen, setConfig }: P
   const [configList, setConfigList] = useState<string[]>([]);
   const [isError, setIsError] = useState<boolean>(false);
   const [refreshKey, setRefreshKey] = useState<boolean>(true);
+  const { setError } = useError();
+
   useEffect(() => {
     getConfigNamesByMode(mode)
       .then((configs) => {
         setConfigList(configs.data);
         setIsError(false);
       })
-      .catch(() => setIsError(true));
+      .catch((error) =>
+        setError(
+          'Wystąpił błąd podczas pobierania listy konfiguracji\n' + error.response.data.message
+        )
+      );
   }, [mode, refreshKey]);
 
   const removeConfig = (configName: string) => {

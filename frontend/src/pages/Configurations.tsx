@@ -13,7 +13,7 @@ import { BoardSettings } from '../components/config/BoardConfig';
 import { CommonSettings } from '../components/config/CommonConfig';
 import { ExamSettings } from '../components/config/ExamConfig';
 import { settingsToConfig } from '../components/config/utils';
-import ErrorPopup from '../components/ErrorPopup';
+import { useError } from '../providers/ErrorProvider';
 
 const Container = styled.div({
   width: '100%',
@@ -127,6 +127,8 @@ const getConfig = (
 function Configurations() {
   const { user } = useAppContext();
   const navigate = useNavigate();
+  const { setError } = useError();
+
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: (files) => {
       console.log(files);
@@ -134,8 +136,6 @@ function Configurations() {
   });
 
   const [mode, setMode] = useState<mode>('quiz');
-
-  const [error, setError] = useState<string>('');
 
   const startLobby = () => {
     if (!mode) return;
@@ -145,7 +145,9 @@ function Configurations() {
       .then((response) => {
         navigate(`/waiting-room?tryb=${mode}`);
       })
-      .catch((error) => setError(error.response.data.message));
+      .catch((error) =>
+        setError('Wystąpił błąd podczas tworzenia gry:\n' + error.response.data.message)
+      );
   };
 
   const [commonSettings, setCommonSettings] = useState<CommonSettings>({
@@ -220,7 +222,6 @@ function Configurations() {
           boardSettings={boardSettings}
           setBoardSettings={setBoardSettings}
         />
-        <ErrorPopup error={error} onClose={() => setError('')} />
         <ActionButtonContainer>
           <ButtonCustom onClick={() => startLobby()}>Otwórz poczekalnię</ButtonCustom>
           <ButtonCustom onClick={() => navigate('/')}>Powrót</ButtonCustom>
