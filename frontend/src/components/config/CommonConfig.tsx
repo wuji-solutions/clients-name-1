@@ -3,6 +3,7 @@ import './config-styles.css';
 import { LabeledCheckboxContainer } from './components/LabeledCheckbox';
 import { ButtonCustom } from '../Button';
 import { CleanInput } from './components/ConfigInput';
+import { Dispatch, SetStateAction } from 'react';
 
 export interface CommonSettings {
   questionDurationSeconds: number;
@@ -11,7 +12,7 @@ export interface CommonSettings {
 
 interface Props {
   readonly commonSettings: CommonSettings;
-  readonly setCommonSettings: React.Dispatch<React.SetStateAction<CommonSettings>>;
+  readonly setCommonSettings: Dispatch<SetStateAction<CommonSettings>>;
 }
 
 export default function CommonConfig({ commonSettings, setCommonSettings }: Props) {

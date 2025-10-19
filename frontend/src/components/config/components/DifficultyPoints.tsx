@@ -1,4 +1,3 @@
-import React from 'react';
 import Dropdown from '../../Dropdown';
 import { CenteredLabel } from '../../Fields';
 import { LabeledCheckboxContainer } from './LabeledCheckbox';

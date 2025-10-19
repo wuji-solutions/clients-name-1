@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, Dispatch, SetStateAction } from 'react';
 import { DifficultyLevel } from '../../common/types';
 import { CenteredLabel, CheckboxInput } from '../Fields';
 import { LabeledCheckboxContainer } from './components/LabeledCheckbox';
@@ -17,7 +17,7 @@ export type BoardSettings = {
 
 interface Props {
   readonly settings: BoardSettings;
-  readonly setSettings: React.Dispatch<React.SetStateAction<BoardSettings>>;
+  readonly setSettings: Dispatch<SetStateAction<BoardSettings>>;
   readonly categoryNames: string[];
   readonly parseError: boolean;
 }

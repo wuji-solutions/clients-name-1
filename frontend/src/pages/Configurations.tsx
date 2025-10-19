@@ -5,7 +5,6 @@ import { styled } from 'styled-components';
 import theme from '../common/theme';
 import { mode } from '../common/types';
 import { ButtonChoose, ButtonCustom } from '../components/Button';
-import { TEST_GAME, TEST_QUIZ } from '../common/test';
 import { useAppContext } from '../providers/AppContextProvider';
 import AccessRestricted from '../components/AccessRestricted';
 import { service } from '../service/service';

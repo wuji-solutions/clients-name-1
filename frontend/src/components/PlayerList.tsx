@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState, Dispatch, SetStateAction } from 'react';
 import { BACKEND_ENDPOINT } from '../common/config';
 import { styled } from 'styled-components';
 import { useSSEChannel } from '../providers/SSEProvider';
@@ -100,8 +100,8 @@ type Player = {
 const addPlayers = (
   event: Player[],
   players: Player[],
-  setPlayers: React.Dispatch<React.SetStateAction<Player[]>>,
-  setNewPlayers: React.Dispatch<React.SetStateAction<Set<string>>>
+  setPlayers: Dispatch<SetStateAction<Player[]>>,
+  setNewPlayers: Dispatch<SetStateAction<Set<string>>>
 ) => {
   try {
     const data: Player[] = event;
@@ -141,7 +141,7 @@ function PlayerList() {
       .getPlayerList()
       .then((response) => addPlayers(response.data, players, setPlayers, setNewPlayers))
       .catch((error) => console.log(error));
-  }, [])
+  }, []);
 
   useEffect(() => {
     const unsubscribe = delegate.on('player-list', (data) => {

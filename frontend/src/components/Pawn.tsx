@@ -1,4 +1,3 @@
-import React from 'react';
 import Konva from 'konva';
 import { Group, Circle, RegularPolygon } from 'react-konva';
 import { darkenColor, isMobileView } from '../common/utils';
@@ -13,7 +12,7 @@ interface PawnProps {
   nodeRef: (node: Konva.Group | null) => void;
 }
 
-const Pawn: React.FC<PawnProps> = ({ id, x, y, scale, color, isCurrentPlayer, nodeRef }) => {
+function Pawn({ id, x, y, scale, color, isCurrentPlayer, nodeRef }: PawnProps) {
   const mobile = isMobileView();
   const pawnHeight = (mobile ? 22 : 80) * scale;
   const pawnWidth = (mobile ? 12 : 44) * scale;
@@ -31,7 +30,7 @@ const Pawn: React.FC<PawnProps> = ({ id, x, y, scale, color, isCurrentPlayer, no
         fillRadialGradientColorStops={[0, color, 0.9, darkenColor(color, 0.5)]}
         shadowColor="black"
         shadowBlur={2}
-        shadowOffset={ mobile ? { x: 1, y: 1 } : { x: 2, y: 2 }}
+        shadowOffset={mobile ? { x: 1, y: 1 } : { x: 2, y: 2 }}
         shadowOpacity={0.3}
       />
 
@@ -46,7 +45,7 @@ const Pawn: React.FC<PawnProps> = ({ id, x, y, scale, color, isCurrentPlayer, no
         fillRadialGradientColorStops={[0, color, 0.9, darkenColor(color, 0.5)]}
         shadowColor="black"
         shadowBlur={2}
-        shadowOffset={ mobile ? { x: 1, y: 1 } : { x: 2, y: 2 }}
+        shadowOffset={mobile ? { x: 1, y: 1 } : { x: 2, y: 2 }}
         shadowOpacity={0.3}
       />
 
@@ -65,6 +64,6 @@ const Pawn: React.FC<PawnProps> = ({ id, x, y, scale, color, isCurrentPlayer, no
       )}
     </Group>
   );
-};
+}
 
 export default Pawn;
