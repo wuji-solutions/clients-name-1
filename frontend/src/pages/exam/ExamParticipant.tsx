@@ -141,7 +141,6 @@ function ExamParticipant() {
   const [selectedAnswers, setSelectedAnswers] = useState<Array<string>>([]);
 
   const [allowGoingBack, setAllowGoingBack] = useState<boolean>(false);
-  const [hasAnsweredQuestion, setHasAnsweredQuestion] = useState<boolean>(false);
 
   const [answerSent, setAnswerSent] = useState<boolean>(false);
 
@@ -162,7 +161,6 @@ function ExamParticipant() {
         }
         setAllowGoingBack(response.data?.allowGoingBack);
         setCurrentQuestion(response.data);
-        setHasAnsweredQuestion(response.data.playerAlreadyAnswered);
       }).catch((error) => {
         if (error.status === 409) {
           setExamFinished(true);
@@ -182,7 +180,6 @@ function ExamParticipant() {
         }
         setAllowGoingBack(response.data?.allowGoingBack);
         setCurrentQuestion(response.data);
-        setHasAnsweredQuestion(response.data.playerAlreadyAnswered);
       }
     });
   };
@@ -222,7 +219,6 @@ function ExamParticipant() {
         setSelectedAnswers([]);
       }
       setCurrentQuestion(response.data);
-      setHasAnsweredQuestion(response.data.playerAlreadyAnswered);
     });
   };
 

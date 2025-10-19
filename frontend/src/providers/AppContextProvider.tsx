@@ -56,7 +56,6 @@ export const AppProvider = ({ children }: AppProviderProps) => {
           Cookies.remove('JSESSIONID')
           sessionStorage.removeItem('userindex');
           sessionStorage.removeItem('username');
-          return;
         }
       })
 

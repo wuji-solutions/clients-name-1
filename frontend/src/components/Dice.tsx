@@ -121,10 +121,6 @@ function Dice({diceRoll, cheatValue}: Readonly<DiceProps>) {
     if (diceRoll != undefined) toggleDice(diceRoll);
   }, [diceRoll]);
 
-  // useEffect(() => {
-  //   if (cheatValue) setValue(cheatValue);
-  // }, [cheatValue])
-
   return (
     <Scene>
       <Cube rotationY={rotateY} rotationX={rotateX}>

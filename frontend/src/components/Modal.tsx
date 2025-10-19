@@ -1,4 +1,4 @@
-import { useState, ReactNode } from "react";
+import { ReactNode } from "react";
 import styled, { keyframes, css } from "styled-components";
 
 // Animations

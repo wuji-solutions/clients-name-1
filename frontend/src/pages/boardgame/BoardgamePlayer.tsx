@@ -1,4 +1,4 @@
-import { styled } from 'styled-components';
+import { keyframes, styled } from 'styled-components';
 import { useEffect, useState } from 'react';
 import GameBoard from '../../components/GameBoard';
 import { BoardPositions, Pawn, Question } from '../../common/types';
@@ -13,6 +13,7 @@ import { boardgameColorPalette, darkenColor, getColor, isMobileView, lightenColo
 import { QuestionContainer, QuestionHeader } from '../quiz/Quiz';
 import { ButtonCustom } from '../../components/Button';
 import theme from '../../common/theme';
+import Star from '../../components/StarRating';
 
 const mobile = isMobileView();
 
@@ -107,6 +108,64 @@ const GameFinishedContainer = styled.div({
   fontSize: '22px',
 });
 
+const PointsContainer = styled.div({
+  position: 'absolute',
+  right: '70px',
+  top: '20px',
+  display: 'flex',
+  flexDirection: 'column',
+  fontSize: '20px',
+  justifyContent: 'center',
+  alignItems: 'center',
+  zIndex: 100,
+});
+
+const popupToCorner = keyframes({
+  '0%': {
+    transform: 'translate(-50%, -50%) scale(0)',
+    opacity: 0,
+    top: '50%',
+    left: '50%',
+  },
+  '20%': {
+    transform: 'translate(-50%, -50%) scale(1)',
+    opacity: 1,
+  },
+  '100%': {
+    transform: 'translate(0, 0) scale(0.3)',
+    top: '20px',
+    right: '720px',
+    left: 'auto',
+    opacity: 0,
+  },
+});
+
+// Once again, keyframes refuse to work with object syntax
+const Popup = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  background: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-size: 24px;
+  font-weight: bold;
+  opacity: 0;
+  z-index: 999;
+  animation: ${popupToCorner} 2.5s ease-in-out forwards;
+`;
+
+export function PointsPopup({ onComplete }: {onComplete: Function}) {
+  useEffect(() => {
+    const timer = setTimeout(onComplete, 1500);
+    return () => clearTimeout(timer);
+  }, [onComplete]);
+
+  return <Popup><Star /></Popup>;
+}
+
 function parsePlayerPositions(
   positions: [{ tileIndex: number; players: [Pawn]; category: string }]
 ) {
@@ -191,6 +250,8 @@ function BoardgamePlayer() {
   const [playerPoints, setPlayerPoints] = useState<number>();
 
   const [gameFinished, setGameFinished] = useState<boolean>(false);
+
+  const [showAnswerPopup, setShowAnswerPopup] = useState<boolean>(false);
 
   useEffect(() => {
     if (!playerIndex) {
@@ -295,6 +356,11 @@ function BoardgamePlayer() {
       )
       .then((response) => {
         const answerCorrect = response.data;
+
+        if (answerCorrect) {
+          setShowAnswerPopup(true);
+        }
+
         setIsAnswering(false);
         setShowAnswerModal(false);
         setDiceInteractable(true);
@@ -339,6 +405,11 @@ function BoardgamePlayer() {
 
   return (
     <Container>
+      <PointsContainer>
+        <span>Punkty:</span>
+        <span>{playerPoints}</span>
+      </PointsContainer>
+      {showAnswerPopup && <PointsPopup onComplete={() => setShowAnswerPopup(false)} />}
       <SSEOnEventListener setGameFinished={setGameFinished} />
       {isAnswering && (
         <ToggleModalButton onClick={toggleAnswerModal} disabled={modalClosing}>
