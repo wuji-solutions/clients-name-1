@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
+import { useError } from '../providers/ErrorProvider';
 
 const fadeIn = keyframes`
   from { opacity: 0; transform: translateY(-20px); }
@@ -56,13 +57,9 @@ const CloseButton = styled.button`
   }
 `;
 
-interface Props {
-  error: string;
-  onClose: any;
-}
-
-export function ErrorPopup({ error, onClose }: Props) {
+export function ErrorPopup() {
   const [visible, setVisible] = useState(false);
+  const { error, setError } = useError();
 
   useEffect(() => {
     if (error) {
@@ -79,7 +76,7 @@ export function ErrorPopup({ error, onClose }: Props) {
       <PopupContainer>
         <Icon>⚠️</Icon>
         <Message>{error}</Message>
-        <CloseButton onClick={onClose}>×</CloseButton>
+        <CloseButton onClick={() => setError(null)}>×</CloseButton>
       </PopupContainer>
     </PopupWrapper>
   );

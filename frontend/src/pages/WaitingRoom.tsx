@@ -11,7 +11,7 @@ import '../service/service';
 import { service } from '../service/service';
 import { useSSEChannel } from '../providers/SSEProvider';
 import { BACKEND_ENDPOINT, BACKEND_ENDPOINT_EXTERNAL } from '../common/config';
-import ErrorPopup from '../components/ErrorPopup';
+import { useError } from '../providers/ErrorProvider';
 
 const Container = styled.div({
   width: '100%',
@@ -113,7 +113,7 @@ function WaitingRoom() {
   const { isAdmin, username, setUsername } = useAppContext();
   const [identificator, setIdentificator] = useState<number | null>(null);
   const [playerKicked, setPlayerKicked] = useState(false);
-  const [startGameError, setStartGameError] = useState<string>('');
+  const { setError } = useError();
   const gameMode = new URLSearchParams(globalThis.location.search).get('tryb');
   const navigate = useNavigate();
 
@@ -126,7 +126,9 @@ function WaitingRoom() {
         sessionStorage.setItem('username', response.data);
         sessionStorage.setItem('userindex', identificator.toString());
       })
-      .catch((error) => console.log(error));
+      .catch((error) =>
+        setError('Wystąpił błąd podczas dołączania do gry\n' + error.response.data.message)
+      );
   };
 
   const startGame = () => {
@@ -136,7 +138,7 @@ function WaitingRoom() {
         console.log('Game successfully started');
       })
       .catch((error) => {
-        setStartGameError(error.response.data.message);
+        setError('Wystąpił błąd podczas startowania gry:\n' + error.response.data.message);
       });
   };
 
@@ -152,7 +154,7 @@ function WaitingRoom() {
         navigate('/sprawdzian');
         break;
       default:
-        console.log('Tryb gry nie został wybrany');
+        setError('Tryb gry nie został wybrany');
     }
   };
 
@@ -220,7 +222,6 @@ function WaitingRoom() {
           />
         </QRContainer>
       </QRWrapper>
-      <ErrorPopup error={startGameError} onClose={() => setStartGameError('')} />
       <ActionButtonContainer>
         <ButtonCustom onClick={() => startGame()}>Zacznij grę</ButtonCustom>
         <ButtonCustom onClick={() => navigate('/konfiguracja')}>Powrót</ButtonCustom>

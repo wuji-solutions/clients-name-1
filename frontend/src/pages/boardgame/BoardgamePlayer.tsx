@@ -10,11 +10,9 @@ import Dice from '../../components/Dice';
 import Modal from '../../components/Modal';
 import AnswerCard from '../../components/AnswerCard';
 import { boardgameColorPalette, getColor, isMobileView } from '../../common/utils';
-import {
-  QuestionContainer,
-  QuestionHeader,
-} from '../quiz/Quiz';
+import { QuestionContainer, QuestionHeader } from '../quiz/Quiz';
 import { ButtonCustom } from '../../components/Button';
+import { useError } from '../../providers/ErrorProvider';
 
 const mobile = isMobileView();
 
@@ -82,9 +80,17 @@ function getBoardSetup(data: {
   const categoryColorReferences = new Map<string, string | undefined>();
   data.tileStates.map((tile, i) => {
     if (tile.category in categoryColorReferences) return;
-    categoryColorReferences.set(tile.category, boardgameColorPalette[ i + 2 % boardgameColorPalette.length]);
-  })
-  return { positions: positions, numfields: positions.length, tileColors: categoryColorReferences, tileStates: data.tileStates.map((entry) => entry.category) };
+    categoryColorReferences.set(
+      tile.category,
+      boardgameColorPalette[i + (2 % boardgameColorPalette.length)]
+    );
+  });
+  return {
+    positions: positions,
+    numfields: positions.length,
+    tileColors: categoryColorReferences,
+    tileStates: data.tileStates.map((entry) => entry.category),
+  };
 }
 
 function SSEOnBoardgameStateChangeListener({ setPositions }: { setPositions: Function }) {
@@ -123,14 +129,17 @@ function BoardgamePlayer() {
   const [isAnswering, setIsAnswering] = useState(false);
 
   const [tileStates, setTileStates] = useState<string[]>();
-  const [boardColorReferences, setBoardColorReferences] = useState<Map<string, string | undefined>>();
+  const [boardColorReferences, setBoardColorReferences] =
+    useState<Map<string, string | undefined>>();
+
+  const { setError } = useError();
 
   useEffect(() => {
     if (!playerIndex) {
       service.getPlayerId().then((response) => {
-        setPlayerIndex(response.data.index as string)
-        setIsAnswering(response.data.state === 'ANSWERING')
-        setShowDice(response.data.state !== 'ANSWERING')
+        setPlayerIndex(response.data.index as string);
+        setIsAnswering(response.data.state === 'ANSWERING');
+        setShowDice(response.data.state !== 'ANSWERING');
       });
     }
   }, []);
@@ -152,7 +161,6 @@ function BoardgamePlayer() {
     });
   }, []);
 
-
   useEffect(() => {
     if (!positionUpdateBlock) setPositions(positionsBuffer);
   }, [positionsBuffer, positionUpdateBlock]);
@@ -166,7 +174,7 @@ function BoardgamePlayer() {
         setShowAnswerModal(true);
       })
       .catch((error) => {
-        console.log(error);
+        setError('Wystąpił błąd podczas pobierania pytania:\n' + error.response.data.message);
         setDiceInteractable(true);
         setShowDice(true);
       });
@@ -190,7 +198,12 @@ function BoardgamePlayer() {
           getQuestion();
         }, 2000);
       })
-      .catch(() => setTimeout(() => { setDiceRoll(false) }, 1000));
+      .catch((error) => {
+        setError('Wystąpił błąd podczas wykonywania ruchu:\n' + error.response.data.message);
+        setTimeout(() => {
+          setDiceRoll(false);
+        }, 1000);
+      });
   };
 
   const handleAnswerSelected = (id: string) => {
@@ -217,7 +230,9 @@ function BoardgamePlayer() {
         setShowDice(true);
         setIsAnswering(false);
       })
-      .catch((error) => console.error(error));
+      .catch((error) =>
+        setError('Wystąpił błąd podczas wysyłania odpowiedzi:\n' + error.response.data.message)
+      );
   };
 
   const toggleDiceRoll = (mode: 'on' | 'off') => {

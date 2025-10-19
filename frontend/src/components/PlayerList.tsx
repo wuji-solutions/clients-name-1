@@ -5,6 +5,7 @@ import { useSSEChannel } from '../providers/SSEProvider';
 import theme from '../common/theme';
 import { service } from '../service/service';
 import { lightenColor } from '../common/utils';
+import { useError } from '../providers/ErrorProvider';
 
 const Contaier = styled.div({
   marginTop: 'auto',
@@ -135,12 +136,15 @@ function PlayerList() {
   const [players, setPlayers] = useState<Player[]>([]);
   const [newPlayers, setNewPlayers] = useState<Set<string>>(new Set());
   const delegate = useSSEChannel(`${BACKEND_ENDPOINT}/sse/users`);
+  const { setError } = useError();
 
   useEffect(() => {
     service
       .getPlayerList()
       .then((response) => addPlayers(response.data, players, setPlayers, setNewPlayers))
-      .catch((error) => console.log(error));
+      .catch((error) =>
+        setError('Wystąpił błąd podczas listowania graczy:\n' + error.response.data.message)
+      );
   }, []);
 
   useEffect(() => {
@@ -157,9 +161,13 @@ function PlayerList() {
         service
           .getPlayerList()
           .then((response) => addPlayers(response.data, players, setPlayers, setNewPlayers))
-          .catch((error) => console.log(error));
+          .catch((error) =>
+            setError('Wystąpił błąd podczas wyrzucania gracza:\n' + error.response.data.message)
+          );
       })
-      .catch((error) => console.log(error));
+      .catch((error) =>
+        setError('Wystąpił błąd podczas wyrzucania gracza:\n' + error.response.data.message)
+      );
   };
 
   return (

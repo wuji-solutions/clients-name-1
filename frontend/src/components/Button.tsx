@@ -14,9 +14,9 @@ export const ButtonCustom = styled.button({
   borderRadius: '10px',
   '&:hover': {
     background: darkenColor(theme.palette.button.primary, 0.05),
-  border: `1px solid ${darkenColor(theme.palette.button.primary, 0.05)}`,
-  boxShadow: `0 5px 0 0 ${theme.palette.button.accent}`,
-  cursor: 'pointer',
+    border: `1px solid ${darkenColor(theme.palette.button.primary, 0.05)}`,
+    boxShadow: `0 5px 0 0 ${theme.palette.button.accent}`,
+    cursor: 'pointer',
   },
   '-webkit-transition-duration': '0.2s',
   transitionDuration: '0.2s',
@@ -92,6 +92,5 @@ const FullScreenButtonPure = styled.button({
 });
 
 export const FullScreenButton = () => {
-
-  return (<FullScreenButtonPure onClick={toggleFullscreen}>{'< >'}</FullScreenButtonPure>)
-}
+  return <FullScreenButtonPure onClick={toggleFullscreen}>{'< >'}</FullScreenButtonPure>;
+};

@@ -10,6 +10,7 @@ import Timer from '../../components/Timer';
 import { useAppContext } from '../../providers/AppContextProvider';
 import { useSSEChannel } from '../../providers/SSEProvider';
 import { service } from '../../service/service';
+import { useError } from '../../providers/ErrorProvider';
 
 export const Container = styled.div(() => ({
   width: '100%',
@@ -147,6 +148,8 @@ function ExamParticipant() {
 
   const [forceFetchCurrentQuestion, setForceFetchCurrentQuestion] = useState<boolean>(false);
 
+  const { setError } = useError();
+
   useEffect(() => {
     const hasPlayerCheated = sessionStorage.getItem('playerCheated');
     setPlayerCheated(!!hasPlayerCheated);
@@ -154,20 +157,25 @@ function ExamParticipant() {
 
   useEffect(() => {
     if (!examFinished) {
-      service.getCurrentQuestion('user', 'exam').then((response) => {
-        if (response.data.playerAlreadyAnswered) {
-          setSelectedAnswers(response.data.playerAnswerDto.selectedIds);
-        } else {
-          setSelectedAnswers([]);
-        }
-        setAllowGoingBack(response.data?.allowGoingBack);
-        setCurrentQuestion(response.data);
-        setHasAnsweredQuestion(response.data.playerAlreadyAnswered);
-      }).catch((error) => {
-        if (error.status === 409) {
-          setExamFinished(true);
-        }
-      });
+      service
+        .getCurrentQuestion('user', 'exam')
+        .then((response) => {
+          if (response.data.playerAlreadyAnswered) {
+            setSelectedAnswers(response.data.playerAnswerDto.selectedIds);
+          } else {
+            setSelectedAnswers([]);
+          }
+          setAllowGoingBack(response.data?.allowGoingBack);
+          setCurrentQuestion(response.data);
+          setHasAnsweredQuestion(response.data.playerAlreadyAnswered);
+        })
+        .catch((error) => {
+          if (error.status === 409) {
+            setExamFinished(true);
+          } else {
+            setError('Wystąpił błąd podczas pobierania pytania:\n' + error.response.data.message);
+          }
+        });
     }
   }, [forceFetchCurrentQuestion]);
 
@@ -240,27 +248,29 @@ function ExamParticipant() {
           setExamFinished(true);
           return;
         }
-        if (currentQuestion && currentQuestion.questionNumber != currentQuestion.totalBaseQuestions) {
+        if (
+          currentQuestion &&
+          currentQuestion.questionNumber != currentQuestion.totalBaseQuestions
+        ) {
           fetchNextQuestion();
         } else {
           setForceFetchCurrentQuestion(!forceFetchCurrentQuestion);
         }
       })
-      .catch((e) => {
-        console.error('Unexpected error while sending answer:', e);
-      })
+      .catch((error) =>
+        setError('Wystąpił błąd podczas wysyłania odpowiedzi:\n' + error.response.data.message)
+      )
       .finally(() => {
         setAnswerSent(false);
       });
   };
 
-  if (examFinished) return (
-    <Container style={{height: '80vh'}}>
-      <ExamFinishedContainer>
-          Sprawdzian się zakończył
-        </ExamFinishedContainer>
-    </Container>
-  );
+  if (examFinished)
+    return (
+      <Container style={{ height: '80vh' }}>
+        <ExamFinishedContainer>Sprawdzian się zakończył</ExamFinishedContainer>
+      </Container>
+    );
 
   return (
     <Container>

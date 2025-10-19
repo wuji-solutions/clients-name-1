@@ -13,6 +13,7 @@ import { BoardSettings } from '../components/config/BoardConfig';
 import { CommonSettings } from '../components/config/CommonConfig';
 import { ExamSettings } from '../components/config/ExamConfig';
 import { settingsToConfig } from '../components/config/utils';
+import { useError } from '../providers/ErrorProvider';
 
 const Container = styled.div({
   width: '100%',
@@ -126,6 +127,8 @@ const getConfig = (
 function Configurations() {
   const { user } = useAppContext();
   const navigate = useNavigate();
+  const { setError } = useError();
+
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: (files) => {
       console.log(files);
@@ -142,7 +145,9 @@ function Configurations() {
       .then((response) => {
         navigate(`/waiting-room?tryb=${mode}`);
       })
-      .catch((error) => console.log(error));
+      .catch((error) =>
+        setError('Wystąpił błąd podczas tworzenia gry:\n' + error.response.data.message)
+      );
   };
 
   const [commonSettings, setCommonSettings] = useState<CommonSettings>({
