@@ -18,6 +18,7 @@ import com.wuji.backend.player.dto.PlayerDto
 import com.wuji.backend.player.state.Player
 import com.wuji.backend.player.state.PlayerDetails
 import com.wuji.backend.reports.ReportsService
+import com.wuji.backend.security.auth.PlayerAuthService
 import org.springframework.stereotype.Service
 
 @SuppressWarnings("kotlin:S6514")
@@ -26,6 +27,7 @@ class GameServiceDelegate(
     quizService: QuizService,
     boardService: BoardService,
     examService: ExamService,
+    private val authService: PlayerAuthService,
     private val gameRegistry: GameRegistry,
 ) : GameService {
     private val services =
@@ -68,6 +70,7 @@ class GameServiceDelegate(
     override fun finishGame() {
         currentService.finishGame()
         ReportsService().writeReports(gameRegistry.game)
+        authService.clearAllSessions()
     }
 
     override fun kickPlayer(index: Int, nickname: String) {
