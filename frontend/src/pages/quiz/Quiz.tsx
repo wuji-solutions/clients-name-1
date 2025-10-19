@@ -11,6 +11,7 @@ import AnswerCard from '../../components/AnswerCard';
 import { useNavigate } from 'react-router-dom';
 import { SSEDelegate } from '../../delegate/SSEDelegate';
 import { getPercentage, getColor } from '../../common/utils';
+import { useError } from '../../providers/ErrorProvider';
 
 const Container = styled.div(() => ({
   width: '90%',
@@ -161,6 +162,7 @@ function Quiz() {
   const [questionAnswered, setQuestionAnswered] = useState<boolean>(false);
   const [questionEnded, setQuestionEnded] = useState<boolean>(false);
   const [questionStats, setQuestionStats] = useState<QuestionStats | null>(null);
+  const { setError } = useError();
 
   useEffect(() => {
     const unsubscribe = eventsDelegate.on('next-question', () => {
@@ -208,7 +210,9 @@ function Quiz() {
         'quiz'
       )
       .then((_) => setQuestionAnswered(true))
-      .catch((error) => console.error(error))
+      .catch((error) =>
+        setError('Wystąpił błąd podczas wysyłania odpowiedzi:\n' + error.response.data.message)
+      )
       .finally(() => setSendingAnswer(false));
   };
 
@@ -219,7 +223,9 @@ function Quiz() {
         setQuestionStats(response.data);
         setQuestionEnded(true);
       })
-      .catch((error) => console.error(error));
+      .catch((error) =>
+        setError('Wystąpił błąd podczas kończenia pytaina:\n' + error.response.data.message)
+      );
   };
 
   const handleNextQuestion = () => {
@@ -240,11 +246,18 @@ function Quiz() {
                 setSelectedAnswers(response.data.answerIds);
               }
             })
-            .catch((error) => console.log(error));
+            .catch((error) =>
+              setError(
+                'Wystąpił błąd podczas sprawdzania czy gracz wysłał już odpowiedział na pytanie:\n' +
+                  error.response.data.message
+              )
+            );
         }
         setCurrentQuestion(currentQuestion);
       })
-      .catch((error) => console.log(error));
+      .catch((error) =>
+        setError('Wystąpił błąd podczas pobierania pytania:\n' + error.response.data.message)
+      );
   };
 
   if (!user) return <>View not allowed</>;

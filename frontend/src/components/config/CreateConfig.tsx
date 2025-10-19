@@ -5,6 +5,7 @@ import { CenteredLabel } from '../Fields';
 import Modal from '../Modal';
 import { CleanInput } from './components/ConfigInput';
 import { ButtonCustom } from '../Button';
+import { useError } from '../../providers/ErrorProvider';
 
 interface Props {
   readonly mode: mode;
@@ -14,8 +15,12 @@ interface Props {
 
 export default function CreateConfig({ mode, config, setIsOpen }: Props) {
   const [configName, setConfigName] = useState<string>('');
+  const { setError } = useError();
+
   const create = () => {
-    createConfig(mode, configName, config).catch((error) => console.log(error));
+    createConfig(mode, configName, config).catch((error) =>
+      setError('Wystąpił błąd podczas zapisywania konfiguracij:\n' + error.response.data.message)
+    );
     setIsOpen(false);
   };
 
