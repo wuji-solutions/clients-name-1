@@ -13,6 +13,10 @@ class Dispenser(
         return questions.removeFirst()
     }
 
+    fun hasNextQuestion(): Boolean {
+        return questions.size > 1
+    }
+
     fun currentQuestion(): Question {
         if (questions.isEmpty()) {
             throw QuestionNotFoundException()

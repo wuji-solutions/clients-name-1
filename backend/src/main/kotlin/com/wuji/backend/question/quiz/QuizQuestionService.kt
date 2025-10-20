@@ -6,12 +6,7 @@ import com.wuji.backend.game.quiz.QuizGame
 import com.wuji.backend.game.quiz.QuizService
 import com.wuji.backend.question.common.PlayerAnswer
 import com.wuji.backend.question.common.QuestionService
-import com.wuji.backend.question.common.dto.AnswerCountDto
-import com.wuji.backend.question.common.dto.AnswersPerQuestionDto
-import com.wuji.backend.question.common.dto.QuestionAlreadyAnsweredResponseDto
-import com.wuji.backend.question.common.dto.QuestionDto
-import com.wuji.backend.question.common.dto.toDetailedAnswerDto
-import com.wuji.backend.question.common.dto.toQuestionDto
+import com.wuji.backend.question.common.dto.*
 import com.wuji.backend.reports.common.GameStats
 import org.springframework.stereotype.Service
 
@@ -52,6 +47,10 @@ class QuizQuestionService(
         sseQuizService.sendNextQuestion()
         currentQuestionStartTime = System.currentTimeMillis()
         return nextQuestion.toQuestionDto()
+    }
+
+    fun hasNextQuestion(): Boolean {
+        return game.questionDispenser.hasNextQuestion()
     }
 
     fun askedQuestions() = game.askedQuestions

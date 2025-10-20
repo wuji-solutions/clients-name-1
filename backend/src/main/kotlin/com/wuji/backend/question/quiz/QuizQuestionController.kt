@@ -52,6 +52,13 @@ class QuizQuestionController(
         return ResponseEntity.ok(questionService.getNextQuestion())
     }
 
+    @GameRunningOrPaused
+    @PostMapping("/has-next")
+    @IsAdmin
+    fun hasNextQuestion(): ResponseEntity<Boolean> {
+        return ResponseEntity.ok(questionService.hasNextQuestion())
+    }
+
     @GameRunning
     @PostMapping("/end")
     @IsAdmin
