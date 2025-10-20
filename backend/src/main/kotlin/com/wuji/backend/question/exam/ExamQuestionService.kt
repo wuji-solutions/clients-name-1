@@ -73,13 +73,6 @@ class ExamQuestionService(
                 //          reset the time, it will be set on the next getQuestionAndMarkTime()
                 player.details.firstGetCurrentQuestionTime = null
             }
-            .also { answeredCorrectly ->
-                if (answeredCorrectly &&
-                    !(playerCheated && game.config.zeroPointsOnCheating))
-                    player.details.points +=
-                        game.config.pointsPerDifficulty.getValue(
-                            question.difficultyLevel)
-            }
             .also {
                 if (playerCheated && game.config.notifyTeacherOnCheating)
                     notifyTeacherOnCheating(player, question)

@@ -11,6 +11,7 @@ import { service } from '../service/service';
 import { createCheckerboardImage, computeFieldCoordinates } from './gameBoardUtils';
 
 import { usePawnAnimations } from './usePawnAnimations';
+import theme from '../common/theme';
 
 interface Props {
   positions: BoardPositions;
@@ -86,7 +87,7 @@ function GameBoard({
 
       const pz = panzoom(container, panOptions);
       panzoomOptionsRef.current = panOptions;
-      pz.pause(); // keep existing behavior
+      pz.pause();
 
       pzRef.current = pz;
 
@@ -135,8 +136,8 @@ function GameBoard({
           fillRadialGradientStartRadius={0}
           fillRadialGradientEndPoint={{ x: 0, y: 0 }}
           fillRadialGradientEndRadius={BOARD_Y_RADIUS - 50}
-          stroke="white"
-          strokeWidth={mobile ? 2 : 4}
+          stroke={theme.palette.main.accent}
+          strokeWidth={mobile ? 4 : 5}
         />
         <Group
           clipFunc={(ctx) => {
@@ -201,8 +202,8 @@ function GameBoard({
                 fillPatternRepeat="repeat"
                 fillPatternScale={{ x: 1, y: 0.92 }}
                 fillPatternRotation={10}
-                stroke="rgba(255, 255, 255, 1)"
-                strokeWidth={1}
+                stroke={theme.palette.main.accent}
+                strokeWidth={mobile ? 2 : 5}
                 listening={false}
               />
             );
@@ -216,7 +217,7 @@ function GameBoard({
             return (
               <Pawn
                 key={pawnData.index}
-                id={pawnData.index}
+                id={observerVersion ? pawnData.index : ''}
                 x={0}
                 y={0}
                 scale={1}

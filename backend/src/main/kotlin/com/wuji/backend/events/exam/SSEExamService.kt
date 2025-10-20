@@ -44,7 +44,9 @@ class SSEExamService : SSEService() {
                     ExamPlayerStateDto(
                         player.index,
                         player.nickname,
-                        player.details.points,
+                        player.details.getPoints(
+                            game.config.pointsPerDifficulty,
+                            game.config.zeroPointsOnCheating),
                         correctAnswers,
                         incorrectAnswers)
                 }

@@ -69,11 +69,7 @@ class ExamQuestionServiceTest {
         gameRegistry = mockk()
         sseExamService = mockk(relaxed = true)
         examGame = mockk(relaxed = true)
-        details =
-            ExamPlayerDetails().apply {
-                answers.add(playerAnswer1)
-                points = 0
-            }
+        details = ExamPlayerDetails().apply { answers.add(playerAnswer1) }
         player =
             mockk(relaxed = true) {
                 every { details } returns this@ExamQuestionServiceTest.details
@@ -190,7 +186,11 @@ class ExamQuestionServiceTest {
                 0, setOf(1), playerCheated = false)
 
         assertTrue(result)
-        assertEquals(10, details.points)
+        assertEquals(
+            10,
+            details.getPoints(
+                examGame.config.pointsPerDifficulty,
+                examGame.config.zeroPointsOnCheating))
         verify { sseExamService.sendNewExamStateEvent(examGame) }
     }
 
@@ -217,7 +217,7 @@ class ExamQuestionServiceTest {
 
     @Test
     fun `answerExamQuestion should not award points if player cheated and zeroPointsOnCheating is true`() {
-
+        details.answers.clear()
         every { examGame.findPlayerByIndex(0) } returns player
         every { examGame.questionDispenser.currentQuestion(0) } returns
             question1
@@ -226,12 +226,6 @@ class ExamQuestionServiceTest {
         every { examGame.config.notifyTeacherOnCheating } returns true
         every { examGame.config.pointsPerDifficulty } returns
             mapOf(DifficultyLevel.MEDIUM to 10)
-
-        // Spy the private answerQuestionWithOverwrite to always return true
-        every {
-            questionService.answerQuestionWithOverwrite(
-                player, question1, setOf(0), any(), true)
-        } returns true
 
         questionService.getQuestionAndMarkTime(playerIndex = 0) { playerIndex ->
             question1
@@ -244,7 +238,9 @@ class ExamQuestionServiceTest {
         assertTrue(result, "Answer should be marked correct")
         assertEquals(
             0,
-            player.details.points,
+            player.details.getPoints(
+                examGame.config.pointsPerDifficulty,
+                examGame.config.zeroPointsOnCheating),
             "Player should not get points due to zeroPointsOnCheating")
         assertEquals(
             null,

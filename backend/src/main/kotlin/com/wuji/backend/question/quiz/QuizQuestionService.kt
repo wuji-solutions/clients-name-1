@@ -48,6 +48,7 @@ class QuizQuestionService(
 
     fun getNextQuestion(): QuestionDto {
         val nextQuestion = game.questionDispenser.moveToNextQuestion()
+        game.resume()
         sseQuizService.sendNextQuestion()
         currentQuestionStartTime = System.currentTimeMillis()
         return nextQuestion.toQuestionDto()

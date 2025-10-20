@@ -142,7 +142,6 @@ function ExamParticipant() {
   const [selectedAnswers, setSelectedAnswers] = useState<Array<string>>([]);
 
   const [allowGoingBack, setAllowGoingBack] = useState<boolean>(false);
-  const [hasAnsweredQuestion, setHasAnsweredQuestion] = useState<boolean>(false);
 
   const [answerSent, setAnswerSent] = useState<boolean>(false);
 
@@ -157,25 +156,21 @@ function ExamParticipant() {
 
   useEffect(() => {
     if (!examFinished) {
-      service
-        .getCurrentQuestion('user', 'exam')
-        .then((response) => {
-          if (response.data.playerAlreadyAnswered) {
-            setSelectedAnswers(response.data.playerAnswerDto.selectedIds);
-          } else {
-            setSelectedAnswers([]);
-          }
-          setAllowGoingBack(response.data?.allowGoingBack);
-          setCurrentQuestion(response.data);
-          setHasAnsweredQuestion(response.data.playerAlreadyAnswered);
-        })
-        .catch((error) => {
-          if (error.status === 409) {
-            setExamFinished(true);
-          } else {
-            setError('Wystąpił błąd podczas pobierania pytania:\n' + error.response.data.message);
-          }
-        });
+      service.getCurrentQuestion('user', 'exam').then((response) => {
+        if (response.data.playerAlreadyAnswered) {
+          setSelectedAnswers(response.data.playerAnswerDto.selectedIds);
+        } else {
+          setSelectedAnswers([]);
+        }
+        setAllowGoingBack(response.data?.allowGoingBack);
+        setCurrentQuestion(response.data);
+      }).catch((error) => {
+        if (error.status === 409) {
+          setExamFinished(true);
+        } else {
+          setError('Wystąpił błąd podczas pobierania pytania:\n' + error.response.data.message);
+        }
+      });
     }
   }, [forceFetchCurrentQuestion]);
 
@@ -190,7 +185,6 @@ function ExamParticipant() {
         }
         setAllowGoingBack(response.data?.allowGoingBack);
         setCurrentQuestion(response.data);
-        setHasAnsweredQuestion(response.data.playerAlreadyAnswered);
       }
     });
   };
@@ -211,7 +205,6 @@ function ExamParticipant() {
   }, []);
 
   const handleAnswerSelected = (id: string) => {
-    if (hasAnsweredQuestion) return;
     setSelectedAnswers((prevState) => {
       const answers = [...prevState];
       if (answers.includes(id)) {
@@ -231,7 +224,6 @@ function ExamParticipant() {
         setSelectedAnswers([]);
       }
       setCurrentQuestion(response.data);
-      setHasAnsweredQuestion(response.data.playerAlreadyAnswered);
     });
   };
 
@@ -303,13 +295,9 @@ function ExamParticipant() {
             ))}
           </QuestionAnswerGrid>
           <ButtonContainer>
-            {!hasAnsweredQuestion ? (
               <ButtonCustom disabled={answerSent} onClick={handleAnswerSent}>
                 Odpowiedz
               </ButtonCustom>
-            ) : (
-              <AdditionalInfo>Odpowiedziałeś na to pytanie</AdditionalInfo>
-            )}
             {allowGoingBack && (
               <ButtonOptionContainer>
                 {currentQuestion.questionNumber > 1 && (

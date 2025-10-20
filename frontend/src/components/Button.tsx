@@ -89,6 +89,7 @@ const FullScreenButtonPure = styled.button({
   position: 'absolute',
   left: '20px',
   top: '20px',
+  zIndex: '9999',
 });
 
 export const FullScreenButton = () => {

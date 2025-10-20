@@ -130,6 +130,10 @@ const parseQuestions = (filePath: string) => {
   });
 };
 
+const validateSessionID = () => {
+  return axios.get(BACKEND_ENDPOINT_EXTERNAL + '/security/session-status', {withCredentials: true});
+};
+
 export const service = {
   startLobby: startLobby,
   joinGame: joinGame,
@@ -152,4 +156,5 @@ export const service = {
   getExamTimeRemainingUser: getExamTimeRemainingUser,
   getExamTimeRemainingAdmin: getExamTimeRemainingAdmin,
   parseQuestions: parseQuestions,
+  validateSessionID: validateSessionID,
 };

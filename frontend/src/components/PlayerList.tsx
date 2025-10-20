@@ -12,7 +12,7 @@ const Contaier = styled.div({
   marginBottom: 'auto',
   marginLeft: '20px',
   height: '70vh',
-  width: '37%',
+  width: '30%',
   padding: '20px',
   display: 'flex',
   flexDirection: 'column',

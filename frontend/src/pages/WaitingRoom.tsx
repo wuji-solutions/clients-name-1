@@ -11,6 +11,7 @@ import '../service/service';
 import { service } from '../service/service';
 import { useSSEChannel } from '../providers/SSEProvider';
 import { BACKEND_ENDPOINT, BACKEND_ENDPOINT_EXTERNAL } from '../common/config';
+import Cookies from 'js-cookie';
 import { useError } from '../providers/ErrorProvider';
 
 const Container = styled.div({
@@ -99,6 +100,7 @@ function PlayerKickListener({
       ) {
         sessionStorage.removeItem('userindex');
         sessionStorage.removeItem('username');
+        Cookies.remove('JSESSIONID')
         onKick(true);
         userHandler(null);
       }
@@ -188,8 +190,7 @@ function WaitingRoom() {
           <UserInputContainer>
             <span>Wyrzucono cie z gry, kliknij OK aby dołączyć ponownie</span>
             <ButtonCustom
-              onClick={() => {
-                joinGame();
+              onClick={() => {  
                 setPlayerKicked(false);
               }}
             >

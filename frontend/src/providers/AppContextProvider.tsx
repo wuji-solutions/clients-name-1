@@ -1,3 +1,5 @@
+import Cookies from 'js-cookie';
+import { service } from '../service/service';
 import {
   createContext,
   ReactNode,
@@ -45,6 +47,18 @@ export const AppProvider = ({ children }: AppProviderProps) => {
   }, []);
 
   useEffect(() => {
+    if (!Cookies.get('JSESSIONID') || window.location.hostname === 'localhost' ) return;
+
+    service.validateSessionID()
+      .then()
+      .catch((error) => {
+        if (error.status == 401) {
+          Cookies.remove('JSESSIONID')
+          sessionStorage.removeItem('userindex');
+          sessionStorage.removeItem('username');
+        }
+      })
+
     const storedUserIndex = sessionStorage.getItem('userindex');
     const storedUsername = sessionStorage.getItem('username');
 

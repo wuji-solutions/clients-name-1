@@ -36,23 +36,18 @@ export const colorPalette = [
 ];
 
 export const boardgameColorPalette = [
-  '#FFC96B',
-  '#00BBBf',
-  '#F2440D',
-  '#6A21CD',
-  '#78237C',
-  '#B992AA',
-  '#dd94f7',
-  '#802210',
-  '#AD7911',
-  '#888040',
-  '#992080',
-  '#BAAFFA',
-  '#CC211F',
-  '#972FFF',
-  '#A3D922',
-  '#AAFFFF',
-  '#11EE0A',
+  '#E63946', // bright red
+  '#F1FAEE', // soft off-white
+  '#1D2ff7', // dark navy blue
+  '#A8DADC', // light cyan
+  '#FFBE0B', // golden yellow
+  '#261653', // deep teal
+  '#F77F00', // vivid orange
+  '#6A4C93', // purple
+  '#2A9D8F', // teal green
+  '#fD99AE', // muted gray-blue
+  '#0077B6', // strong blue
+  '#7300E6', // neon purple
 ];
 
 export function getColor(identifier: number) {
