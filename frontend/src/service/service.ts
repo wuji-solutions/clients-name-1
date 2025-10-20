@@ -64,6 +64,12 @@ const nextQuestion = (mode: string) => {
   return axios.post(BACKEND_ENDPOINT + `/games/${mode}/questions/next`, { withCredentials: true });
 };
 
+const hasNextQuestion = (mode: string) => {
+  return axios.post(BACKEND_ENDPOINT + `/games/${mode}/questions/has-next`, {
+    withCredentials: true,
+  });
+};
+
 const nextQuestionExam = () => {
   return axios.get(BACKEND_ENDPOINT_EXTERNAL + `/games/exam/questions/next`, {
     withCredentials: true,
@@ -131,7 +137,9 @@ const parseQuestions = (filePath: string) => {
 };
 
 const validateSessionID = () => {
-  return axios.get(BACKEND_ENDPOINT_EXTERNAL + '/security/session-status', {withCredentials: true});
+  return axios.get(BACKEND_ENDPOINT_EXTERNAL + '/security/session-status', {
+    withCredentials: true,
+  });
 };
 
 export const service = {
@@ -145,6 +153,7 @@ export const service = {
   endQuestion: endQuestion,
   nextQuestion: nextQuestion,
   nextQuestionExam: nextQuestionExam,
+  hasNextQuestion: hasNextQuestion,
   previousQuestionExam: previousQuestionExam,
   kickPlayer: kickPlayer,
   getPlayerList: getPlayerList,

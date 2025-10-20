@@ -172,6 +172,7 @@ function Quiz() {
   });
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
   const [selectedAnswers, setSelectedAnswers] = useState<Array<string>>([]);
+  const [hasMoreQuestions, setHasMoreQuestions] = useState<boolean | null>(null);
   const [answerCount, setAnswerCount] = useState<number>(0);
   const [sendingAnswer, setSendingAnswer] = useState<boolean>(false);
   const [questionAnswered, setQuestionAnswered] = useState<boolean>(false);
@@ -243,8 +244,20 @@ function Quiz() {
       );
   };
 
+  useEffect(() => {
+    if (!isAdmin() || currentQuestion == null) return;
+    service.hasNextQuestion('quiz').then((response) => setHasMoreQuestions(response.data));
+  }, [currentQuestion]);
+
   const handleNextQuestion = () => {
-    service.nextQuestion('quiz');
+    if (!hasMoreQuestions) {
+      return navigate('/podsumowanie');
+    }
+    service.nextQuestion('quiz').catch((error) => {
+      setError(
+        'Wystąpił błąd podczas pobierania następnego pytania:\n' + error.response.data.message
+      );
+    });
   };
 
   const setQuestion = (user: string) => {
@@ -368,19 +381,19 @@ function Quiz() {
                     isselected={answer.answer.isCorrect}
                     backgroundcolor={getColor(index)}
                     style={{ cursor: 'default', width: '400px', height: '70px', maxHeight: '70px' }}
-                    >
-                    <span
-                    style={{
-                      fontSize: `${Math.max(14, 40 - answer.answer.text.length / 2)}px`,
-                      width: '100%',
-                      height: '100%',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      display: 'flex',
-                    }}
                   >
-                    {answer.answer.text}
-                  </span>
+                    <span
+                      style={{
+                        fontSize: `${Math.max(14, 40 - answer.answer.text.length / 2)}px`,
+                        width: '100%',
+                        height: '100%',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        display: 'flex',
+                      }}
+                    >
+                      {answer.answer.text}
+                    </span>
                   </AnswerCard>
                 </div>
               ))}
@@ -401,7 +414,7 @@ function Quiz() {
             )}
             {questionEnded && (
               <ButtonCustom onClick={() => handleNextQuestion()}>
-                Przejdź do kolejnego pytania
+                {hasMoreQuestions ? 'Przejdź do kolejnego pytania' : 'Przejdź do podsumowania'}
               </ButtonCustom>
             )}
             <ButtonCustom onClick={() => navigate('/podsumowanie')}>Zakończ quiz</ButtonCustom>
