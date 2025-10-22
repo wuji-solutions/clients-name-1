@@ -53,6 +53,9 @@ class ExamQuestionService(
         playerCheated: Boolean
     ): Boolean {
         val question = getCurrentQuestion(playerIndex)
+        val questionNumber = getCurrentQuestionNumber(playerIndex)
+        val baseQuestionSize = getBaseQuestionsSize(playerIndex)
+
         val player = game.findPlayerByIndex(playerIndex)
         player.details.askedQuestions.add(question)
 
@@ -63,21 +66,22 @@ class ExamQuestionService(
         val answerTime =
             System.currentTimeMillis() - firstGetCurrentQuestionTime
 
-        return answerQuestionWithOverwrite(
-                player,
-                question,
-                answerIds,
-                answerTime,
-                (playerCheated && game.config.markQuestionOnCheating))
-            .also {
-                //          reset the time, it will be set on the next getQuestionAndMarkTime()
-                player.details.firstGetCurrentQuestionTime = null
-            }
-            .also {
-                if (playerCheated && game.config.notifyTeacherOnCheating)
-                    notifyTeacherOnCheating(player, question)
-            }
-            .also { sseExamService.sendNewExamStateEvent(game) }
+        return (questionNumber > baseQuestionSize) ||
+            answerQuestionWithOverwrite(
+                    player,
+                    question,
+                    answerIds,
+                    answerTime,
+                    (playerCheated && game.config.markQuestionOnCheating))
+                .also {
+                    //          reset the time, it will be set on the next getQuestionAndMarkTime()
+                    player.details.firstGetCurrentQuestionTime = null
+                }
+                .also {
+                    if (playerCheated && game.config.notifyTeacherOnCheating)
+                        notifyTeacherOnCheating(player, question)
+                }
+                .also { sseExamService.sendNewExamStateEvent(game) }
     }
 
     fun getPreviousQuestion(playerIndex: Int): Question {
