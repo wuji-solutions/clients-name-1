@@ -1,6 +1,7 @@
 package com.wuji.backend.dispenser
 
 import com.wuji.backend.config.DifficultyLevel
+import com.wuji.backend.dispenser.exception.CannotGoBackException
 import com.wuji.backend.dispenser.exception.NoMoreQuestionsException
 import com.wuji.backend.player.state.ExamPlayer
 import com.wuji.backend.player.state.ExamPlayerDetails
@@ -195,5 +196,47 @@ class ExamDispenserTest {
         assertFailsWith<IndexOutOfBoundsException> {
             dispenser.previousQuestion(playerIndex)
         }
+    }
+
+    @Test
+    fun `previousQuestion should throw CannotGoBackException when in additional section`() {
+        dispenser.initialize(
+            setOf(player),
+            questions,
+            3,
+            randomizeQuestions = false,
+            enforceDifficultyBalance = false)
+
+        // move to the end of base questions (q3)
+        dispenser.nextQuestion(playerIndex)
+        dispenser.nextQuestion(playerIndex)
+        assertEquals(q3, dispenser.currentQuestion(playerIndex))
+
+        // move into the additional questions (q4)
+        dispenser.nextQuestion(playerIndex)
+        assertEquals(q4, dispenser.currentQuestion(playerIndex))
+
+        assertFailsWith<CannotGoBackException> {
+            dispenser.previousQuestion(playerIndex)
+        }
+    }
+
+    @Test
+    fun `previousQuestion should move backward inside base questions only`() {
+        dispenser.initialize(
+            setOf(player),
+            questions,
+            3,
+            randomizeQuestions = false,
+            enforceDifficultyBalance = false)
+
+        dispenser.nextQuestion(playerIndex) // q2
+        dispenser.nextQuestion(playerIndex) // q3
+        assertEquals(q3, dispenser.currentQuestion(playerIndex))
+
+        val prev1 = dispenser.previousQuestion(playerIndex)
+        assertEquals(q2, prev1)
+        val prev2 = dispenser.previousQuestion(playerIndex)
+        assertEquals(q1, prev2)
     }
 }

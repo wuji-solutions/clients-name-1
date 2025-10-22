@@ -1,14 +1,28 @@
 package com.wuji.backend.game.exam
 
+import com.wuji.backend.config.DifficultyLevel
 import com.wuji.backend.config.ExamConfig
 import com.wuji.backend.events.common.SSEEventService
 import com.wuji.backend.events.common.SSEUsersService
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.common.GameState
+import com.wuji.backend.game.exam.dto.CompleteExamResponseDto
+import com.wuji.backend.player.state.ExamPlayer
+import com.wuji.backend.player.state.ExamPlayerDetails
 import com.wuji.backend.player.state.PlayerService
 import com.wuji.backend.player.state.exception.PlayerNotFoundException
+import com.wuji.backend.question.common.Answer
+import com.wuji.backend.question.common.PlayerAnswer
+import com.wuji.backend.question.common.Question
+import com.wuji.backend.question.common.QuestionType
+import com.wuji.backend.question.common.TextFormat
+import com.wuji.backend.question.common.dto.DetailedPlayerAnswerDto
+import com.wuji.backend.question.exam.ExamQuestionService
 import io.mockk.*
 import java.io.FileNotFoundException
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -19,6 +33,7 @@ class ExamServiceTest {
     private val playerService = mockk<PlayerService>(relaxed = true)
     private val sseUsersService = mockk<SSEUsersService>(relaxed = true)
     private val sseEventService = mockk<SSEEventService>(relaxed = true)
+    private val examQuestionService = mockk<ExamQuestionService>(relaxed = true)
 
     private val examGame =
         spyk(
@@ -29,12 +44,31 @@ class ExamServiceTest {
 
     private lateinit var service: ExamService
 
+    private val question1 =
+        Question(
+            1,
+            "cat",
+            QuestionType.TEXT,
+            "task",
+            TextFormat.PLAIN_TEXT,
+            listOf(Answer(0, "answer")),
+            setOf(0),
+            DifficultyLevel.EASY,
+            "imageUrl",
+            "imageBase64",
+            listOf("tag1", "tag1"),
+        )
+
     @BeforeEach
     fun setup() {
         every { gameRegistry.getAs(ExamGame::class.java) } returns examGame
         service =
             ExamService(
-                gameRegistry, playerService, sseUsersService, sseEventService)
+                gameRegistry,
+                playerService,
+                sseUsersService,
+                sseEventService,
+                examQuestionService)
     }
 
     @Test
@@ -120,5 +154,70 @@ class ExamServiceTest {
         val dto = service.getTimeUntilFinish()
         assert(dto.minutes in 1..1)
         assert(dto.seconds in 0..10)
+    }
+
+    @Test
+    fun `completeAttempt should return total points only when feedback disabled`() {
+        val player = mockk<ExamPlayer>()
+        val details = mockk<ExamPlayerDetails>()
+        val playerIndex = 1
+
+        every { examGame.findPlayerByIndex(playerIndex) } returns player
+        every { player.details } returns details
+
+        every { examGame.config.showDetailedFinishFeedback } returns false
+        every { examGame.config.pointsPerDifficulty } returns
+            mapOf(DifficultyLevel.EASY to 1)
+        every { examGame.config.zeroPointsOnCheating } returns false
+
+        every { details.points(any(), any()) } returns 42
+
+        val result: CompleteExamResponseDto =
+            service.completeAttempt(playerIndex)
+
+        verify { examQuestionService.getNextQuestion(playerIndex) }
+        assertEquals(42, result.totalPointsEarned)
+        assertNull(result.questionsAnswered)
+    }
+
+    @Test
+    fun `completeAttempt should include detailed feedback when enabled`() {
+        val player = mockk<ExamPlayer>()
+        val playerIndex = 1
+
+        val playerAnswer =
+            PlayerAnswer(
+                question = question1,
+                selectedIds = question1.correctAnswerIds,
+                answerTimeInMilliseconds = 1000,
+                cheated = false)
+
+        val details =
+            mockk<ExamPlayerDetails> {
+                every { answers } returns mutableListOf(playerAnswer)
+            }
+
+        every { examGame.findPlayerByIndex(playerIndex) } returns player
+        every { player.details } returns details
+        every { details.points(any(), any()) } returns 50
+        every { details.answers } returns mutableListOf(playerAnswer)
+
+        every { examGame.config.showDetailedFinishFeedback } returns true
+        every { examGame.config.pointsPerDifficulty } returns
+            mapOf(DifficultyLevel.EASY to 1)
+        every { examGame.config.zeroPointsOnCheating } returns false
+
+        val result: CompleteExamResponseDto =
+            service.completeAttempt(playerIndex)
+        val questionsAnswered = result.questionsAnswered!!
+
+        verify { examQuestionService.getNextQuestion(playerIndex) }
+        assertEquals(50, result.totalPointsEarned)
+        assertNotNull(questionsAnswered)
+        assertEquals(1, questionsAnswered.size)
+
+        val feedback: DetailedPlayerAnswerDto = questionsAnswered.first()
+        assertEquals(1, feedback.pointsEarned)
+        assertEquals(true, feedback.isCorrect)
     }
 }

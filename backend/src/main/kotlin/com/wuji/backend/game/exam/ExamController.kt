@@ -3,6 +3,7 @@ package com.wuji.backend.game.exam
 import com.wuji.backend.game.GameType
 import com.wuji.backend.game.common.GameController
 import com.wuji.backend.game.common.dto.JoinGameRequestDto
+import com.wuji.backend.game.exam.dto.CompleteExamResponseDto
 import com.wuji.backend.game.exam.dto.TimeUntilGameFinishDto
 import com.wuji.backend.player.dto.ExamPlayerDto
 import com.wuji.backend.player.dto.ExamPlayerDto.Companion.toExamPlayerDto
@@ -54,5 +55,13 @@ class ExamController(
     @GetMapping("/time-left")
     fun getTimeUntilFinish(): ResponseEntity<TimeUntilGameFinishDto> {
         return ResponseEntity.ok(examService.getTimeUntilFinish())
+    }
+
+    @PostMapping("/complete")
+    fun complete(
+        authentication: Authentication,
+    ): ResponseEntity<CompleteExamResponseDto> {
+        return ResponseEntity.ok(
+            examService.completeAttempt(authentication.playerIndex()))
     }
 }

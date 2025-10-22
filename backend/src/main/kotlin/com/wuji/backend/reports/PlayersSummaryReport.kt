@@ -18,6 +18,7 @@ object PlayersSummaryReport : Report {
 
         val rowNames =
             listOf(
+                "Indeks",
                 "Pseudonim",
                 "Czas spędzony odpowiadając na pytania [s]",
                 "Liczba prawidłowych odpowiedzi",
@@ -35,6 +36,7 @@ object PlayersSummaryReport : Report {
 
                 writeRow(
                     listOf(
+                        player.index,
                         player.nickname,
                         "%.2f"
                             .format(

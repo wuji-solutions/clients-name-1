@@ -14,5 +14,6 @@ data class ExamConfig(
     val notifyTeacherOnCheating: Boolean,
     val pointsPerDifficulty: Map<DifficultyLevel, Int>,
     val allowGoingBack: Boolean,
-    val additionalTimeToAnswerAfterFinishInSeconds: Long = 10
+    val additionalTimeToAnswerAfterFinishInSeconds: Long = 10,
+    val showDetailedFinishFeedback: Boolean
 ) : GameConfig

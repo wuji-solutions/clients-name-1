@@ -1,5 +1,6 @@
 package com.wuji.backend.dispenser
 
+import com.wuji.backend.dispenser.exception.CannotGoBackException
 import com.wuji.backend.dispenser.exception.NoMoreQuestionsException
 import com.wuji.backend.question.common.Question
 
@@ -24,7 +25,9 @@ class PlayerDispenser(
     fun currentQuestion(): Question = combinedQuestions[currentBaseIndex]
 
     fun previousQuestion(): Question =
-        if (currentBaseIndex > 0) {
+        if (currentBaseIndex > baseQuestions.lastIndex) {
+            throw CannotGoBackException()
+        } else if (currentBaseIndex > 0) {
             combinedQuestions[--currentBaseIndex]
         } else {
             throw NoMoreQuestionsException()
