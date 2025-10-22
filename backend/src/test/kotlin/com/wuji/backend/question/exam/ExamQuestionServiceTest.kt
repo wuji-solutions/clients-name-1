@@ -188,7 +188,7 @@ class ExamQuestionServiceTest {
         assertTrue(result)
         assertEquals(
             10,
-            details.getPoints(
+            details.points(
                 examGame.config.pointsPerDifficulty,
                 examGame.config.zeroPointsOnCheating))
         verify { sseExamService.sendNewExamStateEvent(examGame) }
@@ -238,7 +238,7 @@ class ExamQuestionServiceTest {
         assertTrue(result, "Answer should be marked correct")
         assertEquals(
             0,
-            player.details.getPoints(
+            player.details.points(
                 examGame.config.pointsPerDifficulty,
                 examGame.config.zeroPointsOnCheating),
             "Player should not get points due to zeroPointsOnCheating")

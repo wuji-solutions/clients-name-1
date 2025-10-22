@@ -28,6 +28,7 @@ data class ExamConfigDto(
     @field:Min(0, message = "Liczba sekund musi być nieujemna")
     val additionalTimeToAnswerAfterFinishInSeconds: Long =
         DEFAULT_ADDITIONAL_TIME_IN_SECONDS,
+    val showDetailedFinishFeedback: Boolean,
 ) : GameConfigDto()
 
 fun ExamConfigDto.toExamConfig(): ExamConfig {
@@ -46,7 +47,8 @@ fun ExamConfigDto.toExamConfig(): ExamConfig {
         pointsPerDifficulty = pointsPerDifficulty,
         allowGoingBack = allowGoingBack,
         additionalTimeToAnswerAfterFinishInSeconds =
-            additionalTimeToAnswerAfterFinishInSeconds)
+            additionalTimeToAnswerAfterFinishInSeconds,
+        showDetailedFinishFeedback = showDetailedFinishFeedback)
 }
 
 fun ExamConfig.toExamConfigDto(): ExamConfigDto {
@@ -63,5 +65,6 @@ fun ExamConfig.toExamConfigDto(): ExamConfigDto {
         pointsPerDifficulty = pointsPerDifficulty,
         allowGoingBack = allowGoingBack,
         additionalTimeToAnswerAfterFinishInSeconds =
-            additionalTimeToAnswerAfterFinishInSeconds)
+            additionalTimeToAnswerAfterFinishInSeconds,
+        showDetailedFinishFeedback = showDetailedFinishFeedback)
 }

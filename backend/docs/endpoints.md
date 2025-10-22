@@ -591,6 +591,94 @@ A przy odpowiadaniu mamy dodatkowe pole `playerCheated` będące `boolem`.
 Jeżeli dojdziemy do końca pytań lub będziemy się chcieli cofnąć przed pierwszy element, response to 404 z wiadomością "Nie ma więcej pytań"
 
 
+### 4. Zakończenie podejścia
+
+`GET /games/exam/complete`
+
+**Response (200)** – [`CompleteExamResponseDto`](#CompleteExamResponseDto)
+
+UWAGA: Pole questionsAnswered może być nullem, jeżeli `showDetailedFinishFeedback` jest ustawione na false
+
+```json
+{
+  "totalPointsEarned": 85,
+  "questionsAnswered": [
+    {
+      "question": {
+        "id": 1,
+        "category": "Biologia",
+        "type": "TEXT",
+        "task": "Które z poniższych zwierząt jest ssakiem?",
+        "answers": [
+          { "id": 1, "text": "Żaba" },
+          { "id": 2, "text": "Delfin" },
+          { "id": 3, "text": "Papuga" }
+        ],
+        "difficultyLevel": "EASY"
+      },
+      "selectedAnswerIds": [2],
+      "isCorrect": true,
+      "pointsEarned": 10
+    },
+    {
+      "question": {
+        "id": 2,
+        "category": "Matematyka",
+        "type": "TEXT",
+        "task": "Ile wynosi pierwiastek kwadratowy z 64?",
+        "answers": [
+          { "id": 1, "text": "6" },
+          { "id": 2, "text": "8" },
+          { "id": 3, "text": "10" }
+        ],
+        "difficultyLevel": "EASY"
+      },
+      "selectedAnswerIds": [2],
+      "isCorrect": true,
+      "pointsEarned": 5
+    },
+    {
+      "question": {
+        "id": 3,
+        "category": "Geografia",
+        "type": "SINGLE_CHOICE",
+        "task": "Stolica Francji to:",
+        "answers": [
+          { "id": 1, "text": "Paryż" },
+          { "id": 2, "text": "Londyn" },
+          { "id": 3, "text": "Berlin" }
+        ],
+        "difficultyLevel": "EASY"
+      },
+      "selectedAnswerIds": [1],
+      "isCorrect": true,
+      "pointsEarned": 5
+    },
+    {
+      "question": {
+        "id": 4,
+        "category": "Historia",
+        "type": "MULTIPLE_CHOICE",
+        "task": "Które z poniższych wydarzeń miały miejsce w XX wieku?",
+        "answers": [
+          { "id": 1, "text": "II wojna światowa" },
+          { "id": 2, "text": "Bitwa pod Grunwaldem" },
+          { "id": 3, "text": "Lądowanie na Księżycu" },
+          { "id": 4, "text": "Reformacja" }
+        ],
+        "difficultyLevel": "MEDIUM"
+      },
+      "selectedAnswerIds": [1, 3],
+      "isCorrect": true,
+      "pointsEarned": 15
+    }
+  ]
+}
+
+
+```
+---
+
 # SSE – Strumieniowanie zdarzeń
 
 ## Wydarzenia
@@ -906,5 +994,25 @@ Typy wydarzeń:
 {
   "minutes": "number",
   "seconds": "number"
+}
+```
+
+### `CompleteExamResponseDto`
+
+```json
+{
+  "totalPointsEarned": "number",
+  "questionsAnswered": "DetailedPlayerAnswerDto[] | null"
+}
+
+```
+
+### `DetailedPlayerAnswerDto`
+```json
+{
+  "question": "QuestionDto",
+  "selectedAnswerIds": "number[]",
+  "isCorrect": "boolean",
+  "pointsEarned": "number"
 }
 ```
