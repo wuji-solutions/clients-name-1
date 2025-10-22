@@ -55,9 +55,9 @@ class ExamQuestionService(
         val question = getCurrentQuestion(playerIndex)
         val questionNumber = getCurrentQuestionNumber(playerIndex)
         val baseQuestionSize = getBaseQuestionsSize(playerIndex)
+        val isAdditionalQuestion = (questionNumber > baseQuestionSize)
 
         val player = game.findPlayerByIndex(playerIndex)
-        player.details.askedQuestions.add(question)
 
         val firstGetCurrentQuestionTime =
             player.details.firstGetCurrentQuestionTime
@@ -66,7 +66,7 @@ class ExamQuestionService(
         val answerTime =
             System.currentTimeMillis() - firstGetCurrentQuestionTime
 
-        return (questionNumber > baseQuestionSize) ||
+        return isAdditionalQuestion ||
             answerQuestionWithOverwrite(
                     player,
                     question,
