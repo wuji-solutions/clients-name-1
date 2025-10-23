@@ -13,11 +13,6 @@ abstract class GameDispenser {
         return dispenser.currentQuestion()
     }
 
-    open fun hasNextQuestion(id: Int = 0): Boolean {
-        return dispensers[id]?.hasNextQuestion()
-            ?: throw NoSuchElementException("Brak dispenser o id=$id")
-    }
-
     open fun getCurrentQuestion(id: Int = 0): Question {
         return dispensers[id]?.currentQuestion()
             ?: throw NoSuchElementException("Brak dispenser o id=$id")
