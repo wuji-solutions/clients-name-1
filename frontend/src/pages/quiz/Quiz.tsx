@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import { BACKEND_ENDPOINT, BACKEND_ENDPOINT_EXTERNAL } from '../../common/config';
-import { Question, QuestionStats } from '../../common/types';
+import { Question, QuestionStats, QuizQuestion } from '../../common/types';
 import { ButtonCustom } from '../../components/Button';
 import { useAppContext } from '../../providers/AppContextProvider';
 import { useSSEChannel } from '../../providers/SSEProvider';
@@ -170,15 +170,16 @@ function Quiz() {
   const counterDelegate = useSSEChannel(`${BACKEND_ENDPOINT}/sse/quiz/answer-counter`, {
     withCredentials: true,
   });
-  const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
+  const [currentQuestion, setCurrentQuestion] = useState<QuizQuestion | null>(null);
   const [selectedAnswers, setSelectedAnswers] = useState<Array<string>>([]);
-  const [hasMoreQuestions, setHasMoreQuestions] = useState<boolean | null>(null);
   const [answerCount, setAnswerCount] = useState<number>(0);
   const [sendingAnswer, setSendingAnswer] = useState<boolean>(false);
   const [questionAnswered, setQuestionAnswered] = useState<boolean>(false);
   const [questionEnded, setQuestionEnded] = useState<boolean>(false);
   const [questionStats, setQuestionStats] = useState<QuestionStats | null>(null);
   const { setError } = useError();
+
+  const hasMoreQuestions = currentQuestion ? currentQuestion.questionNumber < currentQuestion.totalQuestions : null;
 
   useEffect(() => {
     const unsubscribe = eventsDelegate.on('next-question', () => {
@@ -243,11 +244,6 @@ function Quiz() {
         setError('Wystąpił błąd podczas kończenia pytaina:\n' + error.response.data.message)
       );
   };
-
-  useEffect(() => {
-    if (!isAdmin() || currentQuestion == null) return;
-    service.hasNextQuestion('quiz').then((response) => setHasMoreQuestions(response.data));
-  }, [currentQuestion]);
 
   const handleNextQuestion = () => {
     if (!hasMoreQuestions) {

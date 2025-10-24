@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { BACKEND_ENDPOINT, BACKEND_ENDPOINT_EXTERNAL } from '../common/config';
-import { CreateGameDTO } from '../common/types';
+import { CreateGameDTO, Question } from '../common/types';
 
 const startLobby = (mode: string, details: CreateGameDTO) => {
   return axios.post(BACKEND_ENDPOINT + '/manage/' + mode, details, {
@@ -62,12 +62,6 @@ const endQuestion = (mode: string) => {
 
 const nextQuestion = (mode: string) => {
   return axios.post(BACKEND_ENDPOINT + `/games/${mode}/questions/next`, { withCredentials: true });
-};
-
-const hasNextQuestion = (mode: string) => {
-  return axios.post(BACKEND_ENDPOINT + `/games/${mode}/questions/has-next`, {
-    withCredentials: true,
-  });
 };
 
 const nextQuestionExam = () => {
@@ -153,7 +147,6 @@ export const service = {
   endQuestion: endQuestion,
   nextQuestion: nextQuestion,
   nextQuestionExam: nextQuestionExam,
-  hasNextQuestion: hasNextQuestion,
   previousQuestionExam: previousQuestionExam,
   kickPlayer: kickPlayer,
   getPlayerList: getPlayerList,
