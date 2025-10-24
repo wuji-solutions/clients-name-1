@@ -5,7 +5,7 @@ import com.wuji.backend.game.quiz.dto.AnswerQuestionRequestDto
 import com.wuji.backend.question.common.QuestionController
 import com.wuji.backend.question.common.dto.AnswersPerQuestionDto
 import com.wuji.backend.question.common.dto.QuestionAlreadyAnsweredResponseDto
-import com.wuji.backend.question.common.dto.QuestionDto
+import com.wuji.backend.question.quiz.dto.QuizQuestionDto
 import com.wuji.backend.security.IsAdmin
 import com.wuji.backend.security.auth.playerIndex
 import com.wuji.backend.security.validator.GamePaused
@@ -28,7 +28,7 @@ class QuizQuestionController(
 
     @GameRunningOrPaused
     @GetMapping("/current")
-    fun getQuestion(): ResponseEntity<QuestionDto> {
+    fun getQuestion(): ResponseEntity<QuizQuestionDto> {
         return ResponseEntity.ok(questionService.getQuestion())
     }
 
@@ -48,7 +48,7 @@ class QuizQuestionController(
     @GamePaused
     @PostMapping("/next")
     @IsAdmin
-    fun nextQuestion(): ResponseEntity<QuestionDto> {
+    fun nextQuestion(): ResponseEntity<QuizQuestionDto> {
         return ResponseEntity.ok(questionService.getNextQuestion())
     }
 

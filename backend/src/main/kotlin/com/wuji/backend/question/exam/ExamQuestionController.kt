@@ -4,8 +4,8 @@ import com.wuji.backend.game.GameType
 import com.wuji.backend.question.common.Question
 import com.wuji.backend.question.common.QuestionController
 import com.wuji.backend.question.exam.dto.ExamAnswerQuestionRequestDto
-import com.wuji.backend.question.exam.dto.ExtendedQuestionDto
-import com.wuji.backend.question.exam.dto.toExtendedQuestionDto
+import com.wuji.backend.question.exam.dto.ExamQuestionDto
+import com.wuji.backend.question.exam.dto.toExamQuestionDto
 import com.wuji.backend.security.auth.playerIndex
 import com.wuji.backend.security.validator.GameRunning
 import com.wuji.backend.security.validator.GameRunningOrFinishing
@@ -32,7 +32,7 @@ class ExamQuestionController(
     @GetMapping("/current")
     fun getCurrentQuestion(
         authentication: Authentication
-    ): ResponseEntity<ExtendedQuestionDto> =
+    ): ResponseEntity<ExamQuestionDto> =
         handleQuestionRequest(
             authentication, questionService::getCurrentQuestion)
 
@@ -40,7 +40,7 @@ class ExamQuestionController(
     @GetMapping("/previous")
     fun getPreviousQuestion(
         authentication: Authentication
-    ): ResponseEntity<ExtendedQuestionDto> =
+    ): ResponseEntity<ExamQuestionDto> =
         handleQuestionRequest(
             authentication, questionService::getPreviousQuestion)
 
@@ -48,7 +48,7 @@ class ExamQuestionController(
     @GetMapping("/next")
     fun getNextQuestion(
         authentication: Authentication
-    ): ResponseEntity<ExtendedQuestionDto> =
+    ): ResponseEntity<ExamQuestionDto> =
         handleQuestionRequest(authentication, questionService::getNextQuestion)
 
     @GameRunningOrFinishing
@@ -68,7 +68,7 @@ class ExamQuestionController(
     private fun handleQuestionRequest(
         authentication: Authentication,
         questionFetcher: (Int) -> Question
-    ): ResponseEntity<ExtendedQuestionDto> {
+    ): ResponseEntity<ExamQuestionDto> {
         val index = authentication.playerIndex()
         val (question, playerAnswer) =
             questionService.getQuestionAndMarkTime(index, questionFetcher)
@@ -76,7 +76,7 @@ class ExamQuestionController(
         val totalQuestions = questionService.getBaseQuestionsSize(index)
 
         return ResponseEntity.ok(
-            question.toExtendedQuestionDto(
+            question.toExamQuestionDto(
                 playerAnswer,
                 questionNumber,
                 totalQuestions,

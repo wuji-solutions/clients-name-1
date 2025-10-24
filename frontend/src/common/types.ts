@@ -25,11 +25,16 @@ interface PlayerAnswerDto {
   selectedIds: number[];
 }
 
-export interface ExtendedQuestion extends Question {
+export interface ExamQuestion extends Question {
   playerAlreadyAnswered: boolean;
   playerAnswerDto: PlayerAnswerDto;
   questionNumber: number;
   totalBaseQuestions: number;
+}
+
+export interface QuizQuestion extends Question {
+  questionNumber: number;
+  totalQuestions: number;
 }
 
 export interface QuestionData {

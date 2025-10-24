@@ -9,7 +9,7 @@ import com.wuji.backend.question.common.dto.PlayerAnswerDto
 import com.wuji.backend.question.common.dto.toAnswerDto
 import com.wuji.backend.question.common.dto.toDto
 
-data class ExtendedQuestionDto(
+data class ExamQuestionDto(
     val id: Int,
     val category: String,
     val type: QuestionType,
@@ -23,13 +23,13 @@ data class ExtendedQuestionDto(
     val playerAnswerDto: PlayerAnswerDto?
 )
 
-fun Question.toExtendedQuestionDto(
+fun Question.toExamQuestionDto(
     playerAnswer: PlayerAnswer?,
     questionNumber: Int,
     totalBaseQuestions: Int,
     allowGoingBack: Boolean
 ) =
-    ExtendedQuestionDto(
+    ExamQuestionDto(
         id = this.id,
         category = this.category,
         type = this.type,
