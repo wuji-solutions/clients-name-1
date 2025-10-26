@@ -188,7 +188,7 @@ class ExamQuestionServiceTest {
         assertTrue(result)
         assertEquals(
             10,
-            details.getPoints(
+            details.points(
                 examGame.config.pointsPerDifficulty,
                 examGame.config.zeroPointsOnCheating))
         verify { sseExamService.sendNewExamStateEvent(examGame) }
@@ -238,7 +238,7 @@ class ExamQuestionServiceTest {
         assertTrue(result, "Answer should be marked correct")
         assertEquals(
             0,
-            player.details.getPoints(
+            player.details.points(
                 examGame.config.pointsPerDifficulty,
                 examGame.config.zeroPointsOnCheating),
             "Player should not get points due to zeroPointsOnCheating")
@@ -248,5 +248,79 @@ class ExamQuestionServiceTest {
             "Time should be reset after answering")
         verify { sseExamService.sendPlayerCheatedEvent(player, question1) }
         verify { sseExamService.sendNewExamStateEvent(examGame) }
+    }
+
+    @Test
+    fun `answerExamQuestion additional question should not be saved in player's answers`() {
+        every { questionService.getCurrentQuestionNumber(0) } returns 2
+        every { questionService.getBaseQuestionsSize(0) } returns 1
+
+        val additionalQuestion =
+            Question(
+                10,
+                "extraQuestion",
+                QuestionType.TEXT,
+                "taskExtra",
+                TextFormat.PLAIN_TEXT,
+                listOf(Answer(0, "answer")),
+                setOf(0),
+                DifficultyLevel.MEDIUM,
+                "url",
+                "base64",
+                listOf("tag"))
+
+        every { examGame.questionDispenser.currentQuestion(0) } returns
+            additionalQuestion
+
+        val initialAnswerCount = player.details.answers.size
+
+        questionService.getQuestionAndMarkTime(
+            0, questionService::getCurrentQuestion)
+        questionService.answerExamQuestion(0, setOf(0), playerCheated = false)
+
+        assertEquals(initialAnswerCount, player.details.answers.size)
+    }
+
+    @Test
+    fun `answerExamQuestion additional question should return true without modifying points`() {
+        every { questionService.getCurrentQuestionNumber(0) } returns 2
+        every { questionService.getBaseQuestionsSize(0) } returns 1
+
+        every {
+            examGame.config.pointsPerDifficulty.getValue(
+                question1.difficultyLevel)
+        } returns 10
+        every { examGame.config.markQuestionOnCheating } returns false
+        every { examGame.config.zeroPointsOnCheating } returns false
+        every { examGame.config.notifyTeacherOnCheating } returns false
+        val additionalQuestion =
+            Question(
+                5,
+                "extra3",
+                QuestionType.TEXT,
+                "taskExtra3",
+                TextFormat.PLAIN_TEXT,
+                listOf(Answer(0, "answer")),
+                setOf(0),
+                DifficultyLevel.HARD,
+                "url",
+                "base64",
+                listOf("tag"))
+
+        every { examGame.questionDispenser.currentQuestion(0) } returns
+            additionalQuestion
+
+        questionService.getQuestionAndMarkTime(
+            0, questionService::getCurrentQuestion)
+        val result =
+            questionService.answerExamQuestion(
+                0, setOf(0), playerCheated = false)
+
+        assertTrue(result)
+        assertEquals(
+            10,
+            player.details.points(
+                examGame.config.pointsPerDifficulty,
+                examGame.config.zeroPointsOnCheating)) // points unchanged
     }
 }

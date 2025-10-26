@@ -10,20 +10,22 @@
 
 ##  Sprawdzian 
 
-| Pole                       | Typ                         | Opis                                                                               |
-| -------------------------- |-----------------------------|------------------------------------------------------------------------------------|
-| `requiredQuestionCount`    | `Int`                       | Liczba pytań, na które musi odpowiedzieć uczeń.                                    |
-| `randomizeQuestions`       | `Boolean`                   | Czy pytania mają być losowane z dostępnej puli.                                    |
+| Pole                       | Typ                         | Opis                                                                            |
+| -------------------------- |-----------------------------|---------------------------------------------------------------------------------|
+| `requiredQuestionCount`    | `Int`                       | Liczba pytań, na które musi odpowiedzieć uczeń.                                 |
+| `randomizeQuestions`       | `Boolean`                   | Czy pytania mają być losowane z dostępnej puli.                                 |
 | `enforceDifficultyBalance` | `Boolean`                   | Czy losowane pytania powinny być równomiernie rozłożone według poziomów trudności. |
-| `selectedQuestionIds`      | `List<Int>`                 | Lista ID pytań wybranych ręcznie (tylko jeśli `randomizeQuestions = false`).       |
-| `zeroPointsOnCheating`     | `Boolean`                   | Czy uczeń otrzymuje 0 punktów za próbę ściągania.                                  |
-| `markQuestionOnCheating`   | `Boolean`                   | Czy oznaczyć pytanie jako "podejrzane" przy wykryciu ściągania.                    |
-| `notifyTeacherOnCheating`  | `Boolean`                   | Czy powiadomić nauczyciela o próbie ściągania.                                     |
-| `pointsPerDifficulty`      | `Map<DifficultyLevel, Int>` | Liczba punktów za pytania w zależności od trudności (`EASY`, `MEDIUM`, `HARD`).    |
-| `allowGoingBack`           | `Boolean`                   | Czy uczeń może wracać do poprzednich pytań.                                        |
-| `additionalTimeToAnswerAfterFinishInSeconds`| `Long`     | Liczba dodatkowych sekund na odpowiedź przy zakończeniu sprawdzianu                |
-| `totalDurationMinutes`    | `Int`     | Całkowity czas trwania gry (w minutach). Musi być dodatni.           |
-| `endImmediatelyAfterTime` | `Boolean` | Czy gra kończy się automatycznie po upływie czasu (`true`), czy nie. |
+| `selectedQuestionIds`      | `List<Int>`                 | Lista ID pytań wybranych ręcznie (tylko jeśli `randomizeQuestions = false`).    |
+| `zeroPointsOnCheating`     | `Boolean`                   | Czy uczeń otrzymuje 0 punktów za próbę ściągania.                               |
+| `markQuestionOnCheating`   | `Boolean`                   | Czy oznaczyć pytanie jako "podejrzane" przy wykryciu ściągania.                 |
+| `notifyTeacherOnCheating`  | `Boolean`                   | Czy powiadomić nauczyciela o próbie ściągania.                                  |
+| `pointsPerDifficulty`      | `Map<DifficultyLevel, Int>` | Liczba punktów za pytania w zależności od trudności (`EASY`, `MEDIUM`, `HARD`). |
+| `allowGoingBack`           | `Boolean`                   | Czy uczeń może wracać do poprzednich pytań.                                     |
+| `additionalTimeToAnswerAfterFinishInSeconds`| `Long`                      | Liczba dodatkowych sekund na odpowiedź przy zakończeniu sprawdzianu             |
+| `totalDurationMinutes`    | `Int`                       | Całkowity czas trwania gry (w minutach). Musi być dodatni.                      |
+| `endImmediatelyAfterTime` | `Boolean`                   | Czy gra kończy się automatycznie po upływie czasu (`true`), czy nie.            |
+| `showDetailedFinishFeedback` | `Boolean`                | Czy pokazywać uczniowi dokładny feedback (oceniony egzamin)                     |
+
 
 ---
 

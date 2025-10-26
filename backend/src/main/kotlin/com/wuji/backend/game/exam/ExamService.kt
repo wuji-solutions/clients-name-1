@@ -6,15 +6,21 @@ import com.wuji.backend.events.common.SSEUsersService
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.common.GameService
 import com.wuji.backend.game.common.GameState
+import com.wuji.backend.game.exam.dto.CompleteExamResponseDto
 import com.wuji.backend.game.exam.dto.TimeUntilGameFinishDto
 import com.wuji.backend.parser.MoodleXmlParser
 import com.wuji.backend.player.dto.PlayerDto
 import com.wuji.backend.player.dto.PlayerDto.Companion.toDto
 import com.wuji.backend.player.state.ExamPlayer
 import com.wuji.backend.player.state.ExamPlayerDetails
+import com.wuji.backend.player.state.PlayerIndex
 import com.wuji.backend.player.state.PlayerService
 import com.wuji.backend.player.state.exception.PlayerAlreadyJoinedException
 import com.wuji.backend.player.state.exception.PlayerNotFoundException
+import com.wuji.backend.question.common.dto.DetailedPlayerAnswerDto
+import com.wuji.backend.question.common.dto.toQuestionDto
+import com.wuji.backend.question.common.points
+import com.wuji.backend.question.exam.ExamQuestionService
 import java.io.File
 import java.io.FileNotFoundException
 import kotlin.concurrent.thread
@@ -26,6 +32,7 @@ class ExamService(
     private val playerService: PlayerService,
     private val sseUsersService: SSEUsersService,
     private val sseEventService: SSEEventService,
+    private val examQuestionService: ExamQuestionService,
 ) : GameService {
     private val game: ExamGame
         get() = gameRegistry.getAs(ExamGame::class.java)
@@ -124,5 +131,31 @@ class ExamService(
         val seconds = (diff % 60_000) / 1000
 
         return TimeUntilGameFinishDto(minutes, seconds)
+    }
+
+    fun completeAttempt(playerIndex: PlayerIndex): CompleteExamResponseDto {
+        val player = game.findPlayerByIndex(playerIndex)
+        val totalPoints =
+            player.details.points(
+                game.config.pointsPerDifficulty,
+                game.config.zeroPointsOnCheating)
+        var questionsFeedback: List<DetailedPlayerAnswerDto>? = null
+
+        if (game.config.showDetailedFinishFeedback) {
+            questionsFeedback =
+                player.details.answers.map { playerAnswer ->
+                    DetailedPlayerAnswerDto(
+                        playerAnswer.question.toQuestionDto(),
+                        playerAnswer.selectedIds,
+                        playerAnswer.isCorrect,
+                        playerAnswer.points(
+                            game.config.pointsPerDifficulty,
+                            game.config.zeroPointsOnCheating))
+                }
+        }
+
+        // go to additional questions
+        examQuestionService.getNextQuestion(playerIndex)
+        return CompleteExamResponseDto(totalPoints, questionsFeedback)
     }
 }

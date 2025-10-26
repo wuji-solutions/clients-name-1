@@ -14,7 +14,7 @@ class ExamPlayerDto(
                 index = index,
                 nickname = nickname,
                 points =
-                    details.getPoints(
+                    details.points(
                         config.pointsPerDifficulty,
                         config.zeroPointsOnCheating))
         }
