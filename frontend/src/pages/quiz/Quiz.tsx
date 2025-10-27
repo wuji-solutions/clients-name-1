@@ -179,7 +179,9 @@ function Quiz() {
   const [questionStats, setQuestionStats] = useState<QuestionStats | null>(null);
   const { setError } = useError();
 
-  const hasMoreQuestions = currentQuestion ? currentQuestion.questionNumber < currentQuestion.totalQuestions : null;
+  const hasMoreQuestions = currentQuestion
+    ? currentQuestion.questionNumber < currentQuestion.totalQuestions
+    : null;
 
   useEffect(() => {
     const unsubscribe = eventsDelegate.on('next-question', () => {
@@ -246,7 +248,7 @@ function Quiz() {
   };
 
   const handleNextQuestion = () => {
-    if (!hasMoreQuestions) {
+    if (hasMoreQuestions === false) {
       return navigate('/podsumowanie');
     }
     service.nextQuestion('quiz').catch((error) => {
@@ -410,7 +412,9 @@ function Quiz() {
             )}
             {questionEnded && (
               <ButtonCustom onClick={() => handleNextQuestion()}>
-                {hasMoreQuestions ? 'Przejdź do kolejnego pytania' : 'Przejdź do podsumowania'}
+                {hasMoreQuestions === true
+                  ? 'Przejdź do kolejnego pytania'
+                  : 'Przejdź do podsumowania'}
               </ButtonCustom>
             )}
             <ButtonCustom onClick={() => navigate('/podsumowanie')}>Zakończ quiz</ButtonCustom>
