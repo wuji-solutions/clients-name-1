@@ -248,14 +248,20 @@ function Quiz() {
   };
 
   const handleNextQuestion = () => {
-    if (hasMoreQuestions === false) {
-      return navigate('/podsumowanie');
-    }
     service.nextQuestion('quiz').catch((error) => {
       setError(
         'Wystąpił błąd podczas pobierania następnego pytania:\n' + error.response.data.message
       );
     });
+  };
+
+  const handleQuizEnd = () => {
+    service
+      .finishGame()
+      .then(() => navigate('/podsumowanie'))
+      .catch((error) => {
+        setError('Wystąpił błąd podczas kończenia quizu:\n' + error.response.data.message);
+      });
   };
 
   const setQuestion = (user: string) => {
@@ -411,13 +417,14 @@ function Quiz() {
               </ButtonCustom>
             )}
             {questionEnded && (
-              <ButtonCustom onClick={() => handleNextQuestion()}>
-                {hasMoreQuestions === true
-                  ? 'Przejdź do kolejnego pytania'
-                  : 'Przejdź do podsumowania'}
+              <ButtonCustom
+                disabled={hasMoreQuestions === false}
+                onClick={() => handleNextQuestion()}
+              >
+                Przejdź do kolejnego pytania
               </ButtonCustom>
             )}
-            <ButtonCustom onClick={() => navigate('/podsumowanie')}>Zakończ quiz</ButtonCustom>
+            <ButtonCustom onClick={handleQuizEnd}>Zakończ quiz</ButtonCustom>
           </div>
         </QuestionContainer>
       )}

@@ -18,6 +18,10 @@ export const ButtonCustom = styled.button({
     boxShadow: `0 5px 0 0 ${theme.palette.button.accent}`,
     cursor: 'pointer',
   },
+  '&:disabled': {
+    cursor: 'not-allowed',
+    opacity: 0.5,
+  },
   '-webkit-transition-duration': '0.2s',
   transitionDuration: '0.2s',
   padding: '7px',
