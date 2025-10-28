@@ -135,4 +135,81 @@ class MoodleXmlParserTest {
         assertEquals(1, categories.size)
         assertEquals(7, questions.size)
     }
+
+    @Test
+    fun `parse difficulty level`() {
+        val xml =
+            """
+            <quiz>
+              <question type="category">
+                <category><text>Math</text></category>
+              </question>
+              <question type="multichoice">
+                <questiontext format="html">
+                  <text>What is 2+2?</text>
+                </questiontext>
+                <answer fraction="100">
+                  <text>4</text>
+                  <feedback><text>Correct</text></feedback>
+                </answer>
+                <answer fraction="0">
+                  <text>5</text>
+                  <feedback><text>Nope</text></feedback>
+                </answer>
+                <tags>
+                  <tag><text>algebra</text></tag>
+                  <tag><text>MeDiUm</text></tag>
+                </tags>
+              </question>
+              <question type="category">
+                <category><text>Math</text></category>
+              </question>
+              <question type="multichoice">
+                <questiontext format="html">
+                  <text>What is 2+2?</text>
+                </questiontext>
+                <answer fraction="100">
+                  <text>4</text>
+                  <feedback><text>Correct</text></feedback>
+                </answer>
+                <answer fraction="0">
+                  <text>5</text>
+                  <feedback><text>Nope</text></feedback>
+                </answer>
+                <tags>
+                  <tag><text>algebra</text></tag>
+                  <tag><text>HaRd</text></tag>
+                </tags>
+              </question>
+              <question type="multichoice">
+                <questiontext format="html">
+                  <text>What is 2+2?</text>
+                </questiontext>
+                <answer fraction="100">
+                  <text>4</text>
+                  <feedback><text>Correct</text></feedback>
+                </answer>
+                <answer fraction="0">
+                  <text>5</text>
+                  <feedback><text>Nope</text></feedback>
+                </answer>
+                <tags>
+                  <tag><text>algebra</text></tag>
+                  <tag><text>EaSy</text></tag>
+                </tags>
+              </question>
+            </quiz>
+        """
+
+        val questions = MoodleXmlParser.parse(xml.byteInputStream())
+
+        var q = questions.first()
+        assertEquals(DifficultyLevel.MEDIUM, q.difficultyLevel)
+
+        q = questions.get(1)
+        assertEquals(DifficultyLevel.HARD, q.difficultyLevel)
+
+        q = questions.last()
+        assertEquals(DifficultyLevel.EASY, q.difficultyLevel)
+    }
 }
