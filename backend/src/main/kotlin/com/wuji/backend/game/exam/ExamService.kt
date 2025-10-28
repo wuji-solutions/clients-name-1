@@ -42,7 +42,7 @@ class ExamService(
             throw PlayerAlreadyJoinedException(index, nickname)
 
         return playerService
-            .createPlayer(index, nickname, ExamPlayerDetails())
+            .createPlayer(index, ExamPlayerDetails())
             .also { player -> game.players.add(player) }
             .also { sseUsersService.sendPlayers(listPlayers()) }
     }

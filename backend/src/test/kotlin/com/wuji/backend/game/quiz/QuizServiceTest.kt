@@ -57,14 +57,14 @@ class QuizServiceTest {
             }
         val playerDto = PlayerDto(playerIndex, playerNickname)
 
-        every { playerService.createPlayer(any(), any(), any()) } returns player
+        every { playerService.createPlayer(any(), any()) } returns player
         every { quizGame.findPlayerByIndex(any()) } throws
             PlayerNotFoundException(playerIndex)
 
         quizService.joinGame(playerIndex, playerNickname)
 
         verify {
-            playerService.createPlayer(playerIndex, playerNickname, any())
+            playerService.createPlayer(playerIndex, any())
         }
         verify { sseUsersService.sendPlayers(match { it.contains(playerDto) }) }
         assert(player in quizGame.players)
