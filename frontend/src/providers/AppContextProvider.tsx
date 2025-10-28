@@ -39,7 +39,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
   const [userindex, setUserindex] = useState<number | null>(null);
 
   useEffect(() => {
-    if (window.location.hostname === 'localhost') {
+    if (window.location.hostname === "" || window.location.hostname === "localhost") {
       setUser('admin');
     } else {
       setUser('user');
