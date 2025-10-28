@@ -34,7 +34,7 @@ class ConfigManagerService(
                 os.contains("mac") ->
                     Paths.get("/Library/Application Support", CONFIG_DIR_NAME)
 
-                os.contains("nux") -> Paths.get("/etc", CONFIG_DIR_NAME)
+                os.contains("nux") -> Paths.get(System.getProperty("user.home"), CONFIG_DIR_NAME)
 
                 else ->
                     Paths.get(System.getProperty("user.home"), CONFIG_DIR_NAME)
