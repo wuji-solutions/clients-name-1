@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import { BACKEND_ENDPOINT, BACKEND_ENDPOINT_EXTERNAL } from '../../common/config';
-import { Question, QuestionStats } from '../../common/types';
+import { Question, QuestionStats, QuizQuestion } from '../../common/types';
 import { ButtonCustom } from '../../components/Button';
 import { useAppContext } from '../../providers/AppContextProvider';
 import { useSSEChannel } from '../../providers/SSEProvider';
@@ -170,7 +170,7 @@ function Quiz() {
   const counterDelegate = useSSEChannel(`${BACKEND_ENDPOINT}/sse/quiz/answer-counter`, {
     withCredentials: true,
   });
-  const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
+  const [currentQuestion, setCurrentQuestion] = useState<QuizQuestion | null>(null);
   const [selectedAnswers, setSelectedAnswers] = useState<Array<string>>([]);
   const [answerCount, setAnswerCount] = useState<number>(0);
   const [sendingAnswer, setSendingAnswer] = useState<boolean>(false);
@@ -178,6 +178,10 @@ function Quiz() {
   const [questionEnded, setQuestionEnded] = useState<boolean>(false);
   const [questionStats, setQuestionStats] = useState<QuestionStats | null>(null);
   const { setError } = useError();
+
+  const hasMoreQuestions = currentQuestion
+    ? currentQuestion.questionNumber < currentQuestion.totalQuestions
+    : null;
 
   useEffect(() => {
     const unsubscribe = eventsDelegate.on('next-question', () => {
@@ -244,7 +248,20 @@ function Quiz() {
   };
 
   const handleNextQuestion = () => {
-    service.nextQuestion('quiz');
+    service.nextQuestion('quiz').catch((error) => {
+      setError(
+        'Wystąpił błąd podczas pobierania następnego pytania:\n' + error.response.data.message
+      );
+    });
+  };
+
+  const handleQuizEnd = () => {
+    service
+      .finishGame()
+      .then(() => navigate('/podsumowanie'))
+      .catch((error) => {
+        setError('Wystąpił błąd podczas kończenia quizu:\n' + error.response.data.message);
+      });
   };
 
   const setQuestion = (user: string) => {
@@ -368,19 +385,19 @@ function Quiz() {
                     isselected={answer.answer.isCorrect}
                     backgroundcolor={getColor(index)}
                     style={{ cursor: 'default', width: '400px', height: '70px', maxHeight: '70px' }}
-                    >
-                    <span
-                    style={{
-                      fontSize: `${Math.max(14, 40 - answer.answer.text.length / 2)}px`,
-                      width: '100%',
-                      height: '100%',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      display: 'flex',
-                    }}
                   >
-                    {answer.answer.text}
-                  </span>
+                    <span
+                      style={{
+                        fontSize: `${Math.max(14, 40 - answer.answer.text.length / 2)}px`,
+                        width: '100%',
+                        height: '100%',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        display: 'flex',
+                      }}
+                    >
+                      {answer.answer.text}
+                    </span>
                   </AnswerCard>
                 </div>
               ))}
@@ -400,11 +417,14 @@ function Quiz() {
               </ButtonCustom>
             )}
             {questionEnded && (
-              <ButtonCustom onClick={() => handleNextQuestion()}>
+              <ButtonCustom
+                disabled={hasMoreQuestions === false}
+                onClick={() => handleNextQuestion()}
+              >
                 Przejdź do kolejnego pytania
               </ButtonCustom>
             )}
-            <ButtonCustom onClick={() => navigate('/podsumowanie')}>Zakończ quiz</ButtonCustom>
+            <ButtonCustom onClick={handleQuizEnd}>Zakończ quiz</ButtonCustom>
           </div>
         </QuestionContainer>
       )}

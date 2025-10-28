@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { BACKEND_ENDPOINT, BACKEND_ENDPOINT_EXTERNAL } from '../common/config';
-import { CreateGameDTO } from '../common/types';
+import { CreateGameDTO, Question } from '../common/types';
 
 const startLobby = (mode: string, details: CreateGameDTO) => {
   return axios.post(BACKEND_ENDPOINT + '/manage/' + mode, details, {
@@ -131,7 +131,9 @@ const parseQuestions = (filePath: string) => {
 };
 
 const validateSessionID = () => {
-  return axios.get(BACKEND_ENDPOINT_EXTERNAL + '/security/session-status', {withCredentials: true});
+  return axios.get(BACKEND_ENDPOINT_EXTERNAL + '/security/session-status', {
+    withCredentials: true,
+  });
 };
 
 export const service = {

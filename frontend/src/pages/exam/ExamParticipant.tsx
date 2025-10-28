@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { styled } from 'styled-components';
 import { BACKEND_ENDPOINT_EXTERNAL } from '../../common/config';
 import theme from '../../common/theme';
-import { ExtendedQuestion } from '../../common/types';
+import { ExamQuestion } from '../../common/types';
 import { getParsedDifficultyLevel, lightenColor } from '../../common/utils';
 import AnswerCard from '../../components/AnswerCard';
 import { ButtonCustom } from '../../components/Button';
@@ -135,7 +135,7 @@ function SSEOnEventListener({ setExamFinished }: { setExamFinished: Function }) 
 }
 
 function ExamParticipant() {
-  const [currentQuestion, setCurrentQuestion] = useState<ExtendedQuestion | null>(null);
+  const [currentQuestion, setCurrentQuestion] = useState<ExamQuestion | null>(null);
   const [examFinished, setExamFinished] = useState<boolean>(false);
   const { user } = useAppContext();
   const [playerCheated, setPlayerCheated] = useState<boolean>(false);
