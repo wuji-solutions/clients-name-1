@@ -2,7 +2,7 @@ import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import Home from './pages/Home';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
 import Configurations from './pages/Configurations';
 import WaitingRoom from './pages/WaitingRoom';
 import { AppProvider } from './providers/AppContextProvider';
@@ -27,7 +27,7 @@ root.render(
       <SSEProvider>
         <ErrorProvider>
           <ErrorPopup />
-          <Router>
+          <HashRouter>
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/konfiguracja" element={<Configurations />} />
@@ -42,8 +42,9 @@ root.render(
                 element={context === 'user' ? <ExamParticipant /> : <ExamObserver />}
               />
               <Route path="/podsumowanie" element={<Summary />} />
+              <Route path='*' element={<Navigate to="/" replace />} />
             </Routes>
-          </Router>
+          </HashRouter>
         </ErrorProvider>
       </SSEProvider>
     </AppProvider>

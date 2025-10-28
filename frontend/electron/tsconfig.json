@@ -8,5 +8,5 @@
     "resolveJsonModule": true,
     "sourceMap": true
   },
-  "include": ["main.ts"]
+  "include": ["./**/*.ts", "./**/*.js"]
 }
