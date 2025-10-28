@@ -150,7 +150,7 @@ object MoodleXmlParser {
             questionTextFormat!!,
             answers,
             correctAnswerIds,
-            ExtractDifficultyFromTags(tags),
+            extractDifficultyFromTags(tags),
             imageUrl,
             imageBase64,
             tags)
@@ -289,7 +289,7 @@ object MoodleXmlParser {
             else -> TextFormat.HTML
         }
 
-    private fun ExtractDifficultyFromTags(tags: List<String>): DifficultyLevel {
+    private fun extractDifficultyFromTags(tags: List<String>): DifficultyLevel {
         for (tag in tags) {
             when (tag.lowercase()) {
                 "easy" -> {
