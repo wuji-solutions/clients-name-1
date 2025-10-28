@@ -58,7 +58,7 @@ class QuizServiceTest {
         val playerDto = PlayerDto(playerIndex, playerNickname)
 
         every { playerService.createPlayer(any(), any(), any()) } returns player
-        every { quizGame.findPlayerByIndexAndNickname(any(), any()) } throws
+        every { quizGame.findPlayerByIndex(any()) } throws
             PlayerNotFoundException(playerIndex)
 
         quizService.joinGame(playerIndex, playerNickname)

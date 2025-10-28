@@ -96,14 +96,14 @@ class QuizService(
     }
 
     override fun kickPlayer(index: Int, nickname: String) {
-        val player = quizGame.findPlayerByIndexAndNickname(index, nickname)
+        val player = quizGame.findPlayerByIndex(index)
         quizGame.players.remove(player)
         sseEventService.sendPlayerKickedEvent(player.toDto())
     }
 
     override fun hasJoined(index: Int, nickname: String): Boolean =
         try {
-            quizGame.findPlayerByIndexAndNickname(index, nickname)
+            quizGame.findPlayerByIndex(index)
             true
         } catch (_: PlayerNotFoundException) {
             false
