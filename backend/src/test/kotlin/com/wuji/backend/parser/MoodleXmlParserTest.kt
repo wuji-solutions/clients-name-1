@@ -156,9 +156,9 @@ class MoodleXmlParserTest {
                   <text>5</text>
                   <feedback><text>Nope</text></feedback>
                 </answer>
+                <difficulty>MedIUm</difficulty>
                 <tags>
                   <tag><text>algebra</text></tag>
-                  <tag><text>MeDiUm</text></tag>
                 </tags>
               </question>
               <question type="category">
@@ -176,9 +176,9 @@ class MoodleXmlParserTest {
                   <text>5</text>
                   <feedback><text>Nope</text></feedback>
                 </answer>
+                <difficulty>hArD</difficulty>
                 <tags>
                   <tag><text>algebra</text></tag>
-                  <tag><text>HaRd</text></tag>
                 </tags>
               </question>
               <question type="multichoice">
@@ -193,9 +193,9 @@ class MoodleXmlParserTest {
                   <text>5</text>
                   <feedback><text>Nope</text></feedback>
                 </answer>
+                <difficulty>EaSy</difficulty>
                 <tags>
                   <tag><text>algebra</text></tag>
-                  <tag><text>EaSy</text></tag>
                 </tags>
               </question>
             </quiz>
