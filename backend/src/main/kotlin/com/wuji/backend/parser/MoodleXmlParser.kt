@@ -128,7 +128,8 @@ object MoodleXmlParser {
                     if (isCorrect) correctAnswerIds.add(answer.id)
                 }
                 reader.isStart("difficulty") -> {
-                    difficultyLevel = getDifficultyFromString(reader.readElementText().trim())
+                    difficultyLevel =
+                        getDifficultyFromString(reader.readElementText().trim())
                 }
 
                 else -> reader.skip()
@@ -298,7 +299,8 @@ object MoodleXmlParser {
             "easy" -> DifficultyLevel.EASY
             "medium" -> DifficultyLevel.MEDIUM
             "hard" -> DifficultyLevel.HARD
-            else -> throw UnsupportedQuestionDifficultyException(tag.lowercase())
+            else ->
+                throw UnsupportedQuestionDifficultyException(tag.lowercase())
         }
     }
 }
