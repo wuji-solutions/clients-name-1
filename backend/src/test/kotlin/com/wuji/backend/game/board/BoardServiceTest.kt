@@ -67,9 +67,7 @@ class BoardServiceTest {
 
         service.joinGame(playerIndex, playerNickname)
 
-        verify {
-            playerService.createPlayer(playerIndex, any())
-        }
+        verify { playerService.createPlayer(playerIndex, any()) }
         verify { sseUsersService.sendPlayers(match { it.contains(playerDto) }) }
         assert(player in game.players)
     }

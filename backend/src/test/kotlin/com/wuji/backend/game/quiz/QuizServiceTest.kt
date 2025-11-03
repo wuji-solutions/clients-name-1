@@ -63,9 +63,7 @@ class QuizServiceTest {
 
         quizService.joinGame(playerIndex, playerNickname)
 
-        verify {
-            playerService.createPlayer(playerIndex, any())
-        }
+        verify { playerService.createPlayer(playerIndex, any()) }
         verify { sseUsersService.sendPlayers(match { it.contains(playerDto) }) }
         assert(player in quizGame.players)
     }
