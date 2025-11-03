@@ -73,12 +73,12 @@ class GameServiceDelegate(
         authService.clearAllSessions()
     }
 
-    override fun kickPlayer(index: Int, nickname: String) {
-        return currentService.kickPlayer(index, nickname)
+    override fun kickPlayer(index: Int) {
+        return currentService.kickPlayer(index)
     }
 
-    override fun hasJoined(index: Int, nickname: String): Boolean {
-        return currentService.hasJoined(index, nickname)
+    override fun hasJoined(index: Int): Boolean {
+        return currentService.hasJoined(index)
     }
 
     override fun getPlayer(index: Int): Player<out PlayerDetails> {

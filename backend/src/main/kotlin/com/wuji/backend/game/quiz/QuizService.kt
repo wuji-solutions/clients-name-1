@@ -35,7 +35,7 @@ class QuizService(
         get() = gameRegistry.getAs(QuizGame::class.java)
 
     override fun joinGame(index: Int, nickname: String): QuizPlayer {
-        if (hasJoined(index, nickname))
+        if (hasJoined(index))
             throw PlayerAlreadyJoinedException(index, nickname)
 
         return playerService
@@ -95,13 +95,13 @@ class QuizService(
         return QuizSummaryResponseDto(questionsWithSummary)
     }
 
-    override fun kickPlayer(index: Int, nickname: String) {
+    override fun kickPlayer(index: Int) {
         val player = quizGame.findPlayerByIndex(index)
         quizGame.players.remove(player)
         sseEventService.sendPlayerKickedEvent(player.toDto())
     }
 
-    override fun hasJoined(index: Int, nickname: String): Boolean =
+    override fun hasJoined(index: Int): Boolean =
         try {
             quizGame.findPlayerByIndex(index)
             true
