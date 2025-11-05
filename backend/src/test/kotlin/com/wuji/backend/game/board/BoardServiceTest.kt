@@ -60,14 +60,16 @@ class BoardServiceTest {
         val playerDto = PlayerDto(playerIndex, playerNickname)
 
         every {
-            playerService.createPlayer(any(), any(),any<BoardPlayerDetails>())
+            playerService.createPlayer(any(), any(), any<BoardPlayerDetails>())
         } returns player
         every { game.findPlayerByIndex(any()) } throws
             PlayerNotFoundException(playerIndex)
 
         service.joinGame(playerIndex, playerNickname)
 
-        verify { playerService.createPlayer(playerIndex, playerNickname, any()) }
+        verify {
+            playerService.createPlayer(playerIndex, playerNickname, any())
+        }
         verify { sseUsersService.sendPlayers(match { it.contains(playerDto) }) }
         assert(player in game.players)
     }
