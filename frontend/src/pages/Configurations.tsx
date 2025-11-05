@@ -16,15 +16,20 @@ import { settingsToConfig } from '../components/config/utils';
 import { useError } from '../providers/ErrorProvider';
 
 const Container = styled.div({
-  width: '100%',
+  width: 'calc(100%-20px)',
   height: '100%',
   display: 'flex',
   flexDirection: 'row',
+  padding: '0 20px 0 20px',
 });
 
 const InstructionContainer = styled.div({
   width: '25%',
   padding: '5px',
+  border: `4px solid ${theme.palette.main.accent}`,
+  borderRadius: '15px',
+  height: '80vh',
+  margin: 'auto',
 });
 
 const InstructionHeader = styled.div({
@@ -124,6 +129,10 @@ const getConfig = (
       };
 };
 
+const openHotspot = () => {
+  window.electronAPI.openHotspot()
+}
+
 function Configurations() {
   const { user } = useAppContext();
   const navigate = useNavigate();
@@ -170,7 +179,7 @@ function Configurations() {
       HARD: 3,
     },
     allowGoingBack: true,
-    additionalTimeToAnswerAfterFinishInSeconds: 30,
+    additionalTimeToAnswerAfterFinishInSeconds: 10,
   });
   const [boardSettings, setBoardSettings] = useState<BoardSettings>({
     totalDurationMinutes: 30,
@@ -193,6 +202,7 @@ function Configurations() {
       <InstructionContainer>
         <InstructionHeader>Instrukcja uruchomienia</InstructionHeader>
         <InstructionContent>Uruchom</InstructionContent>
+        <ButtonCustom onClick={openHotspot} >hotspot</ButtonCustom>
       </InstructionContainer>
       <ModeContainer>
         <ModeHeader>Wybierz tryb rozgrywki</ModeHeader>

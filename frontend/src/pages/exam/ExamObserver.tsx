@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { BACKEND_ENDPOINT } from '../../common/config';
@@ -174,6 +174,33 @@ function ExamObserver() {
   const navigate = useNavigate();
   const { setError } = useError();
 
+  const [gracePeriod, setGracePeriod] = useState<number>();
+  const [gracePeriodRemaining, setGracePeriodRemaining] = useState<number>();
+  const endTimeRef = useRef<number | null>(null);
+  const [allowExit, setAllowExit] = useState(false);
+
+  useEffect(() => {
+    if (!gracePeriod) return;
+
+    endTimeRef.current = Date.now() + gracePeriod * 1000;
+
+    const tick = () => {
+      const now = Date.now();
+      const diff = Math.max(0, Math.floor((endTimeRef.current! - now) / 1000));
+      setGracePeriodRemaining(diff);
+
+      if (diff <= 0) {
+        clearInterval(interval);
+        setAllowExit(true);
+      }
+    };
+
+    const interval = setInterval(tick, 1000);
+    tick();
+
+    return () => clearInterval(interval);
+  }, [gracePeriod]);
+
   useEffect(() => {
     getModeConfig().then((response) => {
       setExamConfig(response.data);
@@ -185,6 +212,7 @@ function ExamObserver() {
       .finishGame()
       .then((response) => {
         setExamFinished(true);
+        setGracePeriod(examConfig?.additionalTimeToAnswerAfterFinishInSeconds);
       })
       .catch((error) =>
         setError('Wystąpił błąd podczas wysyłania odpowiedzi:\n' + error.response.data.message)
@@ -292,10 +320,18 @@ function ExamObserver() {
             )}
           </ExamConfigDetails>
           <ButtonContainer>
-            {examFinished ? (
-              <ButtonCustom onClick={() => navigate('/konfiguracja')}>Wróć do menu</ButtonCustom>
-            ) : (
+            {!examFinished && (
               <ButtonCustom onClick={handleExamEnd}>Zakończ sprawdzian</ButtonCustom>
+            )}
+            {examFinished && allowExit && (
+              <ButtonCustom onClick={() => navigate('/konfiguracja')}>Wróć do menu</ButtonCustom>
+            )}
+            {examFinished && !allowExit && (
+              <ButtonCustom disabled={true}>
+                {gracePeriodRemaining && gracePeriodRemaining > 0
+                  ? `${Math.floor(gracePeriodRemaining / 60)}:${gracePeriodRemaining % 60 >= 10 ? gracePeriodRemaining % 60 : '0' + (gracePeriodRemaining % 60)}`
+                  : '-- : --'}
+              </ButtonCustom>
             )}
           </ButtonContainer>
         </GameConfigContainer>

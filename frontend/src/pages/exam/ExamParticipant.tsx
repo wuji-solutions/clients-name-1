@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { styled } from 'styled-components';
 import { BACKEND_ENDPOINT_EXTERNAL } from '../../common/config';
 import theme from '../../common/theme';
-import { ExamQuestion } from '../../common/types';
+import { CompleteExamResponseDto, ExamQuestion } from '../../common/types';
 import { getParsedDifficultyLevel, lightenColor } from '../../common/utils';
 import AnswerCard from '../../components/AnswerCard';
 import { ButtonCustom } from '../../components/Button';
@@ -11,6 +11,7 @@ import { useAppContext } from '../../providers/AppContextProvider';
 import { useSSEChannel } from '../../providers/SSEProvider';
 import { service } from '../../service/service';
 import { useError } from '../../providers/ErrorProvider';
+import Divider from '../../components/Divider';
 
 export const Container = styled.div(() => ({
   width: '100%',
@@ -62,7 +63,8 @@ const ExamFinishedContainer = styled.div({
 const QuestionCategory = styled.div({
   width: 'fit-content',
   maxWidth: '300px',
-  margin: 'auto',
+  marginLeft: 'auto',
+  marginRight: 'auto',
   fontSize: '15px',
   textAlign: 'center',
 });
@@ -119,6 +121,47 @@ const ButtonOptionContainer = styled.div({
   gap: '20px',
 });
 
+const ResultContainer = styled.div({
+  width: '100%',
+  marginTop: '50px',
+  padding: '0 0 30px 0',
+  display: 'flex',
+  flexDirection: 'column',
+});
+
+const Results = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center',
+  width: 'fit-content',
+  margin: 'auto',
+  fontSize: '23px',
+});
+
+const Details = styled.div({
+  borderTop: `3px solid ${theme.palette.main.accent}`,
+  padding: '10px 20px 0 20px',
+  width: 'calc(90%-25px)',
+});
+
+const AnswerContainer = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  height: 'fit-content',
+});
+
+const NoMoreQuestions = styled.div({
+  width: 'calc(100%-20px)',
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignContent: 'center',
+  textAlign: 'center',
+  padding: '20px',
+});
+
 function SSEOnEventListener({ setExamFinished }: { setExamFinished: Function }) {
   const delegate = useSSEChannel(BACKEND_ENDPOINT_EXTERNAL + '/sse/events', {
     withCredentials: true,
@@ -149,6 +192,10 @@ function ExamParticipant() {
 
   const { setError } = useError();
 
+  const [examResults, setExamResults] = useState<CompleteExamResponseDto | null>(null);
+
+  const [disableAnswers, setDisableAnswers] = useState(false);
+
   useEffect(() => {
     const hasPlayerCheated = sessionStorage.getItem('playerCheated');
     setPlayerCheated(!!hasPlayerCheated);
@@ -156,21 +203,24 @@ function ExamParticipant() {
 
   useEffect(() => {
     if (!examFinished) {
-      service.getCurrentQuestion('user', 'exam').then((response) => {
-        if (response.data.playerAlreadyAnswered) {
-          setSelectedAnswers(response.data.playerAnswerDto.selectedIds);
-        } else {
-          setSelectedAnswers([]);
-        }
-        setAllowGoingBack(response.data?.allowGoingBack);
-        setCurrentQuestion(response.data);
-      }).catch((error) => {
-        if (error.status === 409) {
-          setExamFinished(true);
-        } else {
-          setError('Wystąpił błąd podczas pobierania pytania:\n' + error.response.data.message);
-        }
-      });
+      service
+        .getCurrentQuestion('user', 'exam')
+        .then((response) => {
+          if (response.data.playerAlreadyAnswered) {
+            setSelectedAnswers(response.data.playerAnswerDto.selectedIds);
+          } else {
+            setSelectedAnswers([]);
+          }
+          setAllowGoingBack(response.data?.allowGoingBack);
+          setCurrentQuestion(response.data);
+        })
+        .catch((error) => {
+          if (error.status === 409) {
+            setExamFinished(true);
+          } else {
+            setError('Wystąpił błąd podczas pobierania pytania:\n' + error.response.data.message);
+          }
+        });
     }
   }, [forceFetchCurrentQuestion]);
 
@@ -224,6 +274,8 @@ function ExamParticipant() {
         setSelectedAnswers([]);
       }
       setCurrentQuestion(response.data);
+      setExamResults(null);
+      setDisableAnswers(false);
     });
   };
 
@@ -246,6 +298,7 @@ function ExamParticipant() {
         ) {
           fetchNextQuestion();
         } else {
+          if (!allowGoingBack) setDisableAnswers(true);
           setForceFetchCurrentQuestion(!forceFetchCurrentQuestion);
         }
       })
@@ -255,6 +308,92 @@ function ExamParticipant() {
       .finally(() => {
         setAnswerSent(false);
       });
+  };
+
+  const handleUserExamFinish = () => {
+    service
+      .userFinishedExam()
+      .then((response) =>
+        setExamResults({
+          ...response.data,
+          questionsAnswered: [
+            {
+              question: {
+                id: 1,
+                category: 'Biologia',
+                type: 'TEXT',
+                task: 'Które z poniższych zwierząt jest ssakiem?',
+                answers: [
+                  { id: 1, text: 'Żaba' },
+                  { id: 2, text: 'Delfin' },
+                  { id: 3, text: 'Papuga' },
+                ],
+                difficultyLevel: 'EASY',
+              },
+              selectedAnswerIds: [2],
+              isCorrect: true,
+              pointsEarned: 10,
+            },
+            {
+              question: {
+                id: 2,
+                category: 'Matematyka',
+                type: 'TEXT',
+                task: 'Ile wynosi pierwiastek kwadratowy z 64?',
+                answers: [
+                  { id: 1, text: '6' },
+                  { id: 2, text: '8' },
+                  { id: 3, text: '10' },
+                ],
+                difficultyLevel: 'EASY',
+              },
+              selectedAnswerIds: [2],
+              isCorrect: true,
+              pointsEarned: 5,
+            },
+            {
+              question: {
+                id: 3,
+                category: 'Geografia',
+                type: 'SINGLE_CHOICE',
+                task: 'Stolica Francji to:',
+                answers: [
+                  { id: 1, text: 'Paryż' },
+                  { id: 2, text: 'Londyn' },
+                  { id: 3, text: 'Berlin' },
+                ],
+                difficultyLevel: 'EASY',
+              },
+              selectedAnswerIds: [1],
+              isCorrect: true,
+              pointsEarned: 5,
+            },
+            {
+              question: {
+                id: 4,
+                category: 'Historia',
+                type: 'MULTIPLE_CHOICE',
+                task: 'Które z poniższych wydarzeń miały miejsce w XX wieku?',
+                answers: [
+                  { id: 1, text: 'II wojna światowa' },
+                  { id: 2, text: 'Bitwa pod Grunwaldem' },
+                  { id: 3, text: 'Lądowanie na Księżycu' },
+                  { id: 4, text: 'Reformacja' },
+                ],
+                difficultyLevel: 'MEDIUM',
+              },
+              selectedAnswerIds: [1, 3],
+              isCorrect: true,
+              pointsEarned: 15,
+            },
+          ],
+        })
+      )
+      .catch((error) =>
+        setError(
+          'Podczas pobierania wyników sprawdzianu wystąpił błąd:\n' + error.response.data.message
+        )
+      );
   };
 
   if (examFinished)
@@ -267,10 +406,102 @@ function ExamParticipant() {
   return (
     <Container>
       <SSEOnEventListener setExamFinished={setExamFinished} />
-      <TimerContainer>
-        <Timer />
-      </TimerContainer>
-      {currentQuestion ? (
+      {!examResults && (
+        <TimerContainer>
+          <Timer />
+        </TimerContainer>
+      )}
+      {examResults && (
+        <ResultContainer>
+          <Results>
+            <h2>Twój wynik:</h2>
+            <h3>{examResults.totalPointsEarned} pkt</h3>
+          </Results>
+          {examResults.questionsAnswered && (
+            <Details>
+              <div
+                style={{
+                  color: lightenColor(theme.palette.main.accent, 0.1),
+                  margin: 'auto',
+                  width: 'fit-content',
+                  textShadow: 'none',
+                  fontSize: '27px',
+                  marginBottom: '20px',
+                }}
+              >
+                Podsumowanie
+              </div>
+              {examResults.questionsAnswered.map((data, index) => (
+                <AnswerContainer>
+                  <QuestionCategory>{data.question.category}</QuestionCategory>
+                  <QuestionTask>{data.question.task}</QuestionTask>
+                  <QuestionAnswerGrid
+                    isGrid={false}
+                    style={{
+                      gap: '0',
+                      marginTop: '0',
+                      marginBottom: '0',
+                      boxShadow: 'none',
+                      height: 'fit-content',
+                    }}
+                  >
+                    {data.question.answers.map((answer) => (
+                      <AnswerCard
+                        key={`answer_${answer.id}_result`}
+                        backgroundcolor={theme.palette.main.primary}
+                        isselected={data.selectedAnswerIds.includes(answer.id)}
+                        style={{
+                          height: '10px',
+                          minHeight: '10px',
+                          padding: '10px 10px 20px 10px',
+                          marginLeft: 'auto',
+                          marginRight: 'auto',
+                          marginTop: '10px',
+                          marginBottom: '10px',
+                          transfrom: 'none',
+                        }}
+                      >
+                        {answer.text}
+                      </AnswerCard>
+                    ))}
+                    {data.isCorrect ? (
+                      <span
+                        style={{
+                          color: theme.palette.main.success,
+                          margin: 'auto',
+                          marginTop: '20px',
+                        }}
+                      >
+                        Prawidłowa
+                      </span>
+                    ) : (
+                      <span
+                        style={{
+                          color: theme.palette.main.error,
+                          margin: 'auto',
+                          marginTop: '20px',
+                        }}
+                      >
+                        Nieprawidłowa
+                      </span>
+                    )}
+                    {index + 1 != examResults.questionsAnswered?.length && (
+                      <div
+                        style={{
+                          marginTop: '20px',
+                          borderTop: `3px solid ${theme.palette.main.accent}`,
+                        }}
+                      />
+                    )}
+                  </QuestionAnswerGrid>
+                </AnswerContainer>
+              ))}
+            </Details>
+          )}
+          <ButtonCustom onClick={fetchNextQuestion}>Dalej</ButtonCustom>
+        </ResultContainer>
+      )}
+      {currentQuestion && !examResults ? (
         <QuestionContainer>
           <QuestionHeader>
             {currentQuestion.questionNumber <= currentQuestion.totalBaseQuestions && (
@@ -285,7 +516,7 @@ function ExamParticipant() {
           <QuestionAnswerGrid isGrid={currentQuestion.answers.length > 4}>
             {currentQuestion.answers.map((answer) => (
               <AnswerCard
-                onClick={() => handleAnswerSelected(answer.id)}
+                onClick={() => (disableAnswers ? '' : handleAnswerSelected(answer.id))}
                 key={`answer_${answer.id}_question_${currentQuestion.id}`}
                 backgroundcolor={theme.palette.main.primary}
                 isselected={selectedAnswers.includes(answer.id)}
@@ -295,9 +526,13 @@ function ExamParticipant() {
             ))}
           </QuestionAnswerGrid>
           <ButtonContainer>
-              <ButtonCustom disabled={answerSent} onClick={handleAnswerSent}>
-                Odpowiedz
-              </ButtonCustom>
+            <ButtonCustom
+              disabled={answerSent}
+              onClick={handleAnswerSent}
+              style={{ maxWidth: '160px' }}
+            >
+              Odpowiedz
+            </ButtonCustom>
             {allowGoingBack && (
               <ButtonOptionContainer>
                 {currentQuestion.questionNumber > 1 && (
@@ -318,10 +553,28 @@ function ExamParticipant() {
                 )}
               </ButtonOptionContainer>
             )}
+            {currentQuestion.questionNumber == currentQuestion.totalBaseQuestions && (
+              <>
+                <div
+                  style={{
+                    borderTop: `3px solid ${theme.palette.main.accent}`,
+                    width: '100%',
+                    background: 'transparent',
+                  }}
+                />
+                <ButtonCustom onClick={() => handleUserExamFinish()} style={{ maxWidth: '230px' }}>
+                  {'Zakończ podejście'}
+                </ButtonCustom>
+              </>
+            )}
           </ButtonContainer>
         </QuestionContainer>
       ) : (
-        <></>
+        <NoMoreQuestions>
+          <h2>
+            Gratulacje, udało ci się odpowiedzieć na wszystkie pytania! Możesz opuścić sprawdzian.
+          </h2>
+        </NoMoreQuestions>
       )}
     </Container>
   );

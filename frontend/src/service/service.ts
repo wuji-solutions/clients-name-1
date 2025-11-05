@@ -136,6 +136,10 @@ const validateSessionID = () => {
   });
 };
 
+const userFinishedExam = () => {
+  return axios.post(BACKEND_ENDPOINT_EXTERNAL + '/games/exam/complete', {}, { withCredentials: true });
+};
+
 export const service = {
   startLobby: startLobby,
   joinGame: joinGame,
@@ -159,4 +163,5 @@ export const service = {
   getExamTimeRemainingAdmin: getExamTimeRemainingAdmin,
   parseQuestions: parseQuestions,
   validateSessionID: validateSessionID,
+  userFinishedExam: userFinishedExam,
 };
