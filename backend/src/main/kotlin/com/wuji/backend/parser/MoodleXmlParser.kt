@@ -106,6 +106,7 @@ object MoodleXmlParser {
         var imageBase64: String? = null
         val answers = mutableListOf<Answer>()
         val correctAnswerIds = mutableSetOf<Int>()
+        var difficultyLevel: DifficultyLevel = DifficultyLevel.EASY
 
         while (reader.nextTagOrEnd("question")) {
             when {
@@ -125,6 +126,10 @@ object MoodleXmlParser {
                     val (answer, isCorrect) = parseAnswer(reader)
                     answers.add(answer)
                     if (isCorrect) correctAnswerIds.add(answer.id)
+                }
+                reader.isStart("difficulty") -> {
+                    difficultyLevel =
+                        getDifficultyFromString(reader.readElementText().trim())
                 }
 
                 else -> reader.skip()
@@ -150,7 +155,7 @@ object MoodleXmlParser {
             questionTextFormat!!,
             answers,
             correctAnswerIds,
-            DifficultyLevel.EASY,
+            difficultyLevel,
             imageUrl,
             imageBase64,
             tags)
@@ -288,4 +293,14 @@ object MoodleXmlParser {
             "markdown" -> TextFormat.MARKDOWN
             else -> TextFormat.HTML
         }
+
+    fun getDifficultyFromString(tag: String): DifficultyLevel {
+        return when (tag.lowercase()) {
+            "easy" -> DifficultyLevel.EASY
+            "medium" -> DifficultyLevel.MEDIUM
+            "hard" -> DifficultyLevel.HARD
+            else ->
+                throw UnsupportedQuestionDifficultyException(tag.lowercase())
+        }
+    }
 }
