@@ -38,7 +38,7 @@ class BoardService(
         index: Int,
         nickname: String
     ): Player<out PlayerDetails> {
-        if (hasJoined(index, nickname))
+        if (hasJoined(index))
             throw PlayerAlreadyJoinedException(index, nickname)
 
         return playerService
@@ -72,13 +72,13 @@ class BoardService(
         sseEventService.sendGameFinish()
     }
 
-    override fun kickPlayer(index: Int, nickname: String) {
+    override fun kickPlayer(index: Int) {
         val player = game.findPlayerByIndex(index)
         game.players.remove(player)
         sseEventService.sendPlayerKickedEvent(player.toDto())
     }
 
-    override fun hasJoined(index: Int, nickname: String): Boolean =
+    override fun hasJoined(index: Int): Boolean =
         try {
             game.findPlayerByIndex(index)
             true
