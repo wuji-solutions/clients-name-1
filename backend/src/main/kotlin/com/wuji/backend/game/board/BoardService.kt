@@ -42,7 +42,7 @@ class BoardService(
             throw PlayerAlreadyJoinedException(index, nickname)
 
         return playerService
-            .createPlayer(index, BoardPlayerDetails())
+            .createPlayer(index, nickname,BoardPlayerDetails())
             .also { player -> game.players.add(player) }
             .also { player -> game.addPlayer(player) }
             .also { sseUsersService.sendPlayers(listPlayers()) }

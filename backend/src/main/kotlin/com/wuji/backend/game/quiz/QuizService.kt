@@ -39,7 +39,7 @@ class QuizService(
             throw PlayerAlreadyJoinedException(index, nickname)
 
         return playerService
-            .createPlayer(index, QuizPlayerDetails())
+            .createPlayer(index, nickname, QuizPlayerDetails())
             .also { player -> quizGame.players.add(player) }
             .also { sseService.sendPlayers(listPlayers()) }
     }
