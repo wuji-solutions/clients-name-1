@@ -94,6 +94,7 @@ class ExamService(
                             1000L)
                     game.gameState = GameState.FINISHED
                     sseEventService.sendGameFinish()
+                    gameRegistry.unregister()
                 }
             }
             GameState.FINISHING -> return

@@ -133,7 +133,10 @@ class QuizServiceTest {
 
     @Test
     fun `finishGame should finish quiz and send SSE`() {
-        every { quizGame.finish() } just Runs
+        every {
+            quizGame.finish()
+            gameRegistry.unregister()
+        } just Runs
 
         quizService.finishGame()
 

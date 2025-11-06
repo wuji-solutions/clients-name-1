@@ -70,6 +70,7 @@ class BoardService(
     override fun finishGame() {
         game.finish()
         sseEventService.sendGameFinish()
+        gameRegistry.unregister()
     }
 
     override fun kickPlayer(index: Int) {

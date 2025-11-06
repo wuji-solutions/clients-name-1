@@ -79,6 +79,7 @@ class QuizService(
     override fun finishGame() {
         quizGame.finish()
         sseEventService.sendGameFinish()
+        gameRegistry.unregister()
     }
 
     fun getGameSummary(): QuizSummaryResponseDto {
