@@ -313,82 +313,7 @@ function ExamParticipant() {
   const handleUserExamFinish = () => {
     service
       .userFinishedExam()
-      .then((response) =>
-        setExamResults({
-          ...response.data,
-          questionsAnswered: [
-            {
-              question: {
-                id: 1,
-                category: 'Biologia',
-                type: 'TEXT',
-                task: 'Które z poniższych zwierząt jest ssakiem?',
-                answers: [
-                  { id: 1, text: 'Żaba' },
-                  { id: 2, text: 'Delfin' },
-                  { id: 3, text: 'Papuga' },
-                ],
-                difficultyLevel: 'EASY',
-              },
-              selectedAnswerIds: [2],
-              isCorrect: true,
-              pointsEarned: 10,
-            },
-            {
-              question: {
-                id: 2,
-                category: 'Matematyka',
-                type: 'TEXT',
-                task: 'Ile wynosi pierwiastek kwadratowy z 64?',
-                answers: [
-                  { id: 1, text: '6' },
-                  { id: 2, text: '8' },
-                  { id: 3, text: '10' },
-                ],
-                difficultyLevel: 'EASY',
-              },
-              selectedAnswerIds: [2],
-              isCorrect: true,
-              pointsEarned: 5,
-            },
-            {
-              question: {
-                id: 3,
-                category: 'Geografia',
-                type: 'SINGLE_CHOICE',
-                task: 'Stolica Francji to:',
-                answers: [
-                  { id: 1, text: 'Paryż' },
-                  { id: 2, text: 'Londyn' },
-                  { id: 3, text: 'Berlin' },
-                ],
-                difficultyLevel: 'EASY',
-              },
-              selectedAnswerIds: [1],
-              isCorrect: true,
-              pointsEarned: 5,
-            },
-            {
-              question: {
-                id: 4,
-                category: 'Historia',
-                type: 'MULTIPLE_CHOICE',
-                task: 'Które z poniższych wydarzeń miały miejsce w XX wieku?',
-                answers: [
-                  { id: 1, text: 'II wojna światowa' },
-                  { id: 2, text: 'Bitwa pod Grunwaldem' },
-                  { id: 3, text: 'Lądowanie na Księżycu' },
-                  { id: 4, text: 'Reformacja' },
-                ],
-                difficultyLevel: 'MEDIUM',
-              },
-              selectedAnswerIds: [1, 3],
-              isCorrect: true,
-              pointsEarned: 15,
-            },
-          ],
-        })
-      )
+      .then((response) => setExamResults(response.data))
       .catch((error) =>
         setError(
           'Podczas pobierania wyników sprawdzianu wystąpił błąd:\n' + error.response.data.message
@@ -570,11 +495,13 @@ function ExamParticipant() {
           </ButtonContainer>
         </QuestionContainer>
       ) : (
-        <NoMoreQuestions>
-          <h2>
-            Gratulacje, udało ci się odpowiedzieć na wszystkie pytania! Możesz opuścić sprawdzian.
-          </h2>
-        </NoMoreQuestions>
+        !examResults && (
+          <NoMoreQuestions>
+            <h2>
+              Gratulacje, udało ci się odpowiedzieć na wszystkie pytania! Możesz opuścić sprawdzian.
+            </h2>
+          </NoMoreQuestions>
+        )
       )}
     </Container>
   );

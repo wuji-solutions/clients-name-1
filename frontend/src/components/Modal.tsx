@@ -1,7 +1,6 @@
 import { ReactNode } from "react";
 import styled, { keyframes, css } from "styled-components";
 
-// Animations
 const fadeIn = keyframes`
   from { opacity: 0; }
   to { opacity: 1; }
@@ -22,12 +21,10 @@ const slideUp = keyframes`
   to { transform: translateY(-100%); }
 `;
 
-// Props interface
 interface ModalProps {
   isClosing?: boolean;
 }
 
-// Styled components
 const ModalOverlay = styled.div<ModalProps>`
   position: fixed;
   inset: 0;
@@ -35,8 +32,10 @@ const ModalOverlay = styled.div<ModalProps>`
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  overflow-y: scroll;
+  overflow-y: auto;
   z-index: 999;
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
 
   animation: ${({ isClosing }) =>
     isClosing

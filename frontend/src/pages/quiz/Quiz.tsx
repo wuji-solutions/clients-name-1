@@ -31,6 +31,8 @@ export const QuestionHeader = styled.div(() => ({
   flexDirection: 'column',
   gap: '15px',
   boxShadow: `0 3px 0 0 ${theme.palette.main.accent}`,
+  width: '100%',
+  paddingBottom: '10px',
 }));
 
 const QuestionCategory = styled.span(() => ({

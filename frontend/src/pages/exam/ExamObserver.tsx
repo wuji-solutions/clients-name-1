@@ -39,7 +39,8 @@ const PanelContainer = styled.div({
 
 const UserStatsContainer = styled.div({
   padding: '10px',
-  border: `3px solid ${theme.palette.main.accent}`,
+  border: `4px solid ${theme.palette.main.accent}`,
+  boxShadow: `0 4px 0 0 ${theme.palette.main.accent}`,
   borderRadius: '15px',
   width: '60%',
   height: '600px',
@@ -57,7 +58,8 @@ const EmptyStats = styled.div({
 
 const GameConfigContainer = styled.div({
   padding: '10px',
-  border: `3px solid ${theme.palette.main.accent}`,
+  border: `4px solid ${theme.palette.main.accent}`,
+  boxShadow: `0 4px 0 0 ${theme.palette.main.accent}`,
   borderRadius: '15px',
   width: '35%',
   height: '600px',

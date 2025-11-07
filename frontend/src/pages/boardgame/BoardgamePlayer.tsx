@@ -16,6 +16,7 @@ import theme from '../../common/theme';
 import Star from '../../components/StarRating';
 import { useError } from '../../providers/ErrorProvider';
 import { getBoardSetup, parsePlayerPositions } from './BoardgameObserver';
+import ArrowIndicator from '../../components/ArrowIndicator';
 
 const mobile = isMobileView();
 
@@ -23,7 +24,7 @@ export const Container = styled.div(() => ({
   width: '99%',
   height: '100%',
   margin: 'auto',
-  overflow: 'hidden',
+  overflowX: 'hidden',
 }));
 
 const ActionContainer = styled.div(() => ({
@@ -389,7 +390,7 @@ function BoardgamePlayer() {
       <SSEOnEventListener setGameFinished={setGameFinished} />
       {isAnswering && (
         <ToggleModalButton onClick={toggleAnswerModal} disabled={modalClosing}>
-          {showAnswerModal ? '^' : 'v'}
+          <ArrowIndicator direction={showAnswerModal ? 'up' : 'down'} />
         </ToggleModalButton>
       )}
       {showAnswerModal && currentQuestion && (

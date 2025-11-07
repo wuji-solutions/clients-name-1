@@ -8,7 +8,7 @@ export const ButtonCustom = styled.button({
   marginLeft: 'auto',
   marginRight: 'auto',
   background: theme.palette.button.primary,
-  border: `1px solid ${theme.palette.button.primary}`,
+  border: `2px solid ${theme.palette.button.accent}`,
   boxShadow: `0 5px 0 0 ${theme.palette.button.accent}`,
   color: '#FFF',
   borderRadius: '10px',

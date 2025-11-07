@@ -13,8 +13,8 @@ const theme = {
       additional: '#A855F7',
     },
     button: {
-      primary: '#1349eb',
-      accent: darkenColor('#1349eb', 0.1),
+      primary: '#2758e8',
+      accent: darkenColor('#1349eb', 0.05),
       background: 'secondary',
     },
   },

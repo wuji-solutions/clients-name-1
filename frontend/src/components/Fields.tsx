@@ -5,13 +5,18 @@ import { lightenColor } from '../common/utils';
 export const CustomInput = styled.input({
   width: '90%',
   height: '50px',
-  paddingLeft: '20px',
-  border: `5px solid ${theme.palette.main.accent}`,
+  margin: 'auto',
+  border: `4px solid ${theme.palette.main.accent}`,
+  boxShadow: `0 3px 0 0 ${theme.palette.main.accent}`,
   borderRadius: '10px',
   backgroundColor: `${lightenColor( theme.palette.main.accent, 0.02)}`,
-  fontSize: '15px',
+  fontSize: '19px',
   color: `#fff`,
   fontWeight: '550',
+  textAlign: 'center',
+  '&::placeholder': {
+    fontSize: '15px',
+  },
 });
 
 export const CustomInputFullWidth = styled(CustomInput)`
