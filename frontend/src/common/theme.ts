@@ -14,7 +14,7 @@ const theme = {
     },
     button: {
       primary: '#2758e8',
-      accent: darkenColor('#1349eb', 0.05),
+      accent: darkenColor('#1349eb', 0.03),
       background: 'secondary',
     },
   },
