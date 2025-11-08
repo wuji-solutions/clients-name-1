@@ -22,9 +22,9 @@ interface GameService {
 
     fun finishGame()
 
-    fun kickPlayer(index: Int, nickname: String)
+    fun kickPlayer(index: Int)
 
-    fun hasJoined(index: Int, nickname: String): Boolean
+    fun hasJoined(index: Int): Boolean
 
     fun getPlayer(index: Int): Player<out PlayerDetails>
 

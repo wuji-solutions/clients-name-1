@@ -135,14 +135,14 @@ class ExamServiceTest {
     @Test
     fun `hasJoined should return true if player found`() {
         every { examGame.findPlayerByIndex(1) } returns mockk()
-        assert(service.hasJoined(1, "test"))
+        assert(service.hasJoined(1))
     }
 
     @Test
     fun `hasJoined should return false if player not found`() {
         every { examGame.findPlayerByIndex(1) } throws
             PlayerNotFoundException(1)
-        assert(!service.hasJoined(1, "test"))
+        assert(!service.hasJoined(1))
     }
 
     @Test

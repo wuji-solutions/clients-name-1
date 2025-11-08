@@ -203,6 +203,7 @@ function Configurations() {
     zeroPointsOnCheating: true,
     markQuestionOnCheating: false,
     notifyTeacherOnCheating: true,
+    showDetailedFinishFeedback: true,
     pointsPerDifficulty: {
       EASY: 1,
       MEDIUM: 2,
