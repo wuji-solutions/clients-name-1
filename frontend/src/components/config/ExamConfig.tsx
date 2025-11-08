@@ -21,6 +21,7 @@ export type ExamSettings = {
   notifyTeacherOnCheating: boolean;
   pointsPerDifficulty: Record<DifficultyLevel, number>;
   allowGoingBack: boolean;
+  showDetailedFinishFeedback: boolean;
   additionalTimeToAnswerAfterFinishInSeconds: number;
 };
 
@@ -100,6 +101,26 @@ export default function ExamConfig({
           style={{ width: '3rem', margin: 0 }}
           checked={settings.allowGoingBack}
           onChange={(e) => setSettings({ ...settings, allowGoingBack: e.target.checked })}
+        />
+      </LabeledCheckboxContainer>
+      <LabeledCheckboxContainer>
+        <CenteredLabel>Czy pokazywać uczniowi dokładny feedback (oceniony egzamin)</CenteredLabel>
+        <CheckboxInput
+          type="checkbox"
+          style={{ width: '3rem', margin: 0 }}
+          checked={settings.showDetailedFinishFeedback}
+          onChange={(e) =>
+            setSettings({ ...settings, showDetailedFinishFeedback: e.target.checked })
+          }
+        />
+      </LabeledCheckboxContainer>
+      <LabeledCheckboxContainer>
+        <CenteredLabel>Czy pytania mają być losowane z dostępnej puli.</CenteredLabel>
+        <CheckboxInput
+          type="checkbox"
+          style={{ width: '3rem', margin: 0 }}
+          checked={settings.randomizeQuestions}
+          onChange={(e) => setSettings({ ...settings, randomizeQuestions: e.target.checked })}
         />
       </LabeledCheckboxContainer>
       <LabeledCheckboxContainer>
