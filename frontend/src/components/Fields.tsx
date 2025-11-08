@@ -17,6 +17,9 @@ export const CustomInput = styled.input({
   '&::placeholder': {
     fontSize: '15px',
   },
+  '&::-webkit-inner-spin-button': {
+    '-webkit-appearance': 'none',
+  }
 });
 
 export const CustomInputFullWidth = styled(CustomInput)`
@@ -35,5 +38,6 @@ export const CenteredLabel = styled.label`
   display: flex;
   align-items: center;
   height: 50px;
-  font-size: 130%;
+  font-size: 125%;
+  max-width: 350px;
 `;

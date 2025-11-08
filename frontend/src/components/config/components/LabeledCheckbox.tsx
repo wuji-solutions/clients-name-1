@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+import theme from '../../../common/theme';
+import { lightenColor } from '../../../common/utils';
 
 export const LabeledCheckboxContainer = styled.div({
   display: 'flex',
@@ -9,4 +11,8 @@ export const LabeledCheckboxContainer = styled.div({
   '& > :first-child': {
     flex: '0 0 88%',
   },
+
+  gap: '100px',
+  color: lightenColor(theme.palette.main.accent, 0.1),
+  textShadow: 'none',
 });

@@ -65,7 +65,7 @@ const InstructionContent = styled.div({
 });
 
 const ModeContainer = styled.div({
-  width: '40%',
+  width: '30%',
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'space-between',
@@ -122,6 +122,8 @@ const ModeOption = styled.div<{ active: boolean }>(({ active }) => ({
     : theme.palette.main.background,
   transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
   transform: active ? 'none' : 'translateY(10px)',
+
+  cursor: 'pointer',
 }));
 
 const ModeOptionHeader = styled.div({
@@ -131,7 +133,7 @@ const ModeOptionHeader = styled.div({
 });
 
 const OptionsContainer = styled.div({
-  width: '35%',
+  width: '40%',
   display: 'flex',
   flexDirection: 'column',
 });

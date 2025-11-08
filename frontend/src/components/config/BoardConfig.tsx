@@ -1,11 +1,14 @@
 import { useState, Dispatch, SetStateAction } from 'react';
 import { DifficultyLevel } from '../../common/types';
-import { CenteredLabel, CheckboxInput } from '../Fields';
+import { CenteredLabel } from '../Fields';
 import { LabeledCheckboxContainer } from './components/LabeledCheckbox';
 import { ButtonCustom } from '../Button';
 import PerCategoryPromotionModal from './PerCategoryPromotionModal';
 import DifficultyPoints from './components/DifficultyPoints';
 import OtherStuff from './components/BoardAndExamCommonFields';
+import { lightenColor } from '../../common/utils';
+import theme from '../../common/theme';
+import ToggleSwitch from '../ToggleSwitch';
 
 export type BoardSettings = {
   totalDurationMinutes: number;
@@ -25,8 +28,21 @@ interface Props {
 export default function BoardConfig({ settings, setSettings, categoryNames, parseError }: Props) {
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState<boolean>(false);
   return (
-    <>
-      <p className="centered" style={{ fontSize: '2em' }}>
+    <div
+      style={{
+        display: 'flex',
+        gap: '10px',
+        flexDirection: 'column',
+      }}
+    >
+      <p
+        className="centered"
+        style={{
+          fontSize: '2em',
+          color: lightenColor(theme.palette.main.accent, 0.1),
+          textShadow: 'none',
+        }}
+      >
         Ustawienia planszówki
       </p>
       <OtherStuff settings={settings} setSettings={setSettings} />
@@ -34,10 +50,7 @@ export default function BoardConfig({ settings, setSettings, categoryNames, pars
         <CenteredLabel htmlFor="setShowLeaderboard">
           Czy ranking uczniów powinien się wyświetlać
         </CenteredLabel>
-        <CheckboxInput
-          type="checkbox"
-          id="setShowLeaderboard"
-          style={{ width: '3rem', margin: 0 }}
+        <ToggleSwitch
           checked={settings.showLeaderboard}
           onChange={(e) => setSettings({ ...settings, showLeaderboard: e.target.checked })}
         />
@@ -54,12 +67,12 @@ export default function BoardConfig({ settings, setSettings, categoryNames, pars
       )}
       <LabeledCheckboxContainer>
         <CenteredLabel htmlFor="setEndImmediatelyAfterTime">
-          Liczba poprawnych odpowiedzi potrzebnych do awansu w danej kategorii
+          Zasady awansu w kategorii
         </CenteredLabel>
         <ButtonCustom onClick={() => setIsCategoryModalOpen(true)} style={{ fontSize: '0.75em' }}>
           Edytuj
         </ButtonCustom>
       </LabeledCheckboxContainer>
-    </>
+    </div>
   );
 }

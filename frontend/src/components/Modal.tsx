@@ -28,7 +28,7 @@ interface ModalProps {
 const ModalOverlay = styled.div<ModalProps>`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.95);
   display: flex;
   justify-content: center;
   align-items: flex-start;

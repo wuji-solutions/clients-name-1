@@ -11,6 +11,8 @@ import { applySettingsFromDto, settingsToConfig } from './utils';
 import CreateConfig from './CreateConfig';
 import { service } from '../../service/service';
 import { useError } from '../../providers/ErrorProvider';
+import { lightenColor } from '../../common/utils';
+import theme from '../../common/theme';
 
 interface Props {
   readonly mode: mode;
@@ -96,6 +98,9 @@ export default function GameConfig({
         display: 'flex',
         flexDirection: 'column',
         width: '95%',
+        height: '80%',
+        padding: '15px',
+        justifyContent: 'space-between',
       }}
     >
       {isEditDialogOpen && (
@@ -105,23 +110,26 @@ export default function GameConfig({
         <CreateConfig config={config} mode={mode} setIsOpen={setIsOpenSaveConfig} />
       )}
 
-      <h1 className="centered" style={{ fontSize: '300%' }}>
+      <h1
+        className="centered"
+        style={{
+          fontSize: '2.2em',
+          color: lightenColor(theme.palette.main.accent, 0.1),
+          textShadow: 'none',
+          paddingBottom: '20px',
+        }}
+      >
         Ustawienia
       </h1>
-      <ButtonCustom style={{ width: '40%' }} onClick={editConfig}>
-        Zarządzaj
-      </ButtonCustom>
+
       <div
         style={{
           height: '50vh',
           display: 'flex',
           flexDirection: 'column',
-          marginTop: '25px',
         }}
       >
         <div style={{ overflowY: 'scroll', overflowX: 'hidden' }}>
-          <Divider />
-
           <CommonConfig commonSettings={commonSettings} setCommonSettings={setCommonSettings} />
           <Divider />
           {mode === 'quiz' && <QuizConfig />}
@@ -143,10 +151,14 @@ export default function GameConfig({
           )}
         </div>
       </div>
-
-      <ButtonCustom style={{ width: '40%' }} onClick={saveConfig}>
-        Zapisz
-      </ButtonCustom>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <ButtonCustom style={{ width: '40%' }} onClick={saveConfig}>
+          Zapisz
+        </ButtonCustom>
+        <ButtonCustom style={{ width: '50%', marginBottom: '0' }} onClick={editConfig}>
+          Zapisane ustawienia
+        </ButtonCustom>
+      </div>
     </div>
   );
 }

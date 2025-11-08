@@ -1,8 +1,9 @@
 import { LabeledCheckboxContainer } from './LabeledCheckbox';
-import { CenteredLabel, CheckboxInput } from '../../Fields';
-import { CleanInput } from './ConfigInput';
+import { CenteredLabel, CheckboxInput, CustomInput } from '../../Fields';
 import { BoardSettings } from '../BoardConfig';
 import { ExamSettings } from '../ExamConfig';
+import ToggleSwitch from '../../ToggleSwitch';
+import theme from '../../../common/theme';
 
 interface Props {
   settings: BoardSettings | ExamSettings;
@@ -13,8 +14,9 @@ export default function BoardAndExamCommonFields({ settings, setSettings }: Prop
   return (
     <>
       <LabeledCheckboxContainer>
-        <CenteredLabel>Podaj łączny czas trwania gry w minutach</CenteredLabel>
-        <CleanInput
+        <CenteredLabel>Czas trwania gry {'(min)'}</CenteredLabel>
+        <CustomInput
+          style={{ height: '35px' }}
           type="number"
           value={settings.totalDurationMinutes}
           onChange={(e) =>
@@ -27,12 +29,9 @@ export default function BoardAndExamCommonFields({ settings, setSettings }: Prop
       </LabeledCheckboxContainer>
       <LabeledCheckboxContainer>
         <CenteredLabel htmlFor="setEndImmediatelyAfterTime">
-          Czy gra ma skończyć się automatycznie po upływie czasu
+          Koniec gry po upływie czasu
         </CenteredLabel>
-        <CheckboxInput
-          type="checkbox"
-          id="setEndImmediatelyAfterTime"
-          style={{ width: '3rem', margin: 0 }}
+        <ToggleSwitch
           checked={settings.endImmediatelyAfterTime}
           onChange={(e) => setSettings({ ...settings, endImmediatelyAfterTime: e.target.checked })}
         />
