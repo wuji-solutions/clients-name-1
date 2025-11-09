@@ -1,11 +1,10 @@
 import styled from 'styled-components';
 import theme from '../../../common/theme';
-import { lightenColor } from '../../../common/utils';
 
 export const LabeledCheckboxContainer = styled.div({
   display: 'flex',
   justifyContent: 'space-between',
-  width: '100%',
+  width: '33em',
   margin: '0.5rem 0',
 
   '& > :first-child': {
@@ -13,6 +12,6 @@ export const LabeledCheckboxContainer = styled.div({
   },
 
   gap: '100px',
-  color: lightenColor(theme.palette.main.accent, 0.1),
+  color: theme.palette.main.info_text,
   textShadow: 'none',
 });

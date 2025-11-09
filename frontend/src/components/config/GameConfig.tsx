@@ -11,7 +11,6 @@ import { applySettingsFromDto, settingsToConfig } from './utils';
 import CreateConfig from './CreateConfig';
 import { service } from '../../service/service';
 import { useError } from '../../providers/ErrorProvider';
-import { lightenColor } from '../../common/utils';
 import theme from '../../common/theme';
 
 interface Props {
@@ -114,7 +113,7 @@ export default function GameConfig({
         className="centered"
         style={{
           fontSize: '2.2em',
-          color: lightenColor(theme.palette.main.accent, 0.1),
+          color: theme.palette.main.info_text,
           textShadow: 'none',
           paddingBottom: '20px',
         }}
@@ -124,12 +123,12 @@ export default function GameConfig({
 
       <div
         style={{
-          height: '50vh',
+          height: '57vh',
           display: 'flex',
           flexDirection: 'column',
         }}
       >
-        <div style={{ overflowY: 'scroll', overflowX: 'hidden' }}>
+        <div style={{ overflow: 'auto' }}>
           <CommonConfig commonSettings={commonSettings} setCommonSettings={setCommonSettings} />
           <Divider />
           {mode === 'quiz' && <QuizConfig />}
@@ -151,12 +150,12 @@ export default function GameConfig({
           )}
         </div>
       </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-        <ButtonCustom style={{ width: '40%' }} onClick={saveConfig}>
-          Zapisz
-        </ButtonCustom>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '20px' }}>
         <ButtonCustom style={{ width: '50%', marginBottom: '0' }} onClick={editConfig}>
           Zapisane ustawienia
+        </ButtonCustom>
+        <ButtonCustom style={{ width: '40%' }} onClick={saveConfig}>
+          Zapisz
         </ButtonCustom>
       </div>
     </div>

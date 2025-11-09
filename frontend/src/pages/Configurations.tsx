@@ -47,7 +47,7 @@ const InstructionHeader = styled.div({
   alignContent: 'center',
   borderRadius: '5px',
 
-  color: lightenColor(theme.palette.main.accent, 0.1),
+  color: theme.palette.main.info_text,
   textShadow: 'none',
   fontSize: '1.65em',
 });
@@ -65,7 +65,8 @@ const InstructionContent = styled.div({
 });
 
 const ModeContainer = styled.div({
-  width: '30%',
+  width: '100%',
+  maxWidth: '30%',
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'space-between',
@@ -74,13 +75,13 @@ const ModeContainer = styled.div({
 
 const ModeHeader = styled.div({
   margin: 'auto',
-  color: lightenColor(theme.palette.main.accent, 0.1),
+  color: theme.palette.main.info_text,
   textShadow: 'none',
   paddingLeft: '10px',
   paddingRight: '10px',
-  width: '100%',
+  width: '80%',
   maxWidth: '450px',
-  minWidth: '350px',
+  minWidth: '300px',
   height: 'fit-content',
   marginTop: '50px',
   textAlign: 'center',
@@ -110,7 +111,9 @@ const ModeOption = styled.div<{ active: boolean }>(({ active }) => ({
   borderRadius: '20px',
 
   height: '130px',
-  width: '280px',
+  width: '15rem',
+  maxWidth: '280px',
+  minWidth: '100px',
   padding: '10px',
 
   '&:hover': {
@@ -127,7 +130,7 @@ const ModeOption = styled.div<{ active: boolean }>(({ active }) => ({
 }));
 
 const ModeOptionHeader = styled.div({
-  color: lightenColor(theme.palette.main.accent, 0.1),
+  color: theme.palette.main.info_text,
   textShadow: 'none',
   fontSize: '1.3em',
 });
@@ -139,7 +142,7 @@ const OptionsContainer = styled.div({
 });
 
 const ActionButtonContainer = styled.div({
-  marginTop: 'auto',
+  marginTop: '20px',
   display: 'flex',
   flexDirection: 'column',
   gap: '20px',
@@ -388,7 +391,7 @@ function Configurations() {
           </ModeOption>
         </ModeContent>
         <ActionButtonContainer>
-          <ButtonCustom onClick={() => startLobby()}>Otwórz poczekalnię</ButtonCustom>
+          <ButtonCustom onClick={() => startLobby()} style={{maxWidth: '250px', minWidth: '100px', width: '100%'}} >Otwórz poczekalnię</ButtonCustom>
           <ButtonCustom onClick={() => navigate('/')}>Powrót</ButtonCustom>
         </ActionButtonContainer>
       </ModeContainer>

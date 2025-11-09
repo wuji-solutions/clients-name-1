@@ -6,6 +6,7 @@ import Modal from '../Modal';
 import { CenteredLabel } from '../Fields';
 import Divider from '../Divider';
 import { useError } from '../../providers/ErrorProvider';
+import theme from '../../common/theme';
 
 interface Props {
   readonly mode: mode;
@@ -61,42 +62,61 @@ export default function ManageConfig({ mode, setIsEditDialogOpen, setConfig }: P
           flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
-          height: '100vh',
+          height: '90vh',
           textAlign: 'center',
         }}
       >
-        <div style={{ height: '40%' }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '10px',
+            justifyContent: 'space-evenly',
+            height: '70%',
+          }}
+        >
           {isError ? (
-            <h1>Nie udało się pobrać listy konfiguracji</h1>
+            <h1 style={{ color: theme.palette.main.info_text, textShadow: 'none' }}>
+              Nie udało się pobrać listy konfiguracji
+            </h1>
           ) : (
             <>
-              <h1>Lista dostępnych konfiguracji dla {modeToString(mode)}</h1>
+              <h1 style={{ color: theme.palette.main.info_text, textShadow: 'none' }}>
+                Lista dostępnych konfiguracji dla {modeToString(mode)}
+              </h1>
               <Divider></Divider>
-              <div style={{ margin: '25px' }}></div>
               {configList.length === 0 && <h2>Brak zapisanych konfiguracji</h2>}
               {configList.map((configName) => {
                 return (
                   <div
                     key={`nazwa_konfiguracji_${configList}`}
-                    style={{ display: 'flex', margin: '10px' }}
+                    style={{
+                      display: 'flex',
+                      margin: '10px',
+                      color: theme.palette.main.info_text,
+                      textShadow: 'none',
+                      justifyContent: 'space-between'
+                    }}
                   >
-                    <CenteredLabel>{configName}</CenteredLabel>
-                    <ButtonCustom
-                      style={{ width: '30%', margin: '0 0 0 auto' }}
-                      onClick={() => selectConfig(configName)}
-                    >
-                      Wczytaj
-                    </ButtonCustom>
-                    <ButtonCustom
-                      style={{ width: '30%', margin: 0 }}
-                      onClick={() => removeConfig(configName)}
-                    >
-                      Usuń
-                    </ButtonCustom>
+                    <CenteredLabel style={{ fontSize: '22px' }}>{configName}</CenteredLabel>
+                    <div style={{width: '60%', display: 'flex', gap: '20px'}}>
+                      <ButtonCustom
+                        style={{ width: '30%', margin: '0 0 0 auto' }}
+                        onClick={() => selectConfig(configName)}
+                      >
+                        Wczytaj
+                      </ButtonCustom>
+                      <ButtonCustom
+                        style={{ width: '30%', margin: 0 }}
+                        onClick={() => removeConfig(configName)}
+                        color={theme.palette.main.error}
+                      >
+                        Usuń
+                      </ButtonCustom>
+                    </div>
                   </div>
                 );
               })}
-              <div style={{ margin: '25px' }}></div>
               <Divider></Divider>
             </>
           )}

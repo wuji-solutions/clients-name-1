@@ -1,4 +1,4 @@
-import { darkenColor } from "./utils";
+import { darkenColor, lightenColor } from "./utils";
 
 const theme = {
   palette: {
@@ -11,6 +11,7 @@ const theme = {
       success: '#22C55E',
       error: '#EF4444',
       additional: '#A855F7',
+      info_text: lightenColor('#1c2c36', 0.1),
     },
     button: {
       primary: '#2758e8',

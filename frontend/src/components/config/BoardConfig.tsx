@@ -6,7 +6,6 @@ import { ButtonCustom } from '../Button';
 import PerCategoryPromotionModal from './PerCategoryPromotionModal';
 import DifficultyPoints from './components/DifficultyPoints';
 import OtherStuff from './components/BoardAndExamCommonFields';
-import { lightenColor } from '../../common/utils';
 import theme from '../../common/theme';
 import ToggleSwitch from '../ToggleSwitch';
 
@@ -39,7 +38,7 @@ export default function BoardConfig({ settings, setSettings, categoryNames, pars
         className="centered"
         style={{
           fontSize: '2em',
-          color: lightenColor(theme.palette.main.accent, 0.1),
+          color: theme.palette.main.info_text,
           textShadow: 'none',
         }}
       >

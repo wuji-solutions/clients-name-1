@@ -2,20 +2,24 @@ import { styled } from 'styled-components';
 import theme from '../common/theme';
 import { darkenColor } from '../common/utils';
 
-export const ButtonCustom = styled.button({
+export const ButtonCustom = styled.button<{color?: string}>(({color}) => {
+  
+  const color_base = color ? color : theme.palette.button.primary;
+  const color_base_accent = color ? darkenColor(color, 0.15) : theme.palette.button.accent;
+  return ({
   width: '250px',
   minHeight: '50px',
   marginLeft: 'auto',
   marginRight: 'auto',
-  background: theme.palette.button.primary,
-  border: `2px solid ${theme.palette.button.accent}`,
-  boxShadow: `0 5px 0 0 ${theme.palette.button.accent}`,
+  background: color_base,
+  border: `2px solid ${color_base_accent}`,
+  boxShadow: `0 5px 0 0 ${color_base_accent}`,
   color: '#FFF',
   borderRadius: '10px',
   '&:hover': {
-    background: darkenColor(theme.palette.button.primary, 0.05),
-    border: `1px solid ${darkenColor(theme.palette.button.primary, 0.05)}`,
-    boxShadow: `0 5px 0 0 ${theme.palette.button.accent}`,
+    background: darkenColor(color_base, 0.05),
+    border: `1px solid ${darkenColor(color_base, 0.05)}`,
+    boxShadow: `0 5px 0 0 ${color_base_accent}`,
     cursor: 'pointer',
   },
   '&:disabled': {
@@ -28,7 +32,7 @@ export const ButtonCustom = styled.button({
   fontSize: '20px',
   fontWeight: '700',
   textShadow: '1px 1px 1px #000000',
-});
+})});
 
 interface ButtonChoseProps {
   active?: boolean;
@@ -99,3 +103,38 @@ const FullScreenButtonPure = styled.button({
 export const FullScreenButton = () => {
   return <FullScreenButtonPure onClick={toggleFullscreen}>{'< >'}</FullScreenButtonPure>;
 };
+
+interface RoundCheckButtonProps {
+  selected: boolean;
+  onClick: () => void;
+}
+
+const CircleButton = styled.button<{ selected: boolean }>`
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 3px solid #1c2c36;
+  background: ${(props) => (props.selected ? "#1c2c36" : "transparent")};
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    transform: scale(1.06);
+  }
+`;
+
+const RoundCheckButton = ({ selected, onClick }: RoundCheckButtonProps) => {
+  return (
+    <CircleButton selected={selected} onClick={onClick}>
+      {selected ? "✔" : "✕"}
+    </CircleButton>
+  );
+};
+
+export default RoundCheckButton;

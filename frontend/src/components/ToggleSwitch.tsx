@@ -1,6 +1,7 @@
 import { ChangeEvent, FC } from 'react';
 import styled from 'styled-components';
 import theme from '../common/theme';
+import { lightenColor } from '../common/utils';
 
 interface ToggleSwitchProps {
   checked: boolean;
@@ -26,11 +27,11 @@ const HiddenCheckbox = styled.input.attrs({ type: 'checkbox' })`
 const Slider = styled.span`
   position: absolute;
   inset: 0;
-  background: #1c2c36;
+  background: ${lightenColor( theme.palette.main.accent, 0.02)};
   border-radius: 30px;
   transition: 0.25s;
   border: 4px solid ${theme.palette.main.accent};
-  boxshadow: 0 4px 0 0 ${theme.palette.main.accent};
+  boxshadow: 0 4px 0px 0 ${theme.palette.main.accent};
 `;
 
 const Thumb = styled.span<{ checked: boolean; colorOn?: string; colorOff?: string }>`

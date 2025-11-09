@@ -43,13 +43,13 @@ const QuestionHeader = styled.div({
 });
 
 const AdditionalInfo = styled.div({
-  color: lightenColor(theme.palette.main.accent, 0.1),
+  color: theme.palette.main.info_text,
   textAlign: 'center',
   textShadow: 'none',
 });
 
 const ExamFinishedContainer = styled.div({
-  color: lightenColor(theme.palette.main.accent, 0.1),
+  color: theme.palette.main.info_text,
   textAlign: 'center',
   textShadow: 'none',
   height: '100%',
@@ -346,7 +346,7 @@ function ExamParticipant() {
             <Details>
               <div
                 style={{
-                  color: lightenColor(theme.palette.main.accent, 0.1),
+                  color: theme.palette.main.info_text,
                   margin: 'auto',
                   width: 'fit-content',
                   textShadow: 'none',

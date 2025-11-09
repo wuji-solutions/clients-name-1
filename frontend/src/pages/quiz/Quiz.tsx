@@ -106,14 +106,14 @@ const AnswerProgressBar = ({
   const percent = getPercentage(count, total);
 
   return (
-    <div style={{ width: '100%', maxWidth: '500px', margin: 'auto' }}>
+    <div style={{ width: '100%', maxWidth: '500px', margin: 'auto', marginBottom: '20px' }}>
       <div
         style={{
           display: 'flex',
           justifyContent: 'space-between',
           fontSize: '0.9rem',
           marginBottom: '5px',
-          marginTop: '10px',
+          marginTop: '5px',
         }}
       >
         <span>Odpowiedziało osób:</span>
@@ -126,8 +126,8 @@ const AnswerProgressBar = ({
           width: '100%',
           height: '20px',
           backgroundColor: '#f0f0f0',
-          border: `1px solid #000`,
-          boxShadow: '0 2px 2px 0 rgba(0,0,0,10)',
+          border: `4px solid ${theme.palette.main.accent}`,
+          boxShadow: `0 4px 2px 0 ${theme.palette.main.accent}`,
           borderRadius: '10px',
           overflow: 'hidden',
         }}

@@ -7,7 +7,6 @@ import DifficultyPoints from './components/DifficultyPoints';
 import OtherStuff from './components/BoardAndExamCommonFields';
 import EnableQuestionConfig from './EnableQuestionConfig';
 import { ButtonCustom } from '../Button';
-import { lightenColor } from '../../common/utils';
 import theme from '../../common/theme';
 import ToggleSwitch from '../ToggleSwitch';
 
@@ -49,11 +48,20 @@ export default function ExamConfig({
         flexDirection: 'column',
       }}
     >
+      {isQuestionIdSelectorOpen && (
+        <EnableQuestionConfig
+          settings={settings}
+          setSettings={setSettings}
+          setIsOpen={setIsQuestionIdSelectorOpen}
+          isError={questionListError}
+          questionList={questionList}
+        />
+      )}
       <p
         className="centered"
         style={{
           fontSize: '2em',
-          color: lightenColor(theme.palette.main.accent, 0.1),
+          color: theme.palette.main.info_text,
           textShadow: 'none',
         }}
       >
@@ -157,15 +165,6 @@ export default function ExamConfig({
         >
           Wybierz
         </ButtonCustom>
-        {isQuestionIdSelectorOpen && (
-          <EnableQuestionConfig
-            settings={settings}
-            setSettings={setSettings}
-            setIsOpen={setIsQuestionIdSelectorOpen}
-            isError={questionListError}
-            questionList={questionList}
-          />
-        )}
       </LabeledCheckboxContainer>
 
       <DifficultyPoints settings={settings} setSettings={setSettings} />

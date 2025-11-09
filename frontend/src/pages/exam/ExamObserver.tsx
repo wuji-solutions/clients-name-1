@@ -4,7 +4,6 @@ import { styled } from 'styled-components';
 import { BACKEND_ENDPOINT } from '../../common/config';
 import theme from '../../common/theme';
 import { ExamConfig, ExamState } from '../../common/types';
-import { lightenColor } from '../../common/utils';
 import { ButtonCustom } from '../../components/Button';
 import Timer from '../../components/Timer';
 import { useSSEChannel } from '../../providers/SSEProvider';
@@ -48,7 +47,7 @@ const UserStatsContainer = styled.div({
 
 const EmptyStats = styled.div({
   fontSize: '25px',
-  color: lightenColor(theme.palette.main.accent, 0.1),
+  color: theme.palette.main.info_text,
   textShadow: 'none',
   textAlign: 'center',
   alignContent: 'center',
@@ -125,7 +124,7 @@ const Detail = styled.div({
 });
 
 const DetailKey = styled.div({
-  color: lightenColor(theme.palette.main.accent, 0.1),
+  color: theme.palette.main.info_text,
   textShadow: 'none',
 });
 
@@ -226,7 +225,14 @@ function ExamObserver() {
       <SSEOnExamChangeListener setExamState={setExamState} setCheaters={setCheaters} />
       <TimerContainer>
         Pozostały czas:
-        <Timer isAdmin={true} />
+        <Timer
+          isAdmin={true}
+          onFinish={() => {
+            if (examConfig?.endImmediatelyAfterTime) {
+              handleExamEnd();
+            }
+          }}
+        />
       </TimerContainer>
       <PanelContainer>
         <UserStatsContainer>
@@ -267,7 +273,7 @@ function ExamObserver() {
         <GameConfigContainer>
           <span
             style={{
-              color: lightenColor(theme.palette.main.accent, 0.1),
+              color: theme.palette.main.info_text,
               textShadow: 'none',
               textAlign: 'center',
               fontSize: '20px',

@@ -9,7 +9,7 @@ import { BACKEND_ENDPOINT_EXTERNAL } from '../../common/config';
 import Dice from '../../components/Dice';
 import Modal from '../../components/Modal';
 import AnswerCard from '../../components/AnswerCard';
-import { boardgameColorPalette, darkenColor, getColor, isMobileView, lightenColor } from '../../common/utils';
+import { boardgameColorPalette, darkenColor, getColor, isMobileView } from '../../common/utils';
 import { QuestionContainer, QuestionHeader } from '../quiz/Quiz';
 import { ButtonCustom } from '../../components/Button';
 import theme from '../../common/theme';
@@ -25,6 +25,7 @@ export const Container = styled.div(() => ({
   height: '100%',
   margin: 'auto',
   overflowX: 'hidden',
+  overflowY: 'hidden',
 }));
 
 const ActionContainer = styled.div(() => ({
@@ -100,7 +101,7 @@ const ToggleModalButton = styled.button({
 
 
 const GameFinishedContainer = styled.div({
-  color: lightenColor(theme.palette.main.accent, 0.1),
+  color: theme.palette.main.info_text,
   textAlign: 'center',
   textShadow: 'none',
   height: '100%',
@@ -149,6 +150,8 @@ const Popup = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) scale(0);
+  width: 50px;
+  height: 50px;
   background: #4caf50;
   color: white;
   padding: 10px 20px;
@@ -166,7 +169,7 @@ export function PointsPopup({ onComplete }: {onComplete: Function}) {
     return () => clearTimeout(timer);
   }, [onComplete]);
 
-  return <Popup><Star /></Popup>;
+  return <Popup><Star style={{width: '40px', height: '40px'}} /></Popup>;
 }
 
 function SSEOnBoardgameStateChangeListener({ setPositions }: { setPositions: Function }) {
@@ -383,7 +386,7 @@ function BoardgamePlayer() {
   return (
     <Container>
       <PointsContainer>
-        <span>Punkty:</span>
+        <span>PUNKTY:</span>
         <span>{playerPoints}</span>
       </PointsContainer>
       {showAnswerPopup && <PointsPopup onComplete={() => setShowAnswerPopup(false)} />}
