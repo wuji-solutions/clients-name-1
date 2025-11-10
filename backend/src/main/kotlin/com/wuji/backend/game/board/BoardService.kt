@@ -43,7 +43,6 @@ class BoardService(
 
         return playerService
             .createPlayer(index, nickname, BoardPlayerDetails())
-            .also { player -> game.players.add(player) }
             .also { player -> game.addPlayer(player) }
             .also { sseUsersService.sendPlayers(listPlayers()) }
     }

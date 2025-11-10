@@ -50,6 +50,7 @@ class BoardGame(
     }
 
     fun addPlayer(player: BoardPlayer) {
+        players.add(player)
         val playersOnTile =
             boardState[0] ?: throw IllegalStateException("Board state is empty")
         playersOnTile.add(player)

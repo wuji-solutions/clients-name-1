@@ -108,9 +108,4 @@ class BoardQuestionService(
                     .next()
         }
     }
-
-    fun getPlayerPoints(playerIndex: Int): Int {
-        val player = game.findPlayerByIndex(playerIndex)
-        return player.details.points()
-    }
 }
