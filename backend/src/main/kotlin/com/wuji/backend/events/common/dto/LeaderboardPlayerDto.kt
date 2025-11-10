@@ -10,4 +10,4 @@ data class LeaderboardPlayerDto(
 
 fun BoardPlayer.toLeaderboardPlayerDto() =
     LeaderboardPlayerDto(
-        index = index, nickname = nickname, points = details.points)
+        index = index, nickname = nickname, points = details.points())

@@ -78,5 +78,5 @@ class BoardGame(
     }
 
     fun getTop5Players(): List<BoardPlayer> =
-        players.sortedByDescending { player -> player.details.points }.take(5)
+        players.sortedByDescending { player -> player.details.points() }.take(5)
 }

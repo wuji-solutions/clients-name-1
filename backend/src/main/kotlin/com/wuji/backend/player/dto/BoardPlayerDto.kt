@@ -15,7 +15,7 @@ data class BoardPlayerDto(
             return BoardPlayerDto(
                 index = index,
                 nickname = nickname,
-                points = details.points,
+                points = details.points(),
                 state = details.playerState,
                 currentPosition = details.currentTileIndex)
         }

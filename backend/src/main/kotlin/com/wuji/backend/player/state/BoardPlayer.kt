@@ -15,12 +15,15 @@ class BoardPlayerDetails(
     val askedQuestions: MutableList<Question> = mutableListOf(),
     var firstGetCurrentQuestionTime: Long? = null,
     var currentQuestion: Question? = null,
-    var points: Int = 0,
+    val pointsMap: MutableMap<Int, Int> =
+        mutableMapOf(), // QuestionId -> points
 ) : PlayerDetails() {
     val playerState: PlayerState
         get() =
             if (currentQuestion == null) PlayerState.IDLE
             else PlayerState.ANSWERING
+
+    fun points(): Int = pointsMap.values.sum()
 }
 
 typealias BoardPlayer = Player<BoardPlayerDetails>

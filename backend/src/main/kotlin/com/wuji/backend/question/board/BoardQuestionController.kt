@@ -2,6 +2,7 @@ package com.wuji.backend.question.board
 
 import com.wuji.backend.game.GameType
 import com.wuji.backend.game.quiz.dto.AnswerQuestionRequestDto
+import com.wuji.backend.question.board.dto.BoardAnswerQuestionDto
 import com.wuji.backend.question.common.QuestionController
 import com.wuji.backend.question.common.dto.QuestionDto
 import com.wuji.backend.question.common.dto.toQuestionDto
@@ -40,11 +41,13 @@ class BoardQuestionController(
     fun answerQuestion(
         @Valid @RequestBody answerDto: AnswerQuestionRequestDto,
         auth: Authentication
-    ): ResponseEntity<Boolean> {
+    ): ResponseEntity<BoardAnswerQuestionDto> {
         val index = auth.playerIndex()
         val correct =
             questionService.answerBoardQuestion(index, answerDto.answerIds)
 
-        return ResponseEntity.ok(correct)
+        return ResponseEntity.ok(
+            BoardAnswerQuestionDto(
+                correct, questionService.getPlayerPoints(index)))
     }
 }
