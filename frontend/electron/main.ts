@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as os from 'os';
 import * as isDev from 'electron-is-dev';
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
-import { ChildProcessWithoutNullStreams } from 'child_process';
+import { ChildProcessWithoutNullStreams, exec } from 'child_process';
 import { existsSync, mkdirSync } from 'fs';
 
 let win: BrowserWindow | null = null;
@@ -136,3 +136,22 @@ ipcMain.handle('dialog:openFile', async () => {
     return filePaths[0];
   }
 });
+
+ipcMain.on('open-hotspot-menu', () => {
+    const platform = os.platform();
+    if (platform === 'win32') {
+      shell.openExternal('ms-settings:network-mobilehotspot');
+    } else if (platform === 'darwin') {
+      exec('open "x-apple.systempreferences:com.apple.preference.sharing"', (err) => {
+        if (err) console.error('Failed to open settings:', err);
+      });
+    } else if (platform === 'linux') {
+      exec('gnome-control-center wifi', (err) => {
+        if (err) {
+          console.error('Failed to open network settings:', err);
+        }
+      });
+    } else {
+      console.warn('Platform not supported for opening hotspot settings');
+    }
+})
