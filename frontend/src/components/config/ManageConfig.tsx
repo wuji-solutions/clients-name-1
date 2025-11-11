@@ -89,7 +89,7 @@ export default function ManageConfig({ mode, setIsEditDialogOpen, setConfig }: P
               {configList.map((configName) => {
                 return (
                   <div
-                    key={`nazwa_konfiguracji_${configList}`}
+                    key={`konfiguracja_${configList}`}
                     style={{
                       display: 'flex',
                       margin: '10px',
