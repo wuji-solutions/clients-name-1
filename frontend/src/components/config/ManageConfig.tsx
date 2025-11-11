@@ -89,17 +89,17 @@ export default function ManageConfig({ mode, setIsEditDialogOpen, setConfig }: P
               {configList.map((configName) => {
                 return (
                   <div
-                    key={`konfiguracja_${configList}`}
+                    key={`konfiguracja_${configName}`}
                     style={{
                       display: 'flex',
                       margin: '10px',
                       color: theme.palette.main.info_text,
                       textShadow: 'none',
-                      justifyContent: 'space-between'
+                      justifyContent: 'space-between',
                     }}
                   >
                     <CenteredLabel style={{ fontSize: '22px' }}>{configName}</CenteredLabel>
-                    <div style={{width: '60%', display: 'flex', gap: '20px'}}>
+                    <div style={{ width: '60%', display: 'flex', gap: '20px' }}>
                       <ButtonCustom
                         style={{ width: '30%', margin: '0 0 0 auto' }}
                         onClick={() => selectConfig(configName)}
