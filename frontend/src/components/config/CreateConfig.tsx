@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { ConfigDTO, mode } from '../../common/types';
 import { createConfig } from '../../service/configService';
-import { CenteredLabel } from '../Fields';
+import { CenteredLabel, CustomInput } from '../Fields';
 import Modal from '../Modal';
-import { CleanInput } from './components/ConfigInput';
 import { ButtonCustom } from '../Button';
 import { useError } from '../../providers/ErrorProvider';
+import theme from '../../common/theme';
 
 interface Props {
   readonly mode: mode;
@@ -39,15 +39,15 @@ export default function CreateConfig({ mode, config, setIsOpen }: Props) {
         }}
       >
         <div style={{ height: '40%' }}>
-          <CenteredLabel>Wprowadź nazwę konfiguracji</CenteredLabel>
+          <CenteredLabel style={{color: theme.palette.main.info_text}}>Wprowadź nazwę konfiguracji</CenteredLabel>
 
-          <CleanInput
+          <CustomInput
             type="text"
             value={configName}
-            style={{ paddingRight: 0 }}
+            style={{ paddingRight: 0, width: '350px' }}
             onChange={(e) => setConfigName(e.target.value)}
           />
-          <div style={{ display: 'flex', justifyContent: 'space-evenly', marginTop: '10px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-evenly', marginTop: '20px', gap: '30px' }}>
             <ButtonCustom style={{ width: '45%' }} onClick={close}>
               Wróć
             </ButtonCustom>

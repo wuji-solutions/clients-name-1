@@ -8,7 +8,7 @@ import face4 from '../resources/face4.png';
 import face5 from '../resources/face5.png';
 import face6 from '../resources/face6.png';
 
-const mobile = isMobileView()
+const mobile = isMobileView();
 
 type FaceNumber = '1' | '2' | '3' | '4' | '5' | '6';
 type CheatValue = '1' | '2' | '3' | '4' | '5' | '6' | null;
@@ -41,7 +41,7 @@ const CubeFaceData = {
 };
 
 const Scene = styled.div(() => ({
-  perspective:'400px',
+  perspective: '400px',
   width: mobile ? '150px' : '250px',
   height: mobile ? '150px' : '250px',
 }));
@@ -59,39 +59,34 @@ const Cube = styled.div<{ rotationY: number; rotationX: number }>(({ rotationY, 
   margin: 'auto',
 }));
 
-const CubeFace = styled.div<{ faceNumber: '1' | '2' | '3' | '4' | '5' | '6' }>(
-  ({ faceNumber }) => ({
+const CubeFace = styled.div<{ faceNumber: FaceNumber }>(({ faceNumber }) => {
+  const size = mobile ? 150 : 250;
+  const cubeSide = size * 0.75;
+  const depth = cubeSide / 2;
+
+  return {
     position: 'absolute',
     width: '100%',
     height: '100%',
-    color: '#000',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    fontSize: '24px',
-    userSelect: 'none',
-    backgroundColor: '#fff',
     borderRadius: '10px',
     overflow: 'hidden',
-
-    transform: `rotateY(-${CubeFaceData[faceNumber].y}deg) rotateX(-${CubeFaceData[faceNumber].x}deg) translateZ(${mobile ? 48 : 90}px)`,
-
+    transform: `rotateY(-${CubeFaceData[faceNumber].y}deg)
+                  rotateX(-${CubeFaceData[faceNumber].x}deg)
+                  translateZ(${depth}px)`,
     '& img': {
       width: '100%',
       height: '100%',
       objectFit: 'cover',
-      pointerEvents: 'none',
     },
-  })
-);
+  };
+});
 
 interface DiceProps {
-  diceRoll?: boolean,
-   cheatValue?: CheatValue
+  diceRoll?: boolean;
+  cheatValue?: CheatValue;
 }
 
-function Dice({diceRoll, cheatValue}: Readonly<DiceProps>) {
+function Dice({ diceRoll, cheatValue }: Readonly<DiceProps>) {
   const [rotateY, setRotateY] = useState(0);
   const [rotateX, setRotateX] = useState(0);
   const rollingInterval = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -125,22 +120,22 @@ function Dice({diceRoll, cheatValue}: Readonly<DiceProps>) {
     <Scene>
       <Cube rotationY={rotateY} rotationX={rotateX}>
         <CubeFace faceNumber="1">
-          <img src={face1} alt={'1'}/>
+          <img src={face1} alt={'1'} />
         </CubeFace>
         <CubeFace faceNumber="2">
-          <img src={face2} alt={'2'}/>
+          <img src={face2} alt={'2'} />
         </CubeFace>
         <CubeFace faceNumber="3">
-          <img src={face3} alt={'3'}/>
+          <img src={face3} alt={'3'} />
         </CubeFace>
         <CubeFace faceNumber="4">
-          <img src={face4} alt={'4'}/>
+          <img src={face4} alt={'4'} />
         </CubeFace>
         <CubeFace faceNumber="5">
-          <img src={face5} alt={'5'}/>
+          <img src={face5} alt={'5'} />
         </CubeFace>
         <CubeFace faceNumber="6">
-          <img src={face6} alt={'6'}/>
+          <img src={face6} alt={'6'} />
         </CubeFace>
       </Cube>
     </Scene>

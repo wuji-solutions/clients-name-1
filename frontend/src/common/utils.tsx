@@ -62,14 +62,14 @@ export function getParsedDifficultyLevel(difficultyLevel: string) {
   switch (difficultyLevel) {
     case 'EASY':
       return (
-        <div style={{ display: 'flex', flexDirection: 'row', gap: '10px' }}>
+        <div style={{ display: 'flex', flexDirection: 'row', gap: '5px' }}>
           <span style={{ color: '#11EE0A' }}>ŁATWE</span>
           <Star />
         </div>
       );
     case 'MEDIUM':
       return (
-        <div style={{ display: 'flex', flexDirection: 'row', gap: '10px' }}>
+        <div style={{ display: 'flex', flexDirection: 'row', gap: '5px' }}>
           <span style={{ color: '#FFC96B' }}>ŚREDNIE</span>
           <Star />
           <Star />
@@ -77,7 +77,7 @@ export function getParsedDifficultyLevel(difficultyLevel: string) {
       );
     case 'HARD':
       return (
-        <div style={{ display: 'flex', flexDirection: 'row', gap: '10px' }}>
+        <div style={{ display: 'flex', flexDirection: 'row', gap: '5px' }}>
           <span style={{ color: '#CC211F' }}>TRUDNE</span>
           <Star />
           <Star />

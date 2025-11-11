@@ -2,7 +2,7 @@ import { CenteredLabel, CustomInput } from '../Fields';
 import './config-styles.css';
 import { LabeledCheckboxContainer } from './components/LabeledCheckbox';
 import { ButtonCustom } from '../Button';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 
 export interface CommonSettings {
   questionDurationSeconds: number;
@@ -15,16 +15,26 @@ interface Props {
 }
 
 export default function CommonConfig({ commonSettings, setCommonSettings }: Props) {
+  const [filePath, setFilePath] = useState<string>();
   const openFilePicker = async () => {
     const filePath = await window.electronAPI.openFile();
     if (filePath) {
       setCommonSettings({ ...commonSettings, questionFilePath: filePath });
+      const prettyFilePath = filePath.split('\\');
+      setFilePath(prettyFilePath[prettyFilePath.length-1]);
     }
   };
   return (
     <div style={{padding: '10px', display: 'flex', gap: '10px', flexDirection: 'column'}}>
-      <LabeledCheckboxContainer>
-        <CenteredLabel htmlFor="setEndImmediatelyAfterTime">Wybierz plik z pytaniami</CenteredLabel>
+      <LabeledCheckboxContainer style={{position: 'relative'}}>
+        <CenteredLabel>Wybierz plik z pytaniami</CenteredLabel>
+        <div style={{
+          position: 'absolute',
+          top: '40px',
+          left: '20px',
+        }}>
+          Wybrane: {filePath ? filePath : 'brak'}
+        </div>
         <ButtonCustom
           onClick={openFilePicker}
           style={{ position: 'relative', overflow: 'hidden', width: '90px', fontSize: '0.75em' }}

@@ -4,7 +4,6 @@ import { CenteredLabel, CustomInput } from '../Fields';
 import { LabeledCheckboxContainer } from './components/LabeledCheckbox';
 import './config-styles.css';
 import DifficultyPoints from './components/DifficultyPoints';
-import OtherStuff from './components/BoardAndExamCommonFields';
 import EnableQuestionConfig from './EnableQuestionConfig';
 import { ButtonCustom } from '../Button';
 import theme from '../../common/theme';
@@ -67,7 +66,29 @@ export default function ExamConfig({
       >
         Ustawienia sprawdzianu
       </p>
-      <OtherStuff settings={settings} setSettings={setSettings} />
+      <LabeledCheckboxContainer>
+        <CenteredLabel>Czas trwania gry {'(min)'}</CenteredLabel>
+        <CustomInput
+          style={{ height: '35px' }}
+          type="number"
+          value={settings.totalDurationMinutes}
+          onChange={(e) =>
+            setSettings({
+              ...settings,
+              totalDurationMinutes: Number.parseInt(e.target.value),
+            })
+          }
+        />
+      </LabeledCheckboxContainer>
+      <LabeledCheckboxContainer>
+        <CenteredLabel htmlFor="setEndImmediatelyAfterTime">
+          Zakończ automatycznie po upływie czasu
+        </CenteredLabel>
+        <ToggleSwitch
+          checked={settings.endImmediatelyAfterTime}
+          onChange={(e) => setSettings({ ...settings, endImmediatelyAfterTime: e.target.checked })}
+        />
+      </LabeledCheckboxContainer>
       <LabeledCheckboxContainer>
         <CenteredLabel htmlFor="setEnforceDifficultyBalance">
           Czy losowane pytania powinny być równomiernie rozłożone według trudności
@@ -126,7 +147,7 @@ export default function ExamConfig({
         />
       </LabeledCheckboxContainer>
       <LabeledCheckboxContainer>
-        <CenteredLabel>Czy pytania mają być losowane z dostępnej puli</CenteredLabel>
+        <CenteredLabel>Pytania w losowej kolejności</CenteredLabel>
         <ToggleSwitch
           checked={settings.randomizeQuestions}
           onChange={(e) => setSettings({ ...settings, randomizeQuestions: e.target.checked })}
