@@ -49,7 +49,10 @@ class BoardQuestionController(
         val correct =
             questionService.answerBoardQuestion(index, answerDto.answerIds)
 
-        val playerDto = boardService.getPlayer(index).toBoardPlayerDto()
+        val playerDto =
+            boardService
+                .getPlayer(index)
+                .toBoardPlayerDto(boardService.getCategories())
         return ResponseEntity.ok(BoardAnswerQuestionDto(correct, playerDto))
     }
 }

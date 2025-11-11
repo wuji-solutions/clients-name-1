@@ -49,7 +49,9 @@ class BoardController(
     ): ResponseEntity<BoardPlayerDto> {
         val playerIndex = authentication.playerIndex()
         return ResponseEntity.ok(
-            boardService.getPlayer(playerIndex).toBoardPlayerDto())
+            boardService
+                .getPlayer(playerIndex)
+                .toBoardPlayerDto(boardService.getCategories()))
     }
 
     @GetMapping("/state")
