@@ -5,6 +5,7 @@ declare global {
     electronAPI: {
       openRaportsFolder: () => void;
       openFile: () => string;
+      openHotspot: () => void;
     };
   }
 }

@@ -17,7 +17,7 @@ const Clock = styled.div<{timeLeft: number}>(({timeLeft}) => ({
   fontSize: '22px',
 }));
 
-function Timer({isAdmin}: {isAdmin?: boolean}) {
+function Timer({isAdmin, onFinish}: {isAdmin?: boolean, onFinish?: Function}) {
   const [initialSeconds, setInitialSeconds] = useState<number>();
   const [examTimeRemaining, setExamTimeRemaining] = useState<number>();
   const endTimeRef = useRef<number | null>(null);
@@ -45,6 +45,9 @@ function Timer({isAdmin}: {isAdmin?: boolean}) {
 
       if (diff <= 0) {
         clearInterval(interval);
+        if (onFinish) {
+          onFinish();
+        }
       }
     };
 

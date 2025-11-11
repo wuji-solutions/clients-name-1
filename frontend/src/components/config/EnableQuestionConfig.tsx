@@ -1,9 +1,10 @@
-import { ButtonCustom } from '../Button';
+import RoundCheckButton, { ButtonCustom } from '../Button';
 import Divider from '../Divider';
 import { CenteredLabel } from '../Fields';
 import Modal from '../Modal';
 import { ExamSettings } from './ExamConfig';
 import { Question } from '../../common/types';
+import theme from '../../common/theme';
 
 interface Props {
   readonly settings: ExamSettings;
@@ -43,37 +44,61 @@ export default function EnableQuestionConfig({
         style={{
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'center',
           alignItems: 'center',
-          height: '100vh',
           textAlign: 'center',
-          overflowY: 'hidden',
+          overflowY: 'auto',
+          height: '90vh',
         }}
       >
-        <div style={{ height: '40%' }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '10px',
+            justifyContent: 'space-evenly',
+            height: '95%',
+          }}
+        >
           {isError ? (
-            <h1>Upewnij się, że plik z pytaniami jest poprawny</h1>
+            <h1 style={{ color: theme.palette.main.info_text, textShadow: 'none' }}>Upewnij się, że plik z pytaniami jest poprawny</h1>
           ) : (
             <>
-              <h1>Lista pytań</h1>
+              <h1 style={{ color: theme.palette.main.info_text, textShadow: 'none' }}>
+                Lista pytań
+              </h1>
               <Divider></Divider>
-              <div style={{ margin: '25px' }}></div>
-              {questionList.length === 0 && <h2>Brak pytań</h2>}
-              <div style={{ overflowY: 'scroll', maxHeight: '70%' }}>
+              {questionList.length === 0 && (
+                <h2 style={{ color: theme.palette.main.info_text, textShadow: 'none' }}>
+                  Brak pytań
+                </h2>
+              )}
+              <div
+                style={{
+                  overflowY: 'scroll',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '15px',
+                  color: theme.palette.main.info_text,
+                  textShadow: 'none',
+                }}
+              >
                 {questionList.map((question, index) => {
                   return (
-                    <div key={question.id} style={{ display: 'flex', margin: '10px' }}>
+                    <div
+                      key={question.id}
+                      style={{ display: 'flex', margin: '10px', padding: '10px', gap: '20px' }}
+                    >
                       <CenteredLabel
-                        style={{ width: '70%', textAlign: 'left' }}
+                        style={{ width: '100%', maxWidth: '500px', textAlign: 'left' }}
                       >{`${index + 1}. ${question.task}`}</CenteredLabel>
-                      <ButtonCustom onClick={(e) => handleSelect(String(question.id))}>
-                        {containsQuestionId(String(question.id)) ? 'Wybrano' : 'Nie wybrano'}
-                      </ButtonCustom>
+                      <RoundCheckButton
+                        selected={containsQuestionId(String(question.id))}
+                        onClick={() => handleSelect(String(question.id))}
+                      />
                     </div>
                   );
                 })}
               </div>
-              <div style={{ margin: '25px' }}></div>
               <Divider></Divider>
             </>
           )}

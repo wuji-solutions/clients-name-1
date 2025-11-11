@@ -55,7 +55,7 @@ export function getColor(identifier: number) {
 }
 
 export function isMobileView() {
-  return window.innerWidth <= 968;
+  return window.innerWidth <= 948;
 }
 
 export function getParsedDifficultyLevel(difficultyLevel: string) {

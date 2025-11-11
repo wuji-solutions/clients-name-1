@@ -22,15 +22,16 @@ const PopupWrapper = styled.div<{ visible: boolean }>`
 `;
 
 const PopupContainer = styled.div`
-  background-color: #000;
+  background-color: #1f1b1b;
   color: #fff;
   border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border: 4px solid #1a1616;
+  box-shadow: 0 4px 0 1px #1a1616;
   padding: 16px 24px;
   display: flex;
   align-items: flex-start;
   max-width: 600px;
-  min-width: 400px;
+  min-width: 200px;
   font-family: 'Inter', Arial, sans-serif;
   font-size: 14px;
   word-wrap: break-word;
