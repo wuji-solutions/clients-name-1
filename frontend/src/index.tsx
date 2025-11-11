@@ -16,10 +16,45 @@ import ExamObserver from './pages/exam/ExamObserver';
 import { FullScreenButton } from './components/Button';
 import { ErrorProvider } from './providers/ErrorProvider';
 import ErrorPopup from './components/ErrorPopup';
+import TransitionWrapper from './wrapper/TransitionWrapper';
 
 const context = globalThis.location.hostname === 'localhost' ? 'admin' : 'user';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
+
+const pages = [
+  {
+    element: <Home />,
+    path: '/',
+  },
+  {
+    element: <Configurations />,
+    path: '/konfiguracja',
+  },
+  {
+    element: <WaitingRoom />,
+    path: '/waiting-room',
+  },
+  {
+    element: <Quiz />,
+    path: '/gra/quiz',
+  },
+  {
+    element: <BoardgameObserver />,
+    path: '/gra/planszowa',
+    alt_element: <BoardgamePlayer />,
+  },
+  {
+    element: <ExamObserver />,
+    path: '/sprawdzian',
+    alt_element: <ExamParticipant />,
+  },
+  {
+    element: <Summary />,
+    path: '/podsumowanie',
+  },
+];
+
 root.render(
   <StrictMode>
     <AppProvider>
@@ -29,19 +64,17 @@ root.render(
           <ErrorPopup />
           <Router>
             <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/konfiguracja" element={<Configurations />} />
-              <Route path="/waiting-room" element={<WaitingRoom />} />
-              <Route path="/gra/quiz" element={<Quiz />} />
-              <Route
-                path="/gra/planszowa"
-                element={context === 'user' ? <BoardgamePlayer /> : <BoardgameObserver />}
-              />
-              <Route
-                path="/sprawdzian"
-                element={context === 'user' ? <ExamParticipant /> : <ExamObserver />}
-              />
-              <Route path="/podsumowanie" element={<Summary />} />
+              {pages.map((page) => (
+                <Route
+                  key={`page_${page.path}`}
+                  path={page.path}
+                  element={
+                    <TransitionWrapper>
+                      {context === 'user' && page.alt_element ? page.alt_element : page.element}
+                    </TransitionWrapper>
+                  }
+                />
+              ))}
             </Routes>
           </Router>
         </ErrorProvider>

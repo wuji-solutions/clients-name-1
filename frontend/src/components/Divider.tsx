@@ -1,8 +1,10 @@
+import theme from "../common/theme";
+
 export default function Divider() {
   return (
-    <hr
+    <div
       style={{
-        borderTop: '3px solid #bbb',
+        borderTop: `4px solid ${theme.palette.main.accent}`,
         width: '100%',
       }}
     />

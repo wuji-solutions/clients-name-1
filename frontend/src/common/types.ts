@@ -90,3 +90,14 @@ export type CreateGameDTO = { name: string } & { config: ConfigDTO };
 export type mode = 'quiz' | 'board' | 'exam';
 
 export type DifficultyLevel = 'EASY' | 'MEDIUM' | 'HARD';
+
+interface QuestionAnsweredData extends QuestionData {
+  selectedAnswerIds: string[];
+  isCorrect: boolean;
+  pointsEarned: number;
+}
+
+export type CompleteExamResponseDto = {
+  totalPointsEarned: number;
+  questionsAnswered?: QuestionAnsweredData[];
+}
