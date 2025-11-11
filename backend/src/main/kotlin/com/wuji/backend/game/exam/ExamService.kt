@@ -94,7 +94,6 @@ class ExamService(
                             1000L)
                     game.gameState = GameState.FINISHED
                     sseEventService.sendGameFinish()
-                    gameRegistry.unregister()
                 }
             }
             GameState.FINISHING -> return
@@ -159,4 +158,5 @@ class ExamService(
         examQuestionService.getNextQuestion(playerIndex)
         return CompleteExamResponseDto(totalPoints, questionsFeedback)
     }
+    fun getState(): GameState = game.gameState
 }

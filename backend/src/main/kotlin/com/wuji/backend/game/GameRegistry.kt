@@ -25,11 +25,6 @@ class GameRegistry {
         this._gameType = game.gameType
     }
 
-    fun unregister() {
-        this._gameType = null
-        this._game = null
-    }
-
     fun <T : AbstractGame<out PlayerDetails, out GameConfig>> getAs(
         clazz: Class<T>
     ): T {
