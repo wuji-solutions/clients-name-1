@@ -20,7 +20,9 @@ data class ExamQuestionDto(
     val totalBaseQuestions: Int,
     val allowGoingBack: Boolean,
     val playerAlreadyAnswered: Boolean,
-    val playerAnswerDto: PlayerAnswerDto?
+    val playerAnswerDto: PlayerAnswerDto?,
+    val imageUrl: String?,
+    val imageBase64: String?
 )
 
 fun Question.toExamQuestionDto(
@@ -40,4 +42,6 @@ fun Question.toExamQuestionDto(
         playerAnswerDto = playerAnswer?.toDto(),
         questionNumber = questionNumber,
         totalBaseQuestions = totalBaseQuestions,
-        allowGoingBack = allowGoingBack)
+        allowGoingBack = allowGoingBack,
+        imageUrl = imageUrl,
+        imageBase64 = imageUrl)
