@@ -56,9 +56,26 @@ export default function GameConfig({
   const updateCategories = (categoryNames: string[]) => {
     setCategoryNames(categoryNames);
     setQuestionFileParseError(false);
-    setBoardSettings({
-      ...boardSettings,
-      rankingPromotionRules: Object.fromEntries(categoryNames.map((cat) => [cat, 1])),
+
+    setBoardSettings((prev: BoardSettings) => {
+      const newRules = { ...prev.rankingPromotionRules };
+
+      categoryNames.forEach((cat) => {
+        if (!(cat in newRules)) {
+          newRules[cat] = 1;
+        }
+      });
+
+      Object.keys(newRules).forEach((cat) => {
+        if (!categoryNames.includes(cat)) {
+          delete newRules[cat];
+        }
+      });
+
+      return {
+        ...prev,
+        rankingPromotionRules: newRules,
+      };
     });
   };
 
