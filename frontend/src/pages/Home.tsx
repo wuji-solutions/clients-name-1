@@ -48,13 +48,17 @@ function Home() {
     window.electronAPI.openRaportsFolder()
   }
 
+  const quitApp = () => {
+    window.electronAPI.quitApp();
+  };
+
   return (
     <Container>
       <Logo>LOGO</Logo>
       <OptionContainer>
         <ButtonCustom onClick={() => navigate('/konfiguracja')}>Rozpocznij</ButtonCustom>
         <ButtonCustom onClick={openRaportMenu} >Raporty</ButtonCustom>
-        <ButtonCustom>Wyjdź</ButtonCustom>
+        <ButtonCustom onClick={quitApp}>Wyjdź</ButtonCustom>
       </OptionContainer>
     </Container>
   );
