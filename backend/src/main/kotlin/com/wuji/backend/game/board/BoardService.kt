@@ -175,4 +175,6 @@ class BoardService(
 
     fun getLeaderboard(): List<PlayerDto> =
         game.getTop5Players().map { it.toDto() }
+
+    fun getCategories(): List<Category> = game.categories
 }
