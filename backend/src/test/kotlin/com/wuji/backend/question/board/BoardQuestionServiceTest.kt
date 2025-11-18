@@ -170,15 +170,15 @@ class BoardQuestionServiceTest {
             mapOf(question.difficultyLevel to 20)
         every { boardGame.config.showLeaderboard } returns true
 
-        val mutablePointsMap = mutableMapOf<Int, Int>()
-        every { player.details.pointsMap } returns mutablePointsMap
-        every { player.details.points() } answers
+        var mutablePoints = 0
+        every { player.details.points = any() } answers
             {
-                mutablePointsMap.values.sum()
+                mutablePoints = it.invocation.args[0] as Int
             }
+        every { player.details.points } answers { mutablePoints }
 
         val otherPlayer = mockk<BoardPlayer>(relaxed = true)
-        every { otherPlayer.details.points() } returns 10
+        every { otherPlayer.details.points } returns 10
 
         // min points = 10, so after scoring 20 player enters top 5
         every { boardGame.getTop5Players() } returns listOf(otherPlayer)
@@ -188,7 +188,7 @@ class BoardQuestionServiceTest {
         val result = service.answerBoardQuestion(0, answers)
 
         assertTrue(result)
-        assertTrue(mutablePointsMap.values.sum() >= 20)
+        assertTrue(mutablePoints >= 20)
         verify { sseBoardService.sendNewLeaderboardStateEvent(any()) }
     }
 
@@ -212,18 +212,18 @@ class BoardQuestionServiceTest {
             mapOf(question.difficultyLevel to 5)
         every { boardGame.config.showLeaderboard } returns true
 
-        val mutablePointsMap = mutableMapOf<Int, Int>()
-        every { player.details.pointsMap } returns mutablePointsMap
-        every { player.details.points() } answers
+        var mutablePoints = 0
+        every { player.details.points = any() } answers
             {
-                mutablePointsMap.values.sum()
+                mutablePoints = it.invocation.args[0] as Int
             }
+        every { player.details.points } answers { mutablePoints }
 
         // only 2 players → size < 5 triggers event
         val p1 = mockk<BoardPlayer>(relaxed = true)
         val p2 = mockk<BoardPlayer>(relaxed = true)
-        every { p1.details.points() } returns 100
-        every { p2.details.points() } returns 50
+        every { p1.details.points } returns 100
+        every { p2.details.points } returns 50
         every { boardGame.getTop5Players() } returns listOf(p1, p2)
 
         every { sseBoardService.sendNewLeaderboardStateEvent(any()) } just Runs
@@ -253,18 +253,18 @@ class BoardQuestionServiceTest {
         every { boardGame.config.pointsPerDifficulty } returns
             mapOf(question.difficultyLevel to 5)
 
-        val mutablePointsMap = mutableMapOf<Int, Int>()
-        every { player.details.pointsMap } returns mutablePointsMap
-        every { player.details.points() } answers
+        var mutablePoints = 0
+        every { player.details.points = any() } answers
             {
-                mutablePointsMap.values.sum()
+                mutablePoints = it.invocation.args[0] as Int
             }
+        every { player.details.points } answers { mutablePoints }
 
         // 5 players with points higher than player
         val players =
             List(5) {
                 mockk<BoardPlayer>(relaxed = true).apply {
-                    every { details.points() } returns 100
+                    every { details.points } returns 100
                 }
             }
         every { boardGame.getTop5Players() } returns players
@@ -274,7 +274,7 @@ class BoardQuestionServiceTest {
         val result = service.answerBoardQuestion(0, answers)
 
         assertTrue(result)
-        assertEquals(5, player.details.points())
+        assertEquals(5, mutablePoints)
         verify(exactly = 0) {
             sseBoardService.sendNewLeaderboardStateEvent(any())
         }
@@ -385,17 +385,17 @@ class BoardQuestionServiceTest {
         every { boardGame.getTop5Players() } returns listOf(player)
         every { boardGame.config.pointsPerDifficulty.getValue(any()) } returns 5
 
-        val mutablePointsMap = mutableMapOf<Int, Int>()
-        every { player.details.pointsMap } returns mutablePointsMap
-        every { player.details.points() } answers
+        var mutablePoints = 0
+        every { player.details.points = any() } answers
             {
-                mutablePointsMap.values.sum()
+                mutablePoints = it.invocation.args[0] as Int
             }
+        every { player.details.points } answers { mutablePoints }
 
         val result = service.answerBoardQuestion(0, answers)
 
         assertFalse(result)
-        assertEquals(0, player.details.points())
+        assertEquals(0, mutablePoints)
     }
 
     @Test

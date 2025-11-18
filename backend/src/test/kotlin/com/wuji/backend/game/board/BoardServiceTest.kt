@@ -159,26 +159,4 @@ class BoardServiceTest {
         verify { game.movePlayer(player, any()) }
         verify { sseBoardService.sendNewBoardStateEvent(any()) }
     }
-
-    @Test
-    fun `movePlayer should increase multiplier when player loops around board`() {
-        // Use a real BoardPlayer instance (spyk isn't needed for extension function)
-        val player = BoardPlayer(0, "Looper", BoardPlayerDetails())
-        player.details.currentTileIndex = 9
-        game.addPlayer(player)
-        every { game.findPlayerByIndex(player.index) } returns player
-
-        every { game.dice.roll(player) } returns 3
-        every { game.movePlayer(player, 3) } answers
-            {
-                player.details.currentTileIndex = 2
-            }
-
-        val initialMultiplier = player.details.pointsMultiplier
-
-        service.movePlayer(player.index)
-
-        assertEquals(initialMultiplier + 1, player.details.pointsMultiplier)
-        verify { sseBoardService.sendNewBoardStateEvent(any()) }
-    }
 }

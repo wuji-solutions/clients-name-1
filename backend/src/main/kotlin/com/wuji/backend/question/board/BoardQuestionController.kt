@@ -1,10 +1,7 @@
 package com.wuji.backend.question.board
 
 import com.wuji.backend.game.GameType
-import com.wuji.backend.game.board.BoardService
 import com.wuji.backend.game.quiz.dto.AnswerQuestionRequestDto
-import com.wuji.backend.player.dto.BoardPlayerDto.Companion.toBoardPlayerDto
-import com.wuji.backend.question.board.dto.BoardAnswerQuestionDto
 import com.wuji.backend.question.common.QuestionController
 import com.wuji.backend.question.common.dto.QuestionDto
 import com.wuji.backend.question.common.dto.toQuestionDto
@@ -28,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/games/board/questions")
 class BoardQuestionController(
     val questionService: BoardQuestionService,
-    val boardService: BoardService
 ) : QuestionController {
 
     @GetMapping("/current")
@@ -44,15 +40,11 @@ class BoardQuestionController(
     fun answerQuestion(
         @Valid @RequestBody answerDto: AnswerQuestionRequestDto,
         auth: Authentication
-    ): ResponseEntity<BoardAnswerQuestionDto> {
+    ): ResponseEntity<Boolean> {
         val index = auth.playerIndex()
         val correct =
             questionService.answerBoardQuestion(index, answerDto.answerIds)
 
-        val playerDto =
-            boardService
-                .getPlayer(index)
-                .toBoardPlayerDto(boardService.getCategories())
-        return ResponseEntity.ok(BoardAnswerQuestionDto(correct, playerDto))
+        return ResponseEntity.ok(correct)
     }
 }
