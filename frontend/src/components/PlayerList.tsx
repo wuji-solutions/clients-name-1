@@ -4,7 +4,6 @@ import { styled } from 'styled-components';
 import { useSSEChannel } from '../providers/SSEProvider';
 import theme from '../common/theme';
 import { service } from '../service/service';
-import { lightenColor } from '../common/utils';
 import { useError } from '../providers/ErrorProvider';
 
 const Contaier = styled.div({
@@ -23,12 +22,15 @@ const Contaier = styled.div({
 const Header = styled.span({
   fontWeight: 700,
   fontSize: '40px',
-  color: lightenColor(theme.palette.main.accent, 0.1),
+  color: theme.palette.main.info_text,
   textShadow: 'none',
   marginLeft: 'auto',
   marginRight: 'auto',
   marginTop: '15px',
   marginBottom: '25px',
+  display: 'flex',
+  flexDirection: 'row',
+  gap: '20px',
 });
 
 const PlayerContainer = styled.div({
@@ -138,6 +140,8 @@ function PlayerList() {
   const delegate = useSSEChannel(`${BACKEND_ENDPOINT}/sse/users`);
   const { setError } = useError();
 
+  const [showPlayers, setShowPlayers] = useState<boolean>(false);
+
   useEffect(() => {
     service
       .getPlayerList()
@@ -172,12 +176,59 @@ function PlayerList() {
 
   return (
     <Contaier>
-      <Header>Lista graczy</Header>
+      <Header>
+        Lista graczy{' '}
+        <div style={{marginTop: 'auto'}}>
+          {!showPlayers && (
+            <svg
+              onClick={() => setShowPlayers(true)}
+              cursor="pointer"
+              width="26"
+              height="26"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+          )}
+          {showPlayers && (
+            <svg
+              onClick={() => setShowPlayers(false)}
+              cursor="pointer"
+              width="26"
+              height="26"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M17.94 17.94C16.12 19.21 14.14 20 12 20 5 20 1 12 1 12c1.11-1.94 2.5-3.65 4.06-5.06" />
+              <path d="M22.06 12.94c-.64 1.11-1.41 2.15-2.29 3.06" />
+              <path d="M12 4c2.14 0 4.12.79 5.94 2.06" />
+              <line x1="1" y1="1" x2="23" y2="23" />
+            </svg>
+          )}
+        </div>
+      </Header>
       <PlayerContainer>
         {players.map((player) => (
           <PlayerEntry key={player.nickname} isNew={newPlayers.has(player.nickname)}>
-            {player.nickname} {` (${player.index})`}
-            <CloseIcon onClick={() => kickPlayer(player.index, player.nickname)}>X</CloseIcon>
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+              {player.nickname}
+              <div
+                style={{ display: 'flex', flexDirection: 'row', marginLeft: '15px' }}
+              >
+                {showPlayers && ` (${player.index})`}
+              </div>
+              <CloseIcon onClick={() => kickPlayer(player.index, player.nickname)}>✕</CloseIcon>
+            </div>
           </PlayerEntry>
         ))}
       </PlayerContainer>

@@ -1,8 +1,7 @@
-import { CenteredLabel } from '../Fields';
+import { CenteredLabel, CustomInput } from '../Fields';
 import './config-styles.css';
 import { LabeledCheckboxContainer } from './components/LabeledCheckbox';
 import { ButtonCustom } from '../Button';
-import { CleanInput } from './components/ConfigInput';
 import { Dispatch, SetStateAction } from 'react';
 
 export interface CommonSettings {
@@ -23,23 +22,21 @@ export default function CommonConfig({ commonSettings, setCommonSettings }: Prop
     }
   };
   return (
-    <div>
-      <p className="centered" style={{ fontSize: '2em' }}>
-        Wspólne ustawienia
-      </p>
+    <div style={{padding: '10px', display: 'flex', gap: '10px', flexDirection: 'column'}}>
       <LabeledCheckboxContainer>
         <CenteredLabel htmlFor="setEndImmediatelyAfterTime">Wybierz plik z pytaniami</CenteredLabel>
         <ButtonCustom
           onClick={openFilePicker}
-          style={{ position: 'relative', overflow: 'hidden', width: '150px', fontSize: '0.75em' }}
+          style={{ position: 'relative', overflow: 'hidden', width: '90px', fontSize: '0.75em' }}
         >
           Wybierz
         </ButtonCustom>
       </LabeledCheckboxContainer>
       <LabeledCheckboxContainer>
-        <CenteredLabel>Podaj czas na odpowiedź na jedno pytanie w sekundach</CenteredLabel>
+        <CenteredLabel>Czas na odpowiedź na pytanie {'(s)'}</CenteredLabel>
 
-        <CleanInput
+        <CustomInput
+          style={{height: '35px'}}
           type="number"
           value={commonSettings.questionDurationSeconds}
           onChange={(e) =>

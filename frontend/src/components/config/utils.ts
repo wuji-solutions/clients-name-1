@@ -66,6 +66,7 @@ export const applySettingsFromDto = (
         notifyTeacherOnCheating: dto.notifyTeacherOnCheating,
         pointsPerDifficulty: dto.pointsPerDifficulty,
         allowGoingBack: dto.allowGoingBack,
+        showDetailedFinishFeedback: dto.showDetailedFinishFeedback,
         additionalTimeToAnswerAfterFinishInSeconds: dto.additionalTimeToAnswerAfterFinishInSeconds,
       });
       break;

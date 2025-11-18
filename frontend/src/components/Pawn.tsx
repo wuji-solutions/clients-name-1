@@ -62,10 +62,10 @@ const Pawn = ({ id, x, y, scale, color, isCurrentPlayer, nodeRef }: PawnProps) =
           fillRadialGradientEndPoint={{ x: 0, y: 0 }}
           fillRadialGradientEndRadius={pawnWidth}
           fillRadialGradientColorStops={[0, color, 0.9, darkenColor(color, 0.5)]}
-          shadowColor="black"
-          shadowBlur={0.5}
+          shadowColor={darkenColor(color, 0.5)}
+          shadowBlur={1}
           shadowOffset={mobile ? { x: 1, y: 1 } : { x: 2, y: 2 }}
-          shadowOpacity={0.5}
+          shadowOpacity={1}
         />
         { id && <Text
           text={id.toString()}
@@ -92,10 +92,10 @@ const Pawn = ({ id, x, y, scale, color, isCurrentPlayer, nodeRef }: PawnProps) =
         fillRadialGradientEndPoint={{ x: 0, y: 0 }}
         fillRadialGradientEndRadius={pawnWidth / 2}
         fillRadialGradientColorStops={[0, color, 0.9, darkenColor(color, 0.5)]}
-        shadowColor="black"
-        shadowBlur={0.5}
+        shadowColor={darkenColor(color, 0.5)}
+        shadowBlur={1}
         shadowOffset={mobile ? { x: 1, y: 1 } : { x: 2, y: 2 }}
-        shadowOpacity={0.5}
+        shadowOpacity={1}
       />
 
       {isCurrentPlayer && (

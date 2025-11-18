@@ -1,8 +1,8 @@
 import { styled } from 'styled-components';
 import { darkenColor } from '../common/utils';
 
-const AnswerCard = styled.div<{ backgroundcolor: string; isselected: boolean | undefined, usegradient?: boolean }>(
-  ({ backgroundcolor, isselected, usegradient }) => {
+const AnswerCard = styled.div<{ backgroundcolor: string; isselected: boolean | undefined, usegradient?: boolean, style?: any }>(
+  ({ backgroundcolor, isselected, usegradient, style }) => {
     const base: string = backgroundcolor;
     let bg;
     if (usegradient) {
@@ -40,6 +40,7 @@ const AnswerCard = styled.div<{ backgroundcolor: string; isselected: boolean | u
         margin: 0,
         fontSize: '0.8rem',
       },
+      ...style,
     };
   }
 );
