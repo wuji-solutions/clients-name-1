@@ -69,9 +69,9 @@ class ExamService(
             "Wymagana liczba pytań musi być mniejsza lub równa liczbie pytań w zestawie"
         }
         if (gameRegistry.getState() !in setOf(GameState.FINISHED, null))
-            throw GameInIncorrectStateException("${GameState.FINISHED.polish} lub null",
-                gameRegistry.getState()?.polish ?: "null"
-            )
+            throw GameInIncorrectStateException(
+                "${GameState.FINISHED.polish} lub null",
+                gameRegistry.getState()?.polish ?: "null")
         gameRegistry.register(ExamGame(name, config, questions))
     }
 

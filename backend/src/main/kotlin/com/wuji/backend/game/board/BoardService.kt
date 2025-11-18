@@ -11,7 +11,6 @@ import com.wuji.backend.game.board.dto.SimpleBoardStateDto
 import com.wuji.backend.game.board.dto.SimpleTileStateDto
 import com.wuji.backend.game.board.dto.TileStateDto
 import com.wuji.backend.game.common.GameService
-import com.wuji.backend.game.common.GameState
 import com.wuji.backend.parser.MoodleXmlParser
 import com.wuji.backend.player.dto.PlayerDto
 import com.wuji.backend.player.dto.PlayerDto.Companion.toDto

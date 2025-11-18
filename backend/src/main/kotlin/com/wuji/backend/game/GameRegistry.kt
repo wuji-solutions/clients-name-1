@@ -32,5 +32,6 @@ class GameRegistry {
         return clazz.cast(game)
             ?: throw IncorrectGameTypeException(gameType, clazz)
     }
+
     fun getState(): GameState? = _game?.gameState
 }

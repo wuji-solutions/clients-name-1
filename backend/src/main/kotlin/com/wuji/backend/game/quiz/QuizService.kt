@@ -5,7 +5,6 @@ import com.wuji.backend.events.common.SSEEventService
 import com.wuji.backend.events.common.SSEUsersService
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.common.GameService
-import com.wuji.backend.game.common.GameState
 import com.wuji.backend.game.quiz.dto.QuestionWithSummaryDto
 import com.wuji.backend.game.quiz.dto.QuizSummaryResponseDto
 import com.wuji.backend.parser.MoodleXmlParser
