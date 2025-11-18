@@ -57,7 +57,7 @@ class BoardQuestionService(
         player.details.askedQuestions.add(question)
 
         val top5Players = game.getTop5Players()
-        val minimumPoints = top5Players.last().details.points
+        val minimumPoints = top5Players.last().details.points()
 
         val firstGetCurrentQuestionTime =
             player.details.firstGetCurrentQuestionTime
@@ -75,12 +75,12 @@ class BoardQuestionService(
             }
             .also { answeredCorrectly ->
                 if (answeredCorrectly)
-                    player.details.points +=
+                    player.details.pointsMap[question.id] =
                         game.config.pointsPerDifficulty.getValue(
                             question.difficultyLevel)
             }
             .also {
-                if ((player.details.points >= minimumPoints ||
+                if ((player.details.points() >= minimumPoints ||
                     top5Players.size < 5) && game.config.showLeaderboard)
                     sseBoardService.sendNewLeaderboardStateEvent(
                         game.getTop5Players().map {
