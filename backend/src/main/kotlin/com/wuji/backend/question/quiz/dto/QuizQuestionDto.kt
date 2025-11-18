@@ -33,4 +33,5 @@ fun Question.toQuizQuestionDto(
         questionNumber = questionNumber,
         totalQuestions = totalQuestions,
         imageUrl = imageUrl,
-        imageBase64 = imageBase64,)
+        imageBase64 = imageBase64,
+    )
