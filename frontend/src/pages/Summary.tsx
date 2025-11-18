@@ -8,7 +8,7 @@ import AccessRestricted from '../components/AccessRestricted';
 import { ButtonCustom } from '../components/Button';
 import { useNavigate } from 'react-router-dom';
 import { QuestionData } from '../common/types';
-import { getColor, getPercentage, lightenColor } from '../common/utils';
+import { getColor, getPercentage } from '../common/utils';
 import { useError } from '../providers/ErrorProvider';
 
 interface Props {
@@ -104,10 +104,10 @@ const QuestionCard = ({ data }: Props) => {
         <ProgressBar color="red" widthPercent={incorrectPercent} />
       </ProgressContainer>
       <Stats>
-        <span style={{ textShadow: 'none', color: lightenColor(theme.palette.main.accent, 0.1) }}>
+        <span style={{ textShadow: 'none', color: theme.palette.main.info_text }}>
           Poprawne: {correctAnswersCount}
         </span>
-        <span style={{ textShadow: 'none', color: lightenColor(theme.palette.main.accent, 0.1) }}>
+        <span style={{ textShadow: 'none', color: theme.palette.main.info_text }}>
           Niepoprawne: {incorrectAnswersCount}
         </span>
       </Stats>

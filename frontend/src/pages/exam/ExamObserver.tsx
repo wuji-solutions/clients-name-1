@@ -1,10 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { BACKEND_ENDPOINT } from '../../common/config';
 import theme from '../../common/theme';
 import { ExamConfig, ExamState } from '../../common/types';
-import { lightenColor } from '../../common/utils';
 import { ButtonCustom } from '../../components/Button';
 import Timer from '../../components/Timer';
 import { useSSEChannel } from '../../providers/SSEProvider';
@@ -39,7 +38,8 @@ const PanelContainer = styled.div({
 
 const UserStatsContainer = styled.div({
   padding: '10px',
-  border: `3px solid ${theme.palette.main.accent}`,
+  border: `4px solid ${theme.palette.main.accent}`,
+  boxShadow: `0 4px 0 0 ${theme.palette.main.accent}`,
   borderRadius: '15px',
   width: '60%',
   height: '600px',
@@ -47,7 +47,7 @@ const UserStatsContainer = styled.div({
 
 const EmptyStats = styled.div({
   fontSize: '25px',
-  color: lightenColor(theme.palette.main.accent, 0.1),
+  color: theme.palette.main.info_text,
   textShadow: 'none',
   textAlign: 'center',
   alignContent: 'center',
@@ -57,7 +57,8 @@ const EmptyStats = styled.div({
 
 const GameConfigContainer = styled.div({
   padding: '10px',
-  border: `3px solid ${theme.palette.main.accent}`,
+  border: `4px solid ${theme.palette.main.accent}`,
+  boxShadow: `0 4px 0 0 ${theme.palette.main.accent}`,
   borderRadius: '15px',
   width: '35%',
   height: '600px',
@@ -123,7 +124,7 @@ const Detail = styled.div({
 });
 
 const DetailKey = styled.div({
-  color: lightenColor(theme.palette.main.accent, 0.1),
+  color: theme.palette.main.info_text,
   textShadow: 'none',
 });
 
@@ -174,6 +175,33 @@ function ExamObserver() {
   const navigate = useNavigate();
   const { setError } = useError();
 
+  const [gracePeriod, setGracePeriod] = useState<number>();
+  const [gracePeriodRemaining, setGracePeriodRemaining] = useState<number>();
+  const endTimeRef = useRef<number | null>(null);
+  const [allowExit, setAllowExit] = useState(false);
+
+  useEffect(() => {
+    if (!gracePeriod) return;
+
+    endTimeRef.current = Date.now() + gracePeriod * 1000;
+
+    const tick = () => {
+      const now = Date.now();
+      const diff = Math.max(0, Math.floor((endTimeRef.current! - now) / 1000));
+      setGracePeriodRemaining(diff);
+
+      if (diff <= 0) {
+        clearInterval(interval);
+        setAllowExit(true);
+      }
+    };
+
+    const interval = setInterval(tick, 1000);
+    tick();
+
+    return () => clearInterval(interval);
+  }, [gracePeriod]);
+
   useEffect(() => {
     getModeConfig().then((response) => {
       setExamConfig(response.data);
@@ -185,6 +213,7 @@ function ExamObserver() {
       .finishGame()
       .then((response) => {
         setExamFinished(true);
+        setGracePeriod(examConfig?.additionalTimeToAnswerAfterFinishInSeconds);
       })
       .catch((error) =>
         setError('Wystąpił błąd podczas wysyłania odpowiedzi:\n' + error.response.data.message)
@@ -196,7 +225,14 @@ function ExamObserver() {
       <SSEOnExamChangeListener setExamState={setExamState} setCheaters={setCheaters} />
       <TimerContainer>
         Pozostały czas:
-        <Timer isAdmin={true} />
+        <Timer
+          isAdmin={true}
+          onFinish={() => {
+            if (examConfig?.endImmediatelyAfterTime) {
+              handleExamEnd();
+            }
+          }}
+        />
       </TimerContainer>
       <PanelContainer>
         <UserStatsContainer>
@@ -237,7 +273,7 @@ function ExamObserver() {
         <GameConfigContainer>
           <span
             style={{
-              color: lightenColor(theme.palette.main.accent, 0.1),
+              color: theme.palette.main.info_text,
               textShadow: 'none',
               textAlign: 'center',
               fontSize: '20px',
@@ -292,10 +328,18 @@ function ExamObserver() {
             )}
           </ExamConfigDetails>
           <ButtonContainer>
-            {examFinished ? (
-              <ButtonCustom onClick={() => navigate('/konfiguracja')}>Wróć do menu</ButtonCustom>
-            ) : (
+            {!examFinished && (
               <ButtonCustom onClick={handleExamEnd}>Zakończ sprawdzian</ButtonCustom>
+            )}
+            {examFinished && allowExit && (
+              <ButtonCustom onClick={() => navigate('/konfiguracja')}>Wróć do menu</ButtonCustom>
+            )}
+            {examFinished && !allowExit && (
+              <ButtonCustom disabled={true}>
+                {gracePeriodRemaining && gracePeriodRemaining > 0
+                  ? `${Math.floor(gracePeriodRemaining / 60)}:${gracePeriodRemaining % 60 >= 10 ? gracePeriodRemaining % 60 : '0' + (gracePeriodRemaining % 60)}`
+                  : '-- : --'}
+              </ButtonCustom>
             )}
           </ButtonContainer>
         </GameConfigContainer>

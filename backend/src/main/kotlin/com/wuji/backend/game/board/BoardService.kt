@@ -17,11 +17,13 @@ import com.wuji.backend.player.dto.PlayerDto
 import com.wuji.backend.player.dto.PlayerDto.Companion.toDto
 import com.wuji.backend.player.state.BoardPlayer
 import com.wuji.backend.player.state.BoardPlayerDetails
+import com.wuji.backend.player.state.Category
 import com.wuji.backend.player.state.Player
 import com.wuji.backend.player.state.PlayerDetails
 import com.wuji.backend.player.state.PlayerService
 import com.wuji.backend.player.state.exception.PlayerAlreadyJoinedException
 import com.wuji.backend.player.state.exception.PlayerNotFoundException
+import com.wuji.backend.player.state.increaseMultiplier
 import com.wuji.backend.util.ext.getCategories
 import java.io.File
 import java.io.FileNotFoundException
@@ -44,7 +46,6 @@ class BoardService(
 
         return playerService
             .createPlayer(index, nickname, BoardPlayerDetails())
-            .also { player -> game.players.add(player) }
             .also { player -> game.addPlayer(player) }
             .also { sseUsersService.sendPlayers(listPlayers()) }
     }
@@ -118,8 +119,12 @@ class BoardService(
     fun movePlayer(playerIndex: Int): MovePlayerResponseDto {
         val player = game.findPlayerByIndex(playerIndex)
         val steps = game.dice.roll(player)
+        val previousTileIndex = player.details.currentTileIndex
 
         game.movePlayer(player, steps)
+        if (previousTileIndex > player.details.currentTileIndex) {
+            player.increaseMultiplier()
+        }
         sseBoardService.sendNewBoardStateEvent(getSimpleBoardState())
         return MovePlayerResponseDto(steps, player.details.currentTileIndex)
     }
@@ -172,4 +177,5 @@ class BoardService(
         game.getTop5Players().map { it.toDto() }
 
     fun getState(): GameState = game.gameState
+    fun getCategories(): List<Category> = game.categories
 }

@@ -79,7 +79,6 @@ function SSEOnStartListener({ onGameStart }: { onGameStart: Function }) {
   return <></>;
 }
 
-const allowedGameModes = ['board', 'exam', 'quiz'];
 
 function PlayerKickListener({
   userHandler,
@@ -100,7 +99,7 @@ function PlayerKickListener({
       ) {
         sessionStorage.removeItem('userindex');
         sessionStorage.removeItem('username');
-        Cookies.remove('JSESSIONID')
+        Cookies.remove('JSESSIONID');
         onKick(true);
         userHandler(null);
       }
@@ -190,7 +189,7 @@ function WaitingRoom() {
           <UserInputContainer>
             <span>Wyrzucono cie z gry, kliknij OK aby dołączyć ponownie</span>
             <ButtonCustom
-              onClick={() => {  
+              onClick={() => {
                 setPlayerKicked(false);
               }}
             >
@@ -213,6 +212,44 @@ function WaitingRoom() {
 
   return (
     <Container>
+      <div
+        style={{
+          position: 'absolute',
+          left: '57%',
+          top: '30px',
+          transform: 'translateX(-57%)',
+          display: 'flex',
+          flexDirection: 'row',
+          width: '300px',
+          gap: '20px',
+          padding: '0 10px',
+          color: theme.palette.main.info_text,
+          textShadow: 'none',
+          fontSize: '20px',
+        }}
+      >
+        <div
+          style={{
+            margin: 'auto',
+            height: '10%',
+            width: '50%',
+            borderBottom: `4px solid ${theme.palette.main.accent}`,
+          }}
+        />
+        <span style={{justifyContent: 'center', textAlign: 'center'}}>
+        {gameMode === 'quiz' && 'QUIZ'}
+        {gameMode === 'exam' && 'SPRAWDZIAN'}
+        {gameMode === 'board' && 'GRA PLANSZOWA'}
+        </span>
+        <div
+          style={{
+            margin: 'auto',
+            height: '10%',
+            width: '50%',
+            borderBottom: `4px solid ${theme.palette.main.accent}`,
+          }}
+        />
+      </div>
       <SSEOnStartListener onGameStart={moveScreens} />
       <PlayerList />
       <QRWrapper>
