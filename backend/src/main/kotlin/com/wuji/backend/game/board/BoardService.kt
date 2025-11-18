@@ -177,5 +177,4 @@ class BoardService(
         game.getTop5Players().map { it.toDto() }
 
     fun getState(): GameState = game.gameState
-    fun getCategories(): List<Category> = game.categories
 }

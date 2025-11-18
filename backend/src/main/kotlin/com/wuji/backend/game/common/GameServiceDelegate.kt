@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service
 @SuppressWarnings("kotlin:S6514")
 @Service
 class GameServiceDelegate(
-    private val quizService: QuizService,
+    quizService: QuizService,
     boardService: BoardService,
     examService: ExamService,
     private val authService: PlayerAuthService,

@@ -115,6 +115,4 @@ class QuizService(
     }
 
     override fun getConfig(): QuizConfig = quizGame.config
-
-    fun getState(): GameState = quizGame.gameState
 }
