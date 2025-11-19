@@ -73,7 +73,7 @@ jobs:
           node-version: 20
       
       - name: Install Dependencies
-        run: yarn installers
+        run: yarn install
         working-directory: frontend
 
       - name: Build Electron app
