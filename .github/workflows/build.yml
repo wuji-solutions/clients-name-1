@@ -59,6 +59,11 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
       
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.8.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
       - name: Set up GraalVM JDK 21
         uses: graalvm/setup-graalvm@v1
         with:
