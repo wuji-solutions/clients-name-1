@@ -52,7 +52,7 @@ class ReportsService {
                     .apply {
                         append(game.name)
                         append(" ")
-                        append(game.gameType.toPolish())
+                        append(game.gameType.polish)
                         append(" ")
                         append(
                             dateTimeFormatter.format(
@@ -61,7 +61,7 @@ class ReportsService {
                     .toString()
             val gameSubDir = File(getReportsDir(), reportDirName)
             if (!gameSubDir.exists()) {
-                println("${gameSubDir.absolutePath} doesn't exist")
+                println("${gameSubDir.absolutePath} doesn't exist, creating")
                 gameSubDir.mkdirs()
             }
             return gameSubDir

@@ -1,13 +1,24 @@
 package com.wuji.backend.game.common
 
+import com.wuji.backend.config.BoardConfig
+import com.wuji.backend.config.ExamConfig
+import com.wuji.backend.config.GameConfig
+import com.wuji.backend.config.QuizConfig
+import com.wuji.backend.config.dto.GameConfigDto
+import com.wuji.backend.config.dto.toBoardConfigDto
+import com.wuji.backend.config.dto.toExamConfigDto
+import com.wuji.backend.config.dto.toQuizConfigDto
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.GameType
 import com.wuji.backend.game.board.BoardService
+import com.wuji.backend.game.common.exception.NotEnoughPlayersException
+import com.wuji.backend.game.exam.ExamService
 import com.wuji.backend.game.quiz.QuizService
 import com.wuji.backend.player.dto.PlayerDto
 import com.wuji.backend.player.state.Player
 import com.wuji.backend.player.state.PlayerDetails
 import com.wuji.backend.reports.ReportsService
+import com.wuji.backend.security.auth.PlayerAuthService
 import org.springframework.stereotype.Service
 
 @SuppressWarnings("kotlin:S6514")
@@ -15,12 +26,14 @@ import org.springframework.stereotype.Service
 class GameServiceDelegate(
     quizService: QuizService,
     boardService: BoardService,
+    examService: ExamService,
+    private val authService: PlayerAuthService,
     private val gameRegistry: GameRegistry,
 ) : GameService {
     private val services =
         mapOf(
             GameType.QUIZ to quizService,
-            //        GameType.EXAM to examService,
+            GameType.EXAM to examService,
             GameType.BOARD to boardService)
 
     private val currentService: GameService
@@ -41,6 +54,8 @@ class GameServiceDelegate(
     }
 
     override fun startGame() {
+        if (currentService.listPlayers().isEmpty())
+            throw NotEnoughPlayersException()
         currentService.startGame()
     }
 
@@ -55,21 +70,38 @@ class GameServiceDelegate(
     override fun finishGame() {
         currentService.finishGame()
         ReportsService().writeReports(gameRegistry.game)
+        authService.clearAllSessions()
     }
 
-    override fun getReport(): String {
-        return currentService.getReport()
+    override fun kickPlayer(index: Int) {
+        return currentService.kickPlayer(index)
     }
 
-    override fun kickPlayer(index: Int, nickname: String) {
-        return currentService.kickPlayer(index, nickname)
-    }
-
-    override fun hasJoined(index: Int, nickname: String): Boolean {
-        return currentService.hasJoined(index, nickname)
+    override fun hasJoined(index: Int): Boolean {
+        return currentService.hasJoined(index)
     }
 
     override fun getPlayer(index: Int): Player<out PlayerDetails> {
         return currentService.getPlayer(index)
+    }
+
+    override fun getConfig(): GameConfig {
+        return currentService.getConfig()
+    }
+
+    fun getConfigDto(): GameConfigDto {
+        return when (gameRegistry.gameType) {
+            GameType.QUIZ -> (getConfig() as QuizConfig).toQuizConfigDto()
+            GameType.EXAM -> (getConfig() as ExamConfig).toExamConfigDto()
+            GameType.BOARD -> (getConfig() as BoardConfig).toBoardConfigDto()
+        }
+    }
+
+    fun getGameState(): GameState {
+        return gameRegistry.game.gameState
+    }
+
+    fun getGameType(): GameType {
+        return gameRegistry.gameType
     }
 }

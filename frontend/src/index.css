@@ -12,16 +12,42 @@
   font-style: italic;
 }
 
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #4b647a;
+  border-radius: 10px;
+  border: 2px solid #1c2c36;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #6e8ba5;
+}
+
+::-webkit-scrollbar-corner {
+  display: none;
+}
+
+::-webkit-scrollbar:horizontal {
+  display: none;
+}
+
 body {
   margin: 0;
   font-family: 'Nunito', monospace;
+  font-weight: 850;
   color: rgb(235, 225, 225);
   text-shadow: 1px 1px 1px #000000;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-image: url('../src/resources/bckgrnd.png');
+  background-color: #0b1b25;
   scrollbar-width: thin;
   scrollbar-color: #2d2e30 transparent;
+  overflow-x: 'hidden';
 }
 
 body::-webkit-scrollbar {
@@ -51,4 +77,10 @@ code {
 
 button {
   font-family: 'Nunito', sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+a, 
+input {
+  -webkit-tap-highlight-color: transparent;
 }

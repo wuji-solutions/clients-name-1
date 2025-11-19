@@ -6,8 +6,12 @@ typealias QuizConfigDto = GameConfigDto
 
 fun QuizConfigDto.toQuizConfig(): QuizConfig {
     return QuizConfig(
-        totalDurationMinutes = totalDurationMinutes,
         questionFilePath = questionFilePath,
-        questionDurationSeconds = questionDurationSeconds,
-        endImmediatelyAfterTime = endImmediatelyAfterTime)
+        questionDurationSeconds = questionDurationSeconds)
+}
+
+fun QuizConfig.toQuizConfigDto(): QuizConfigDto {
+    return QuizConfigDto(
+        questionFilePath = questionFilePath,
+        questionDurationSeconds = questionDurationSeconds)
 }

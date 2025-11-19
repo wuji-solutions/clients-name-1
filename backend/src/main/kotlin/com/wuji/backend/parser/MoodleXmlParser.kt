@@ -7,6 +7,7 @@ import com.wuji.backend.question.common.Question
 import com.wuji.backend.question.common.QuestionType
 import com.wuji.backend.question.common.TextFormat
 import com.wuji.backend.question.common.TextFormat.PLAIN_TEXT
+import com.wuji.backend.question.common.dto.toQuestionDto
 import com.wuji.backend.util.ext.getCategories
 import java.io.File
 import java.io.FileNotFoundException
@@ -69,7 +70,8 @@ object MoodleXmlParser {
         }
         val questions = parse(file.inputStream())
         val categories = questions.getCategories()
-        return ParsedQuestionsInfo(categories, questions.size)
+        return ParsedQuestionsInfo(
+            categories, questions.size, questions.map { it.toQuestionDto() })
     }
 
     private fun parseCategoryQuestion(reader: XMLStreamReader): String? {
@@ -104,6 +106,7 @@ object MoodleXmlParser {
         var imageBase64: String? = null
         val answers = mutableListOf<Answer>()
         val correctAnswerIds = mutableSetOf<Int>()
+        var difficultyLevel: DifficultyLevel = DifficultyLevel.EASY
 
         while (reader.nextTagOrEnd("question")) {
             when {
@@ -123,6 +126,10 @@ object MoodleXmlParser {
                     val (answer, isCorrect) = parseAnswer(reader)
                     answers.add(answer)
                     if (isCorrect) correctAnswerIds.add(answer.id)
+                }
+                reader.isStart("difficulty") -> {
+                    difficultyLevel =
+                        getDifficultyFromString(reader.readElementText().trim())
                 }
 
                 else -> reader.skip()
@@ -148,7 +155,7 @@ object MoodleXmlParser {
             questionTextFormat!!,
             answers,
             correctAnswerIds,
-            DifficultyLevel.EASY,
+            difficultyLevel,
             imageUrl,
             imageBase64,
             tags)
@@ -286,4 +293,14 @@ object MoodleXmlParser {
             "markdown" -> TextFormat.MARKDOWN
             else -> TextFormat.HTML
         }
+
+    fun getDifficultyFromString(tag: String): DifficultyLevel {
+        return when (tag.lowercase()) {
+            "easy" -> DifficultyLevel.EASY
+            "medium" -> DifficultyLevel.MEDIUM
+            "hard" -> DifficultyLevel.HARD
+            else ->
+                throw UnsupportedQuestionDifficultyException(tag.lowercase())
+        }
+    }
 }

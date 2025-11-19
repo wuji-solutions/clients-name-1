@@ -9,6 +9,7 @@ import { ButtonCustom } from '../components/Button';
 import { useNavigate } from 'react-router-dom';
 import { QuestionData } from '../common/types';
 import { getColor, getPercentage } from '../common/utils';
+import { useError } from '../providers/ErrorProvider';
 
 interface Props {
   data: QuestionData;
@@ -29,9 +30,9 @@ const Card = styled.div(() => ({
   maxWidth: '600px',
   padding: '16px',
   borderRadius: '16px',
-  border: '1px solid #000',
-  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-  backgroundColor: theme.palette.main.primary,
+  border: `4px solid ${theme.palette.main.accent}`,
+  boxShadow: `0 5px ${theme.palette.main.accent}`,
+  backgroundColor: 'transparent',
   margin: 'auto',
   marginBottom: '16px',
 }));
@@ -69,6 +70,7 @@ const ProgressBar = styled.div<{ color: string; widthPercent: number }>(
     height: '100%',
     backgroundColor: color,
     width: `${widthPercent}%`,
+    boxShadow: `0 5px ${theme.palette.main.accent}`,
   })
 );
 
@@ -92,12 +94,8 @@ const QuestionCard = ({ data }: Props) => {
       <Category>Kategoria: {question.category}</Category>
       <AnswerList>
         {question.answers.map((answer, index) => (
-          <AnswerCard
-            backgroundcolor={getColor(index)}
-            key={answer.id}
-            isselected={false}
-          >
-            {answer.content}
+          <AnswerCard backgroundcolor={getColor(index)} key={answer.id} isselected={false}>
+            {answer.text}
           </AnswerCard>
         ))}
       </AnswerList>
@@ -106,8 +104,12 @@ const QuestionCard = ({ data }: Props) => {
         <ProgressBar color="red" widthPercent={incorrectPercent} />
       </ProgressContainer>
       <Stats>
-        <span>Poprawne: {correctAnswersCount}</span>
-        <span>Niepoprawne: {incorrectAnswersCount}</span>
+        <span style={{ textShadow: 'none', color: theme.palette.main.info_text }}>
+          Poprawne: {correctAnswersCount}
+        </span>
+        <span style={{ textShadow: 'none', color: theme.palette.main.info_text }}>
+          Niepoprawne: {incorrectAnswersCount}
+        </span>
       </Stats>
     </Card>
   );
@@ -117,20 +119,35 @@ function Summary() {
   const { user } = useAppContext();
   const navigate = useNavigate();
   const [summary, setSummary] = useState<Summary | null>(null);
+  const { setError } = useError();
 
   useEffect(() => {
     service
       .getGameSummary()
       .then((response) => setSummary(response.data))
-      .catch((error) => console.log(error));
+      .catch((error) =>
+        setError(
+          'Wystąpił błąd podczas pobierania podsumowania gry:\n' + error.response.data.message
+        )
+      );
   }, []);
 
   if (user !== 'admin') return <AccessRestricted />;
 
   return (
     <Container>
-      <div style={{ width: '100%', height: '50px' }}>
-        <ButtonCustom onClick={() => navigate('/konfiguracja')}>Powrót</ButtonCustom>
+      <div
+        style={{
+          width: '100%',
+          height: '50px',
+          marginBottom: '20px',
+          display: 'flex',
+          justifyContent: 'flex-end',
+        }}
+      >
+        <ButtonCustom onClick={() => navigate('/konfiguracja')} style={{ margin: 0 }}>
+          Powrót
+        </ButtonCustom>
       </div>
       <div>{summary && summary.questions.map((question) => <QuestionCard data={question} />)}</div>
     </Container>

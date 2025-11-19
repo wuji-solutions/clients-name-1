@@ -5,13 +5,11 @@ import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.quiz.QuizGame
 import com.wuji.backend.game.quiz.QuizService
 import com.wuji.backend.question.common.PlayerAnswer
+import com.wuji.backend.question.common.Question
 import com.wuji.backend.question.common.QuestionService
-import com.wuji.backend.question.common.dto.AnswerCountDto
-import com.wuji.backend.question.common.dto.AnswersPerQuestionDto
-import com.wuji.backend.question.common.dto.QuestionAlreadyAnsweredResponseDto
-import com.wuji.backend.question.common.dto.QuestionDto
-import com.wuji.backend.question.common.dto.toDetailedAnswerDto
-import com.wuji.backend.question.common.dto.toQuestionDto
+import com.wuji.backend.question.common.dto.*
+import com.wuji.backend.question.quiz.dto.QuizQuestionDto
+import com.wuji.backend.question.quiz.dto.toQuizQuestionDto
 import com.wuji.backend.reports.common.GameStats
 import org.springframework.stereotype.Service
 
@@ -34,7 +32,7 @@ class QuizQuestionService(
             ?.answers ?: emptyList()
     }
 
-    fun getQuestion() = getCurrentQuestion().toQuestionDto()
+    fun getQuestion() = getCurrentQuestion().toQuizQuestionDto()
 
     fun answerQuizQuestion(playerIndex: Int, answerIds: Set<Int>): Boolean {
         val question = getCurrentQuestion()
@@ -46,11 +44,12 @@ class QuizQuestionService(
         }
     }
 
-    fun getNextQuestion(): QuestionDto {
+    fun getNextQuestion(): QuizQuestionDto {
         val nextQuestion = game.questionDispenser.moveToNextQuestion()
+        game.resume()
         sseQuizService.sendNextQuestion()
         currentQuestionStartTime = System.currentTimeMillis()
-        return nextQuestion.toQuestionDto()
+        return nextQuestion.toQuizQuestionDto()
     }
 
     fun askedQuestions() = game.askedQuestions
@@ -100,5 +99,12 @@ class QuizQuestionService(
     private fun updatePlayersAnsweredCounter(questionId: Int) {
         sseQuizService.sendPlayersAnsweredCounter(
             GameStats.countPlayersAnsweredForQuestion(game, questionId))
+    }
+
+    private fun Question.toQuizQuestionDto(): QuizQuestionDto {
+        val questionNumber = game.questionDispenser.currentQuestionNumber
+        val totalQuestions = game.questionDispenser.totalQuestionCount
+        return this.toQuizQuestionDto(
+            questionNumber = questionNumber, totalQuestions = totalQuestions)
     }
 }

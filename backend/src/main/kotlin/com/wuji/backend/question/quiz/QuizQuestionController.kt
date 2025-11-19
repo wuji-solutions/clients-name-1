@@ -5,11 +5,13 @@ import com.wuji.backend.game.quiz.dto.AnswerQuestionRequestDto
 import com.wuji.backend.question.common.QuestionController
 import com.wuji.backend.question.common.dto.AnswersPerQuestionDto
 import com.wuji.backend.question.common.dto.QuestionAlreadyAnsweredResponseDto
-import com.wuji.backend.question.common.dto.QuestionDto
-import com.wuji.backend.security.GameRunning
+import com.wuji.backend.question.quiz.dto.QuizQuestionDto
 import com.wuji.backend.security.IsAdmin
-import com.wuji.backend.security.RequiresGame
 import com.wuji.backend.security.auth.playerIndex
+import com.wuji.backend.security.validator.GamePaused
+import com.wuji.backend.security.validator.GameRunning
+import com.wuji.backend.security.validator.GameRunningOrPaused
+import com.wuji.backend.security.validator.RequiresGame
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
@@ -19,17 +21,18 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @Validated
 @RequiresGame(GameType.QUIZ)
-@GameRunning
 @RequestMapping("/games/quiz/questions")
 class QuizQuestionController(
     private val questionService: QuizQuestionService,
 ) : QuestionController {
 
+    @GameRunningOrPaused
     @GetMapping("/current")
-    fun getQuestion(): ResponseEntity<QuestionDto> {
+    fun getQuestion(): ResponseEntity<QuizQuestionDto> {
         return ResponseEntity.ok(questionService.getQuestion())
     }
 
+    @GameRunning
     @PostMapping("/answer")
     fun answerQuestion(
         @Valid @RequestBody answerDto: AnswerQuestionRequestDto,
@@ -42,12 +45,14 @@ class QuizQuestionController(
         return ResponseEntity.ok(correct)
     }
 
+    @GamePaused
     @PostMapping("/next")
     @IsAdmin
-    fun nextQuestion(): ResponseEntity<QuestionDto> {
+    fun nextQuestion(): ResponseEntity<QuizQuestionDto> {
         return ResponseEntity.ok(questionService.getNextQuestion())
     }
 
+    @GameRunning
     @PostMapping("/end")
     @IsAdmin
     fun endQuestion(): ResponseEntity<AnswersPerQuestionDto> {
@@ -55,6 +60,7 @@ class QuizQuestionController(
         return ResponseEntity.ok(questionService.getAnswersPerQuestion())
     }
 
+    @GameRunningOrPaused
     @GetMapping("/{questionId}/already-answered")
     fun playerAlreadyAnswered(
         @PathVariable questionId: Int,

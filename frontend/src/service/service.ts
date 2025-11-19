@@ -1,15 +1,16 @@
 import axios from 'axios';
 import { BACKEND_ENDPOINT, BACKEND_ENDPOINT_EXTERNAL } from '../common/config';
+import { CreateGameDTO, Question } from '../common/types';
 
-const startLobby = (mode: string, quiz: any) => {
-  return axios.post(BACKEND_ENDPOINT + '/manage/' + mode, quiz, {
+const startLobby = (mode: string, details: CreateGameDTO) => {
+  return axios.post(BACKEND_ENDPOINT + '/manage/' + mode, details, {
     headers: { 'Content-Type': 'application/json' },
   });
 };
 
-const joinGame = (index: number) => {
+const joinGame = (index: number, mode: string) => {
   return axios.post(
-    BACKEND_ENDPOINT_EXTERNAL + '/games/quiz/join',
+    BACKEND_ENDPOINT_EXTERNAL + `/games/${mode}/join`,
     { index: index },
     {
       withCredentials: true,
@@ -22,11 +23,11 @@ const startGame = () => {
 };
 
 const finishGame = () => {
-  return axios.post(BACKEND_ENDPOINT + '/finish');
+  return axios.post(BACKEND_ENDPOINT + '/manage/finish');
 };
 
 const getGameSummary = () => {
-  return axios.get(BACKEND_ENDPOINT + '/games/quiz/summarize'); // TODO: CHANGE HARD CODED QUIZ TO SPECIFIC VALUE WHEN MORE GAMES TYPES ARE AVAILABLE
+  return axios.get(BACKEND_ENDPOINT + `/games/quiz/summarize`);
 };
 
 const getCurrentQuestion = (user: string, mode: string) => {
@@ -38,22 +39,41 @@ const getCurrentQuestion = (user: string, mode: string) => {
   );
 };
 
-const sendAnswer = (answers: Array<number>, mode: string) => {
-  return axios.post(
-    BACKEND_ENDPOINT_EXTERNAL + `/games/${mode}/questions/answer`,
-    {
+const sendAnswer = (answers: Array<number>, mode: string, hasCheated?: boolean) => {
+  let payload;
+  if (hasCheated != undefined) {
+    payload = {
       answerIds: answers,
-    },
-    { withCredentials: true }
-  );
+      playerCheated: hasCheated,
+    };
+  } else {
+    payload = {
+      answerIds: answers,
+    };
+  }
+  return axios.post(BACKEND_ENDPOINT_EXTERNAL + `/games/${mode}/questions/answer`, payload, {
+    withCredentials: true,
+  });
 };
 
-const endQuestion = (mode: string = 'quiz') => {
-  return axios.post(BACKEND_ENDPOINT + `/games/${mode}/questions/end`, {});
+const endQuestion = (mode: string) => {
+  return axios.post(BACKEND_ENDPOINT + `/games/${mode}/questions/end`, { withCredentials: true });
 };
 
-const nextQuestion = (mode: string = 'quiz') => {
-  return axios.post(BACKEND_ENDPOINT + `/games/${mode}/questions/next`, {});
+const nextQuestion = (mode: string) => {
+  return axios.post(BACKEND_ENDPOINT + `/games/${mode}/questions/next`, { withCredentials: true });
+};
+
+const nextQuestionExam = () => {
+  return axios.get(BACKEND_ENDPOINT_EXTERNAL + `/games/exam/questions/next`, {
+    withCredentials: true,
+  });
+};
+
+const previousQuestionExam = () => {
+  return axios.get(BACKEND_ENDPOINT_EXTERNAL + `/games/exam/questions/previous`, {
+    withCredentials: true,
+  });
 };
 
 const kickPlayer = (index: number, nickname: string) => {
@@ -73,6 +93,53 @@ const hasAnsweredQuestion = (questionId: number) => {
   );
 };
 
+const getBoardState = (user: string) => {
+  return axios.get(
+    (user === 'admin' ? BACKEND_ENDPOINT : BACKEND_ENDPOINT_EXTERNAL) + '/games/board/state',
+    { withCredentials: true }
+  );
+};
+
+const makeMove = () => {
+  return axios.post(
+    BACKEND_ENDPOINT_EXTERNAL + '/games/board/player/move',
+    {},
+    { withCredentials: true }
+  );
+};
+
+const getPlayerId = () => {
+  return axios.get(BACKEND_ENDPOINT_EXTERNAL + '/games/board/player', { withCredentials: true });
+};
+
+const getPlayerLeaderboard = () => {
+  return axios.get(BACKEND_ENDPOINT + '/games/board/leaderboard', { withCredentials: true });
+};
+
+const getExamTimeRemainingUser = () => {
+  return axios.get(BACKEND_ENDPOINT_EXTERNAL + '/games/exam/time-left', { withCredentials: true });
+};
+
+const getExamTimeRemainingAdmin = () => {
+  return axios.get(BACKEND_ENDPOINT + '/games/exam/time-left', { withCredentials: true });
+};
+
+const parseQuestions = (filePath: string) => {
+  return axios.get(BACKEND_ENDPOINT + '/manage/parse-questions', {
+    params: { questionsFilePath: filePath },
+  });
+};
+
+const validateSessionID = () => {
+  return axios.get(BACKEND_ENDPOINT_EXTERNAL + '/security/session-status', {
+    withCredentials: true,
+  });
+};
+
+const userFinishedExam = () => {
+  return axios.post(BACKEND_ENDPOINT_EXTERNAL + '/games/exam/complete', {}, { withCredentials: true });
+};
+
 export const service = {
   startLobby: startLobby,
   joinGame: joinGame,
@@ -83,7 +150,18 @@ export const service = {
   sendAnswer: sendAnswer,
   endQuestion: endQuestion,
   nextQuestion: nextQuestion,
+  nextQuestionExam: nextQuestionExam,
+  previousQuestionExam: previousQuestionExam,
   kickPlayer: kickPlayer,
   getPlayerList: getPlayerList,
   hasAnsweredQuestion: hasAnsweredQuestion,
+  getBoardState: getBoardState,
+  makeMove: makeMove,
+  getPlayerId: getPlayerId,
+  getPlayerLeaderboard: getPlayerLeaderboard,
+  getExamTimeRemainingUser: getExamTimeRemainingUser,
+  getExamTimeRemainingAdmin: getExamTimeRemainingAdmin,
+  parseQuestions: parseQuestions,
+  validateSessionID: validateSessionID,
+  userFinishedExam: userFinishedExam,
 };

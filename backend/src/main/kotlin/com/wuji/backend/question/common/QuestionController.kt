@@ -1,6 +1,6 @@
 package com.wuji.backend.question.common
 
-import com.wuji.backend.security.GameRunning
+import com.wuji.backend.security.validator.GameRunning
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController

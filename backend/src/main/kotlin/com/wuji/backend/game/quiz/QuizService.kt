@@ -7,6 +7,7 @@ import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.common.GameService
 import com.wuji.backend.game.quiz.dto.QuestionWithSummaryDto
 import com.wuji.backend.game.quiz.dto.QuizSummaryResponseDto
+import com.wuji.backend.parser.MoodleXmlParser
 import com.wuji.backend.player.dto.PlayerDto
 import com.wuji.backend.player.dto.PlayerDto.Companion.toDto
 import com.wuji.backend.player.state.Player
@@ -16,9 +17,10 @@ import com.wuji.backend.player.state.QuizPlayer
 import com.wuji.backend.player.state.QuizPlayerDetails
 import com.wuji.backend.player.state.exception.PlayerAlreadyJoinedException
 import com.wuji.backend.player.state.exception.PlayerNotFoundException
-import com.wuji.backend.question.common.Question
 import com.wuji.backend.question.common.dto.toQuestionDto
 import com.wuji.backend.reports.common.GameStats.Companion.countCorrectIncorrectAnswers
+import java.io.File
+import java.io.FileNotFoundException
 import org.springframework.stereotype.Service
 
 @Service
@@ -33,7 +35,7 @@ class QuizService(
         get() = gameRegistry.getAs(QuizGame::class.java)
 
     override fun joinGame(index: Int, nickname: String): QuizPlayer {
-        if (hasJoined(index, nickname))
+        if (hasJoined(index))
             throw PlayerAlreadyJoinedException(index, nickname)
 
         return playerService
@@ -48,8 +50,16 @@ class QuizService(
     fun createGame(
         name: String,
         config: QuizConfig,
-        questions: List<Question>
+        questionsFilePath: String,
     ) {
+        val questionsFile = File(questionsFilePath)
+        if (!questionsFile.exists())
+            throw FileNotFoundException(
+                "Nie można znaleźć pliku $questionsFilePath")
+        if (!questionsFile.isFile)
+            throw FileNotFoundException("$questionsFilePath to nie plik")
+
+        val questions = MoodleXmlParser.parse(questionsFile.inputStream())
         gameRegistry.register(QuizGame(name, config, questions))
     }
 
@@ -85,19 +95,15 @@ class QuizService(
         return QuizSummaryResponseDto(questionsWithSummary)
     }
 
-    override fun getReport(): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun kickPlayer(index: Int, nickname: String) {
-        val player = quizGame.findPlayerByIndexAndNickname(index, nickname)
+    override fun kickPlayer(index: Int) {
+        val player = quizGame.findPlayerByIndex(index)
         quizGame.players.remove(player)
         sseEventService.sendPlayerKickedEvent(player.toDto())
     }
 
-    override fun hasJoined(index: Int, nickname: String): Boolean =
+    override fun hasJoined(index: Int): Boolean =
         try {
-            quizGame.findPlayerByIndexAndNickname(index, nickname)
+            quizGame.findPlayerByIndex(index)
             true
         } catch (_: PlayerNotFoundException) {
             false
@@ -106,4 +112,6 @@ class QuizService(
     override fun getPlayer(index: Int): Player<out PlayerDetails> {
         return quizGame.findPlayerByIndex(index)
     }
+
+    override fun getConfig(): QuizConfig = quizGame.config
 }

@@ -16,11 +16,13 @@ import com.wuji.backend.player.dto.PlayerDto
 import com.wuji.backend.player.dto.PlayerDto.Companion.toDto
 import com.wuji.backend.player.state.BoardPlayer
 import com.wuji.backend.player.state.BoardPlayerDetails
+import com.wuji.backend.player.state.Category
 import com.wuji.backend.player.state.Player
 import com.wuji.backend.player.state.PlayerDetails
 import com.wuji.backend.player.state.PlayerService
 import com.wuji.backend.player.state.exception.PlayerAlreadyJoinedException
 import com.wuji.backend.player.state.exception.PlayerNotFoundException
+import com.wuji.backend.player.state.increaseMultiplier
 import com.wuji.backend.util.ext.getCategories
 import java.io.File
 import java.io.FileNotFoundException
@@ -38,12 +40,11 @@ class BoardService(
         index: Int,
         nickname: String
     ): Player<out PlayerDetails> {
-        if (hasJoined(index, nickname))
+        if (hasJoined(index))
             throw PlayerAlreadyJoinedException(index, nickname)
 
         return playerService
             .createPlayer(index, nickname, BoardPlayerDetails())
-            .also { player -> game.players.add(player) }
             .also { player -> game.addPlayer(player) }
             .also { sseUsersService.sendPlayers(listPlayers()) }
     }
@@ -72,17 +73,13 @@ class BoardService(
         sseEventService.sendGameFinish()
     }
 
-    override fun getReport(): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun kickPlayer(index: Int, nickname: String) {
+    override fun kickPlayer(index: Int) {
         val player = game.findPlayerByIndex(index)
         game.players.remove(player)
         sseEventService.sendPlayerKickedEvent(player.toDto())
     }
 
-    override fun hasJoined(index: Int, nickname: String): Boolean =
+    override fun hasJoined(index: Int): Boolean =
         try {
             game.findPlayerByIndex(index)
             true
@@ -93,6 +90,8 @@ class BoardService(
     override fun getPlayer(index: Int): BoardPlayer {
         return game.findPlayerByIndex(index)
     }
+
+    override fun getConfig(): BoardConfig = game.config
 
     fun getBoardState(): BoardStateDto {
         val tileStateDtos =
@@ -119,8 +118,12 @@ class BoardService(
     fun movePlayer(playerIndex: Int): MovePlayerResponseDto {
         val player = game.findPlayerByIndex(playerIndex)
         val steps = game.dice.roll(player)
+        val previousTileIndex = player.details.currentTileIndex
 
         game.movePlayer(player, steps)
+        if (previousTileIndex > player.details.currentTileIndex) {
+            player.increaseMultiplier()
+        }
         sseBoardService.sendNewBoardStateEvent(getSimpleBoardState())
         return MovePlayerResponseDto(steps, player.details.currentTileIndex)
     }
@@ -169,5 +172,8 @@ class BoardService(
         return result
     }
 
-    fun getRanking(): List<PlayerDto> = game.getTop5Players().map { it.toDto() }
+    fun getLeaderboard(): List<PlayerDto> =
+        game.getTop5Players().map { it.toDto() }
+
+    fun getCategories(): List<Category> = game.categories
 }

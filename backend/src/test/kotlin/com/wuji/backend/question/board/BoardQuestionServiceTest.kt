@@ -59,7 +59,7 @@ class BoardQuestionServiceTest {
 
     @Test
     fun `getAnswers should return player's answers`() {
-        val answers = mutableListOf(PlayerAnswer(question, setOf(0), 0))
+        val answers = mutableListOf(PlayerAnswer(question, setOf(0), 0, false))
 
         every { player.details.answers } returns answers
         every { boardGame.findPlayerByIndex(0) } returns player
@@ -109,7 +109,9 @@ class BoardQuestionServiceTest {
         every { service.getQuestion(0) } returns question
         every { boardGame.findPlayerByIndex(0) } returns player
         every { player.details.askedQuestions.add(question) } returns true
-        every { service.answerQuestion(player, question, answers) } returns true
+        every {
+            service.answerQuestion(player, question, answers, any())
+        } returns true
         every { boardGame.getTop5Players() } returns listOf(player)
         every {
             boardGame.config.pointsPerDifficulty.getValue(
@@ -149,7 +151,7 @@ class BoardQuestionServiceTest {
     }
 
     @Test
-    fun `answerBoardQuestion should send ranking event if player enters top5 by points`() {
+    fun `answerBoardQuestion should send leaderboard event if player enters top5 by points`() {
         service =
             spyk(
                 BoardQuestionService(gameRegistry, sseBoardService),
@@ -159,36 +161,39 @@ class BoardQuestionServiceTest {
         every { service.getQuestion(0) } returns question
         every { boardGame.findPlayerByIndex(0) } returns player
         every { player.details.askedQuestions.add(question) } returns true
-        every { service.answerQuestion(player, question, answers) } returns true
+        every {
+            service.answerQuestion(player, question, answers, any())
+        } returns true
         justRun { service.checkForDifficultyPromotion(0) }
 
         every { boardGame.config.pointsPerDifficulty } returns
             mapOf(question.difficultyLevel to 20)
+        every { boardGame.config.showLeaderboard } returns true
 
-        var mutablePoints = 0
-        every { player.details.points = any() } answers
+        val mutablePointsMap = mutableMapOf<Int, Int>()
+        every { player.details.pointsMap } returns mutablePointsMap
+        every { player.details.points() } answers
             {
-                mutablePoints = it.invocation.args[0] as Int
+                mutablePointsMap.values.sum()
             }
-        every { player.details.points } answers { mutablePoints }
 
         val otherPlayer = mockk<BoardPlayer>(relaxed = true)
-        every { otherPlayer.details.points } returns 10
+        every { otherPlayer.details.points() } returns 10
 
         // min points = 10, so after scoring 20 player enters top 5
         every { boardGame.getTop5Players() } returns listOf(otherPlayer)
 
-        every { sseBoardService.sendNewRankingStateEvent(any()) } just Runs
+        every { sseBoardService.sendNewLeaderboardStateEvent(any()) } just Runs
 
         val result = service.answerBoardQuestion(0, answers)
 
         assertTrue(result)
-        assertTrue(mutablePoints >= 20)
-        verify { sseBoardService.sendNewRankingStateEvent(any()) }
+        assertTrue(mutablePointsMap.values.sum() >= 20)
+        verify { sseBoardService.sendNewLeaderboardStateEvent(any()) }
     }
 
     @Test
-    fun `answerBoardQuestion should send ranking event if fewer than 5 players exist`() {
+    fun `answerBoardQuestion should send leaderboard event if fewer than 5 players exist`() {
         service =
             spyk(
                 BoardQuestionService(gameRegistry, sseBoardService),
@@ -198,36 +203,39 @@ class BoardQuestionServiceTest {
         every { service.getQuestion(0) } returns question
         every { boardGame.findPlayerByIndex(0) } returns player
         every { player.details.askedQuestions.add(question) } returns true
-        every { service.answerQuestion(player, question, answers) } returns true
+        every {
+            service.answerQuestion(player, question, answers, any())
+        } returns true
         justRun { service.checkForDifficultyPromotion(0) }
 
         every { boardGame.config.pointsPerDifficulty } returns
             mapOf(question.difficultyLevel to 5)
+        every { boardGame.config.showLeaderboard } returns true
 
-        var mutablePoints = 0
-        every { player.details.points = any() } answers
+        val mutablePointsMap = mutableMapOf<Int, Int>()
+        every { player.details.pointsMap } returns mutablePointsMap
+        every { player.details.points() } answers
             {
-                mutablePoints = it.invocation.args[0] as Int
+                mutablePointsMap.values.sum()
             }
-        every { player.details.points } answers { mutablePoints }
 
         // only 2 players → size < 5 triggers event
         val p1 = mockk<BoardPlayer>(relaxed = true)
         val p2 = mockk<BoardPlayer>(relaxed = true)
-        every { p1.details.points } returns 100
-        every { p2.details.points } returns 50
+        every { p1.details.points() } returns 100
+        every { p2.details.points() } returns 50
         every { boardGame.getTop5Players() } returns listOf(p1, p2)
 
-        every { sseBoardService.sendNewRankingStateEvent(any()) } just Runs
+        every { sseBoardService.sendNewLeaderboardStateEvent(any()) } just Runs
 
         val result = service.answerBoardQuestion(0, answers)
 
         assertTrue(result)
-        verify { sseBoardService.sendNewRankingStateEvent(any()) }
+        verify { sseBoardService.sendNewLeaderboardStateEvent(any()) }
     }
 
     @Test
-    fun `answerBoardQuestion should not send ranking event if below threshold and 5 or more players exist`() {
+    fun `answerBoardQuestion should not send leaderboard event if below threshold and 5 or more players exist`() {
         service =
             spyk(
                 BoardQuestionService(gameRegistry, sseBoardService),
@@ -237,35 +245,39 @@ class BoardQuestionServiceTest {
         every { service.getQuestion(0) } returns question
         every { boardGame.findPlayerByIndex(0) } returns player
         every { player.details.askedQuestions.add(question) } returns true
-        every { service.answerQuestion(player, question, answers) } returns true
+        every {
+            service.answerQuestion(player, question, answers, any())
+        } returns true
         justRun { service.checkForDifficultyPromotion(0) }
 
         every { boardGame.config.pointsPerDifficulty } returns
             mapOf(question.difficultyLevel to 5)
 
-        var mutablePoints = 0
-        every { player.details.points = any() } answers
+        val mutablePointsMap = mutableMapOf<Int, Int>()
+        every { player.details.pointsMap } returns mutablePointsMap
+        every { player.details.points() } answers
             {
-                mutablePoints = it.invocation.args[0] as Int
+                mutablePointsMap.values.sum()
             }
-        every { player.details.points } answers { mutablePoints }
 
         // 5 players with points higher than player
         val players =
             List(5) {
                 mockk<BoardPlayer>(relaxed = true).apply {
-                    every { details.points } returns 100
+                    every { details.points() } returns 100
                 }
             }
         every { boardGame.getTop5Players() } returns players
 
-        every { sseBoardService.sendNewRankingStateEvent(any()) } just Runs
+        every { sseBoardService.sendNewLeaderboardStateEvent(any()) } just Runs
 
         val result = service.answerBoardQuestion(0, answers)
 
         assertTrue(result)
-        assertEquals(5, mutablePoints)
-        verify(exactly = 0) { sseBoardService.sendNewRankingStateEvent(any()) }
+        assertEquals(5, player.details.points())
+        verify(exactly = 0) {
+            sseBoardService.sendNewLeaderboardStateEvent(any())
+        }
     }
 
     @Test
@@ -373,17 +385,17 @@ class BoardQuestionServiceTest {
         every { boardGame.getTop5Players() } returns listOf(player)
         every { boardGame.config.pointsPerDifficulty.getValue(any()) } returns 5
 
-        var mutablePoints = 0
-        every { player.details.points = any() } answers
+        val mutablePointsMap = mutableMapOf<Int, Int>()
+        every { player.details.pointsMap } returns mutablePointsMap
+        every { player.details.points() } answers
             {
-                mutablePoints = it.invocation.args[0] as Int
+                mutablePointsMap.values.sum()
             }
-        every { player.details.points } answers { mutablePoints }
 
         val result = service.answerBoardQuestion(0, answers)
 
         assertFalse(result)
-        assertEquals(0, mutablePoints)
+        assertEquals(0, player.details.points())
     }
 
     @Test

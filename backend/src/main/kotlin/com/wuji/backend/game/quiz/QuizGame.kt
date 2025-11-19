@@ -5,9 +5,7 @@ import com.wuji.backend.dispenser.QuizDispenser
 import com.wuji.backend.game.GameType
 import com.wuji.backend.game.common.AbstractGame
 import com.wuji.backend.game.common.GameState
-import com.wuji.backend.player.state.QuizPlayer
 import com.wuji.backend.player.state.QuizPlayerDetails
-import com.wuji.backend.player.state.exception.PlayerNotFoundException
 import com.wuji.backend.question.common.Question
 
 class QuizGame(
@@ -36,16 +34,6 @@ class QuizGame(
 
     override fun finish() {
         gameState = GameState.FINISHED
-    }
-
-    override fun getReport(): String {
-        TODO("Not yet implemented")
-    }
-
-    fun findPlayerByIndexAndNickname(index: Int, nickname: String): QuizPlayer {
-        return players.find { player ->
-            player.index == index && player.nickname == nickname
-        } ?: throw PlayerNotFoundException(index)
     }
 
     fun currentQuestion(): Question = askedQuestions.last()

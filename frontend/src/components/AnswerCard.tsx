@@ -1,23 +1,30 @@
 import { styled } from 'styled-components';
 import { darkenColor } from '../common/utils';
 
-const AnswerCard = styled.div<{ backgroundcolor: string; isselected: boolean | undefined }>(
-  ({ backgroundcolor, isselected }) => {
-    const base = backgroundcolor;
-    const gradient = isselected
-      ? `linear-gradient(135deg, ${darkenColor(base, 0.2)}, ${darkenColor(base, 0.35)})`
-      : `linear-gradient(135deg, ${base}, ${darkenColor(base, 0.15)})`;
+const AnswerCard = styled.div<{ backgroundcolor: string; isselected: boolean | undefined, usegradient?: boolean, style?: any }>(
+  ({ backgroundcolor, isselected, usegradient, style }) => {
+    const base: string = backgroundcolor;
+    let bg;
+    if (usegradient) {
+      bg = isselected
+        ? `linear-gradient(135deg, ${darkenColor(base, 0.3)}, ${darkenColor(base, 0.45)})`
+        : `linear-gradient(135deg, ${base}, ${darkenColor(base, 0.25)})`;
+    } else {
+      bg = isselected ? darkenColor(base, 0.1) :  base;
+    }
 
     return {
+      color: isselected ? '#dee0e0' : '#fff',
       borderRadius: '20px',
-      minHeight: '25px',
-      width: '10em',
-      maxWidth: '500px',
+      minHeight: '15px',
+      maxHeight: '25px',
+      width: 'fit-content',
+      minWidth: '100px',
+      maxWidth: '300px',
       margin: 'auto',
       padding: '20px',
-      background: gradient,
-      boxShadow: `0 4px 1px 0 ${darkenColor(base, 0.6)}`,
-      border: `2px solid ${darkenColor(base, 0.5)}`,
+      background: bg,
+      boxShadow: `0 5px 1px 1px ${ isselected ? darkenColor(base, 0.16) : darkenColor(base, 0.06)}`,
       transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
       cursor: 'pointer',
       transform: isselected ? 'none' : 'translateY(5px)',
@@ -31,8 +38,9 @@ const AnswerCard = styled.div<{ backgroundcolor: string; isselected: boolean | u
       textAlign: 'center',
       '& h2': {
         margin: 0,
-        fontSize: '1rem',
+        fontSize: '0.8rem',
       },
+      ...style,
     };
   }
 );

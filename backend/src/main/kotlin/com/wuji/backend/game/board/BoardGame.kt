@@ -49,11 +49,8 @@ class BoardGame(
         gameState = GameState.FINISHED
     }
 
-    override fun getReport(): String {
-        TODO("Not yet implemented")
-    }
-
     fun addPlayer(player: BoardPlayer) {
+        players.add(player)
         val playersOnTile =
             boardState[0] ?: throw IllegalStateException("Board state is empty")
         playersOnTile.add(player)
@@ -82,5 +79,5 @@ class BoardGame(
     }
 
     fun getTop5Players(): List<BoardPlayer> =
-        players.sortedByDescending { player -> player.details.points }.take(5)
+        players.sortedByDescending { player -> player.details.points() }.take(5)
 }
