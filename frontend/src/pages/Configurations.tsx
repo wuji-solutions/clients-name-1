@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { useDropzone } from 'react-dropzone';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import theme from '../common/theme';
 import { mode } from '../common/types';
-import { ButtonChoose, ButtonCustom } from '../components/Button';
+import { ButtonCustom } from '../components/Button';
 import { useAppContext } from '../providers/AppContextProvider';
 import AccessRestricted from '../components/AccessRestricted';
 import { service } from '../service/service';
@@ -173,12 +172,6 @@ function Configurations() {
   const navigate = useNavigate();
   const { setError } = useError();
 
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop: (files) => {
-      console.log(files);
-    },
-  });
-
   const [mode, setMode] = useState<mode>('quiz');
 
   const startLobby = () => {
@@ -205,7 +198,7 @@ function Configurations() {
     randomizeQuestions: true,
     enforceDifficultyBalance: false,
     selectedQuestionIds: [],
-    zeroPointsOnCheating: true,
+    zeroPointsOnCheating: false,
     markQuestionOnCheating: false,
     notifyTeacherOnCheating: true,
     showDetailedFinishFeedback: true,
@@ -214,7 +207,7 @@ function Configurations() {
       MEDIUM: 2,
       HARD: 3,
     },
-    allowGoingBack: true,
+    allowGoingBack: false,
     additionalTimeToAnswerAfterFinishInSeconds: 10,
   });
   const [boardSettings, setBoardSettings] = useState<BoardSettings>({

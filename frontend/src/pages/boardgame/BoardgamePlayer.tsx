@@ -1,7 +1,13 @@
 import { keyframes, styled } from 'styled-components';
 import { useEffect, useState } from 'react';
 import GameBoard from '../../components/GameBoard';
-import { BoardPositions, Pawn, Question } from '../../common/types';
+import {
+  BoardAnswerQuestionDto,
+  BoardPositions,
+  CategoryToDifficulty,
+  Pawn,
+  Question,
+} from '../../common/types';
 import { useContainerDimensions } from '../../hooks/useContainerDimensions';
 import { service } from '../../service/service';
 import { useSSEChannel } from '../../providers/SSEProvider';
@@ -9,7 +15,7 @@ import { BACKEND_ENDPOINT_EXTERNAL } from '../../common/config';
 import Dice from '../../components/Dice';
 import Modal from '../../components/Modal';
 import AnswerCard from '../../components/AnswerCard';
-import { boardgameColorPalette, darkenColor, getColor, isMobileView } from '../../common/utils';
+import { darkenColor, getColor, getParsedDifficultyLevel, isMobileView } from '../../common/utils';
 import { QuestionContainer, QuestionHeader } from '../quiz/Quiz';
 import { ButtonCustom } from '../../components/Button';
 import theme from '../../common/theme';
@@ -99,7 +105,6 @@ const ToggleModalButton = styled.button({
   zIndex: '9999',
 });
 
-
 const GameFinishedContainer = styled.div({
   color: theme.palette.main.info_text,
   textAlign: 'center',
@@ -163,13 +168,121 @@ const Popup = styled.div`
   animation: ${popupToCorner} 2.5s ease-in-out forwards;
 `;
 
-export function PointsPopup({ onComplete }: {onComplete: Function}) {
+const NicknameContainer = styled.div({
+  position: 'absolute',
+  bottom: '20px',
+  margin: 'auto',
+  width: '100%',
+  display: 'flex',
+  justifyContent: 'center',
+  textShadow: 'none',
+  color: theme.palette.main.info_text,
+  fontSize: '25px',
+});
+
+const Wrapper = styled.div(() => ({
+  border: `4px solid ${theme.palette.main.accent}`,
+  boxShadow: `0 4px 0 0 ${theme.palette.main.accent}`,
+  borderRadius: 6,
+  width: '90%',
+  overflow: 'hidden',
+  position: 'absolute',
+  top: '75px',
+  left: '50%',
+  transform: 'translate(-50%)',
+  zIndex: '99',
+  WebkitTapHighlightColor: 'transparent',
+  paddingBottom: '10px',
+  backgroundColor: theme.palette.main.background,
+}));
+
+const Header = styled.div(() => ({
+  padding: 10,
+  cursor: 'pointer',
+  fontWeight: 600,
+  userSelect: 'none',
+  fontSize: '18px',
+  justifyContent: 'center',
+  textAlign: 'center',
+  color: theme.palette.main.info_text,
+  textShadow: 'none',
+}));
+
+const Body = styled.div(() => ({
+  padding: 10,
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 8,
+}));
+
+const Row = styled.div(() => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+}));
+
+function CategoryLevels({
+  categoryLevels,
+  points,
+}: {
+  categoryLevels: CategoryToDifficulty;
+  points: number | undefined;
+}) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Wrapper>
+      <Header onClick={() => setOpen((o) => !o)}>
+        {open ? 'POZIOM ▲' : 'POZIOM ▼'}
+        {' | PUNKTY: ' + points}
+      </Header>
+
+      {open && (
+        <Body>
+          {Object.entries(categoryLevels).map(([name, difficulty]) => (
+            <Row key={name}>
+              <span>{name}</span>
+              {getParsedDifficultyLevel(difficulty)}
+            </Row>
+          ))}
+        </Body>
+      )}
+    </Wrapper>
+  );
+}
+
+const Toast = styled.div<{ visible: boolean }>((props) => ({
+  position: 'fixed',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  padding: '14px 22px',
+  color: '#fff',
+  borderRadius: 8,
+  fontSize: '29px',
+  fontWeight: 'bolder',
+  pointerEvents: 'none',
+  transition: 'opacity 0.4s ease',
+  opacity: props.visible ? 1 : 0,
+  zIndex: '999',
+  width: '100%',
+  display: 'flex',
+  justifyContent: 'center',
+  alignContent: 'center',
+  textShadow: '40px'
+}));
+
+export function PointsPopup({ onComplete }: { onComplete: Function }) {
   useEffect(() => {
     const timer = setTimeout(onComplete, 1500);
     return () => clearTimeout(timer);
   }, [onComplete]);
 
-  return <Popup><Star style={{width: '40px', height: '40px'}} /></Popup>;
+  return (
+    <Popup>
+      <Star style={{ width: '40px', height: '40px' }} />
+    </Popup>
+  );
 }
 
 function SSEOnBoardgameStateChangeListener({ setPositions }: { setPositions: Function }) {
@@ -208,6 +321,7 @@ function BoardgamePlayer() {
   const [numfields, setNumfields] = useState<number>(0);
   const { ref: gameContainerRef, dimensions } = useContainerDimensions();
   const [playerIndex, setPlayerIndex] = useState<string | undefined>(undefined);
+  const [playerNick, setPlayerNick] = useState<string | undefined>(undefined);
   const [diceRoll, setDiceRoll] = useState<boolean | undefined>(undefined);
   const [cheatValue, setCheatValue] = useState<'1' | '2' | '3' | '4' | '5' | '6' | undefined>(
     undefined
@@ -229,6 +343,9 @@ function BoardgamePlayer() {
 
   const [playerPoints, setPlayerPoints] = useState<number>();
 
+  const [categoryLevels, setCategoryLevels] = useState<CategoryToDifficulty>({});
+  const [showLevelUp, setShowLevelUp] = useState<boolean>(false);
+
   const [gameFinished, setGameFinished] = useState<boolean>(false);
 
   const [showAnswerPopup, setShowAnswerPopup] = useState<boolean>(false);
@@ -238,9 +355,11 @@ function BoardgamePlayer() {
     if (!playerIndex) {
       service.getPlayerId().then((response) => {
         setPlayerIndex(response.data.index as string);
+        setPlayerNick(response.data.nickname);
         setIsAnswering(response.data.state === 'ANSWERING');
         setShowDice(response.data.state !== 'ANSWERING');
         setPlayerPoints(response.data.points);
+        setCategoryLevels(response.data.categoryToDifficulty);
       });
     }
   }, []);
@@ -275,7 +394,7 @@ function BoardgamePlayer() {
         setSelectedAnswers([]);
         setTimeout(() => {
           setShowAnswerModal(true);
-        }, 2000)
+        }, 2000);
       })
       .catch((error) => {
         setError('Wystąpił błąd podczas pobierania pytania:\n' + error.response.data.message);
@@ -333,7 +452,16 @@ function BoardgamePlayer() {
         'board'
       )
       .then((response) => {
-        const answerCorrect = response.data;
+        const answerData: BoardAnswerQuestionDto = response.data;
+        const answerCorrect = answerData.correct;
+        setPlayerPoints(answerData.player.points);
+
+        const newCategoryLevels = answerData.player.categoryToDifficulty;
+        if (JSON.stringify(newCategoryLevels) != JSON.stringify(categoryLevels)) {
+          setShowLevelUp(true);
+          setTimeout(() => setShowLevelUp(false), 1500);
+        }
+        setCategoryLevels(answerData.player.categoryToDifficulty);
 
         if (answerCorrect) {
           setShowAnswerPopup(true);
@@ -367,28 +495,24 @@ function BoardgamePlayer() {
       setTimeout(() => {
         setModalClosing(false);
         setShowAnswerModal(false);
-      }, 500)
+      }, 500);
     } else {
       setShowAnswerModal(true);
     }
-  }
+  };
 
   if (gameFinished) {
     return (
-    <Container style={{height: '80vh'}}>
-      <GameFinishedContainer>
-          Gra się zakończyła
-        </GameFinishedContainer>
-    </Container>
-    )
-  };
+      <Container style={{ height: '80vh' }}>
+        <GameFinishedContainer>Gra się zakończyła</GameFinishedContainer>
+      </Container>
+    );
+  }
 
   return (
     <Container>
-      <PointsContainer>
-        <span>PUNKTY:</span>
-        <span>{playerPoints}</span>
-      </PointsContainer>
+      <Toast visible={showLevelUp}>Osiągasz kolejny poziom!</Toast>
+      <CategoryLevels categoryLevels={categoryLevels} points={playerPoints} />
       {showAnswerPopup && <PointsPopup onComplete={() => setShowAnswerPopup(false)} />}
       <SSEOnEventListener setGameFinished={setGameFinished} />
       {isAnswering && (
@@ -402,6 +526,9 @@ function BoardgamePlayer() {
             <QuestionHeader>
               <BoardQuestionCategory>{currentQuestion.category}</BoardQuestionCategory>
               <BoardQuestionTask>{currentQuestion.task}</BoardQuestionTask>
+              <div style={{ margin: 'auto', width: 'fit-content' }}>
+                {getParsedDifficultyLevel(currentQuestion.difficultyLevel)}
+              </div>
             </QuestionHeader>
             <AnswerGrid>
               {currentQuestion.answers.map((answer, index) => (
@@ -437,6 +564,7 @@ function BoardgamePlayer() {
           />
         )}
       </GameContainer>
+      <NicknameContainer>{playerNick}</NicknameContainer>
     </Container>
   );
 }

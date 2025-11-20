@@ -5,7 +5,6 @@ import { LabeledCheckboxContainer } from './components/LabeledCheckbox';
 import { ButtonCustom } from '../Button';
 import PerCategoryPromotionModal from './PerCategoryPromotionModal';
 import DifficultyPoints from './components/DifficultyPoints';
-import OtherStuff from './components/BoardAndExamCommonFields';
 import theme from '../../common/theme';
 import ToggleSwitch from '../ToggleSwitch';
 
@@ -44,7 +43,6 @@ export default function BoardConfig({ settings, setSettings, categoryNames, pars
       >
         Ustawienia planszówki
       </p>
-      <OtherStuff settings={settings} setSettings={setSettings} />
       <LabeledCheckboxContainer>
         <CenteredLabel htmlFor="setShowLeaderboard">
           Czy ranking uczniów powinien się wyświetlać

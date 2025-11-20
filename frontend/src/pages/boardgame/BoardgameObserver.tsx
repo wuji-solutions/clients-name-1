@@ -1,7 +1,7 @@
 import { styled } from 'styled-components';
 import { useEffect, useState } from 'react';
 import GameBoard from '../../components/GameBoard';
-import { BoardPositions, Pawn } from '../../common/types';
+import { BoardConfig, BoardPositions, Pawn } from '../../common/types';
 import { useContainerDimensions } from '../../hooks/useContainerDimensions';
 import { service } from '../../service/service';
 import { useSSEChannel } from '../../providers/SSEProvider';
@@ -12,6 +12,7 @@ import theme from '../../common/theme';
 import { ButtonCustom } from '../../components/Button';
 import { useNavigate } from 'react-router-dom';
 import { useError } from '../../providers/ErrorProvider';
+import { getModeConfig } from '../../service/configService';
 
 export function parsePlayerPositions(
   positions: [{ tileIndex: number; players: [Pawn]; category: string }]
@@ -156,6 +157,17 @@ function BoardgameObserver() {
   const navigate = useNavigate();
   const { setError } = useError();
 
+  const [boardgameConfig, setBoardgameConfig] = useState<BoardConfig>();
+  const [showRanking, setShowRanking] = useState<boolean>(false);
+
+  useEffect(() => {
+    getModeConfig().then((response) => {
+      const configData: BoardConfig = response.data;
+      setBoardgameConfig(configData);
+      setShowRanking(configData.showLeaderboard);
+    });
+  }, []);
+
   useEffect(() => {
     service.getBoardState('admin').then((response) => {
       const setup = getBoardSetup(response.data);
@@ -182,7 +194,9 @@ function BoardgameObserver() {
       .then(() => {
         setGameFinished(true);
       })
-      .catch((e) => setError('Wystąpił błąd podczas kończenia egzaminu:\n' + e.response.data.message));
+      .catch((e) =>
+        setError('Wystąpił błąd podczas kończenia egzaminu:\n' + e.response.data.message)
+      );
   };
 
   return (
@@ -211,32 +225,34 @@ function BoardgameObserver() {
           />
         )}
       </GameContainer>
-      <RankingContainer expanded={rankingExpanded}>
-        <RankingToggleButton onClick={() => setRankingExpanded((prev) => !prev)}>
-          RANKING
-        </RankingToggleButton>
+      {showRanking && (
+        <RankingContainer expanded={rankingExpanded}>
+          <RankingToggleButton onClick={() => setRankingExpanded((prev) => !prev)}>
+            RANKING
+          </RankingToggleButton>
 
-        {rankingExpanded && (
-          <RankingContent>
-            {playerRanking.slice(0, 5).map((player, position) => (
-              <div
-                key={`player_${player.index}`}
-                style={{
-                  width: 'fit-content',
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  gap: '40px',
-                  margin: 'auto',
-                }}
-              >
-                <PositionIndicator position={position}>{position + 1}</PositionIndicator>
-                <span>{player.nickname}</span>
-              </div>
-            ))}
-          </RankingContent>
-        )}
-      </RankingContainer>
+          {rankingExpanded && (
+            <RankingContent>
+              {playerRanking.slice(0, 5).map((player, position) => (
+                <div
+                  key={`player_${player.index}`}
+                  style={{
+                    width: 'fit-content',
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: '40px',
+                    margin: 'auto',
+                  }}
+                >
+                  <PositionIndicator position={position}>{position + 1}</PositionIndicator>
+                  <span>{player.nickname}</span>
+                </div>
+              ))}
+            </RankingContent>
+          )}
+        </RankingContainer>
+      )}
     </Container>
   );
 }
