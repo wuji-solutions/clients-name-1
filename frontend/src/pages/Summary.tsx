@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { QuestionData } from '../common/types';
 import { getColor, getPercentage } from '../common/utils';
 import { useError } from '../providers/ErrorProvider';
+import ImageMiniature from '../components/ImageMiniature';
 
 interface Props {
   data: QuestionData;
@@ -90,7 +91,10 @@ const QuestionCard = ({ data }: Props) => {
 
   return (
     <Card>
-      <Task>{question.task}</Task>
+      <Task>
+        {question.task}{' '}
+        <ImageMiniature imageUrl={question.imageUrl} imageBase64={question.imageBase64} />
+      </Task>
       <Category>Kategoria: {question.category}</Category>
       <AnswerList>
         {question.answers.map((answer, index) => (
