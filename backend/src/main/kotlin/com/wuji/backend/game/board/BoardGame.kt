@@ -1,6 +1,7 @@
 package com.wuji.backend.game.board
 
 import com.wuji.backend.config.BoardConfig
+import com.wuji.backend.dice.BalancedDice
 import com.wuji.backend.dice.RandomDice
 import com.wuji.backend.dispenser.BoardDispenser
 import com.wuji.backend.game.GameType
@@ -26,7 +27,7 @@ class BoardGame(
     val questionDispenser =
         BoardDispenser(categories, questions.toMutableList())
 
-    val dice = RandomDice()
+    val dice = BalancedDice(tiles)
 
     val boardState: ConcurrentMap<TileIndex, MutableSet<BoardPlayer>> =
         (0 until tiles.size)

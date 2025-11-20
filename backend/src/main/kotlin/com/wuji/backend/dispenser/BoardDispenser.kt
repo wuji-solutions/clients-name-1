@@ -1,6 +1,7 @@
 package com.wuji.backend.dispenser
 
 import com.wuji.backend.config.DifficultyLevel
+import com.wuji.backend.dispenser.exception.NoMoreQuestionsException
 import com.wuji.backend.player.state.Category
 import com.wuji.backend.question.common.Question
 
@@ -31,22 +32,14 @@ class BoardDispenser(
             dispensers[categoryIndex]
                 ?: throw NoSuchElementException(
                     "Brak dispensera dla kategorii ${category}")
-
+        println("Dispenser has questions: ${dispenser.questions.size}")
         val available =
             dispenser.questions.filter {
                 it.difficultyLevel == difficultyLevel &&
-                    it !in previousQuestions
+                    previousQuestions.none { question -> question.id == it.id }
             }
-
-        if (available.isEmpty()) {
-            val sameDifficulty =
-                dispenser.questions.filter {
-                    it.difficultyLevel == difficultyLevel
-                }
-
-            return if (sameDifficulty.isNotEmpty()) sameDifficulty.random()
-            else dispenser.questions.random()
-        }
+        println("Available questions: ${available.size} xd")
+        if (available.isEmpty()) throw NoMoreQuestionsException()
 
         return available.random()
     }
