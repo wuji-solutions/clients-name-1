@@ -145,6 +145,39 @@ const AnswerProgressBar = ({
   );
 };
 
+interface QuestionTaskWrapperProps {
+  task: string;
+  imageUrl: string | null;
+  imageBase64: string | null;
+}
+
+export const QuestionTaskWrapper: React.FC<QuestionTaskWrapperProps> = ({
+  task,
+  imageUrl,
+  imageBase64,
+}) => {
+  const resolvedImage = imageUrl ?? (imageBase64 ? `data:image/png;base64,${imageBase64}` : null);
+
+  return (
+    <QuestionTask>
+      {task}
+
+      {resolvedImage && (
+        <img
+          src={resolvedImage}
+          alt="question"
+          style={{
+            maxWidth: '100%',
+            maxHeight: '250px',
+            objectFit: 'contain',
+            marginTop: '10px',
+          }}
+        />
+      )}
+    </QuestionTask>
+  );
+};
+
 function QuestionEndListener({
   setQuestionEnded,
   delegate,
@@ -340,7 +373,11 @@ function Quiz() {
         <QuestionContainer>
           <QuestionHeader>
             <QuestionCategory>{currentQuestion.category}</QuestionCategory>
-            <QuestionTask>{currentQuestion.task}</QuestionTask>
+            <QuestionTaskWrapper
+              task={currentQuestion.task}
+              imageUrl={currentQuestion.imageUrl}
+              imageBase64={currentQuestion.imageBase64}
+            />
             <QuestionDifficulty>
               {getParsedDifficultyLevel(currentQuestion.difficultyLevel)}
             </QuestionDifficulty>
