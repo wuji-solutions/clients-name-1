@@ -15,13 +15,13 @@ interface Props {
 }
 
 export default function CommonConfig({ commonSettings, setCommonSettings }: Props) {
-  const [filePath, setFilePath] = useState<string>();
+  const [fileName, setFileName] = useState<string>();
   const openFilePicker = async () => {
-    const filePath = await window.electronAPI.openFile();
-    if (filePath) {
-      setCommonSettings({ ...commonSettings, questionFilePath: filePath });
-      const prettyFilePath = filePath.split('\\');
-      setFilePath(prettyFilePath[prettyFilePath.length-1]);
+    const fileName = await window.electronAPI.openFile();
+    if (fileName) {
+      setCommonSettings({ ...commonSettings, questionFilePath: fileName });
+      const prettyFileName = fileName.split('\\');
+      setFileName(prettyFileName[prettyFileName.length-1]);
     }
   };
   return (
@@ -33,7 +33,7 @@ export default function CommonConfig({ commonSettings, setCommonSettings }: Prop
           top: '40px',
           left: '20px',
         }}>
-          Wybrane: {filePath ? filePath : 'brak'}
+          Wybrane: {fileName ? fileName : 'brak'}
         </div>
         <ButtonCustom
           onClick={openFilePicker}
