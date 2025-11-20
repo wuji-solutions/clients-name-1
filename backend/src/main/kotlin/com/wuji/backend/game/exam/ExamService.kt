@@ -6,6 +6,7 @@ import com.wuji.backend.events.common.SSEUsersService
 import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.common.GameService
 import com.wuji.backend.game.common.GameState
+import com.wuji.backend.game.common.exception.GameInIncorrectStateException
 import com.wuji.backend.game.exam.dto.CompleteExamResponseDto
 import com.wuji.backend.game.exam.dto.TimeUntilGameFinishDto
 import com.wuji.backend.parser.MoodleXmlParser
@@ -67,7 +68,10 @@ class ExamService(
         check(config.requiredQuestionCount <= questions.size) {
             "Wymagana liczba pytań musi być mniejsza lub równa liczbie pytań w zestawie"
         }
-
+        if (gameRegistry.getState() == GameState.FINISHING)
+            throw GameInIncorrectStateException(
+                "nie ${GameState.FINISHING.polish}",
+                gameRegistry.getState()?.polish ?: "null")
         gameRegistry.register(ExamGame(name, config, questions))
     }
 

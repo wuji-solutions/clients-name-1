@@ -14,14 +14,22 @@ data class BoardPlayerDto(
     val categoryToDifficulty: Map<Category, DifficultyLevel>,
 ) : IPlayerDto {
     companion object {
-        fun BoardPlayer.toBoardPlayerDto(): BoardPlayerDto {
+        fun BoardPlayer.toBoardPlayerDto(
+            categories: List<Category>
+        ): BoardPlayerDto {
+            val categoryToDifficulty = details.categoryToDifficulty
+            for (category in categories) {
+                if (!categoryToDifficulty.keys.contains(category)) {
+                    categoryToDifficulty.put(category, DifficultyLevel.EASY)
+                }
+            }
             return BoardPlayerDto(
                 index = index,
                 nickname = nickname,
                 points = details.points(),
                 state = details.playerState,
                 currentPosition = details.currentTileIndex,
-                categoryToDifficulty = details.categoryToDifficulty)
+                categoryToDifficulty = categoryToDifficulty)
         }
     }
 }
