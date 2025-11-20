@@ -162,6 +162,39 @@ const NoMoreQuestions = styled.div({
   padding: '20px',
 });
 
+interface QuestionTaskWrapperProps {
+  task: string;
+  imageUrl: string | null;
+  imageBase64: string | null;
+}
+
+export const QuestionTaskWrapper: React.FC<QuestionTaskWrapperProps> = ({
+  task,
+  imageUrl,
+  imageBase64,
+}) => {
+  const resolvedImage = imageUrl ?? (imageBase64 ? `data:image/png;base64,${imageBase64}` : null);
+
+  return (
+    <QuestionTask>
+      {task}
+
+      {resolvedImage && (
+        <img
+          src={resolvedImage}
+          alt="question"
+          style={{
+            maxWidth: '100%',
+            maxHeight: '120px',
+            marginTop: '8px',
+            objectFit: 'contain',
+          }}
+        />
+      )}
+    </QuestionTask>
+  );
+};
+
 function SSEOnEventListener({ setExamFinished }: { setExamFinished: Function }) {
   const delegate = useSSEChannel(BACKEND_ENDPOINT_EXTERNAL + '/sse/events', {
     withCredentials: true,
@@ -359,7 +392,12 @@ function ExamParticipant() {
               {examResults.questionsAnswered.map((data, index) => (
                 <AnswerContainer>
                   <QuestionCategory>{data.question.category}</QuestionCategory>
-                  <QuestionTask>{data.question.task}</QuestionTask>
+                  <QuestionTaskWrapper
+                    task={data.question.task}
+                    imageUrl={data.question.imageUrl}
+                    imageBase64={data.question.imageBase64}
+                  />
+
                   <QuestionAnswerGrid
                     isGrid={false}
                     style={{
@@ -433,7 +471,11 @@ function ExamParticipant() {
               <AdditionalInfo>{`${currentQuestion.questionNumber}/${currentQuestion.totalBaseQuestions}`}</AdditionalInfo>
             )}
             <QuestionCategory>{currentQuestion.category}</QuestionCategory>
-            <QuestionTask>{currentQuestion.task}</QuestionTask>
+            <QuestionTaskWrapper
+              task={currentQuestion.task}
+              imageUrl={currentQuestion.imageUrl}
+              imageBase64={currentQuestion.imageBase64}
+            />
             <QuestionDifficulty>
               {getParsedDifficultyLevel(currentQuestion.difficultyLevel)}
             </QuestionDifficulty>

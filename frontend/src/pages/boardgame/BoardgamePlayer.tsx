@@ -269,7 +269,7 @@ const Toast = styled.div<{ visible: boolean }>((props) => ({
   display: 'flex',
   justifyContent: 'center',
   alignContent: 'center',
-  textShadow: '40px'
+  textShadow: '40px',
 }));
 
 export function PointsPopup({ onComplete }: { onComplete: Function }) {
@@ -298,6 +298,28 @@ function SSEOnBoardgameStateChangeListener({ setPositions }: { setPositions: Fun
   }, [delegate]);
 
   return <></>;
+}
+
+interface QuestionTaskWrapperProps {
+  task: string;
+  imageUrl: string | null;
+  imageBase64: string | null;
+}
+
+function QuestionTaskWrapper({ task, imageUrl, imageBase64 }: QuestionTaskWrapperProps) {
+  return (
+    <BoardQuestionTask>
+      {task}
+
+      {(imageUrl || imageBase64) && (
+        <img
+          src={imageUrl ?? `data:image/png;base64,${imageBase64}`}
+          alt="question"
+          style={{ maxWidth: '100%', marginTop: '10px' }}
+        />
+      )}
+    </BoardQuestionTask>
+  );
 }
 
 function SSEOnEventListener({ setGameFinished }: { setGameFinished: Function }) {
@@ -525,7 +547,11 @@ function BoardgamePlayer() {
           <QuestionContainer>
             <QuestionHeader>
               <BoardQuestionCategory>{currentQuestion.category}</BoardQuestionCategory>
-              <BoardQuestionTask>{currentQuestion.task}</BoardQuestionTask>
+              <QuestionTaskWrapper
+                task={currentQuestion.task}
+                imageUrl={currentQuestion.imageUrl}
+                imageBase64={currentQuestion.imageBase64}
+              />
               <div style={{ margin: 'auto', width: 'fit-content' }}>
                 {getParsedDifficultyLevel(currentQuestion.difficultyLevel)}
               </div>
