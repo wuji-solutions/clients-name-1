@@ -10,9 +10,7 @@ data class QuestionDto(
     val type: QuestionType,
     val task: String,
     val answers: List<AnswerDto>,
-    val difficultyLevel: DifficultyLevel,
-    val imageUrl: String?,
-    val imageBase64: String?
+    val difficultyLevel: DifficultyLevel
 )
 
 fun Question.toQuestionDto() =
@@ -22,6 +20,4 @@ fun Question.toQuestionDto() =
         type = this.type,
         task = this.text,
         answers = this.answers.map { it.toAnswerDto() },
-        difficultyLevel = this.difficultyLevel,
-        imageUrl = this.imageUrl,
-        imageBase64 = this.imageBase64)
+        difficultyLevel = this.difficultyLevel)
