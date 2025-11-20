@@ -84,3 +84,7 @@ a,
 input {
   -webkit-tap-highlight-color: transparent;
 }
+
+html, body {
+  overscroll-behavior-y: contain;
+}

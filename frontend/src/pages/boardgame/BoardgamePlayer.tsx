@@ -28,7 +28,7 @@ const mobile = isMobileView();
 
 export const Container = styled.div(() => ({
   width: '99%',
-  height: '100%',
+  height: '100vh',
   margin: 'auto',
   overflowX: 'hidden',
   overflowY: 'hidden',
