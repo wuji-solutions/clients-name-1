@@ -2,7 +2,6 @@ package com.wuji.backend.game.board
 
 import com.wuji.backend.config.BoardConfig
 import com.wuji.backend.dice.BalancedDice
-import com.wuji.backend.dice.RandomDice
 import com.wuji.backend.dispenser.BoardDispenser
 import com.wuji.backend.game.GameType
 import com.wuji.backend.game.common.AbstractGame

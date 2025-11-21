@@ -16,6 +16,8 @@ import kotlin.random.Random
  * instead of explicitly computing probabilities, we add Gumbel noise to
  * log-weights and pick the maximum. This is mathematically equivalent to
  * weighted sampling but more elegant and numerically stable.
+ *
+ * roll weight = difficulty score * recency multiplier
  */
 class BalancedDice(
     private val tiles: List<Tile>,
@@ -29,22 +31,33 @@ class BalancedDice(
         // higher score = more likely to be selected
         private val DIFFICULTY_SCORES =
             mapOf(
-                DifficultyLevel.EASY to 3.0,
-                DifficultyLevel.MEDIUM to 2.0,
-                DifficultyLevel.HARD to 1.0)
+                    DifficultyLevel.EASY to 2.0,
+                    DifficultyLevel.MEDIUM to 1.5,
+                    DifficultyLevel.HARD to 1.0)
+                .withDefault { 2.0 }
+
+        private val RECENCY_PENALTIES =
+            listOf(
+                0.05, // current category: 95% penalty
+                0.5, // last category: 50% penalty
+                0.7, // ywo steps back: 30% penalty
+                0.9 // three steps back: 10% penalty
+                )
     }
 
     override fun roll(player: BoardPlayer): Int {
         val currentPosition = player.details.currentTileIndex
         val categoryDifficulties = player.details.categoryToDifficulty
+        val categoryHistory = getCategoryHistory(player)
 
-        // Evaluate all possible rolls with their scores
+        // all possible rolls
         val scoredRolls =
             (MIN_ROLL..MAX_ROLL).map { rollValue ->
                 val targetTileIndex = (currentPosition + rollValue) % tiles.size
                 val targetCategory = tiles[targetTileIndex].category
                 val score =
-                    getScoreForCategory(targetCategory, categoryDifficulties)
+                    calculateScore(
+                        targetCategory, categoryDifficulties, categoryHistory)
 
                 ScoredRoll(rollValue, score)
             }
@@ -74,12 +87,37 @@ class BalancedDice(
         return -ln(-ln(u))
     }
 
-    private fun getScoreForCategory(
+    private fun calculateScore(
         category: Category,
-        categoryDifficulties: Map<Category, DifficultyLevel>
+        categoryDifficulties: Map<Category, DifficultyLevel>,
+        categoryHistory: List<Category>
     ): Double {
         val difficulty = categoryDifficulties.getValue(category)
-        return DIFFICULTY_SCORES[difficulty] ?: 3.0
+        val baseScore = DIFFICULTY_SCORES.getValue(difficulty)
+        val recencyMultiplier = getRecencyMultiplier(category, categoryHistory)
+
+        return baseScore * recencyMultiplier
+    }
+
+    private fun getCategoryHistory(player: BoardPlayer): List<Category> {
+        return player.details.answers
+            .asReversed()
+            .map { it.question.category }
+            .distinct()
+            .take(RECENCY_PENALTIES.size)
+    }
+
+    private fun getRecencyMultiplier(
+        category: Category,
+        categoryHistory: List<Category>
+    ): Double {
+        val positionInHistory = categoryHistory.indexOf(category)
+
+        return if (positionInHistory == -1) {
+            1.0
+        } else {
+            RECENCY_PENALTIES.getOrElse(positionInHistory) { 1.0 }
+        }
     }
 
     private data class ScoredRoll(val value: Int, val score: Double)

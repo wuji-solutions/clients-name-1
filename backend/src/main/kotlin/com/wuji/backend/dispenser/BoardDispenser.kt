@@ -38,8 +38,17 @@ class BoardDispenser(
                 it.difficultyLevel == difficultyLevel &&
                     previousQuestions.none { question -> question.id == it.id }
             }
-        println("Available questions: ${available.size} xd")
-        if (available.isEmpty()) throw NoMoreQuestionsException()
+        println("Available questions: ${available.size}")
+        if (available.isEmpty()) {
+            println(
+                "No questions left, returning random of this category (not answered yet)")
+            val notAnsweredYet =
+                dispenser.questions.filter {
+                    previousQuestions.none { question -> question.id == it.id }
+                }
+            if (notAnsweredYet.isEmpty()) throw NoMoreQuestionsException()
+            return notAnsweredYet.random()
+        }
 
         return available.random()
     }
