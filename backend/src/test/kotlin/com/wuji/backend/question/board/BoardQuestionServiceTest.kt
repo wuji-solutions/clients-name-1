@@ -138,8 +138,10 @@ class BoardQuestionServiceTest {
         every { service.getQuestion(0) } returns question
         every { boardGame.findPlayerByIndex(0) } returns player
         every { boardGame.config.rankingPromotionRules } returns promotionRules
-        every { player.details.askedQuestions } returns
-            mutableListOf(question, question)
+        every { player.details.answers } returns
+            mutableListOf(
+                PlayerAnswer(question, setOf(0), 0, false),
+                PlayerAnswer(question, setOf(0), 0, false))
         every { player.details.categoryToDifficulty } returns
             mutableMapOf(question.category to question.difficultyLevel)
 
