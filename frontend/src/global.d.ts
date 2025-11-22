@@ -6,6 +6,8 @@ declare global {
       openRaportsFolder: () => void;
       openFile: () => string;
       openHotspot: () => void;
+      setWifiMaxPeers: (number) => any;
+      getLimit: () => any;
     };
   }
 }

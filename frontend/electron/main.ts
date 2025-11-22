@@ -3,8 +3,8 @@ import * as path from 'path';
 import * as os from 'os';
 import * as isDev from 'electron-is-dev';
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
-import { ChildProcessWithoutNullStreams, exec } from 'child_process';
-import { existsSync, mkdirSync } from 'fs';
+import { ChildProcessWithoutNullStreams, exec, spawn } from 'child_process';
+import { existsSync, mkdirSync, writeFileSync, unlinkSync } from 'fs';
 
 let win: BrowserWindow | null = null;
 let child: ChildProcessWithoutNullStreams;
@@ -138,20 +138,113 @@ ipcMain.handle('dialog:openFile', async () => {
 });
 
 ipcMain.on('open-hotspot-menu', () => {
-    const platform = os.platform();
-    if (platform === 'win32') {
-      shell.openExternal('ms-settings:network-mobilehotspot');
-    } else if (platform === 'darwin') {
-      exec('open "x-apple.systempreferences:com.apple.preference.sharing"', (err) => {
-        if (err) console.error('Failed to open settings:', err);
-      });
-    } else if (platform === 'linux') {
-      exec('gnome-control-center wifi', (err) => {
-        if (err) {
-          console.error('Failed to open network settings:', err);
-        }
-      });
-    } else {
-      console.warn('Platform not supported for opening hotspot settings');
+  const platform = os.platform();
+  if (platform === 'win32') {
+    shell.openExternal('ms-settings:network-mobilehotspot');
+  } else if (platform === 'darwin') {
+    exec('open "x-apple.systempreferences:com.apple.preference.sharing"', (err) => {
+      if (err) console.error('Failed to open settings:', err);
+    });
+  } else if (platform === 'linux') {
+    exec('gnome-control-center wifi', (err) => {
+      if (err) {
+        console.error('Failed to open network settings:', err);
+      }
+    });
+  } else {
+    console.warn('Platform not supported for opening hotspot settings');
+  }
+});
+
+ipcMain.handle('set-wifimaxpeers', async (event, maxPeers) => {
+  try {
+    if (os.platform() !== 'win32') {
+      return { success: false, error: 'Ta opcja jest dostępna tylko na systemach Windows.' };
     }
-})
+
+    const n = Number(maxPeers);
+    if (!Number.isInteger(n) || n < 1 || n > 255) {
+      return { success: false, error: 'Wartość musi zawierać się pomiędzy 1 a 120.' };
+    }
+
+    const psCommands = [];
+    psCommands.push(`# Set WifiMaxPeers and restart icssvc`);
+    psCommands.push(`$ErrorActionPreference = 'Stop'`);
+    psCommands.push(`$max = ${n}`);
+    psCommands.push(`$regPath = 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\icssvc\\Settings'`);
+    psCommands.push(`If (-not (Test-Path $regPath)) { New-Item -Path $regPath -Force | Out-Null }`);
+    psCommands.push(
+      `Set-ItemProperty -Path $regPath -Name WifiMaxPeers -Value $max -Type DWord -Force`
+    );
+    psCommands.push(`Write-Output "Wrote WifiMaxPeers = $max to $regPath"`);
+    psCommands.push(
+      `Try { Stop-Service -Name icssvc -Force -ErrorAction Stop; Start-Sleep -Seconds 1 } Catch { Write-Output 'Stop-Service failed or service not running.' }`
+    );
+    psCommands.push(`Start-Service -Name icssvc -ErrorAction Stop`);
+    psCommands.push(`Write-Output 'icssvc restarted (if possible).';`);
+
+    const psContent = psCommands.join('\r\n');
+
+    const psPath = path.join(os.tmpdir(), `set-wifimaxpeers-${Date.now()}.ps1`);
+    writeFileSync(psPath, psContent, { encoding: 'utf8' });
+
+    const launcherArgs = [
+      '-NoProfile',
+      '-ExecutionPolicy',
+      'Bypass',
+      '-Command',
+      `Start-Process -FilePath 'powershell.exe' -ArgumentList '-NoProfile -ExecutionPolicy Bypass -File "${psPath}"' -Verb RunAs -Wait`,
+    ];
+
+    const child = spawn('powershell.exe', launcherArgs, { windowsHide: true });
+
+    let stdout = '';
+    let stderr = '';
+
+    child.stdout &&
+      child.stdout.on('data', (d) => {
+        stdout += d.toString();
+      });
+    child.stderr &&
+      child.stderr.on('data', (d) => {
+        stderr += d.toString();
+      });
+
+    const exitCode = await new Promise((resolve) => {
+      child.on('error', (err) => {
+        resolve({ error: true, message: String(err) });
+      });
+      child.on('close', (code) => resolve(code));
+    });
+
+    try {
+      unlinkSync(psPath);
+    } catch (e) {}
+
+    if (exitCode !== 0) {
+      return { success: false, error: `Błąd: ${exitCode}. Stderr: ${stderr}` };
+    }
+
+    return { success: true, stdout, stderr };
+  } catch (err) {
+    console.error(err);
+    return { success: false, error: String(err) };
+  }
+});
+
+ipcMain.handle('get-wifimaxpeers', async () => {
+  try {
+    const value = await new Promise((resolve, reject) => {
+      exec(
+        `powershell -NoProfile -Command "(Get-ItemProperty 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\icssvc\\Settings').WifiMaxPeers"`,
+        (err, stdout) => {
+          if (err) return reject(err);
+          resolve(parseInt(stdout.trim(), 10));
+        }
+      );
+    });
+    return { success: true, value };
+  } catch (err) {
+    return { success: false, error: String(err) };
+  }
+});

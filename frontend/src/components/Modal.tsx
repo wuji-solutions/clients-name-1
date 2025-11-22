@@ -34,9 +34,10 @@ const ModalOverlay = styled.div<ModalProps>`
   align-items: flex-start;
   overflow-y: auto;
   z-index: 1000;
+  padding-top: env(safe-area-inset-top);
   padding-bottom: constant(safe-area-inset-bottom);
   padding-bottom: env(safe-area-inset-bottom);
-  height: 100vh;
+  height: calc(100vh + env(safe-area-inset-bottom));
   width: 100%;
 
   animation: ${({ isClosing }) =>
