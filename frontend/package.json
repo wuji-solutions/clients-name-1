@@ -76,11 +76,6 @@
     "make": "electron-forge make"
   },
   "eslintConfig": {
-    "rules": {
-    "eqeqeq": "warn",
-    "react-hooks/exhaustive-deps": "warn",
-    "@typescript-eslint/no-unused-vars": "warn"
-    },
     "extends": [
       "react-app",
       "react-app/jest"
