@@ -40,7 +40,6 @@ out/
 .kotlin
 
 
-*.xml
 *.json
 *.py
 *.sh
