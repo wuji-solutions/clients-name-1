@@ -70,7 +70,7 @@
     "copy-backend": "cross-env NODE_ENV=development node backend/copy-backend.js",
     "copy-backend:build": "cross-env NODE_ENV=production node backend/copy-backend.js",
     "copy-backend:dev": "cross-env NODE_ENV=development node backend/copy-backend.js",
-    "electron:build": "yarn build-backend && yarn copy-backend && yarn build && tsc -p electron && electron-builder",
+    "electron:build": "yarn build-backend && yarn copy-backend:build && yarn build && tsc -p electron && electron-builder",
     "dist": "electron-builder",
     "package": "electron-forge package",
     "make": "electron-forge make"
