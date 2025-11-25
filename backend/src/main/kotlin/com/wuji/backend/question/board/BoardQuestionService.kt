@@ -96,11 +96,11 @@ class BoardQuestionService(
         val correctAnswersNeeded =
             game.config.rankingPromotionRules.getValue(question.category)
         val correctAnswers =
-            player.details.askedQuestions.count { q ->
-                q.category == question.category &&
-                    q.difficultyLevel == question.difficultyLevel
+            player.details.answers.count { a ->
+                a.question.category == question.category &&
+                    a.question.difficultyLevel == question.difficultyLevel &&
+                    a.isCorrect
             }
-
         if (correctAnswers == correctAnswersNeeded) {
             player.details.categoryToDifficulty[question.category] =
                 player.details.categoryToDifficulty
