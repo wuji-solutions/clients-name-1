@@ -2,19 +2,18 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 interface Props {
-  imageUrl: string | null;
-  imageBase64: string | null;
+  readonly imageUrl: string | null;
+  readonly imageBase64: string | null;
 }
 
 const MiniatureWrapper = styled.div`
   position: relative;
   width: 80px;
-  height: auto;           /* allow height to adapt */
+  height: auto; /* allow height to adapt */
   overflow: hidden;
   cursor: pointer;
-  display: inline-block;   /* keep wrapper tight around image */
+  display: inline-block; /* keep wrapper tight around image */
 `;
-
 
 const MiniatureImage = styled.img`
   width: 100%;
@@ -62,9 +61,7 @@ const FullImage = styled.img`
 export default function ImageMiniature({ imageUrl, imageBase64 }: Props) {
   const [open, setOpen] = useState(false);
 
-  const base64Src = imageBase64
-    ? `data:image/png;base64,${imageBase64}`
-    : null;
+  const base64Src = imageBase64 ? `data:image/png;base64,${imageBase64}` : null;
 
   const src = imageUrl || base64Src;
   if (!src) return null;

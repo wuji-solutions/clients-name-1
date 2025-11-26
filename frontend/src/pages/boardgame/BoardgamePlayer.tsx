@@ -68,13 +68,13 @@ const BoardQuestionTask = styled.span(() => ({
   fontSize: mobile ? '20px' : '50px',
   margin: 'auto',
   fontWeight: 'bold',
-  display: "flex",
-  flexDirection: "column"
+  display: 'flex',
+  flexDirection: 'column',
 }));
 
 const AnswerGrid = styled.div(() => ({
   display: 'grid',
-  gridTemplateColumns: mobile ? 'repeat(2, 1fr)' : 'repeat(2, 1fr)',
+  gridTemplateColumns: 'repeat(2, 1fr)',
   gap: '35px',
   padding: '40px 0',
   justifyItems: 'center',
@@ -303,9 +303,9 @@ function SSEOnBoardgameStateChangeListener({ setPositions }: { setPositions: Fun
 }
 
 interface QuestionTaskWrapperProps {
-  task: string;
-  imageUrl: string | null;
-  imageBase64: string | null;
+  readonly task: string;
+  readonly imageUrl: string | null;
+  readonly imageBase64: string | null;
 }
 
 function QuestionTaskWrapper({ task, imageUrl, imageBase64 }: QuestionTaskWrapperProps) {
@@ -317,7 +317,12 @@ function QuestionTaskWrapper({ task, imageUrl, imageBase64 }: QuestionTaskWrappe
         <img
           src={imageUrl ?? `data:image/png;base64,${imageBase64}`}
           alt="question"
-          style={{ minHeight: "75px", maxHeight: "200px", marginTop: '10px', margin: "10px auto 0" }}
+          style={{
+            minHeight: '75px',
+            maxHeight: '200px',
+            marginTop: '10px',
+            margin: '10px auto 0',
+          }}
         />
       )}
     </BoardQuestionTask>
