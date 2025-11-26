@@ -43,7 +43,7 @@ function createWindow() {
     child = spawn("java", ["-jar", backendPath]);
 
   } else {
-    win.loadURL(`file://${path.join(__dirname, 'build/index.html')}`);
+    win.loadFile(path.join(__dirname, 'build', 'index.html'));
 
     const binaryName = process.platform === "win32" ? "backend.exe" : "backend";
 
