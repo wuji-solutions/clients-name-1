@@ -26,7 +26,7 @@ jobs:
 
       - name: Download JRE
         run: |
-          Invoke-WebRequest -Uri "https://github.com/ibmruntimes/semeru21-binaries/releases/download/jdk-21.0.9%2B10_openj9-0.56.0/ibm-semeru-open-jre_x64_windows_21.0.9_10_openj9-0.56.0.zip" -o jre.zip
+          Invoke-WebRequest -Uri "https://github.com/ibmruntimes/semeru21-binaries/releases/download/jdk-21.0.9%2B10_openj9-0.56.0/ibm-semeru-open-jre_x64_windows_21.0.9_10_openj9-0.56.0.zip" -OutFile jre.zip
           Expand-Archive -Path jre.zip
           Move-Item jre\* .
         working-directory: frontend
