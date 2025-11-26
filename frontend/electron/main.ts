@@ -3,7 +3,6 @@ import * as path from 'path';
 import * as os from 'os';
 import * as http from "http";
 import * as fs from "fs";
-import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import { ChildProcessWithoutNullStreams, exec } from 'child_process';
 import { existsSync, mkdirSync } from 'fs';
 
@@ -91,12 +90,19 @@ function createWindow() {
       forceHardReset: true,
       hardResetMethod: 'exit',
     });
-  }
 
-  // DevTools
-  installExtension(REACT_DEVELOPER_TOOLS)
-    .then((name: any) => console.log(`Added Extension:  ${name}`))
-    .catch((err: any) => console.log('An error occurred: ', err));
+    import('electron-devtools-installer').then((module) => {
+          const installExtension = module.default;
+          const { REACT_DEVELOPER_TOOLS } = module;
+          
+          installExtension(REACT_DEVELOPER_TOOLS)
+            .then((name: any) => console.log(`Added Extension: ${name}`))
+            .catch((err: any) => console.log('An error occurred: ', err));
+        }).catch(err => {
+          console.log('DevTools installer not available:', err);
+        });
+
+  }
 
   if (!app.isPackaged) {
     win.webContents.openDevTools();
