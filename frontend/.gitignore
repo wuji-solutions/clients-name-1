@@ -30,4 +30,5 @@ yarn-error.log*
 /dist
 package-lock.json
 out/
-*.sh
+
+/backend/jdk*

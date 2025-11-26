@@ -14,7 +14,9 @@ data class QuizQuestionDto(
     val answers: List<AnswerDto>,
     val difficultyLevel: DifficultyLevel,
     val questionNumber: Int,
-    val totalQuestions: Int
+    val totalQuestions: Int,
+    val imageUrl: String?,
+    val imageBase64: String?
 )
 
 fun Question.toQuizQuestionDto(
@@ -29,4 +31,7 @@ fun Question.toQuizQuestionDto(
         answers = this.answers.map { it.toAnswerDto() },
         difficultyLevel = this.difficultyLevel,
         questionNumber = questionNumber,
-        totalQuestions = totalQuestions)
+        totalQuestions = totalQuestions,
+        imageUrl = imageUrl,
+        imageBase64 = imageBase64,
+    )

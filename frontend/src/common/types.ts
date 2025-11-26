@@ -101,3 +101,21 @@ export type CompleteExamResponseDto = {
   totalPointsEarned: number;
   questionsAnswered?: QuestionAnsweredData[];
 }
+
+export type CategoryToDifficulty = {
+  [key: string]: DifficultyLevel;
+}
+
+interface BoardPlayerDto {
+  index: number;
+  nickname: String;
+  points: number;
+  state: PlayerState;
+  currentPosition: number;
+  categoryToDifficulty: CategoryToDifficulty;
+}
+
+export type BoardAnswerQuestionDto = {
+  correct: boolean;
+  player: BoardPlayerDto;
+}

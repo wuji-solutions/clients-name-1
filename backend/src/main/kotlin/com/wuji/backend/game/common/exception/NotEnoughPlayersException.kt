@@ -6,4 +6,4 @@ import org.springframework.web.bind.annotation.ResponseStatus
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 class NotEnoughPlayersException :
     RuntimeException(
-        "Musi być przynajmniej jeden gracz aby rozpocząć rozgrywkę.")
+        "Aby rozpocząć rozgrywkę, wymagany jest przynajmniej jeden gracz")

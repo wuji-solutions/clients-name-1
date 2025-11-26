@@ -36,7 +36,7 @@ const Slider = styled.span`
 
 const Thumb = styled.span<{ checked: boolean; colorOn?: string; colorOff?: string }>`
   position: absolute;
-  height: 23px;
+  height: 22px;
   width: 26px;
   top: 3px;
   left: ${(props) => (props.checked ? '36px' : '4px')};

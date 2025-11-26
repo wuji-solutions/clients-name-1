@@ -11,7 +11,7 @@ const theme = {
       success: '#22C55E',
       error: '#EF4444',
       additional: '#A855F7',
-      info_text: lightenColor('#1c2c36', 0.1),
+      info_text: lightenColor('#1c2c36', 0.13),
     },
     button: {
       primary: '#2758e8',
