@@ -43,7 +43,7 @@ jobs:
         run: echo "CI=false" >> $env:GITHUB_ENV
 
       - name: Build Electron app
-        run: npm electron:build
+        run: npm run electron:build
         working-directory: frontend
         env:
           CI: false
