@@ -26,7 +26,7 @@ jobs:
           node-version: 20
 
       - name: Install Dependencies
-        run: yarn install --production=false
+        run: yarn install --production=true
         working-directory: frontend
 
       - name: Prevent CI from failing on warnings

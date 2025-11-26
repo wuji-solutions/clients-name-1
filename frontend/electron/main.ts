@@ -43,12 +43,10 @@ function createWindow() {
     child = spawn("java", ["-jar", backendPath]);
 
   } else {
-    // BUILD
-    win.loadURL(`file://${__dirname}/../index.html`);
+    win.loadURL(`file://${path.join(__dirname, '../build/index.html')}`);
 
     const binaryName = process.platform === "win32" ? "backend.exe" : "backend";
 
-    // KLUCZOWA POPRAWKA: Electron pakuje EXE do asar.unpacked
     const backendPath = path.join(
       process.resourcesPath,
       "app.asar.unpacked",
