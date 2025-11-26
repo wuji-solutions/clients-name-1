@@ -31,14 +31,6 @@ jobs:
           powershell -Command "Expand-Archive -Path jre.zip -DestinationPath backend -Force"
         working-directory: frontend
       
-      - name: Compile Backend
-        run: .\gradlew.bat bootJar
-        working-directory: backend
-      
-      - name: Copy Backend
-        run: yarn copy-backend:build
-        working-directory: frontend
-
       - name: Install Dependencies
         run: |
           git config --global url."https://github".insteadOf ssh://git@github
