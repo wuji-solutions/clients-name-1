@@ -5,9 +5,7 @@ const os = require('os');
 const platform = os.platform();
 const isDev = process.env.NODE_ENV !== 'production';
 
-const backendBuildDir = isDev
-  ? path.resolve(__dirname, '../../backend/build/libs')
-  : path.resolve(__dirname, '../../backend/build/native/nativeCompile');
+const backendBuildDir = path.resolve(__dirname, '../../backend/build/libs')
 
 const backendBinDir = path.resolve(__dirname);
 

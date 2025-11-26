@@ -64,9 +64,6 @@ function createWindow() {
     const javaPath = path.join(process.resourcesPath, 'backend', 'jdk-21.0.9+10-jre','bin', 'java.exe');
     const binaryName = 'backend.jar';
     const backendPath = path.join(process.resourcesPath, 'backend', binaryName);
-    const fs = require('fs');
-    console.log('PACKAGED JAVA PATH =', javaPath, 'EXISTS =', fs.existsSync(javaPath));
-    console.log('PACKAGED BACKEND PATH =', backendPath, 'EXISTS =', fs.existsSync(backendPath));
 
     child = require('child_process').spawn(javaPath, ['-jar', backendPath]);
   }
