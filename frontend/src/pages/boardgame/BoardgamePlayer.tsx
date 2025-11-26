@@ -68,13 +68,15 @@ const BoardQuestionTask = styled.span(() => ({
   fontSize: mobile ? '20px' : '50px',
   margin: 'auto',
   fontWeight: 'bold',
+  display: "flex",
+  flexDirection: "column"
 }));
 
 const AnswerGrid = styled.div(() => ({
   display: 'grid',
-  gridTemplateColumns: mobile ? 'repeat(1, 1fr)' : 'repeat(2, 1fr)',
+  gridTemplateColumns: mobile ? 'repeat(2, 1fr)' : 'repeat(2, 1fr)',
   gap: '35px',
-  padding: '40px',
+  padding: '40px 0',
   justifyItems: 'center',
 }));
 
@@ -315,7 +317,7 @@ function QuestionTaskWrapper({ task, imageUrl, imageBase64 }: QuestionTaskWrappe
         <img
           src={imageUrl ?? `data:image/png;base64,${imageBase64}`}
           alt="question"
-          style={{ maxWidth: '100%', marginTop: '10px' }}
+          style={{ minHeight: "75px", maxHeight: "200px", marginTop: '10px', margin: "10px auto 0" }}
         />
       )}
     </BoardQuestionTask>

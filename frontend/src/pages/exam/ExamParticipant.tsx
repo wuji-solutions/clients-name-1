@@ -31,7 +31,6 @@ const TimerContainer = styled.div({
 
 const QuestionContainer = styled.div({
   width: '100%',
-  marginTop: '10px',
 });
 
 const QuestionHeader = styled.div({
@@ -70,12 +69,12 @@ const QuestionCategory = styled.div({
 });
 
 const QuestionTask = styled.div({
-  width: 'fit-content',
   maxWidth: '340px',
-  maxHeight: '150px',
   margin: 'auto',
   fontSize: '18px',
   textAlign: 'center',
+  display: "flex",
+  flexDirection: "column"
 });
 
 const QuestionDifficulty = styled.div({
@@ -89,13 +88,12 @@ const QuestionDifficulty = styled.div({
 const QuestionAnswerGrid = styled.div<{ isGrid: boolean }>(({ isGrid }) => ({
   width: '99%',
   paddingTop: '10px',
-  paddingBottom: '20px',
+  paddingBottom: '30px',
   margin: 'auto',
   marginTop: '10px',
   boxShadow: `0 3px 0 0 ${theme.palette.main.accent}`,
   overflowY: 'auto',
-  height: '320px',
-  gap: '10px',
+  gap: '30px',
 
   display: 'flex',
   flexDirection: 'column',
@@ -103,8 +101,8 @@ const QuestionAnswerGrid = styled.div<{ isGrid: boolean }>(({ isGrid }) => ({
   ...(isGrid && {
     display: 'grid',
     gridTemplateColumns: 'repeat(2, 1fr)',
-    gridTemplateRows: 'repeat(4, auto)',
-    overflowY: 'auto',
+    gridTemplateRows: 'auto',
+    overflowY: 'visible',
   }),
 }));
 
@@ -173,22 +171,15 @@ export const QuestionTaskWrapper: React.FC<QuestionTaskWrapperProps> = ({
   imageUrl,
   imageBase64,
 }) => {
-  const resolvedImage = imageUrl ?? (imageBase64 ? `data:image/png;base64,${imageBase64}` : null);
-
   return (
     <QuestionTask>
       {task}
 
-      {resolvedImage && (
+      {(imageUrl || imageBase64) && (
         <img
-          src={resolvedImage}
+          src={imageUrl ?? `data:image/png;base64,${imageBase64}`}
           alt="question"
-          style={{
-            maxWidth: '100%',
-            maxHeight: '120px',
-            marginTop: '8px',
-            objectFit: 'contain',
-          }}
+          style={{ minHeight: "75px", maxHeight: "200px", marginTop: '10px', margin: "10px auto 0" }}
         />
       )}
     </QuestionTask>
@@ -480,7 +471,7 @@ function ExamParticipant() {
               {getParsedDifficultyLevel(currentQuestion.difficultyLevel)}
             </QuestionDifficulty>
           </QuestionHeader>
-          <QuestionAnswerGrid isGrid={currentQuestion.answers.length > 4}>
+          <QuestionAnswerGrid isGrid={currentQuestion.answers.length > 3}>
             {currentQuestion.answers.map((answer) => (
               <AnswerCard
                 onClick={() => (disableAnswers ? '' : handleAnswerSelected(answer.id))}

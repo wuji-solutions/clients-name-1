@@ -91,9 +91,13 @@ export default function EnableQuestionConfig({
                       key={question.id}
                       style={{ display: 'flex', margin: '10px', padding: '10px', gap: '20px' }}
                     >
-                      <CenteredLabel
-                        style={{ width: '100%', maxWidth: '500px', textAlign: 'left' }}
-                      >{`${index + 1}. ${question.task} ${(<ImageMiniature imageUrl={question.imageUrl} imageBase64={question.imageBase64} />)}`}</CenteredLabel>
+<CenteredLabel style={{ width: '100%', maxWidth: '500px', textAlign: 'left' }}>
+  {index + 1}. {question.task}
+  <ImageMiniature
+    imageUrl={question.imageUrl}
+    imageBase64={question.imageBase64}
+  />
+</CenteredLabel>
                       <RoundCheckButton
                         selected={containsQuestionId(String(question.id))}
                         onClick={() => handleSelect(String(question.id))}

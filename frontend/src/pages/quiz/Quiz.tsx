@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import { BACKEND_ENDPOINT, BACKEND_ENDPOINT_EXTERNAL } from '../../common/config';
-import { Question, QuestionStats, QuizQuestion } from '../../common/types';
+import { QuestionStats, QuizQuestion } from '../../common/types';
 import { ButtonCustom } from '../../components/Button';
 import { useAppContext } from '../../providers/AppContextProvider';
 import { useSSEChannel } from '../../providers/SSEProvider';
@@ -19,7 +19,7 @@ const Container = styled.div(() => ({
 }));
 
 export const QuestionContainer = styled.div(() => ({
-  padding: '60px 20px 20px 20px',
+  padding: '0px 20px 20px 20px',
   display: 'flex',
   flexDirection: 'column',
   textAlign: 'center',
@@ -41,10 +41,12 @@ const QuestionCategory = styled.span(() => ({
   fontWeight: 'bold',
 }));
 
-const QuestionTask = styled.span(() => ({
-  fontSize: '50px',
+const QuestionTask = styled.div(() => ({
+  fontSize: '40px',
   margin: 'auto',
   fontWeight: 'bold',
+  display: 'flex',
+  flexDirection: 'column',
 }));
 
 const AnswerContainer = styled.div(() => ({
@@ -151,7 +153,7 @@ interface QuestionTaskWrapperProps {
   imageBase64: string | null;
 }
 
-export const QuestionTaskWrapper: React.FC<QuestionTaskWrapperProps> = ({
+export const QuestionTaskWrapper: FC<QuestionTaskWrapperProps> = ({
   task,
   imageUrl,
   imageBase64,
@@ -168,7 +170,7 @@ export const QuestionTaskWrapper: React.FC<QuestionTaskWrapperProps> = ({
           alt="question"
           style={{
             maxWidth: '100%',
-            maxHeight: '250px',
+            maxHeight: '325px',
             objectFit: 'contain',
             marginTop: '10px',
           }}
@@ -182,7 +184,7 @@ function QuestionEndListener({
   setQuestionEnded,
   delegate,
 }: {
-  setQuestionEnded: React.Dispatch<React.SetStateAction<boolean>>;
+  setQuestionEnded: Dispatch<SetStateAction<boolean>>;
   delegate: SSEDelegate;
 }) {
   useEffect(() => {
