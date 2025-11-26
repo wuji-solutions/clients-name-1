@@ -31,7 +31,7 @@ jobs:
           powershell -Command "Expand-Archive -Path jre.zip -DestinationPath backend -Force"
 
       - name: Install Dependencies
-        run: yarn install --production=false
+        run: npm install
         working-directory: frontend
 
       - name: Prevent CI from failing on warnings
