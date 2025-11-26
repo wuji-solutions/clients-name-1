@@ -2,7 +2,7 @@ import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import Home from './pages/Home';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { HashRouter as Router, Route, Routes } from 'react-router-dom';
 import Configurations from './pages/Configurations';
 import WaitingRoom from './pages/WaitingRoom';
 import { AppProvider } from './providers/AppContextProvider';
@@ -18,9 +18,11 @@ import { ErrorProvider } from './providers/ErrorProvider';
 import ErrorPopup from './components/ErrorPopup';
 import TransitionWrapper from './wrapper/TransitionWrapper';
 
-const context = globalThis.location.hostname === 'localhost' ? 'admin' : 'user';
+const context = (globalThis.location.hostname === 'localhost' || globalThis.location.hostname === '') ? 'admin' : 'user';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
+
+// const Router = context === 'admin' ? HashRouter : BrowserRouter;
 
 const pages = [
   {
