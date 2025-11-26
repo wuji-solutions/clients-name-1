@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain, shell, dialog } from 'electron';
 import * as path from 'path';
 import * as os from 'os';
-import * as isDev from 'electron-is-dev';
+// import * as isDev from 'electron-is-dev';
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import { ChildProcessWithoutNullStreams, exec } from 'child_process';
 import { existsSync, mkdirSync } from 'fs';
@@ -11,7 +11,7 @@ let child: ChildProcessWithoutNullStreams;
 
 function createWindow() {
   win = new BrowserWindow({
-    width: isDev ? 1200 : 800,
+    width: 1200,
     height: 600,
     webPreferences: {
       nodeIntegration: true,
@@ -19,21 +19,21 @@ function createWindow() {
     },
   });
 
-  if (isDev) {
-    win.loadURL('http://localhost:3000');
+  // if (isDev) {
+  //   win.loadURL('http://localhost:3000');
 
-    const jarName = 'backend.jar';
-    const backendPath = path.join(__dirname, '../..', 'backend', jarName);
+  //   const jarName = 'backend.jar';
+  //   const backendPath = path.join(__dirname, '../..', 'backend', jarName);
 
-    child = require('child_process').spawn('java', ['-jar', backendPath]); // NOSONAR
-  } else {
+  //   child = require('child_process').spawn('java', ['-jar', backendPath]); // NOSONAR
+  // } else {
     win.loadURL(`file://${__dirname}/../index.html`); // potentially doesnt work xpp
 
     const binaryName = process.platform === 'win32' ? 'backend.exe' : 'backend';
     const backendPath = path.join(process.resourcesPath, 'backend', binaryName);
 
     child = require('child_process').spawn(backendPath);
-  }
+  // }
 
   win.on('closed', () => (win = null));
 
@@ -51,23 +51,23 @@ function createWindow() {
   });
 
   // Hot Reloading
-  if (isDev) {
-    // 'node_modules/.bin/electronPath'
-    require('electron-reload')(__dirname, {
-      electron: path.join(__dirname, '..', '..', 'node_modules', '.bin', 'electron'),
-      forceHardReset: true,
-      hardResetMethod: 'exit',
-    });
-  }
+  // if (isDev) {
+  //   // 'node_modules/.bin/electronPath'
+  //   require('electron-reload')(__dirname, {
+  //     electron: path.join(__dirname, '..', '..', 'node_modules', '.bin', 'electron'),
+  //     forceHardReset: true,
+  //     hardResetMethod: 'exit',
+  //   });
+  // }
 
   // DevTools
   installExtension(REACT_DEVELOPER_TOOLS)
     .then((name: any) => console.log(`Added Extension:  ${name}`))
     .catch((err: any) => console.log('An error occurred: ', err));
 
-  if (isDev) {
-    win.webContents.openDevTools();
-  }
+  // if (isDev) {
+  //   win.webContents.openDevTools();
+  // }
 }
 
 app.on('ready', createWindow);
