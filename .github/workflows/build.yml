@@ -18,7 +18,6 @@ jobs:
           distribution: 'graalvm'
           java-version: '21'
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          native-image-job-reports: 'true'
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
