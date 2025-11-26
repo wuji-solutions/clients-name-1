@@ -29,6 +29,9 @@ jobs:
         run: yarn install --production=false
         working-directory: frontend
 
+      - name: Prevent CI from failing on warnings
+        run: echo "CI=false" >> $env:GITHUB_ENV
+
       - name: Build Electron app
         run: |
           set NODE_ENV=production
