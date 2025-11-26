@@ -10,11 +10,9 @@ const backendBuildDir = path.resolve(__dirname, '../../backend/build/libs')
 const backendBinDir = path.resolve(__dirname);
 
 let binaryName;
-if (isDev) {
-  binaryName = 'backend.jar';
-} else {
-  binaryName = platform === 'win32' ? 'backend.exe' : 'backend';
-}
+
+binaryName = 'backend.jar';
+
 
 const sourceBinary = path.join(backendBuildDir, binaryName);
 const destBinary = path.join(backendBinDir, binaryName);
