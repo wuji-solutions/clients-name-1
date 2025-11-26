@@ -45,18 +45,17 @@ function createWindow() {
     height: 600,
     webPreferences: {
       nodeIntegration: true,
-      preload: path.join(__dirname, "..", "..", "electron", "preload.js"),
+      preload: path.join(__dirname, '..', '..', 'electron', 'preload.js'),
     },
   });
-
-  const isDev = !app.isPackaged;
 
   if (!app.isPackaged) {
     win.loadURL('http://localhost:3000');
 
-    const backendPath = path.join(__dirname, "../..", "backend", "backend.jar");
-    child = spawn("java", ["-jar", backendPath]);
+    const jarName = 'backend.jar';
+    const backendPath = path.join(__dirname, '../..', 'backend', jarName);
 
+    child = require('child_process').spawn('java', ['-jar', backendPath]); // NOSONAR
   } else {
     startStaticServer();
     win.loadURL("http://localhost:3000");
@@ -110,42 +109,23 @@ function createWindow() {
   }
 }
 
-app.on("ready", createWindow);
+app.on('ready', createWindow);
 
-app.on("will-quit", () => safeKill(child));
+app.on('will-quit', () => {
+  if (child) child.kill();
+});
 
-ipcMain.on("app/quit", () => {
-  safeKill(child);
+ipcMain.on('app/quit', () => {
+  if (child) {
+    const kill = require('tree-kill');
+    kill(child.pid);
+  }
   process.exit();
 });
 
-process.on("exit", () => safeKill(child));
-process.on("SIGINT", () => {
-  safeKill(child);
-  process.exit();
-});
-
-app.on("window-all-closed", () => {
-  safeKill(child);
-  if (process.platform !== "darwin") app.quit();
-});
-
-app.on("activate", () => {
-  if (win === null) createWindow();
-});
-
-// dialogs
-ipcMain.handle("dialog:openFile", async () => {
-  const { canceled, filePaths } = await dialog.showOpenDialog({
-    properties: ["openFile"],
-  });
-  return canceled ? null : filePaths[0];
-});
-
-// raporty
-ipcMain.on("open-raports-folder", () => {
+ipcMain.on('open-raports-folder', () => {
   const userHome = os.homedir();
-  const raportsPath = path.join(userHome, "Documents", "Raporty");
+  const raportsPath = path.join(userHome, 'Documents', 'Raporty');
 
   if (!existsSync(raportsPath)) {
     mkdirSync(raportsPath, { recursive: true });
@@ -154,24 +134,63 @@ ipcMain.on("open-raports-folder", () => {
   shell.openPath(raportsPath);
 });
 
-// hotspot
-ipcMain.on("open-hotspot-menu", () => {
-  const platform = os.platform();
-
-  if (platform === "win32") {
-    shell.openExternal("ms-settings:network-mobilehotspot");
-
-  } else if (platform === "darwin") {
-    exec('open "x-apple.systempreferences:com.apple.preference.sharing"', (err) => {
-      if (err) console.error("Failed to open macOS settings:", err);
-    });
-
-  } else if (platform === "linux") {
-    exec("gnome-control-center wifi", (err) => {
-      if (err) console.error("Failed to open Linux settings:", err);
-    });
-
-  } else {
-    console.warn("Platform not supported for hotspot menu");
+process.on('exit', () => {
+  if (child) {
+    const kill = require('tree-kill');
+    kill(child.pid);
   }
 });
+
+process.on('SIGINT', () => {
+  if (child) {
+    const kill = require('tree-kill');
+    kill(child.pid);
+  }
+  process.exit();
+});
+
+app.on('window-all-closed', () => {
+  if (child) {
+    const kill = require('tree-kill');
+    kill(child.pid);
+  }
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
+});
+
+app.on('activate', () => {
+  if (win === null) {
+    createWindow();
+  }
+});
+
+ipcMain.handle('dialog:openFile', async () => {
+  const { canceled, filePaths } = await dialog.showOpenDialog({
+    properties: ['openFile'],
+  });
+  if (canceled) {
+    return null;
+  } else {
+    return filePaths[0];
+  }
+});
+
+ipcMain.on('open-hotspot-menu', () => {
+    const platform = os.platform();
+    if (platform === 'win32') {
+      shell.openExternal('ms-settings:network-mobilehotspot');
+    } else if (platform === 'darwin') {
+      exec('open "x-apple.systempreferences:com.apple.preference.sharing"', (err) => {
+        if (err) console.error('Failed to open settings:', err);
+      });
+    } else if (platform === 'linux') {
+      exec('gnome-control-center wifi', (err) => {
+        if (err) {
+          console.error('Failed to open network settings:', err);
+        }
+      });
+    } else {
+      console.warn('Platform not supported for opening hotspot settings');
+    }
+})
