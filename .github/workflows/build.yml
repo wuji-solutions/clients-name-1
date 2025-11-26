@@ -33,6 +33,8 @@ jobs:
 
       - name: Install Dependencies
         run: |
+          git config --global url."https://github".insteadOf ssh://git@github
+          git config --global url."https://github.com/".insteadOf git@github.com:
           npm install
           yarn install
         working-directory: frontend
