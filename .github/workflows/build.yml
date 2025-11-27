@@ -48,8 +48,18 @@ jobs:
         env:
           CI: false
       
-      - name: Upload installers
+      - name: Upload installers to action
         uses: actions/upload-artifact@v4
         with:
           name: app-${{ github.sha }}
           path: frontend/dist/**
+      
+      - name: Move installer
+        run: |
+          Move-Item "dist\*Setup*.exe" ".."
+        working-directory: frontend
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: "*Setup*.exe"
