@@ -1,7 +1,7 @@
 import { CenteredLabel, CustomInput } from '../Fields';
 import './config-styles.css';
 import { LabeledCheckboxContainer } from './components/LabeledCheckbox';
-import { ButtonCustom } from '../Button';
+import { ButtonCustom, InfoButton } from '../Button';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
 export interface CommonSettings {
@@ -70,7 +70,12 @@ export default function CommonConfig({ commonSettings, setCommonSettings }: Prop
       <LabeledCheckboxContainer style={{ position: 'relative' }}>
         {peerSize && (
           <>
-            <CenteredLabel>Maksymalna liczba graczy:</CenteredLabel>
+            <CenteredLabel>
+              Maksymalna liczba graczy
+              <InfoButton tooltip="Ilość graczy która może brać udział w rozgrywce jest związana z ustawieniami systemu.
+              Po wybraniu przycisku 'Zmień' system może poprosić o zezwolenie na zmianę, należy wtedy wybrać opcję 'Tak'
+              " />  
+            </CenteredLabel>
             <div
               style={{
                 position: 'absolute',
@@ -93,6 +98,8 @@ export default function CommonConfig({ commonSettings, setCommonSettings }: Prop
                 width: '90px',
                 fontSize: '0.75em',
               }}
+              disabled={newPeerSize == peerSize}
+              title={newPeerSize == peerSize ? 'Nowa ilość graczy musi różnić się od poprzedniej' : ''}
             >
               Zmień
             </ButtonCustom>

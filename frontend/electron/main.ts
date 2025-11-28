@@ -4,7 +4,7 @@ import * as os from 'os';
 import * as isDev from 'electron-is-dev';
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import { ChildProcessWithoutNullStreams, exec, spawn } from 'child_process';
-import { existsSync, mkdirSync, writeFileSync, unlinkSync } from 'fs';
+import { existsSync, mkdirSync, writeFileSync, unlinkSync, readFileSync } from 'fs';
 
 let win: BrowserWindow | null = null;
 let child: ChildProcessWithoutNullStreams;
@@ -247,4 +247,88 @@ ipcMain.handle('get-wifimaxpeers', async () => {
   } catch (err) {
     return { success: false, error: String(err) };
   }
+});
+
+ipcMain.handle('isHotspotOn', async () => {
+  return await new Promise((resolve) => {
+    exec(
+      'powershell "(Get-NetAdapter | Where-Object {$_.InterfaceDescription -like \\"*Microsoft Wi-Fi Direct*\\\"}).Status"',
+      (err, stdout) => {
+        if (err) return resolve(false);
+
+        const status = stdout.trim().toLowerCase();
+        resolve(status === 'up');
+      }
+    );
+  });
+});
+
+ipcMain.handle('enableHotspot', async (_, { ssid, password, adapter }) => {
+  return new Promise((resolve, reject) => {
+    const command = `
+    netsh wlan set hostednetwork mode=allow ssid="${ssid}" key="${password}"
+    netsh wlan start hostednetwork
+    Start-Service icssvc
+    Set-NetConnectionSharing -ConnectionName "${adapter}" -SharingMode Enable -ShareConnectToInternet $true
+    `;
+
+    exec(`powershell -Command "${command}"`, (err, stdout, stderr) => {
+      if (err) return reject(stderr);
+      resolve(stdout);
+    });
+  });
+});
+
+ipcMain.handle('getHotspotAdapter', async () => {
+  return await new Promise((resolve) => {
+    const command = `
+      Get-NetAdapter |
+      Where-Object { $_.Status -eq "Up" } |
+      Select-Object -ExpandProperty Name
+    `;
+
+    exec(`powershell -Command "${command}"`, (err, stdout) => {
+      if (err || !stdout) return resolve(null);
+
+      const adapters = stdout
+        .trim()
+        .split('\n')
+        .map((a) => a.trim());
+
+      const preferredOrder = ['Wi-Fi', 'Ethernet', 'Ethernet 2', 'Cellular'];
+
+      for (const pref of preferredOrder) {
+        const match = adapters.find((a) => a === pref);
+        if (match) return resolve(match);
+      }
+
+      resolve(adapters[0] || null);
+    });
+  });
+});
+
+const configPath = path.join(app.getPath("userData"), "hotspot-config.json");
+
+export function saveHotspotConfig(ssid: string, password: string) {
+  writeFileSync(
+    configPath,
+    JSON.stringify({ ssid, password }, null, 2),
+    "utf8"
+  );
+}
+
+export function loadHotspotConfig() {
+  if (!existsSync(configPath)) {
+    return { ssid: "", password: "" };
+  }
+
+  return JSON.parse(readFileSync(configPath, "utf8"));
+}
+
+ipcMain.handle("configureHotspot", (_, { ssid, password }) => {
+  saveHotspotConfig(ssid, password);
+});
+
+ipcMain.handle("getHotspotConfig", () => {
+  return loadHotspotConfig();
 });

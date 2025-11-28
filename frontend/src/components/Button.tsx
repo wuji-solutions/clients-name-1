@@ -1,38 +1,40 @@
 import { styled } from 'styled-components';
 import theme from '../common/theme';
 import { darkenColor } from '../common/utils';
+import { useState, useRef } from 'react';
+import { CustomArrows } from './ArrowIndicator';
 
-export const ButtonCustom = styled.button<{color?: string}>(({color}) => {
-  
+export const ButtonCustom = styled.button<{ color?: string }>(({ color }) => {
   const color_base = color ? color : theme.palette.button.primary;
   const color_base_accent = color ? darkenColor(color, 0.15) : theme.palette.button.accent;
-  return ({
-  width: '250px',
-  minHeight: '50px',
-  marginLeft: 'auto',
-  marginRight: 'auto',
-  background: color_base,
-  border: `2px solid ${color_base_accent}`,
-  boxShadow: `0 5px 0 0 ${color_base_accent}`,
-  color: '#FFF',
-  borderRadius: '10px',
-  '&:hover': {
-    background: darkenColor(color_base, 0.05),
-    border: `1px solid ${darkenColor(color_base, 0.05)}`,
+  return {
+    width: '250px',
+    minHeight: '50px',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    background: color_base,
+    border: `2px solid ${color_base_accent}`,
     boxShadow: `0 5px 0 0 ${color_base_accent}`,
-    cursor: 'pointer',
-  },
-  '&:disabled': {
-    cursor: 'not-allowed',
-    opacity: 0.5,
-  },
-  '-webkit-transition-duration': '0.2s',
-  transitionDuration: '0.2s',
-  padding: '7px',
-  fontSize: '20px',
-  fontWeight: '700',
-  textShadow: '1px 1px 1px #000000',
-})});
+    color: '#FFF',
+    borderRadius: '10px',
+    '&:hover': {
+      background: darkenColor(color_base, 0.05),
+      border: `1px solid ${darkenColor(color_base, 0.05)}`,
+      boxShadow: `0 5px 0 0 ${color_base_accent}`,
+      cursor: 'pointer',
+    },
+    '&:disabled': {
+      cursor: 'not-allowed',
+      opacity: 0.5,
+    },
+    '-webkit-transition-duration': '0.2s',
+    transitionDuration: '0.2s',
+    padding: '7px',
+    fontSize: '20px',
+    fontWeight: '700',
+    textShadow: '1px 1px 1px #000000',
+  };
+});
 
 interface ButtonChoseProps {
   active?: boolean;
@@ -80,9 +82,9 @@ const FullScreenButtonPure = styled.button({
   marginRight: 'auto',
   background: theme.palette.main.primary,
   color: '#FFF',
-  border: '0px solid #000',
+  border: `3px solid ${darkenColor(theme.palette.main.primary, 0.1)}`,
   borderRadius: '50%',
-  boxShadow: `0 3px 0 0 ${darkenColor(theme.palette.main.primary, 0.1)}`,
+  boxShadow: `0 2px 0 0 ${darkenColor(theme.palette.main.primary, 0.1)}`,
   '&:hover': {
     background: darkenColor(theme.palette.main.primary, 0.1),
     boxShadow: `0 3px 0 0 ${darkenColor(theme.palette.main.primary, 0.2)}`,
@@ -101,7 +103,7 @@ const FullScreenButtonPure = styled.button({
 });
 
 export const FullScreenButton = () => {
-  return <FullScreenButtonPure onClick={toggleFullscreen}>{'< >'}</FullScreenButtonPure>;
+  return <FullScreenButtonPure onClick={toggleFullscreen}><CustomArrows /></FullScreenButtonPure>;
 };
 
 interface RoundCheckButtonProps {
@@ -114,7 +116,7 @@ const CircleButton = styled.button<{ selected: boolean }>`
   height: 38px;
   border-radius: 50%;
   border: 3px solid #1c2c36;
-  background: ${(props) => (props.selected ? "#1c2c36" : "transparent")};
+  background: ${(props) => (props.selected ? '#1c2c36' : 'transparent')};
   color: #fff;
   font-size: 15px;
   font-weight: 600;
@@ -132,9 +134,96 @@ const CircleButton = styled.button<{ selected: boolean }>`
 const RoundCheckButton = ({ selected, onClick }: RoundCheckButtonProps) => {
   return (
     <CircleButton selected={selected} onClick={onClick}>
-      {selected ? "✔" : "✕"}
+      {selected ? '✔' : '✕'}
     </CircleButton>
   );
 };
 
 export default RoundCheckButton;
+
+const InfoButtonPure = styled.button`
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: ${theme.palette.button.info};
+  border: 3px solid ${theme.palette.button.info_accent};
+  box-shadow: 0 2px 0 0 ${theme.palette.button.info_accent};
+  color: #fff;
+  font-size: 15px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: 0.25s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  &:hover {
+    transform: scale(1.06);
+  }
+`;
+
+const TooltipWrapper = styled.div`
+  position: relative;
+  display: inline-block;
+
+  &:hover .tooltip {
+    opacity: 1;
+    pointer-events: auto;
+  }
+`;
+
+const TooltipBubble = styled.div`
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 10px;
+  background: ${theme.palette.button.info};
+  border: 3px solid ${theme.palette.button.info_accent};
+  box-shadow: 0 2px 0 0 ${theme.palette.button.info_accent};
+  color: #fff;
+  border-radius: 6px;
+  font-size: 14px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.1s ease;
+  z-index: 10000;
+  width: 220px;
+  white-space: normal;
+`;
+
+export const InfoButton = ({ tooltip }: { tooltip: string }) => {
+  const [visible, setVisible] = useState(false);
+  const timer = useRef<NodeJS.Timeout | null>(null);
+
+  const handleMouseEnter = () => {
+    timer.current = setTimeout(() => {
+      setVisible(true);
+    }, 500);
+  };
+
+  const handleMouseLeave = () => {
+    if (timer.current) clearTimeout(timer.current);
+    setVisible(false);
+  };
+
+  return (
+    <TooltipWrapper onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+      <InfoButtonPure>?</InfoButtonPure>
+
+      {visible && <TooltipBubble className="tooltip">{tooltip}</TooltipBubble>}
+    </TooltipWrapper>
+  );
+};
+
+export const SquareButton = styled.div(() => ({
+  border: `3px solid ${theme.palette.main.accent}`,
+  borderRadius: '8px',
+  width: '25px',
+  height: '25px',
+  display: 'flex',
+  justifyContent: 'center',
+  alignContent: 'center',
+  '&:hover': {
+    backgroundColor: theme.palette.main.accent,
+  }
+}));

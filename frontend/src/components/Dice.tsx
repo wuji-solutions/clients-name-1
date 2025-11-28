@@ -44,6 +44,7 @@ const Scene = styled.div(() => ({
   perspective: '400px',
   width: mobile ? '150px' : '250px',
   height: mobile ? '150px' : '250px',
+  zIndex: 999
 }));
 
 const Cube = styled.div<{ rotationY: number; rotationX: number }>(({ rotationY, rotationX }) => ({

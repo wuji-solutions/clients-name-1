@@ -21,7 +21,7 @@ const Container = styled.div({
   flexDirection: 'row',
 });
 
-const QRWrapper = styled.div({
+export const QRWrapper = styled.div({
   padding: '10px',
   border: `5px solid ${theme.palette.main.accent}`,
   height: 'fit-content',
@@ -30,12 +30,13 @@ const QRWrapper = styled.div({
   margin: 'auto',
 });
 
-const QRContainer = styled.div({
+export const QRContainer = styled.div({
   margin: 'auto',
   background: '#fff',
   padding: '15px',
   borderRadius: '15px',
   border: '5px solid #fff',
+  position: 'relative',
 });
 
 const ActionButtonContainer = styled.div({
@@ -212,6 +213,7 @@ function WaitingRoom() {
 
   return (
     <Container>
+    <ButtonCustom onClick={() => navigate('/konfiguracja')} style={{position: 'absolute', left: '80px', top: '10px'}}>Powrót</ButtonCustom>
       <div
         style={{
           position: 'absolute',
@@ -262,7 +264,6 @@ function WaitingRoom() {
       </QRWrapper>
       <ActionButtonContainer>
         <ButtonCustom onClick={() => startGame()}>Zacznij grę</ButtonCustom>
-        <ButtonCustom onClick={() => navigate('/konfiguracja')}>Powrót</ButtonCustom>
       </ActionButtonContainer>
     </Container>
   );

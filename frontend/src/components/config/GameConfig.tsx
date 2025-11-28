@@ -145,7 +145,7 @@ export default function GameConfig({
           flexDirection: 'column',
         }}
       >
-        <div style={{ overflow: 'auto' }}>
+        <div style={{ overflow: mode === 'quiz' ? 'visible' : 'auto' }}>
           <CommonConfig commonSettings={commonSettings} setCommonSettings={setCommonSettings} />
           <Divider />
           {mode === 'quiz' && <QuizConfig />}
@@ -168,12 +168,16 @@ export default function GameConfig({
         </div>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '20px' }}>
-        <ButtonCustom style={{ width: '50%', marginBottom: '0' }} onClick={editConfig}>
-          Zapisane ustawienia
-        </ButtonCustom>
-        <ButtonCustom style={{ width: '40%' }} onClick={saveConfig}>
-          Zapisz
-        </ButtonCustom>
+        {mode != 'quiz' && (
+          <>
+            <ButtonCustom style={{ width: '50%', marginBottom: '0' }} onClick={editConfig}>
+              Zapisane ustawienia
+            </ButtonCustom>
+            <ButtonCustom style={{ width: '40%' }} onClick={saveConfig}>
+              Zapisz
+            </ButtonCustom>
+          </>
+        )}
       </div>
     </div>
   );
