@@ -56,16 +56,14 @@ jobs:
       
       - name: Move installer
         run: |
-          ls dist\win-unpacked
           Move-Item "dist\win-unpacked\*Setup*.exe" ".."
-          ls
-          ls dist
+          ls ..
         working-directory: frontend
 
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
-          files: "frontend/*Setup*.exe"
+          files: "*Setup*.exe"
           tag_name: "v${{ github.run_number }}"
           name: "Release ${{ github.run_number }}"
           draft: false
