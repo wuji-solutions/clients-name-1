@@ -3,8 +3,8 @@ name: Build executable
 on:
   push:
     branches:
-      # - main
-      - deply-binaries-and-versioning
+      - main
+      - deploy-binaries-and-versioning
 
 permissions:
   contents: write
