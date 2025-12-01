@@ -1,7 +1,7 @@
 import { styled } from 'styled-components';
 import theme from '../common/theme';
 import { darkenColor } from '../common/utils';
-import { useState, useRef } from 'react';
+import { useState, useRef, ReactNode } from 'react';
 import { CustomArrows } from './ArrowIndicator';
 
 export const ButtonCustom = styled.button<{ color?: string }>(({ color }) => {
@@ -103,7 +103,11 @@ const FullScreenButtonPure = styled.button({
 });
 
 export const FullScreenButton = () => {
-  return <FullScreenButtonPure onClick={toggleFullscreen}><CustomArrows /></FullScreenButtonPure>;
+  return (
+    <FullScreenButtonPure onClick={toggleFullscreen}>
+      <CustomArrows />
+    </FullScreenButtonPure>
+  );
 };
 
 interface RoundCheckButtonProps {
@@ -186,18 +190,29 @@ const TooltipBubble = styled.div`
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.1s ease;
-  z-index: 10000;
-  width: 220px;
+  z-index: 999;
+  width: 230px;
   white-space: normal;
 `;
 
-export const InfoButton = ({ tooltip }: { tooltip: string }) => {
+export const InfoButton = ({
+  tooltip,
+  children,
+  style,
+  onHover,
+}: {
+  tooltip?: string;
+  children?: ReactNode;
+  style?: object;
+  onHover?: Function;
+}) => {
   const [visible, setVisible] = useState(false);
   const timer = useRef<NodeJS.Timeout | null>(null);
 
   const handleMouseEnter = () => {
     timer.current = setTimeout(() => {
       setVisible(true);
+      if (onHover) onHover();
     }, 500);
   };
 
@@ -210,7 +225,12 @@ export const InfoButton = ({ tooltip }: { tooltip: string }) => {
     <TooltipWrapper onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <InfoButtonPure>?</InfoButtonPure>
 
-      {visible && <TooltipBubble className="tooltip">{tooltip}</TooltipBubble>}
+      {visible && (
+        <TooltipBubble className="tooltip" style={{ ...style }}>
+          {tooltip}
+          {children}
+        </TooltipBubble>
+      )}
     </TooltipWrapper>
   );
 };
@@ -225,5 +245,5 @@ export const SquareButton = styled.div(() => ({
   alignContent: 'center',
   '&:hover': {
     backgroundColor: theme.palette.main.accent,
-  }
+  },
 }));

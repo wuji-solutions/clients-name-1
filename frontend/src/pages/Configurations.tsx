@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import theme from '../common/theme';
 import { mode } from '../common/types';
-import { ButtonCustom, SquareButton } from '../components/Button';
+import { ButtonCustom, InfoButton, SquareButton } from '../components/Button';
 import { useAppContext } from '../providers/AppContextProvider';
 import AccessRestricted from '../components/AccessRestricted';
 import { service } from '../service/service';
@@ -37,7 +37,7 @@ const InstructionContainer = styled.div({
   boxShadow: `0px 4px 0 0 ${theme.palette.main.accent}`,
   borderRadius: '15px',
   height: 'fit-content',
-  minHeight: '80vh',
+  minHeight: '700px',
   margin: 'auto',
 });
 
@@ -137,6 +137,7 @@ const ModeOption = styled.div<{ active: boolean }>(({ active }) => ({
   transform: active ? 'none' : 'translateY(10px)',
 
   cursor: 'pointer',
+  position: 'relative',
 }));
 
 const ModeOptionHeader = styled.div({
@@ -192,7 +193,6 @@ function Configurations() {
   const [hotspotCredentials, setHotspotCredentails] = useState({ ssid: '', password: '' });
 
   const toggle = (tab: string) => {
-    console.log(tab);
     setTab((prev) => {
       console.log(prev);
       return prev === '' ? tab : '';
@@ -209,6 +209,10 @@ function Configurations() {
       setHotspotCredentails(response);
     });
   }, [hotspotRefresh]);
+
+  useEffect(() => {
+    isHotspotOn();
+  }, [tab]);
 
   const handleQR = () => {
     window.electronAPI
@@ -447,6 +451,31 @@ function Configurations() {
                 }}
               />
             </div>
+            <div style={{ position: 'absolute', top: 10, right: 10 }}>
+              <InfoButton
+                style={{
+                  width: '700px',
+                  background: 'transparent',
+                  border: 'none',
+                  boxShadow: 'none',
+                }}
+                onHover={() => setMode('quiz')}
+              >
+                <video
+                  autoPlay
+                  style={{
+                    width: '100%',
+                    height: 'auto',
+                    borderRadius: '8px',
+                    border: `3px solid ${theme.palette.main.accent}`,
+                    boxShadow: `0 0 3px 1px ${theme.palette.main.accent}`,
+                  }}
+                >
+                  {' '}
+                  <source src="/quiz_example.mp4" type="video/mp4" />{' '}
+                </video>
+              </InfoButton>
+            </div>
           </ModeOption>
           <ModeOption active={mode == 'exam'} onClick={() => setMode('exam')}>
             <ModeOptionHeader>SPRAWDZIAN</ModeOptionHeader>
@@ -485,6 +514,32 @@ function Configurations() {
                 }}
               />
             </div>
+            <div style={{ position: 'absolute', top: 10, right: 10 }}>
+              <InfoButton
+                style={{
+                  width: '350px',
+                  background: 'transparent',
+                  border: 'none',
+                  boxShadow: 'none',
+                }}
+                onHover={() => setMode('exam')}
+              >
+                <video
+                  autoPlay
+                  style={{
+                    width: '150%',
+                    height: 'auto',
+                    borderRadius: '8px',
+                    border: `3px solid ${theme.palette.main.accent}`,
+                    boxShadow: `0 0 3px 1px ${theme.palette.main.accent}`,
+                    zIndex: 1000
+                  }}
+                >
+                  {' '}
+                  <source src="/exam_example.mp4" type="video/mp4" />{' '}
+                </video>
+              </InfoButton>
+            </div>
           </ModeOption>
           <ModeOption active={mode == 'board'} onClick={() => setMode('board')}>
             <ModeOptionHeader>GRA PLANSZOWA</ModeOptionHeader>
@@ -511,6 +566,32 @@ function Configurations() {
                   backgroundColor: theme.palette.main.background,
                 }}
               />
+            </div>
+            <div style={{ position: 'absolute', top: 10, right: 10 }}>
+              <InfoButton
+                style={{
+                  width: '500px',
+                  background: 'transparent',
+                  border: 'none',
+                  boxShadow: 'none',
+                  top: '-200px',
+                }}
+                onHover={() => setMode('board')}
+              >
+                <video
+                  autoPlay
+                  style={{
+                    width: '100%',
+                    height: 'auto',
+                    borderRadius: '8px',
+                    border: `3px solid ${theme.palette.main.accent}`,
+                    boxShadow: `0 0 3px 1px ${theme.palette.main.accent}`,
+                  }}
+                >
+                  {' '}
+                  <source src="/board_example.mp4" type="video/mp4" />{' '}
+                </video>
+              </InfoButton>
             </div>
           </ModeOption>
         </ModeContent>

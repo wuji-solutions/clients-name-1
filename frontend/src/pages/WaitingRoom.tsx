@@ -80,7 +80,6 @@ function SSEOnStartListener({ onGameStart }: { onGameStart: Function }) {
   return <></>;
 }
 
-
 function PlayerKickListener({
   userHandler,
   onKick,
@@ -124,13 +123,18 @@ function WaitingRoom() {
     service
       .joinGame(identificator, gameMode)
       .then((response) => {
+        if (response.status === 208) {
+          setError('Gracz o takim identyfikatorze dołączył juz do rozgrywki');
+          return;
+        }
         setUsername(response.data);
         sessionStorage.setItem('username', response.data);
         sessionStorage.setItem('userindex', identificator.toString());
       })
-      .catch((error) =>
-        setError('Wystąpił błąd podczas dołączania do gry\n' + error.response.data.message)
-      );
+      .catch((error) => {
+        setError('Wystąpił błąd podczas dołączania do gry\n' + error.response.data.message);
+        setUsername(null);
+      });
   };
 
   const startGame = () => {
@@ -213,7 +217,12 @@ function WaitingRoom() {
 
   return (
     <Container>
-    <ButtonCustom onClick={() => navigate('/konfiguracja')} style={{position: 'absolute', left: '80px', top: '10px'}}>Powrót</ButtonCustom>
+      <ButtonCustom
+        onClick={() => navigate('/konfiguracja')}
+        style={{ position: 'absolute', left: '80px', top: '10px' }}
+      >
+        Powrót
+      </ButtonCustom>
       <div
         style={{
           position: 'absolute',
@@ -238,10 +247,10 @@ function WaitingRoom() {
             borderBottom: `4px solid ${theme.palette.main.accent}`,
           }}
         />
-        <span style={{justifyContent: 'center', textAlign: 'center'}}>
-        {gameMode === 'quiz' && 'QUIZ'}
-        {gameMode === 'exam' && 'SPRAWDZIAN'}
-        {gameMode === 'board' && 'GRA PLANSZOWA'}
+        <span style={{ justifyContent: 'center', textAlign: 'center' }}>
+          {gameMode === 'quiz' && 'QUIZ'}
+          {gameMode === 'exam' && 'SPRAWDZIAN'}
+          {gameMode === 'board' && 'GRA PLANSZOWA'}
         </span>
         <div
           style={{
