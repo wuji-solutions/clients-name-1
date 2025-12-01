@@ -57,6 +57,8 @@ jobs:
       - name: Move installer
         run: |
           Move-Item "dist\*Setup*.exe" ".."
+          ls
+          ls dist
         working-directory: frontend
 
       - name: Create release
