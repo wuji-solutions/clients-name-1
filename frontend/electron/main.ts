@@ -9,6 +9,13 @@ import { existsSync, mkdirSync } from 'fs';
 let win: BrowserWindow | null = null;
 let child: ChildProcessWithoutNullStreams;
 
+function killBackend() {
+  if (child && !child.killed) {
+    const kill = require('tree-kill');
+    kill(child.pid);
+  }
+}
+
 function createWindow() {
   win = new BrowserWindow({
     width: isDev ? 1200 : 800,
@@ -17,6 +24,17 @@ function createWindow() {
       nodeIntegration: true,
       preload: path.join(__dirname, '..', '..', 'electron', 'preload.js'),
     },
+  });
+
+  win.on('close', (e) => {
+    if (child && !child.killed) {
+      e.preventDefault();
+      killBackend();
+
+      setTimeout(() => {
+        win?.destroy();
+      }, 300);
+    }
   });
 
   if (isDev) {
@@ -138,20 +156,20 @@ ipcMain.handle('dialog:openFile', async () => {
 });
 
 ipcMain.on('open-hotspot-menu', () => {
-    const platform = os.platform();
-    if (platform === 'win32') {
-      shell.openExternal('ms-settings:network-mobilehotspot');
-    } else if (platform === 'darwin') {
-      exec('open "x-apple.systempreferences:com.apple.preference.sharing"', (err) => {
-        if (err) console.error('Failed to open settings:', err);
-      });
-    } else if (platform === 'linux') {
-      exec('gnome-control-center wifi', (err) => {
-        if (err) {
-          console.error('Failed to open network settings:', err);
-        }
-      });
-    } else {
-      console.warn('Platform not supported for opening hotspot settings');
-    }
-})
+  const platform = os.platform();
+  if (platform === 'win32') {
+    shell.openExternal('ms-settings:network-mobilehotspot');
+  } else if (platform === 'darwin') {
+    exec('open "x-apple.systempreferences:com.apple.preference.sharing"', (err) => {
+      if (err) console.error('Failed to open settings:', err);
+    });
+  } else if (platform === 'linux') {
+    exec('gnome-control-center wifi', (err) => {
+      if (err) {
+        console.error('Failed to open network settings:', err);
+      }
+    });
+  } else {
+    console.warn('Platform not supported for opening hotspot settings');
+  }
+});
