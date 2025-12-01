@@ -61,7 +61,9 @@ jobs:
 
       - name: Create release
         uses: softprops/action-gh-release@v2
-        if: github.ref_type == 'push'
         with:
-          files: "*Setup*.exe"
-          tag_name: "test"
+          files: "frontend/dist/*Setup*.exe"
+          tag_name: "v${{ github.run_number }}"
+          name: "Release ${{ github.run_number }}"
+          draft: false
+          prerelease: false
