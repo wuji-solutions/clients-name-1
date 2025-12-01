@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+    <question type="category">
+        <category>
+            <text>Matematyka/Demonstracyjne</text>
+        </category>
+    </question>
+
+    <question type="multichoice">
+        <name>
+            <text>Dodawanie liczb całkowitych</text>
+        </name>
+        <questiontext format="html">
+            <text><![CDATA[
+                <p>Ile wynosi <b>5 + 7</b>?</p>
+            ]]></text>
+        </questiontext>
+        <answer fraction="100"><text>12</text></answer>
+        <answer fraction="0"><text>10</text></answer>
+        <answer fraction="0"><text>11</text></answer>
+        <answer fraction="0"><text>13</text></answer>
+    </question>
+
+    <question type="multichoice">
+        <name>
+            <text>Pole kwadratu</text>
+        </name>
+        <questiontext format="html">
+            <text><![CDATA[
+                <p>Które z poniższych wzorów poprawnie opisują <i>pole kwadratu</i> o boku <b>a</b>?</p>
+            ]]></text>
+        </questiontext>
+        <answer fraction="100"><text>a × a</text></answer>
+        <answer fraction="100"><text>a²</text></answer>
+        <answer fraction="0"><text>2a</text></answer>
+        <answer fraction="0"><text>4a</text></answer>
+        <single>false</single>
+    </question>
+
+    <question type="multichoice">
+        <name>
+            <text>Równanie liniowe</text>
+        </name>
+        <questiontext format="markdown">
+            <text><![CDATA[
+                Znajdź rozwiązanie równania:  
+                `2x + 4 = 10`
+            ]]></text>
+        </questiontext>
+        <answer fraction="100"><text>3</text></answer>
+        <answer fraction="0"><text>2</text></answer>
+        <answer fraction="0"><text>4</text></answer>
+        <answer fraction="0"><text>6</text></answer>
+    </question>
+
+    <question type="multichoice">
+        <name>
+            <text>Funkcje kwadratowe</text>
+        </name>
+        <questiontext format="markdown">
+            <text><![CDATA[
+                Które z poniższych równań to *funkcje kwadratowe*?
+
+                1. `y = 2x + 1`  
+                2. `y = x² + 2x + 1`  
+                3. `y = 3x³ - 2`  
+                4. `y = -x² + 4`
+            ]]></text>
+        </questiontext>
+        <answer fraction="100"><text>y = x² + 2x + 1</text></answer>
+        <answer fraction="100"><text>y = -x² + 4</text></answer>
+        <answer fraction="0"><text>y = 2x + 1</text></answer>
+        <answer fraction="0"><text>y = 3x³ - 2</text></answer>
+        <single>false</single>
+    </question>
+
+    <question type="multichoice">
+        <name>
+            <text>Wykres funkcji</text>
+        </name>
+        <questiontext format="html">
+            <text><![CDATA[
+                <p>Na wykresie poniżej przedstawiono funkcję:</p>
+                <img src="@@PLUGINFILE@@/parabola.png" alt="parabola" width="200"/>
+                <p>Jaki to rodzaj funkcji?</p>
+            ]]></text>
+        </questiontext>
+        <answer fraction="100"><text>Kwadratowa</text></answer>
+        <answer fraction="0"><text>Liniowa</text></answer>
+        <answer fraction="0"><text>Stała</text></answer>
+        <answer fraction="0"><text>Wykładnicza</text></answer>
+    </question>
+
+</quiz>
