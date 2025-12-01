@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - deploy-binaries-and-versioning
 
 permissions:
   contents: write
