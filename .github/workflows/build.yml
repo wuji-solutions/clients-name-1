@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - deply-binaries-and-versioning
 
 permissions:
   contents: write
@@ -60,14 +61,14 @@ jobs:
       - name: Move installer
         run: |
           Move-Item "dist\*Setup*.exe" ".."
-          ls ..
+          echo "DATE=$(Get-Date -Format 'yyyyMMdd')" >> $env:GITHUB_ENV
         working-directory: frontend
 
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
           files: "*Setup*.exe"
-          tag_name: "v${{ github.run_number }}"
-          name: "Release ${{ github.run_number }}"
+          tag_name: "v${{ env.DATE }}"
+          name: "Release ${{ env.DATE }}"
           draft: false
           prerelease: false
