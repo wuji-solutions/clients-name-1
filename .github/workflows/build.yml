@@ -56,7 +56,7 @@ jobs:
       
       - name: Move installer
         run: |
-          Move-Item "dist\win-unpacked\*Setup*.exe" ".."
+          Move-Item "dist\*Setup*.exe" ".."
           ls ..
         working-directory: frontend
 
