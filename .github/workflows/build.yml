@@ -57,7 +57,6 @@ jobs:
       - name: Move installer
         run: |
           ls dist\win-unpacked
-          ls dist\out\win-unpacked
           Move-Item "dist\win-unpacked\*Setup*.exe" ".."
           ls
           ls dist
