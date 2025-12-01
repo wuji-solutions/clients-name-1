@@ -60,7 +60,7 @@ jobs:
       - name: Move installer
         run: |
           Move-Item "dist\*Setup*.exe" ".."
-          echo "DATE=$(Get-Date -Format 'yyyyMMdd')" >> $env:GITHUB_ENV
+          echo "DATE=$(Get-Date -Format 'yyyyMMdd-HHmmss')" >> $env:GITHUB_ENV
         working-directory: frontend
 
       - name: Create release
