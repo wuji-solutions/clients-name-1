@@ -215,23 +215,32 @@ class MoodleXmlParserTest {
 
     @Test
     fun `sample moodle xml base64 images`() {
-        val resource = this::class.java.getResource("/questions_base64.xml")
+        val resource =
+            this::class.java.getResource("/sample_moodle_xml_base64.xml")
         requireNotNull(resource) { "Resource not found" }
 
         val inputStream = resource.openStream()
         val questions = MoodleXmlParser.parse(inputStream)
-
         val question = questions.first()
 
         assertEquals(question.images?.size, 2)
-        assertEquals(question.text, "<![CDATA[<p></p>\n<p></p>\n<p>text under img</p>]]>")
+        assertEquals(question.text, "text under img")
         assertEquals(question.images?.first()?.image, "IMAGE1")
         assertEquals(question.images?.last()?.image, "IMAGE2")
     }
 
-//    @Test
-//    fun `sample moodle xml url images`() {
-//        val resource = this::class.java.getResource("/questions_url.xml")
-//        requireNotNull(resource) { "Resource not found" }
-//    }
+    @Test
+    fun `sample moodle xml url images`() {
+        val resource =
+            this::class.java.getResource("/sample_moodle_xml_url.xml")
+        requireNotNull(resource) { "Resource not found" }
+
+        val inputStream = resource.openStream()
+        val questions = MoodleXmlParser.parse(inputStream)
+        val question = questions.first()
+
+        assertEquals(question.images?.size, 1)
+        assertEquals(question.text, "")
+        assertEquals(question.images?.first()?.image, "http://fajne.url.jpg")
+    }
 }

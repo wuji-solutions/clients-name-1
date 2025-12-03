@@ -1,7 +1,6 @@
 package com.wuji.backend.question.exam.dto
 
 import com.wuji.backend.config.DifficultyLevel
-import com.wuji.backend.question.common.Image
 import com.wuji.backend.question.common.ImageDto
 import com.wuji.backend.question.common.PlayerAnswer
 import com.wuji.backend.question.common.Question
@@ -45,4 +44,5 @@ fun Question.toExamQuestionDto(
         questionNumber = questionNumber,
         totalBaseQuestions = totalBaseQuestions,
         allowGoingBack = allowGoingBack,
-        images = this.images?.map { it.toImageDto() },)
+        images = this.images?.map { it.toImageDto() },
+    )

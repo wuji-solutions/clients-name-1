@@ -34,7 +34,8 @@ class QuestionDtoTest {
         assertEquals(question.text, dto.task)
         assertEquals(question.difficultyLevel, dto.difficultyLevel)
         assertEquals(question.images?.size, dto.images?.size)
-        assertEquals(question.images?.first()?.image, dto.images?.first()?.image)
+        assertEquals(
+            question.images?.first()?.image, dto.images?.first()?.image)
         assertEquals(question.answers.map { it.toAnswerDto() }, dto.answers)
     }
 }

@@ -1,11 +1,8 @@
 package com.wuji.backend.question.common
 
-class Image(
-    var image: String,
-    val type: ImageType
-)
+class Image(var image: String, val type: ImageType)
 
-data class ImageDto (
+data class ImageDto(
     val image: String,
 )
 

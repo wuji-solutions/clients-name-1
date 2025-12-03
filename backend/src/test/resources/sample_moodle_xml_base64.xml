@@ -7,7 +7,7 @@
         </category>
     </question>
 
-    <question type="truefalse">
+    <question type="multichoice">
         <name>
             <text>true false with img</text>
         </name>
