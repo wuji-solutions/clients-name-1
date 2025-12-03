@@ -36,6 +36,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-aop")
     implementation("com.jsoizo:kotlin-csv-jvm:1.10.0")
+    implementation("org.jsoup:jsoup:1.17.2")
 
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("io.mockk:mockk:1.14.5")

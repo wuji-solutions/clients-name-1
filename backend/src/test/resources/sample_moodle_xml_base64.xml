@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+    <!-- Category definition -->
+    <question type="category">
+        <category>
+            <text>$course$/Advanced Sample Quiz</text>
+        </category>
+    </question>
+
+    <question type="truefalse">
+        <name>
+            <text>true false with img</text>
+        </name>
+        <questiontext format="html">
+            <text><![CDATA[<p><img class="img-fluid" src="@@PLUGINFILE@@/f1.png" alt="alt text to img" width="1000" height="500"></p>
+            <p><img class="img-fluid" src="@@PLUGINFILE@@/f2.png" alt="alt text to img" width="1000" height="500"></p>
+    <p>text under img</p>]]></text>
+            <file name="f1.png" path="/" encoding="base64">IMAGE1</file>
+            <file name="f2.png" path="/" encoding="base64">IMAGE2</file>
+        </questiontext>
+        <generalfeedback format="html">
+            <text></text>
+        </generalfeedback>
+        <defaultgrade>1.0000000</defaultgrade>
+        <penalty>1.0000000</penalty>
+        <hidden>0</hidden>
+        <idnumber></idnumber>
+        <answer fraction="100" format="moodle_auto_format">
+            <text>true</text>
+            <feedback format="html">
+                <text></text>
+            </feedback>
+        </answer>
+        <answer fraction="0" format="moodle_auto_format">
+            <text>false</text>
+            <feedback format="html">
+                <text></text>
+            </feedback>
+        </answer>
+    </question>
+</quiz>
