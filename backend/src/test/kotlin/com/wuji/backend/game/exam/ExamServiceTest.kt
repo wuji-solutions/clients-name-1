@@ -12,6 +12,8 @@ import com.wuji.backend.player.state.ExamPlayerDetails
 import com.wuji.backend.player.state.PlayerService
 import com.wuji.backend.player.state.exception.PlayerNotFoundException
 import com.wuji.backend.question.common.Answer
+import com.wuji.backend.question.common.Image
+import com.wuji.backend.question.common.ImageType
 import com.wuji.backend.question.common.PlayerAnswer
 import com.wuji.backend.question.common.Question
 import com.wuji.backend.question.common.QuestionType
@@ -54,8 +56,7 @@ class ExamServiceTest {
             listOf(Answer(0, "answer")),
             setOf(0),
             DifficultyLevel.EASY,
-            "imageUrl",
-            "imageBase64",
+            listOf(Image("url", ImageType.Url)),
             listOf("tag1", "tag1"),
         )
 

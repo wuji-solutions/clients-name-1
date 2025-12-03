@@ -8,6 +8,8 @@ import com.wuji.backend.game.exam.ExamGame
 import com.wuji.backend.player.state.ExamPlayer
 import com.wuji.backend.player.state.ExamPlayerDetails
 import com.wuji.backend.question.common.Answer
+import com.wuji.backend.question.common.Image
+import com.wuji.backend.question.common.ImageType
 import com.wuji.backend.question.common.PlayerAnswer
 import com.wuji.backend.question.common.Question
 import com.wuji.backend.question.common.QuestionType
@@ -39,8 +41,7 @@ class ExamQuestionServiceTest {
             listOf(Answer(0, "answer")),
             setOf(0),
             DifficultyLevel.MEDIUM,
-            "imageUrl",
-            "imageBase64",
+            listOf(Image("url1", ImageType.Url)),
             listOf("tag1", "tag1"),
         )
     private val question2 =
@@ -53,8 +54,7 @@ class ExamQuestionServiceTest {
             listOf(Answer(1, "answer")),
             setOf(0),
             DifficultyLevel.MEDIUM,
-            "imageUrl",
-            "imageBase64",
+            listOf(Image("url1", ImageType.Url)),
             listOf("tag1", "tag1"),
         )
     private val playerAnswer1 =
@@ -265,8 +265,7 @@ class ExamQuestionServiceTest {
                 listOf(Answer(0, "answer")),
                 setOf(0),
                 DifficultyLevel.MEDIUM,
-                "url",
-                "base64",
+                listOf(Image("url1", ImageType.Url)),
                 listOf("tag"))
 
         every { examGame.questionDispenser.currentQuestion(0) } returns
@@ -303,8 +302,7 @@ class ExamQuestionServiceTest {
                 listOf(Answer(0, "answer")),
                 setOf(0),
                 DifficultyLevel.HARD,
-                "url",
-                "base64",
+                listOf(Image("url1", ImageType.Url)),
                 listOf("tag"))
 
         every { examGame.questionDispenser.currentQuestion(0) } returns
