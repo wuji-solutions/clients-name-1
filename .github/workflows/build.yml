@@ -45,6 +45,9 @@ jobs:
       - name: Prevent CI from failing on warnings
         run: echo "CI=false" >> $env:GITHUB_ENV
 
+      - name: Set app version
+        run: echo "APP_VERSION=$(Get-Date -Format 'yyyyMMdd-HHmmss')" >> $env:GITHUB_ENV
+
       - name: Build Electron app
         run: yarn electron:build
         working-directory: frontend
@@ -60,14 +63,13 @@ jobs:
       - name: Move installer
         run: |
           Move-Item "dist\*Setup*.exe" ".."
-          echo "DATE=$(Get-Date -Format 'yyyyMMdd-HHmmss')" >> $env:GITHUB_ENV
         working-directory: frontend
 
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
           files: "*Setup*.exe"
-          tag_name: "v${{ env.DATE }}"
-          name: "Release ${{ env.DATE }}"
+          tag_name: "v${{ env.APP_VERSION }}"
+          name: "Release ${{ env.APP_VERSION }}"
           draft: false
           prerelease: false

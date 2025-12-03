@@ -1,9 +1,11 @@
 {
   "homepage": ".",
   "main": "build/electron/main.js",
-  "author": "wuji-solutions",
-  "description": "React-TypeScript-Electron sample with Create React App and Electron Builder",
+  "author": "Tomasz Grzybacz, Szymon Szarek, Bartłomiej Treśka, Hubert Tułacz",
+  "description": "Platforma do przeprowadzania interaktywnych gier i quizów podczas lekcji szkół podstawowych",
   "build": {
+    "appId": "com.wuji-solutions.wuji-studio",
+    "productName": "Quizobara",
     "extends": null,
     "files": [
       "build/**/*",
@@ -28,8 +30,8 @@
       }
     ]
   },
-  "name": "frontend",
-  "version": "0.1.0",
+  "name": "quizobara",
+  "version": "0.0.0-dev",
   "private": true,
   "dependencies": {
     "axios": "^1.10.0",
@@ -88,7 +90,7 @@
     "copy-backend": "cross-env NODE_ENV=development node backend/copy-backend.js",
     "copy-backend:build": "cross-env NODE_ENV=production node backend/copy-backend.js",
     "copy-backend:dev": "cross-env NODE_ENV=development node backend/copy-backend.js",
-    "electron:build": "cross-env NODE_ENV=production yarn build-backend:win && yarn copy-backend && yarn build && tsc -p electron && electron-builder",
+    "electron:build": "cross-env NODE_ENV=production yarn build-backend:win && yarn copy-backend && yarn build && tsc -p electron && node scripts/build.js",
     "dist": "electron-builder",
     "package": "electron-forge package",
     "make": "electron-forge make"
