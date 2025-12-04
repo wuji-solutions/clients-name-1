@@ -14,7 +14,6 @@ import javax.xml.stream.XMLStreamConstants
 import javax.xml.stream.XMLStreamReader
 import org.hibernate.validator.internal.util.Contracts.assertNotNull
 import org.jsoup.Jsoup
-import javax.swing.text.Element
 
 /**
  * Minimal-but-extendable Moodle XML parser implemented with StAX (no extra
@@ -334,9 +333,14 @@ object MoodleXmlParser {
 
         htmlFile.select("img").remove()
 
-        return images to htmlFile.body().traverse { node, _ ->
-            if (node.childNodeSize() == 0 && node.nodeValue() == "") node.remove()
-        }.html()
+        return images to
+            htmlFile
+                .body()
+                .traverse { node, _ ->
+                    if (node.childNodeSize() == 0 && node.nodeValue() == "")
+                        node.remove()
+                }
+                .html()
     }
 
     private fun getImageName(name: String) = name.replace("@@PLUGINFILE@@/", "")
