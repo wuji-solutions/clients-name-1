@@ -31,7 +31,7 @@ class ExamDispenserTest {
             listOf(Answer(0, "answer1")),
             setOf(0),
             DifficultyLevel.EASY,
-            listOf(Image("url1", ImageType.Url)),
+            listOf(Image("url1", ImageType.URL)),
             listOf("tag1"))
 
     private val q2 =
@@ -44,7 +44,7 @@ class ExamDispenserTest {
             listOf(Answer(0, "answer2")),
             setOf(0),
             DifficultyLevel.MEDIUM,
-            listOf(Image("url2", ImageType.Url)),
+            listOf(Image("url2", ImageType.URL)),
             listOf("tag2"))
 
     private val q3 =
@@ -57,7 +57,7 @@ class ExamDispenserTest {
             listOf(Answer(0, "answer3")),
             setOf(0),
             DifficultyLevel.HARD,
-            listOf(Image("url3", ImageType.Url)),
+            listOf(Image("url3", ImageType.URL)),
             listOf("tag3"))
 
     private val q4 =
@@ -70,7 +70,7 @@ class ExamDispenserTest {
             listOf(Answer(0, "answer4")),
             setOf(0),
             DifficultyLevel.EASY,
-            listOf(Image("url5", ImageType.Url)),
+            listOf(Image("url5", ImageType.URL)),
             listOf("tag4"))
 
     private val questions = listOf(q1, q2, q3, q4)

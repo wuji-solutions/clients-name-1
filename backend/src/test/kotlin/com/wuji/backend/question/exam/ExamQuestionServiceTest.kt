@@ -41,7 +41,7 @@ class ExamQuestionServiceTest {
             listOf(Answer(0, "answer")),
             setOf(0),
             DifficultyLevel.MEDIUM,
-            listOf(Image("url1", ImageType.Url)),
+            listOf(Image("url1", ImageType.URL)),
             listOf("tag1", "tag1"),
         )
     private val question2 =
@@ -54,7 +54,7 @@ class ExamQuestionServiceTest {
             listOf(Answer(1, "answer")),
             setOf(0),
             DifficultyLevel.MEDIUM,
-            listOf(Image("url1", ImageType.Url)),
+            listOf(Image("url1", ImageType.URL)),
             listOf("tag1", "tag1"),
         )
     private val playerAnswer1 =
@@ -265,7 +265,7 @@ class ExamQuestionServiceTest {
                 listOf(Answer(0, "answer")),
                 setOf(0),
                 DifficultyLevel.MEDIUM,
-                listOf(Image("url1", ImageType.Url)),
+                listOf(Image("url1", ImageType.URL)),
                 listOf("tag"))
 
         every { examGame.questionDispenser.currentQuestion(0) } returns
@@ -302,7 +302,7 @@ class ExamQuestionServiceTest {
                 listOf(Answer(0, "answer")),
                 setOf(0),
                 DifficultyLevel.HARD,
-                listOf(Image("url1", ImageType.Url)),
+                listOf(Image("url1", ImageType.URL)),
                 listOf("tag"))
 
         every { examGame.questionDispenser.currentQuestion(0) } returns

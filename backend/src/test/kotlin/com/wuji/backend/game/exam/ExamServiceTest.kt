@@ -56,7 +56,7 @@ class ExamServiceTest {
             listOf(Answer(0, "answer")),
             setOf(0),
             DifficultyLevel.EASY,
-            listOf(Image("url", ImageType.Url)),
+            listOf(Image("url", ImageType.URL)),
             listOf("tag1", "tag1"),
         )
 

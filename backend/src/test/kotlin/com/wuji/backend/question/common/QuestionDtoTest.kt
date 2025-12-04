@@ -21,7 +21,7 @@ class QuestionDtoTest {
                     Answer(3, "3", null)),
             correctAnswerIds = setOf(1),
             difficultyLevel = DifficultyLevel.MEDIUM,
-            listOf(Image("url1", ImageType.Url)),
+            listOf(Image("url1", ImageType.URL)),
             tags = listOf("tag1", "tag2"))
 
     @Test

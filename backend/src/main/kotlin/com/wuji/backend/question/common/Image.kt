@@ -9,6 +9,6 @@ data class ImageDto(
 fun Image.toImageDto() = ImageDto(this.image)
 
 enum class ImageType {
-    Base64,
-    Url
+    BASE64,
+    URL
 }

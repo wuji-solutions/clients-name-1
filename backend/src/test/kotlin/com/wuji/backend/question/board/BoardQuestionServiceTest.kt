@@ -53,7 +53,7 @@ class BoardQuestionServiceTest {
                 listOf(Answer(0, "answer")),
                 setOf(0),
                 DifficultyLevel.MEDIUM,
-                listOf(Image("url", ImageType.Url)),
+                listOf(Image("url", ImageType.URL)),
                 listOf("tag1", "tag1"),
             )
     }

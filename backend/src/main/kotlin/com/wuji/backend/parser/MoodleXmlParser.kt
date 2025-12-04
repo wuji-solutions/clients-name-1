@@ -123,12 +123,12 @@ object MoodleXmlParser {
                 reader.isStart("tags") -> tags = parseTags(reader)
                 reader.isStart("image") -> {
                     images.add(
-                        Image(reader.readElementText().trim(), ImageType.Url))
+                        Image(reader.readElementText().trim(), ImageType.URL))
                 }
                 reader.isStart("image_base64") -> {
                     images.add(
                         Image(
-                            reader.readElementText().trim(), ImageType.Base64))
+                            reader.readElementText().trim(), ImageType.BASE64))
                 }
                 reader.isStart("answer") -> {
                     val (answer, isCorrect) = parseAnswer(reader)
@@ -325,9 +325,9 @@ object MoodleXmlParser {
         val images =
             htmlFile.select("img").mapNotNull {
                 if (it.attr("src").contains("@@PLUGINFILE@@")) {
-                    Image(getImageName(it.attr("src")), ImageType.Base64)
+                    Image(getImageName(it.attr("src")), ImageType.BASE64)
                 } else {
-                    Image(it.attr("src"), ImageType.Url)
+                    Image(it.attr("src"), ImageType.URL)
                 }
             }
 
@@ -343,7 +343,7 @@ object MoodleXmlParser {
         files: Map<String, String>
     ): List<Image> =
         images.map { img ->
-            if (img.type == ImageType.Base64) {
+            if (img.type == ImageType.BASE64) {
                 img.image =
                     files[img.image]
                         ?: throw IllegalStateException(
