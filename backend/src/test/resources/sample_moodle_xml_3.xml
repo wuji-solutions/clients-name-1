@@ -251,6 +251,7 @@
         <questiontext format="html">
             <text><![CDATA[<p>Which shape is shown below?</p>
             <p><img src="@@PLUGINFILE@@/shape.png" alt="A triangle" width="100" height="100"></p>]]></text>
+            <file name="shape.png" path="/" encoding="base64">IMAGE1</file>
         </questiontext>
         <answer fraction="100">
             <text>Triangle</text>

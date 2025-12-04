@@ -7,6 +7,8 @@ import com.wuji.backend.game.GameRegistry
 import com.wuji.backend.game.board.BoardGame
 import com.wuji.backend.player.state.BoardPlayer
 import com.wuji.backend.question.common.Answer
+import com.wuji.backend.question.common.Image
+import com.wuji.backend.question.common.ImageType
 import com.wuji.backend.question.common.PlayerAnswer
 import com.wuji.backend.question.common.Question
 import com.wuji.backend.question.common.QuestionType
@@ -51,8 +53,7 @@ class BoardQuestionServiceTest {
                 listOf(Answer(0, "answer")),
                 setOf(0),
                 DifficultyLevel.MEDIUM,
-                "imageUrl",
-                "imageBase64",
+                listOf(Image("url", ImageType.URL)),
                 listOf("tag1", "tag1"),
             )
     }

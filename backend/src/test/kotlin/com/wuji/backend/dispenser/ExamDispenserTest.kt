@@ -6,6 +6,8 @@ import com.wuji.backend.dispenser.exception.NoMoreQuestionsException
 import com.wuji.backend.player.state.ExamPlayer
 import com.wuji.backend.player.state.ExamPlayerDetails
 import com.wuji.backend.question.common.Answer
+import com.wuji.backend.question.common.Image
+import com.wuji.backend.question.common.ImageType
 import com.wuji.backend.question.common.Question
 import com.wuji.backend.question.common.QuestionType
 import com.wuji.backend.question.common.TextFormat
@@ -29,8 +31,7 @@ class ExamDispenserTest {
             listOf(Answer(0, "answer1")),
             setOf(0),
             DifficultyLevel.EASY,
-            "url1",
-            "base641",
+            listOf(Image("url1", ImageType.URL)),
             listOf("tag1"))
 
     private val q2 =
@@ -43,8 +44,7 @@ class ExamDispenserTest {
             listOf(Answer(0, "answer2")),
             setOf(0),
             DifficultyLevel.MEDIUM,
-            "url2",
-            "base642",
+            listOf(Image("url2", ImageType.URL)),
             listOf("tag2"))
 
     private val q3 =
@@ -57,8 +57,7 @@ class ExamDispenserTest {
             listOf(Answer(0, "answer3")),
             setOf(0),
             DifficultyLevel.HARD,
-            "url3",
-            "base643",
+            listOf(Image("url3", ImageType.URL)),
             listOf("tag3"))
 
     private val q4 =
@@ -71,8 +70,7 @@ class ExamDispenserTest {
             listOf(Answer(0, "answer4")),
             setOf(0),
             DifficultyLevel.EASY,
-            "url4",
-            "base644",
+            listOf(Image("url5", ImageType.URL)),
             listOf("tag4"))
 
     private val questions = listOf(q1, q2, q3, q4)

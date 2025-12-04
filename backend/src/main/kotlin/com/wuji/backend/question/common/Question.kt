@@ -12,8 +12,7 @@ data class Question(
     val answers: List<Answer>,
     val correctAnswerIds: Set<Int>,
     val difficultyLevel: DifficultyLevel,
-    val imageUrl: String?,
-    val imageBase64: String?,
+    val images: List<Image>?,
     val tags: List<String>
 ) {
     fun areCorrectAnswerIds(answerIds: Set<Int>) = correctAnswerIds == answerIds
@@ -32,8 +31,7 @@ data class Question(
             answers: List<Answer>,
             correctAnswerIds: Set<Int>,
             difficultyLevel: DifficultyLevel,
-            imageUrl: String?,
-            imageBase64: String?,
+            images: List<Image>?,
             tags: List<String> = mutableListOf()
         ): Question {
             counter += 1
@@ -46,8 +44,7 @@ data class Question(
                 answers,
                 correctAnswerIds,
                 difficultyLevel,
-                imageUrl,
-                imageBase64,
+                images,
                 tags)
         }
     }
