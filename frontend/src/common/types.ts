@@ -17,10 +17,14 @@ export interface Question {
   category: string;
   type: string;
   task: string;
-  imageUrl: string | null;
-  imageBase64: string | null;
+  images: TaskImage[];
   answers: Array<Answer>;
   difficultyLevel: DifficultyLevel;
+}
+
+export interface TaskImage {
+  image: string;
+  type: 'BASE64' | 'URL';
 }
 
 interface PlayerAnswerDto {

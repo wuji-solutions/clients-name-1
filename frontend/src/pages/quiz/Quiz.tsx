@@ -1,7 +1,7 @@
 import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import { BACKEND_ENDPOINT, BACKEND_ENDPOINT_EXTERNAL } from '../../common/config';
-import { QuestionStats, QuizQuestion } from '../../common/types';
+import { QuestionStats, QuizQuestion, TaskImage } from '../../common/types';
 import { ButtonCustom } from '../../components/Button';
 import { useAppContext } from '../../providers/AppContextProvider';
 import { useSSEChannel } from '../../providers/SSEProvider';
@@ -10,8 +10,14 @@ import theme from '../../common/theme';
 import AnswerCard from '../../components/AnswerCard';
 import { useNavigate } from 'react-router-dom';
 import { SSEDelegate } from '../../delegate/SSEDelegate';
-import { getPercentage, getColor, getParsedDifficultyLevel } from '../../common/utils';
+import {
+  getPercentage,
+  getColor,
+  getParsedDifficultyLevel,
+  taskImageToSrc,
+} from '../../common/utils';
 import { useError } from '../../providers/ErrorProvider';
+import ImageWrapper from '../../components/ImageWrapper';
 
 const Container = styled.div(() => ({
   width: '90%',
@@ -149,33 +155,29 @@ const AnswerProgressBar = ({
 
 interface QuestionTaskWrapperProps {
   task: string;
-  imageUrl: string | null;
-  imageBase64: string | null;
+  images: TaskImage[];
 }
 
-export const QuestionTaskWrapper: FC<QuestionTaskWrapperProps> = ({
-  task,
-  imageUrl,
-  imageBase64,
-}) => {
-  const resolvedImage = imageUrl ?? (imageBase64 ? `data:image/png;base64,${imageBase64}` : null);
+export const QuestionTaskWrapper: FC<QuestionTaskWrapperProps> = ({ task, images }) => {
+  const imageList = images.map((image) => {
+    const src = taskImageToSrc(image);
+    return (
+      <img
+        src={src}
+        alt="question"
+        style={{
+          maxWidth: '100%',
+          height: '325px',
+          objectFit: 'contain',
+          marginTop: '10px',
+        }}
+      />
+    );
+  });
 
   return (
     <QuestionTask>
-      {task}
-
-      {resolvedImage && (
-        <img
-          src={resolvedImage}
-          alt="question"
-          style={{
-            maxWidth: '100%',
-            maxHeight: '325px',
-            objectFit: 'contain',
-            marginTop: '10px',
-          }}
-        />
-      )}
+      {task} {imageList.length > 0 && <ImageWrapper images={imageList} />}
     </QuestionTask>
   );
 };
@@ -375,11 +377,7 @@ function Quiz() {
         <QuestionContainer>
           <QuestionHeader>
             <QuestionCategory>{currentQuestion.category}</QuestionCategory>
-            <QuestionTaskWrapper
-              task={currentQuestion.task}
-              imageUrl={currentQuestion.imageUrl}
-              imageBase64={currentQuestion.imageBase64}
-            />
+            <QuestionTaskWrapper task={currentQuestion.task} images={currentQuestion.images} />
             <QuestionDifficulty>
               {getParsedDifficultyLevel(currentQuestion.difficultyLevel)}
             </QuestionDifficulty>

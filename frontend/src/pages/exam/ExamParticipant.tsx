@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { styled } from 'styled-components';
 import { BACKEND_ENDPOINT_EXTERNAL } from '../../common/config';
 import theme from '../../common/theme';
-import { CompleteExamResponseDto, ExamQuestion } from '../../common/types';
-import { getParsedDifficultyLevel, lightenColor } from '../../common/utils';
+import { CompleteExamResponseDto, ExamQuestion, TaskImage } from '../../common/types';
+import { getParsedDifficultyLevel, lightenColor, taskImageToSrc } from '../../common/utils';
 import AnswerCard from '../../components/AnswerCard';
 import { ButtonCustom } from '../../components/Button';
 import Timer from '../../components/Timer';
@@ -12,6 +12,7 @@ import { useSSEChannel } from '../../providers/SSEProvider';
 import { service } from '../../service/service';
 import { useError } from '../../providers/ErrorProvider';
 import Divider from '../../components/Divider';
+import ImageWrapper from '../../components/ImageWrapper';
 
 export const Container = styled.div(() => ({
   width: '100%',
@@ -73,8 +74,8 @@ const QuestionTask = styled.div({
   margin: 'auto',
   fontSize: '18px',
   textAlign: 'center',
-  display: "flex",
-  flexDirection: "column"
+  display: 'flex',
+  flexDirection: 'column',
 });
 
 const QuestionDifficulty = styled.div({
@@ -162,26 +163,27 @@ const NoMoreQuestions = styled.div({
 
 interface QuestionTaskWrapperProps {
   task: string;
-  imageUrl: string | null;
-  imageBase64: string | null;
+  images: TaskImage[];
 }
 
-export const QuestionTaskWrapper: React.FC<QuestionTaskWrapperProps> = ({
-  task,
-  imageUrl,
-  imageBase64,
-}) => {
+export const QuestionTaskWrapper: React.FC<QuestionTaskWrapperProps> = ({ task, images }) => {
+  const imageList = images.map((image) => {
+    const src = taskImageToSrc(image);
+    <img
+      src={src}
+      alt="question"
+      style={{
+        minHeight: '75px',
+        maxHeight: '200px',
+        marginTop: '10px',
+        margin: '10px auto 0',
+      }}
+    />;
+  });
   return (
     <QuestionTask>
       {task}
-
-      {(imageUrl || imageBase64) && (
-        <img
-          src={imageUrl ?? `data:image/png;base64,${imageBase64}`}
-          alt="question"
-          style={{ minHeight: "75px", maxHeight: "200px", marginTop: '10px', margin: "10px auto 0" }}
-        />
-      )}
+      {imageList.length > 0 && <ImageWrapper images={imageList} />}
     </QuestionTask>
   );
 };
@@ -383,12 +385,7 @@ function ExamParticipant() {
               {examResults.questionsAnswered.map((data, index) => (
                 <AnswerContainer>
                   <QuestionCategory>{data.question.category}</QuestionCategory>
-                  <QuestionTaskWrapper
-                    task={data.question.task}
-                    imageUrl={data.question.imageUrl}
-                    imageBase64={data.question.imageBase64}
-                  />
-
+                  <QuestionTaskWrapper task={data.question.task} images={data.question.images} />
                   <QuestionAnswerGrid
                     isGrid={false}
                     style={{
@@ -462,11 +459,7 @@ function ExamParticipant() {
               <AdditionalInfo>{`${currentQuestion.questionNumber}/${currentQuestion.totalBaseQuestions}`}</AdditionalInfo>
             )}
             <QuestionCategory>{currentQuestion.category}</QuestionCategory>
-            <QuestionTaskWrapper
-              task={currentQuestion.task}
-              imageUrl={currentQuestion.imageUrl}
-              imageBase64={currentQuestion.imageBase64}
-            />
+            <QuestionTaskWrapper task={currentQuestion.task} images={currentQuestion.images} />
             <QuestionDifficulty>
               {getParsedDifficultyLevel(currentQuestion.difficultyLevel)}
             </QuestionDifficulty>

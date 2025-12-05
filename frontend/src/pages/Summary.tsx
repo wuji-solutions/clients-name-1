@@ -11,6 +11,7 @@ import { QuestionData } from '../common/types';
 import { getColor, getPercentage } from '../common/utils';
 import { useError } from '../providers/ErrorProvider';
 import ImageMiniature from '../components/ImageMiniature';
+import ImageWrapper from '../components/ImageWrapper';
 
 interface Props {
   data: QuestionData;
@@ -42,8 +43,8 @@ const Task = styled.div(() => ({
   fontSize: '28px',
   fontWeight: 600,
   marginBottom: '8px',
-  display: "flex",
-  flexDirection: "column"
+  display: 'flex',
+  flexDirection: 'column',
 }));
 
 const Category = styled.div(() => ({
@@ -91,12 +92,16 @@ const QuestionCard = ({ data }: Props) => {
   const correctPercent = getPercentage(correctAnswersCount, total);
   const incorrectPercent = getPercentage(incorrectAnswersCount, total);
 
+  const images = question.images.map((image) => (
+    <ImageMiniature image={image.image} type={image.type} />
+  ));
+
   return (
     <Card>
       <Task>
         {question.task}{' '}
-        <div style={{margin:"0 auto"}}>
-          <ImageMiniature  imageUrl={question.imageUrl} imageBase64={question.imageBase64} />
+        <div style={{ margin: '0 auto' }}>
+          <ImageWrapper images={images} />
         </div>
       </Task>
       <Category>Kategoria: {question.category}</Category>

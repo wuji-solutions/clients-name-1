@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+import { TaskImage } from '../common/types';
+import { taskImageToSrc } from '../common/utils';
 
 interface Props {
   readonly imageUrl: string | null;
@@ -58,13 +60,10 @@ const FullImage = styled.img`
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 `;
 
-export default function ImageMiniature({ imageUrl, imageBase64 }: Props) {
+export default function ImageMiniature(image: TaskImage) {
   const [open, setOpen] = useState(false);
 
-  const base64Src = imageBase64 ? `data:image/png;base64,${imageBase64}` : null;
-
-  const src = imageUrl || base64Src;
-  if (!src) return null;
+  const src = taskImageToSrc(image);
 
   return (
     <>

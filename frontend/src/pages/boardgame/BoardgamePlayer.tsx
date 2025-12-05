@@ -7,6 +7,7 @@ import {
   CategoryToDifficulty,
   Pawn,
   Question,
+  TaskImage,
 } from '../../common/types';
 import { useContainerDimensions } from '../../hooks/useContainerDimensions';
 import { service } from '../../service/service';
@@ -15,7 +16,13 @@ import { BACKEND_ENDPOINT_EXTERNAL } from '../../common/config';
 import Dice from '../../components/Dice';
 import Modal from '../../components/Modal';
 import AnswerCard from '../../components/AnswerCard';
-import { darkenColor, getColor, getParsedDifficultyLevel, isMobileView } from '../../common/utils';
+import {
+  darkenColor,
+  getColor,
+  getParsedDifficultyLevel,
+  isMobileView,
+  taskImageToSrc,
+} from '../../common/utils';
 import { QuestionContainer, QuestionHeader } from '../quiz/Quiz';
 import { ButtonCustom } from '../../components/Button';
 import theme from '../../common/theme';
@@ -23,6 +30,7 @@ import Star from '../../components/StarRating';
 import { useError } from '../../providers/ErrorProvider';
 import { getBoardSetup, parsePlayerPositions } from './BoardgameObserver';
 import ArrowIndicator from '../../components/ArrowIndicator';
+import ImageWrapper from '../../components/ImageWrapper';
 
 const mobile = isMobileView();
 
@@ -304,27 +312,31 @@ function SSEOnBoardgameStateChangeListener({ setPositions }: { setPositions: Fun
 
 interface QuestionTaskWrapperProps {
   readonly task: string;
-  readonly imageUrl: string | null;
-  readonly imageBase64: string | null;
+  readonly images: TaskImage[];
 }
 
-function QuestionTaskWrapper({ task, imageUrl, imageBase64 }: QuestionTaskWrapperProps) {
+function QuestionTaskWrapper({ task, images }: QuestionTaskWrapperProps) {
+  const imageList = images.map((image) => {
+    const src = taskImageToSrc(image);
+    return (
+      <img
+        src={src}
+        alt="question"
+        style={{
+          minHeight: '75px',
+          maxHeight: '200px',
+          marginTop: '10px',
+          margin: '10px auto 0',
+        }}
+      />
+    );
+  });
+
   return (
     <BoardQuestionTask>
       {task}
 
-      {(imageUrl || imageBase64) && (
-        <img
-          src={imageUrl ?? `data:image/png;base64,${imageBase64}`}
-          alt="question"
-          style={{
-            minHeight: '75px',
-            maxHeight: '200px',
-            marginTop: '10px',
-            margin: '10px auto 0',
-          }}
-        />
-      )}
+      {imageList.length > 0 && <ImageWrapper images={imageList} />}
     </BoardQuestionTask>
   );
 }
@@ -554,11 +566,7 @@ function BoardgamePlayer() {
           <QuestionContainer>
             <QuestionHeader>
               <BoardQuestionCategory>{currentQuestion.category}</BoardQuestionCategory>
-              <QuestionTaskWrapper
-                task={currentQuestion.task}
-                imageUrl={currentQuestion.imageUrl}
-                imageBase64={currentQuestion.imageBase64}
-              />
+              <QuestionTaskWrapper task={currentQuestion.task} images={currentQuestion.images} />
               <div style={{ margin: 'auto', width: 'fit-content' }}>
                 {getParsedDifficultyLevel(currentQuestion.difficultyLevel)}
               </div>
