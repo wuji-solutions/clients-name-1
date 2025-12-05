@@ -115,7 +115,9 @@ function WaitingRoom() {
   const [identificator, setIdentificator] = useState<number | null>(null);
   const [playerKicked, setPlayerKicked] = useState(false);
   const { setError } = useError();
-  const gameMode = new URLSearchParams(globalThis.location.search).get('tryb');
+  const hash = globalThis.location.hash;
+  const queryString = hash.split("?")[1] || "";
+  const gameMode = new URLSearchParams(queryString).get("tryb");
   const navigate = useNavigate();
 
   const joinGame = () => {
@@ -160,6 +162,7 @@ function WaitingRoom() {
   };
 
   if (!isAdmin()) {
+    console.log("TRYB: " + gameMode);
     if (!gameMode || !['quiz', 'board', 'exam'].includes(gameMode))
       return (
         <Container>

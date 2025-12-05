@@ -1,17 +1,53 @@
 import { app, BrowserWindow, ipcMain, shell, dialog } from 'electron';
 import * as path from 'path';
 import * as os from 'os';
-import * as isDev from 'electron-is-dev';
-import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
+import * as http from "http";
+import * as fs from "fs";
 import { ChildProcessWithoutNullStreams, exec } from 'child_process';
 import { existsSync, mkdirSync } from 'fs';
 
 let win: BrowserWindow | null = null;
 let child: ChildProcessWithoutNullStreams;
 
+function killBackend() {
+  if (child && !child.killed) {
+    const kill = require('tree-kill');
+    kill(child.pid);
+}
+  
+function startStaticServer() {
+  const buildPath = path.join(__dirname, ".."); // contains index.html
+
+  const server = http.createServer((req, res) => {
+    const requestUrl = req.url ?? "/";
+
+    let filePath = path.join(
+      buildPath,
+      requestUrl === "/" ? "index.html" : requestUrl
+    );
+    if (!fs.existsSync(filePath)) {
+      // serve index  .html for all routes so BrowserRouter works
+      filePath = path.join(buildPath, "index.html");
+    }
+
+    fs.readFile(filePath, (err, data) => {
+      if (err) {
+        res.writeHead(500);
+        return res.end("Error");
+      }
+      res.writeHead(200);
+      res.end(data);
+    });
+  });
+
+  server.listen(3000, () => {
+    console.log("Static server running on http://localhost:3000");
+  });
+}
+
 function createWindow() {
   win = new BrowserWindow({
-    width: isDev ? 1200 : 800,
+    width: !app.isPackaged ? 1200 : 800,
     height: 600,
     webPreferences: {
       nodeIntegration: true,
@@ -19,7 +55,18 @@ function createWindow() {
     },
   });
 
-  if (isDev) {
+  win.on('close', (e) => {
+    if (child && !child.killed) {
+      e.preventDefault();
+      killBackend();
+
+      setTimeout(() => {
+        win?.destroy();
+      }, 300);
+    }
+  });
+
+  if (!app.isPackaged) {
     win.loadURL('http://localhost:3000');
 
     const jarName = 'backend.jar';
@@ -27,12 +74,15 @@ function createWindow() {
 
     child = require('child_process').spawn('java', ['-jar', backendPath]); // NOSONAR
   } else {
-    win.loadURL(`file://${__dirname}/../index.html`); // potentially doesnt work xpp
+    startStaticServer();
+    win.loadURL("http://localhost:3000");
 
-    const binaryName = process.platform === 'win32' ? 'backend.exe' : 'backend';
+
+    const javaPath = path.join(process.resourcesPath, 'backend', 'jdk-21.0.9+10-jre','bin', 'java.exe');
+    const binaryName = 'backend.jar';
     const backendPath = path.join(process.resourcesPath, 'backend', binaryName);
 
-    child = require('child_process').spawn(backendPath);
+    child = require('child_process').spawn(javaPath, ['-jar', backendPath]);
   }
 
   win.on('closed', () => (win = null));
@@ -51,21 +101,28 @@ function createWindow() {
   });
 
   // Hot Reloading
-  if (isDev) {
+  if (!app.isPackaged) {
     // 'node_modules/.bin/electronPath'
     require('electron-reload')(__dirname, {
       electron: path.join(__dirname, '..', '..', 'node_modules', '.bin', 'electron'),
       forceHardReset: true,
       hardResetMethod: 'exit',
     });
+
+    import('electron-devtools-installer').then((module) => {
+          const installExtension = module.default;
+          const { REACT_DEVELOPER_TOOLS } = module;
+          
+          installExtension(REACT_DEVELOPER_TOOLS)
+            .then((name: any) => console.log(`Added Extension: ${name}`))
+            .catch((err: any) => console.log('An error occurred: ', err));
+        }).catch(err => {
+          console.log('DevTools installer not available:', err);
+        });
+
   }
 
-  // DevTools
-  installExtension(REACT_DEVELOPER_TOOLS)
-    .then((name: any) => console.log(`Added Extension:  ${name}`))
-    .catch((err: any) => console.log('An error occurred: ', err));
-
-  if (isDev) {
+  if (!app.isPackaged) {
     win.webContents.openDevTools();
   }
 }
@@ -138,20 +195,20 @@ ipcMain.handle('dialog:openFile', async () => {
 });
 
 ipcMain.on('open-hotspot-menu', () => {
-    const platform = os.platform();
-    if (platform === 'win32') {
-      shell.openExternal('ms-settings:network-mobilehotspot');
-    } else if (platform === 'darwin') {
-      exec('open "x-apple.systempreferences:com.apple.preference.sharing"', (err) => {
-        if (err) console.error('Failed to open settings:', err);
-      });
-    } else if (platform === 'linux') {
-      exec('gnome-control-center wifi', (err) => {
-        if (err) {
-          console.error('Failed to open network settings:', err);
-        }
-      });
-    } else {
-      console.warn('Platform not supported for opening hotspot settings');
-    }
-})
+  const platform = os.platform();
+  if (platform === 'win32') {
+    shell.openExternal('ms-settings:network-mobilehotspot');
+  } else if (platform === 'darwin') {
+    exec('open "x-apple.systempreferences:com.apple.preference.sharing"', (err) => {
+      if (err) console.error('Failed to open settings:', err);
+    });
+  } else if (platform === 'linux') {
+    exec('gnome-control-center wifi', (err) => {
+      if (err) {
+        console.error('Failed to open network settings:', err);
+      }
+    });
+  } else {
+    console.warn('Platform not supported for opening hotspot settings');
+  }
+});

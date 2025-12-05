@@ -160,8 +160,7 @@ class QuizServiceTest {
                 every { answers } returns listOf(answer)
                 every { correctAnswerIds } returns mutableSetOf(answer.id)
                 every { difficultyLevel } returns DifficultyLevel.EASY
-                every { imageUrl } returns null
-                every { imageBase64 } returns null
+                every { images } returns null
             }
 
         val player = mockk<QuizPlayer>()

@@ -2,10 +2,7 @@ package com.wuji.backend.parser
 
 import com.wuji.backend.admin.dto.ParsedQuestionsInfo
 import com.wuji.backend.config.DifficultyLevel
-import com.wuji.backend.question.common.Answer
-import com.wuji.backend.question.common.Question
-import com.wuji.backend.question.common.QuestionType
-import com.wuji.backend.question.common.TextFormat
+import com.wuji.backend.question.common.*
 import com.wuji.backend.question.common.TextFormat.PLAIN_TEXT
 import com.wuji.backend.question.common.dto.toQuestionDto
 import com.wuji.backend.util.ext.getCategories
@@ -16,6 +13,7 @@ import javax.xml.stream.XMLInputFactory
 import javax.xml.stream.XMLStreamConstants
 import javax.xml.stream.XMLStreamReader
 import org.hibernate.validator.internal.util.Contracts.assertNotNull
+import org.jsoup.Jsoup
 
 /**
  * Minimal-but-extendable Moodle XML parser implemented with StAX (no extra
@@ -102,11 +100,12 @@ object MoodleXmlParser {
         var questionText: String? = null
         var questionTextFormat: TextFormat? = null
         var tags = listOf<String>()
-        var imageUrl: String? = null
-        var imageBase64: String? = null
+        val images = mutableListOf<Image>()
         val answers = mutableListOf<Answer>()
         val correctAnswerIds = mutableSetOf<Int>()
         var difficultyLevel: DifficultyLevel = DifficultyLevel.EASY
+
+        val files = mutableMapOf<String, String>()
 
         while (reader.nextTagOrEnd("question")) {
             when {
@@ -114,13 +113,22 @@ object MoodleXmlParser {
                     val res = parseFormattedText(reader)
                     questionText = res.first
                     questionTextFormat = res.second
+                    files += res.third
+                    if (questionTextFormat == TextFormat.HTML) {
+                        val result = extractImagesFromHTML(questionText)
+                        images += result.first
+                        questionText = result.second
+                    }
                 }
                 reader.isStart("tags") -> tags = parseTags(reader)
                 reader.isStart("image") -> {
-                    imageUrl = reader.readElementText().trim()
+                    images.add(
+                        Image(reader.readElementText().trim(), ImageType.URL))
                 }
                 reader.isStart("image_base64") -> {
-                    imageBase64 = reader.readElementText().trim()
+                    images.add(
+                        Image(
+                            reader.readElementText().trim(), ImageType.BASE64))
                 }
                 reader.isStart("answer") -> {
                     val (answer, isCorrect) = parseAnswer(reader)
@@ -131,7 +139,6 @@ object MoodleXmlParser {
                     difficultyLevel =
                         getDifficultyFromString(reader.readElementText().trim())
                 }
-
                 else -> reader.skip()
             }
         }
@@ -156,8 +163,7 @@ object MoodleXmlParser {
             answers,
             correctAnswerIds,
             difficultyLevel,
-            imageUrl,
-            imageBase64,
+            if (images.isNotEmpty()) putEncodedImage(images, files) else null,
             tags)
     }
 
@@ -204,15 +210,25 @@ object MoodleXmlParser {
 
     private fun parseFormattedText(
         reader: XMLStreamReader
-    ): Pair<String, TextFormat> {
+    ): Triple<String, TextFormat, Map<String, String>> {
         val container = reader.localName // e.g. questiontext, feedback
         val format = TextFormat.from(reader.getAttr("format"))
         var content = ""
+        val files = mutableMapOf<String, String>()
+        var name: String?
+        var data: String?
         while (reader.nextTagOrEnd(container)) {
             if (reader.isStart("text")) content = reader.readElementText()
-            else reader.skip()
+            else if (reader.isStart("file")) {
+                name = reader.getAttr("name")
+                data = reader.readElementText().trim()
+
+                assertNotNull(name, "File element without name attribute")
+                assertNotNull(data, "File element without data")
+                files[name!!] = data
+            } else reader.skip()
         }
-        return content to format
+        return Triple(content, format, files)
     }
 
     private fun XMLStreamReader.getAttr(name: String): String? =
@@ -303,4 +319,43 @@ object MoodleXmlParser {
                 throw UnsupportedQuestionDifficultyException(tag.lowercase())
         }
     }
+
+    private fun extractImagesFromHTML(text: String): Pair<List<Image>, String> {
+        val htmlFile = Jsoup.parse(text)
+        val images =
+            htmlFile.select("img").mapNotNull {
+                if (it.attr("src").contains("@@PLUGINFILE@@")) {
+                    Image(getImageName(it.attr("src")), ImageType.BASE64)
+                } else {
+                    Image(it.attr("src"), ImageType.URL)
+                }
+            }
+
+        htmlFile.select("img").remove()
+
+        return images to
+            htmlFile
+                .body()
+                .traverse { node, _ ->
+                    if (node.childNodeSize() == 0 && node.nodeValue() == "")
+                        node.remove()
+                }
+                .html()
+    }
+
+    private fun getImageName(name: String) = name.replace("@@PLUGINFILE@@/", "")
+
+    private fun putEncodedImage(
+        images: List<Image>,
+        files: Map<String, String>
+    ): List<Image> =
+        images.map { img ->
+            if (img.type == ImageType.BASE64) {
+                img.image =
+                    files[img.image]
+                        ?: throw IllegalStateException(
+                            "No field named ${img.image}")
+            }
+            img
+        }
 }
