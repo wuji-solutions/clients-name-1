@@ -3,7 +3,8 @@ package com.wuji.backend.parser
 import com.wuji.backend.config.DifficultyLevel
 import com.wuji.backend.question.common.QuestionType
 import com.wuji.backend.util.ext.getCategories
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class MoodleXmlParserTest {
@@ -225,8 +226,9 @@ class MoodleXmlParserTest {
         println(question.text)
         assertEquals(question.images?.size, 2)
         assertEquals(question.text, "<p>text under img</p>")
-        assertEquals(question.images?.first()?.image, "IMAGE1")
-        assertEquals(question.images?.last()?.image, "IMAGE2")
+        assertEquals(
+            question.images?.first()?.image,
+            "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==")
     }
 
     @Test
@@ -241,6 +243,8 @@ class MoodleXmlParserTest {
 
         assertEquals(question.images?.size, 1)
         assertEquals(question.text, "")
-        assertEquals(question.images?.first()?.image, "http://fajne.url.jpg")
+        assertEquals(
+            question.images?.first()?.image,
+            "https://www.lifewire.com/thmb/WKERv8xbIUAejLBq2SWsU7tbyEg=/1301x0/filters:no_upscale():max_bytes(150000):strip_icc()/ScreenShot2020-04-20at10.03.23AM-d55387c4422940be9a4f353182bd778c.jpg")
     }
 }
