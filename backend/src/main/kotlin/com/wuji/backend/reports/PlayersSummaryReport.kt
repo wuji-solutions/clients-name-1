@@ -33,6 +33,11 @@ object PlayersSummaryReport : Report {
                     GameStats.countCorrectAnswersForPlayer(game, player.index)
                 val incorrectCount =
                     GameStats.countIncorrectAnswersForPlayer(game, player.index)
+                val correctAnswersPerc =
+                    if (correctCount + incorrectCount > 0)
+                        correctCount.toDouble() /
+                            (correctCount + incorrectCount).toDouble() * 100f
+                    else 0f
 
                 writeRow(
                     listOf(
@@ -44,11 +49,7 @@ object PlayersSummaryReport : Report {
                                     game, player.index) / 1000f),
                         correctCount,
                         incorrectCount,
-                        "%.2f"
-                            .format(
-                                correctCount.toDouble() /
-                                    (correctCount + incorrectCount).toDouble() *
-                                    100f)))
+                        "%.2f".format(correctAnswersPerc)))
             }
         }
     }

@@ -51,6 +51,11 @@ object QuestionsSummaryReport : Report {
             questions.forEach { question ->
                 val (correctCount, incorrectCount) =
                     GameStats.countCorrectIncorrectAnswers(game, question.id)
+                val correctAnswersPerc =
+                    if (correctCount + incorrectCount > 0)
+                        correctCount.toDouble() /
+                            (correctCount + incorrectCount).toDouble() * 100f
+                    else 0f
                 writeRow(
                     listOf(
                         question.id,
@@ -60,11 +65,7 @@ object QuestionsSummaryReport : Report {
                         question.difficultyLevel.polish,
                         correctCount,
                         incorrectCount,
-                        "%.2f"
-                            .format(
-                                correctCount.toDouble() /
-                                    (correctCount + incorrectCount).toDouble() *
-                                    100f)))
+                        "%.2f".format(correctAnswersPerc)))
             }
         }
     }

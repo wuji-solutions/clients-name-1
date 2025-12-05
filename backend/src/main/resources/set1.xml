@@ -1,0 +1,160 @@
+<?xml version="1.0" ?>
+<quiz>
+    <question type="category">
+        <category>
+            <text>kategoria 1</text>
+        </category>
+    </question>
+    <question type="multichoice">
+        <name>
+            <text>pytanie 1</text>
+        </name>
+        <category>
+            <text>kategoria 1</text>
+        </category>
+        <questiontext format="plain_text">
+            <text>pytanie 1</text>
+        </questiontext>
+        <defaultgrade>1.0000000</defaultgrade>
+        <shuffleanswers>true</shuffleanswers>
+        <single>true</single>
+        <answer fraction="100">
+            <text>poprawna</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="0">
+            <text>fałszywa</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="0">
+            <text>fałszywa</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="0">
+            <text>fałszywa</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+    </question>
+    <question type="multichoice">
+        <name>
+            <text>pytanie 2</text>
+        </name>
+        <category>
+            <text>kategoria 1</text>
+        </category>
+        <questiontext format="plain_text">
+            <text>pytanie 2</text>
+        </questiontext>
+        <defaultgrade>1.0000000</defaultgrade>
+        <shuffleanswers>true</shuffleanswers>
+        <single>false</single>
+        <answer fraction="0">
+            <text>fałszywa</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="100">
+            <text>poprawna</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="100">
+            <text>poprawna</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="0">
+            <text>fałszywa</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+    </question>
+    <question type="multichoice">
+        <name>
+            <text>pytanie 3</text>
+        </name>
+        <category>
+            <text>kategoria 1</text>
+        </category>
+        <questiontext format="plain_text">
+            <text>pytanie 3</text>
+        </questiontext>
+        <defaultgrade>1.0000000</defaultgrade>
+        <shuffleanswers>true</shuffleanswers>
+        <single>false</single>
+        <answer fraction="100">
+            <text>poprawna</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="0">
+            <text>fałszywa</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="100">
+            <text>poprawna</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="100">
+            <text>poprawna</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+    </question>
+    <question type="multichoice">
+        <name>
+            <text>pytanie 4</text>
+        </name>
+        <category>
+            <text>kategoria 1</text>
+        </category>
+        <questiontext format="plain_text">
+            <text>pytanie 4</text>
+        </questiontext>
+        <defaultgrade>1.0000000</defaultgrade>
+        <shuffleanswers>true</shuffleanswers>
+        <single>false</single>
+        <answer fraction="100">
+            <text>poprawna</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="100">
+            <text>poprawna</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="100">
+            <text>poprawna</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="100">
+            <text>poprawna</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+    </question>
+</quiz>

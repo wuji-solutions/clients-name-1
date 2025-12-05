@@ -45,8 +45,7 @@ export default function ManageConfig({ mode, setIsEditDialogOpen, setConfig }: P
   }, [mode, refreshKey]);
 
   const removeConfig = (configName: string) => {
-    deleteConfig(mode, configName);
-    setRefreshKey((prev) => !prev);
+    deleteConfig(mode, configName).then(() => setRefreshKey((prev) => !prev));
   };
 
   const selectConfig = (configName: string) => {

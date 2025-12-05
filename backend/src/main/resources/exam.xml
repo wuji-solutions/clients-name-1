@@ -1,0 +1,274 @@
+<?xml version="1.0" ?>
+<quiz>
+    <question type="category">
+        <category>
+            <text>sprawdzian</text>
+        </category>
+    </question>
+    <question type="multichoice">
+        <name>
+            <text>jakie figury mają 4 boki</text>
+        </name>
+        <category>
+            <text>sprawdzian</text>
+        </category>
+        <questiontext format="plain_text">
+            <text>jakie figury mają 4 boki</text>
+        </questiontext>
+        <defaultgrade>1.0000000</defaultgrade>
+        <shuffleanswers>true</shuffleanswers>
+        <single>false</single>
+        <answer fraction="100">
+            <text>kwadrat</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="100">
+            <text>prostokąt</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="0">
+            <text>trójkąt</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="0">
+            <text>pięciokąt</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+    </question>
+    <question type="multichoice">
+        <name>
+            <text>które liczby sa pierwiastkami równania x^2 = 16</text>
+        </name>
+        <category>
+            <text>sprawdzian</text>
+        </category>
+        <questiontext format="plain_text">
+            <text>które liczby sa pierwiastkami równania x^2 = 16</text>
+        </questiontext>
+        <defaultgrade>1.0000000</defaultgrade>
+        <shuffleanswers>true</shuffleanswers>
+        <single>false</single>
+        <answer fraction="0">
+            <text>8</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="0">
+            <text>-8</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="100">
+            <text>4</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="100">
+            <text>-4</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+    </question>
+    <question type="multichoice">
+        <name>
+            <text>które liczby są potęgami 3</text>
+        </name>
+        <category>
+            <text>sprawdzian</text>
+        </category>
+        <questiontext format="plain_text">
+            <text>które liczby są potęgami 3</text>
+        </questiontext>
+        <defaultgrade>1.0000000</defaultgrade>
+        <shuffleanswers>true</shuffleanswers>
+        <single>true</single>
+        <answer fraction="0">
+            <text>1</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="0">
+            <text>0</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="100">
+            <text>9</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="0">
+            <text>6</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+    </question>
+    <question type="multichoice">
+        <name>
+            <text>które liczby są potęgami 2</text>
+        </name>
+        <category>
+            <text>sprawdzian</text>
+        </category>
+        <questiontext format="plain_text">
+            <text>które liczby są potęgami 2</text>
+        </questiontext>
+        <defaultgrade>1.0000000</defaultgrade>
+        <shuffleanswers>true</shuffleanswers>
+        <single>false</single>
+        <answer fraction="0">
+            <text>0</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="100">
+            <text>2</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="0">
+            <text>6</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="100">
+            <text>8</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+    </question>
+    <question type="multichoice">
+        <name>
+            <text>25% z 80 to</text>
+        </name>
+        <category>
+            <text>sprawdzian</text>
+        </category>
+        <questiontext format="plain_text">
+            <text>25% z 80 to</text>
+        </questiontext>
+        <defaultgrade>1.0000000</defaultgrade>
+        <shuffleanswers>true</shuffleanswers>
+        <single>true</single>
+        <answer fraction="0">
+            <text>25</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="100">
+            <text>20</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="0">
+            <text>10</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="0">
+            <text>40</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+    </question>
+    <question type="multichoice">
+        <name>
+            <text>45 - 15 to</text>
+        </name>
+        <category>
+            <text>sprawdzian</text>
+        </category>
+        <questiontext format="plain_text">
+            <text>45 - 15 to</text>
+        </questiontext>
+        <defaultgrade>1.0000000</defaultgrade>
+        <shuffleanswers>true</shuffleanswers>
+        <single>true</single>
+        <answer fraction="0">
+            <text>40</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="0">
+            <text>20</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="100">
+            <text>30</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="0">
+            <text>35</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+    </question>
+    <question type="multichoice">
+        <name>
+            <text>6 * 8 to</text>
+        </name>
+        <category>
+            <text>sprawdzian</text>
+        </category>
+        <questiontext format="plain_text">
+            <text>6 * 8 to</text>
+        </questiontext>
+        <defaultgrade>1.0000000</defaultgrade>
+        <shuffleanswers>true</shuffleanswers>
+        <single>true</single>
+        <answer fraction="0">
+            <text>68</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="100">
+            <text>48</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="0">
+            <text>58</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="0">
+            <text>92</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+    </question>
+</quiz>
