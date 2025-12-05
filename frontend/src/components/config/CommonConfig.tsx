@@ -12,28 +12,41 @@ export interface CommonSettings {
 interface Props {
   readonly commonSettings: CommonSettings;
   readonly setCommonSettings: Dispatch<SetStateAction<CommonSettings>>;
+  readonly categoryCount: number;
+  readonly questionCount: number;
 }
 
-export default function CommonConfig({ commonSettings, setCommonSettings }: Props) {
+export default function CommonConfig({
+  commonSettings,
+  setCommonSettings,
+  categoryCount,
+  questionCount,
+}: Props) {
   const [fileName, setFileName] = useState<string>();
   const openFilePicker = async () => {
     const fileName = await window.electronAPI.openFile();
     if (fileName) {
       setCommonSettings({ ...commonSettings, questionFilePath: fileName });
       const prettyFileName = fileName.split('\\');
-      setFileName(prettyFileName[prettyFileName.length-1]);
+      setFileName(prettyFileName[prettyFileName.length - 1]);
     }
   };
   return (
-    <div style={{padding: '10px', display: 'flex', gap: '10px', flexDirection: 'column'}}>
-      <LabeledCheckboxContainer style={{position: 'relative'}}>
+    <div style={{ padding: '10px', display: 'flex', gap: '40px', flexDirection: 'column' }}>
+      <LabeledCheckboxContainer style={{ position: 'relative' }}>
         <CenteredLabel>Wybierz plik z pytaniami</CenteredLabel>
-        <div style={{
-          position: 'absolute',
-          top: '40px',
-          left: '20px',
-        }}>
-          Wybrane: {fileName ? fileName : 'brak'}
+        <div
+          style={{
+            position: 'absolute',
+            display: 'flex',
+            flexDirection: 'column',
+            top: '40px',
+            left: '20px',
+          }}
+        >
+          <div>Wybrane: {fileName ? fileName : 'brak'}</div>
+          {<div>Ilość pytań: {questionCount ? questionCount : 'brak'}</div>}
+          {<div>Ilość kategorii: {categoryCount ? categoryCount : 'brak'}</div>}
         </div>
         <ButtonCustom
           onClick={openFilePicker}
@@ -46,7 +59,7 @@ export default function CommonConfig({ commonSettings, setCommonSettings }: Prop
         <CenteredLabel>Czas na odpowiedź na pytanie {'(s)'}</CenteredLabel>
 
         <CustomInput
-          style={{height: '35px'}}
+          style={{ height: '35px' }}
           type="number"
           value={commonSettings.questionDurationSeconds}
           onChange={(e) =>
