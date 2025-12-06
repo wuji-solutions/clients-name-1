@@ -93,7 +93,6 @@ export default function GameConfig({
       .parseQuestions(commonSettings.questionFilePath)
       .then((res) => {
         const data = res.data;
-        console.log(data.questions);
         updateCategories(data.categories);
         updateQuestionList(data.questions);
       })
@@ -102,7 +101,7 @@ export default function GameConfig({
           'Wystąpił błąd podczas wczytywania pliku z pytaniami:\n' + error.response.data.message
         )
       );
-  }, [commonSettings.questionFilePath, mode]);
+  }, [commonSettings.questionFilePath]);
 
   return (
     <div
@@ -146,7 +145,12 @@ export default function GameConfig({
         }}
       >
         <div style={{ overflow: 'auto' }}>
-          <CommonConfig commonSettings={commonSettings} setCommonSettings={setCommonSettings} />
+          <CommonConfig
+            commonSettings={commonSettings}
+            setCommonSettings={setCommonSettings}
+            questionCount={questionList.length}
+            categoryCount={categoryNames.length}
+          />
           <Divider />
           {mode === 'quiz' && <QuizConfig />}
           {mode === 'board' && (
