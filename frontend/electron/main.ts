@@ -1,8 +1,8 @@
 import { app, BrowserWindow, ipcMain, shell, dialog } from 'electron';
 import * as path from 'path';
 import * as os from 'os';
-import * as http from "http";
-import * as fs from "fs";
+import * as http from 'http';
+import * as fs from 'fs';
 import { ChildProcessWithoutNullStreams, exec } from 'child_process';
 import { existsSync, mkdirSync } from 'fs';
 
@@ -13,27 +13,25 @@ function killBackend() {
   if (child && !child.killed) {
     const kill = require('tree-kill');
     kill(child.pid);
+  }
 }
-  
+
 function startStaticServer() {
-  const buildPath = path.join(__dirname, ".."); // contains index.html
+  const buildPath = path.join(__dirname, '..'); // contains index.html
 
   const server = http.createServer((req, res) => {
-    const requestUrl = req.url ?? "/";
+    const requestUrl = req.url ?? '/';
 
-    let filePath = path.join(
-      buildPath,
-      requestUrl === "/" ? "index.html" : requestUrl
-    );
+    let filePath = path.join(buildPath, requestUrl === '/' ? 'index.html' : requestUrl);
     if (!fs.existsSync(filePath)) {
       // serve index  .html for all routes so BrowserRouter works
-      filePath = path.join(buildPath, "index.html");
+      filePath = path.join(buildPath, 'index.html');
     }
 
     fs.readFile(filePath, (err, data) => {
       if (err) {
         res.writeHead(500);
-        return res.end("Error");
+        return res.end('Error');
       }
       res.writeHead(200);
       res.end(data);
@@ -41,7 +39,7 @@ function startStaticServer() {
   });
 
   server.listen(3000, () => {
-    console.log("Static server running on http://localhost:3000");
+    console.log('Static server running on http://localhost:3000');
   });
 }
 
@@ -75,10 +73,15 @@ function createWindow() {
     child = require('child_process').spawn('java', ['-jar', backendPath]); // NOSONAR
   } else {
     startStaticServer();
-    win.loadURL("http://localhost:3000");
+    win.loadURL('http://localhost:3000');
 
-
-    const javaPath = path.join(process.resourcesPath, 'backend', 'jdk-21.0.9+10-jre','bin', 'java.exe');
+    const javaPath = path.join(
+      process.resourcesPath,
+      'backend',
+      'jdk-21.0.9+10-jre',
+      'bin',
+      'java.exe'
+    );
     const binaryName = 'backend.jar';
     const backendPath = path.join(process.resourcesPath, 'backend', binaryName);
 
@@ -109,17 +112,18 @@ function createWindow() {
       hardResetMethod: 'exit',
     });
 
-    import('electron-devtools-installer').then((module) => {
-          const installExtension = module.default;
-          const { REACT_DEVELOPER_TOOLS } = module;
-          
-          installExtension(REACT_DEVELOPER_TOOLS)
-            .then((name: any) => console.log(`Added Extension: ${name}`))
-            .catch((err: any) => console.log('An error occurred: ', err));
-        }).catch(err => {
-          console.log('DevTools installer not available:', err);
-        });
+    import('electron-devtools-installer')
+      .then((module) => {
+        const installExtension = module.default;
+        const { REACT_DEVELOPER_TOOLS } = module;
 
+        installExtension(REACT_DEVELOPER_TOOLS)
+          .then((name: any) => console.log(`Added Extension: ${name}`))
+          .catch((err: any) => console.log('An error occurred: ', err));
+      })
+      .catch((err) => {
+        console.log('DevTools installer not available:', err);
+      });
   }
 
   if (!app.isPackaged) {
