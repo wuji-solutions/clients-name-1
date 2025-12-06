@@ -169,16 +169,18 @@ interface QuestionTaskWrapperProps {
 export const QuestionTaskWrapper: React.FC<QuestionTaskWrapperProps> = ({ task, images }) => {
   const imageList = images.map((image) => {
     const src = taskImageToSrc(image);
-    <img
-      src={src}
-      alt="question"
-      style={{
-        minHeight: '75px',
-        maxHeight: '200px',
-        marginTop: '10px',
-        margin: '10px auto 0',
-      }}
-    />;
+    return (
+      <img
+        src={src}
+        alt="question"
+        style={{
+          minHeight: '75px',
+          maxHeight: '200px',
+          marginTop: '10px',
+          margin: '10px auto 0',
+        }}
+      />
+    );
   });
   return (
     <QuestionTask>
