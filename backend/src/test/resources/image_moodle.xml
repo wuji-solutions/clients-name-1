@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+	<!-- First Category: Programming Basics -->
+	<question type="category">
+		<category>
+			<text>Programming Basics</text>
+		</category>
+	</question>
+	<!-- MultiChoice: Programming Basics -->
+	<question type="multichoice">
+		<name>
+			<text>MCQ: Programming Language Types</text>
+		</name>
+		<!-- Added image field -->
+		<image>https://www.lifewire.com/thmb/WKERv8xbIUAejLBq2SWsU7tbyEg=/1301x0/filters:no_upscale():max_bytes(150000):strip_icc()/ScreenShot2020-04-20at10.03.23AM-d55387c4422940be9a4f353182bd778c.jpg</image>
+		<questiontext format="html">
+			<text>
+				<![CDATA[<p>Which of the following is a compiled language?</p>]]>
+			</text>
+		</questiontext>
+		<generalfeedback>
+			<text>
+				<![CDATA[<p>Compiled languages are translated to machine code before execution, while interpreted languages are executed line by line.</p>]]>
+			</text>
+		</generalfeedback>
+		<defaultgrade>1.0</defaultgrade>
+		<penalty>0.33</penalty>
+		<hidden>0</hidden>
+		<single>true</single>
+		<shuffleanswers>1</shuffleanswers>
+		<answernumbering>abc</answernumbering>
+		<answer fraction="100">
+			<text>C++</text>
+			<feedback>
+				<text>Correct! C++ is a compiled language.</text>
+			</feedback>
+		</answer>
+		<answer fraction="0">
+			<text>Python</text>
+			<feedback>
+				<text>Python is an interpreted language.</text>
+			</feedback>
+		</answer>
+		<answer fraction="0">
+			<text>JavaScript</text>
+			<feedback>
+				<text>JavaScript is typically interpreted or JIT compiled.</text>
+			</feedback>
+		</answer>
+		<answer fraction="0">
+			<text>PHP</text>
+			<feedback>
+				<text>PHP is an interpreted language.</text>
+			</feedback>
+		</answer>
+	</question>
+	<!-- ShortAnswer: Programming Basics -->
+	<question type="shortanswer">
+		<name>
+			<text>SA: Loop Type</text>
+		</name>
+		<!-- Added image64base field -->
+		<image_base64>iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==</image_base64>
+		<questiontext format="html">
+			<text>
+				<![CDATA[<p>What type of loop executes at least once, even if the condition is false initially?</p>]]>
+			</text>
+		</questiontext>
+		<generalfeedback>
+			<text>
+				<![CDATA[<p>A do-while loop checks the condition after executing the loop body, ensuring it runs at least once.</p>]]>
+			</text>
+		</generalfeedback>
+		<defaultgrade>1.0</defaultgrade>
+		<penalty>0.33</penalty>
+		<hidden>0</hidden>
+		<usecase>0</usecase>
+		<answer fraction="100">
+			<text>do-while</text>
+			<feedback>
+				<text>Correct! Do-while loops always execute at least once.</text>
+			</feedback>
+		</answer>
+		<answer fraction="100">
+			<text>do while</text>
+			<feedback>
+				<text>Correct! Do while loops always execute at least once.</text>
+			</feedback>
+		</answer>
+		<answer fraction="80">
+			<text>Do-While</text>
+			<feedback>
+				<text>Correct, but watch the capitalization.</text>
+			</feedback>
+		</answer>
+	</question>
+</quiz>

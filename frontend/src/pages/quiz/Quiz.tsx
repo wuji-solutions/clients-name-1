@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import { BACKEND_ENDPOINT, BACKEND_ENDPOINT_EXTERNAL } from '../../common/config';
-import { Question, QuestionStats, QuizQuestion } from '../../common/types';
+import { QuestionStats, QuizQuestion, TaskImage } from '../../common/types';
 import { ButtonCustom } from '../../components/Button';
 import { useAppContext } from '../../providers/AppContextProvider';
 import { useSSEChannel } from '../../providers/SSEProvider';
@@ -10,8 +10,14 @@ import theme from '../../common/theme';
 import AnswerCard from '../../components/AnswerCard';
 import { useNavigate } from 'react-router-dom';
 import { SSEDelegate } from '../../delegate/SSEDelegate';
-import { getPercentage, getColor, getParsedDifficultyLevel } from '../../common/utils';
+import {
+  getPercentage,
+  getColor,
+  getParsedDifficultyLevel,
+  taskImageToSrc,
+} from '../../common/utils';
 import { useError } from '../../providers/ErrorProvider';
+import ImageWrapper from '../../components/ImageWrapper';
 
 const Container = styled.div(() => ({
   width: '90%',
@@ -19,7 +25,7 @@ const Container = styled.div(() => ({
 }));
 
 export const QuestionContainer = styled.div(() => ({
-  padding: '60px 20px 20px 20px',
+  padding: '0px 20px 20px 20px',
   display: 'flex',
   flexDirection: 'column',
   textAlign: 'center',
@@ -41,10 +47,12 @@ const QuestionCategory = styled.span(() => ({
   fontWeight: 'bold',
 }));
 
-const QuestionTask = styled.span(() => ({
-  fontSize: '50px',
+const QuestionTask = styled.div(() => ({
+  fontSize: '40px',
   margin: 'auto',
   fontWeight: 'bold',
+  display: 'flex',
+  flexDirection: 'column',
 }));
 
 const AnswerContainer = styled.div(() => ({
@@ -145,11 +153,40 @@ const AnswerProgressBar = ({
   );
 };
 
+interface QuestionTaskWrapperProps {
+  task: string;
+  images: TaskImage[];
+}
+
+export const QuestionTaskWrapper: FC<QuestionTaskWrapperProps> = ({ task, images }) => {
+  const imageList = images.map((image) => {
+    const src = taskImageToSrc(image);
+    return (
+      <img
+        src={src}
+        alt="question"
+        style={{
+          maxWidth: '100%',
+          height: '325px',
+          objectFit: 'contain',
+          marginTop: '10px',
+        }}
+      />
+    );
+  });
+
+  return (
+    <QuestionTask>
+      {task} {imageList.length > 0 && <ImageWrapper images={imageList} />}
+    </QuestionTask>
+  );
+};
+
 function QuestionEndListener({
   setQuestionEnded,
   delegate,
 }: {
-  setQuestionEnded: React.Dispatch<React.SetStateAction<boolean>>;
+  setQuestionEnded: Dispatch<SetStateAction<boolean>>;
   delegate: SSEDelegate;
 }) {
   useEffect(() => {
@@ -340,7 +377,7 @@ function Quiz() {
         <QuestionContainer>
           <QuestionHeader>
             <QuestionCategory>{currentQuestion.category}</QuestionCategory>
-            <QuestionTask>{currentQuestion.task}</QuestionTask>
+            <QuestionTaskWrapper task={currentQuestion.task} images={currentQuestion.images} />
             <QuestionDifficulty>
               {getParsedDifficultyLevel(currentQuestion.difficultyLevel)}
             </QuestionDifficulty>

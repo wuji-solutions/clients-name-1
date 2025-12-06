@@ -5,6 +5,7 @@ import Modal from '../Modal';
 import { ExamSettings } from './ExamConfig';
 import { Question } from '../../common/types';
 import theme from '../../common/theme';
+import ImageMiniature from '../ImageMiniature';
 
 interface Props {
   readonly settings: ExamSettings;
@@ -60,7 +61,9 @@ export default function EnableQuestionConfig({
           }}
         >
           {isError ? (
-            <h1 style={{ color: theme.palette.main.info_text, textShadow: 'none' }}>Upewnij się, że plik z pytaniami jest poprawny</h1>
+            <h1 style={{ color: theme.palette.main.info_text, textShadow: 'none' }}>
+              Upewnij się, że plik z pytaniami jest poprawny
+            </h1>
           ) : (
             <>
               <h1 style={{ color: theme.palette.main.info_text, textShadow: 'none' }}>
@@ -90,7 +93,15 @@ export default function EnableQuestionConfig({
                     >
                       <CenteredLabel
                         style={{ width: '100%', maxWidth: '500px', textAlign: 'left' }}
-                      >{`${index + 1}. ${question.task}`}</CenteredLabel>
+                      >
+                        {index + 1}. {question.task}
+                        {question.images.length > 0 && (
+                          <ImageMiniature
+                            image={question.images.at(0)?.image!}
+                            type={question.images.at(0)?.type!}
+                          />
+                        )}
+                      </CenteredLabel>
                       <RoundCheckButton
                         selected={containsQuestionId(String(question.id))}
                         onClick={() => handleSelect(String(question.id))}

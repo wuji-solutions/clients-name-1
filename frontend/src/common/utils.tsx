@@ -1,4 +1,5 @@
 import Star from '../components/StarRating';
+import { TaskImage } from './types';
 
 export const getPercentage = (count: number, total: number) =>
   total > 0 ? (count / total) * 100 : 0;
@@ -86,3 +87,7 @@ export function getParsedDifficultyLevel(difficultyLevel: string) {
       );
   }
 }
+
+export const taskImageToSrc = (image: TaskImage): string => {
+  return image.type === 'BASE64' ? `data:image/png;base64,${image.image}` : image.image;
+};

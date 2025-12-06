@@ -17,8 +17,14 @@ export interface Question {
   category: string;
   type: string;
   task: string;
+  images: TaskImage[];
   answers: Array<Answer>;
   difficultyLevel: DifficultyLevel;
+}
+
+export interface TaskImage {
+  image: string;
+  type: 'BASE64' | 'URL';
 }
 
 interface PlayerAnswerDto {
@@ -38,13 +44,7 @@ export interface QuizQuestion extends Question {
 }
 
 export interface QuestionData {
-  question: {
-    id: number;
-    category: string;
-    type: string;
-    task: string;
-    answers: Answer[];
-  };
+  question: Question;
   correctAnswersCount: number;
   incorrectAnswersCount: number;
 }
@@ -100,11 +100,11 @@ interface QuestionAnsweredData extends QuestionData {
 export type CompleteExamResponseDto = {
   totalPointsEarned: number;
   questionsAnswered?: QuestionAnsweredData[];
-}
+};
 
 export type CategoryToDifficulty = {
   [key: string]: DifficultyLevel;
-}
+};
 
 interface BoardPlayerDto {
   index: number;
@@ -118,4 +118,4 @@ interface BoardPlayerDto {
 export type BoardAnswerQuestionDto = {
   correct: boolean;
   player: BoardPlayerDto;
-}
+};

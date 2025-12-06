@@ -17,7 +17,8 @@
             <text>pytanie?</text>
         </name>
         <questiontext format="html">
-            <text><![CDATA[<p><img class="img-fluid" src="http://fajne.url.jpg" alt="desc" width="1024" height="684"></p>]]></text>
+            <text>
+                <![CDATA[<p><img class="img-fluid" src="https://www.lifewire.com/thmb/WKERv8xbIUAejLBq2SWsU7tbyEg=/1301x0/filters:no_upscale():max_bytes(150000):strip_icc()/ScreenShot2020-04-20at10.03.23AM-d55387c4422940be9a4f353182bd778c.jpg" alt="desc" width="1024" height="684"></p>]]></text>
         </questiontext>
         <generalfeedback format="html">
             <text></text>
