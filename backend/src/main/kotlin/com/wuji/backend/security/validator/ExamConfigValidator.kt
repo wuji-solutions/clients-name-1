@@ -1,6 +1,7 @@
 package com.wuji.backend.security.validator
 
 import com.wuji.backend.config.dto.ExamConfigDto
+import com.wuji.backend.parser.MoodleXmlParser
 import jakarta.validation.ConstraintValidator
 import jakarta.validation.ConstraintValidatorContext
 
@@ -26,6 +27,17 @@ class ExamConfigValidator :
                 .buildConstraintViolationWithTemplate(
                     "Lista wybranych pytań musi być pusta, jeśli losowe pytania są ustawione")
                 .addPropertyNode("selectedQuestionIds")
+                .addConstraintViolation()
+            return false
+        }
+
+        val parsedInfo = MoodleXmlParser.parsedInfo(dto.questionFilePath)
+        if (dto.requiredQuestionCount > parsedInfo.questions.size) {
+            context.disableDefaultConstraintViolation()
+            context
+                .buildConstraintViolationWithTemplate(
+                    "Lista wybranych pytań musi być pusta, jeśli losowe pytania są ustawione")
+                .addPropertyNode("requiredQuestionCount")
                 .addConstraintViolation()
             return false
         }
