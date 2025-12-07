@@ -159,6 +159,7 @@ class ExamService(
                 }
         }
 
+        // go to additional questions
         try {
             examQuestionService.getNextQuestion(playerIndex)
         } catch (_: NoMoreQuestionsException) {
