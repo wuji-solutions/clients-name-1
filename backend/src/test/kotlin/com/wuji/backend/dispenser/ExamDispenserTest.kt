@@ -90,7 +90,8 @@ class ExamDispenserTest {
             questions,
             requiredQuestionCount = 3,
             randomizeQuestions = false,
-            enforceDifficultyBalance = false)
+            enforceDifficultyBalance = false,
+            withAdditionalFeedbackQuestion = false)
 
         assertTrue(dispenser.dispensers.containsKey(playerIndex))
         val pd = dispenser.dispensers[playerIndex]!! // NOSONAR
@@ -101,7 +102,10 @@ class ExamDispenserTest {
     @Test
     fun `initialize with selected question ids should select correct base questions`() {
         dispenser.initialize(
-            setOf(player), questions, selectedQuestionIds = setOf(2, 3))
+            setOf(player),
+            questions,
+            selectedQuestionIds = setOf(2, 3),
+            withAdditionalFeedbackQuestion = false)
 
         val pd = dispenser.dispensers[playerIndex]!! // NOSONAR
         assertEquals(listOf(q2, q3), pd.baseQuestions)
@@ -169,7 +173,8 @@ class ExamDispenserTest {
             questions,
             3,
             randomizeQuestions = false,
-            enforceDifficultyBalance = false)
+            enforceDifficultyBalance = false,
+            withAdditionalFeedbackQuestion = false)
 
         // traverse all questions
         dispenser.nextQuestion(playerIndex) // q2

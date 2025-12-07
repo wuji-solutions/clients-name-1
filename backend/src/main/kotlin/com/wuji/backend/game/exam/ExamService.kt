@@ -1,6 +1,7 @@
 package com.wuji.backend.game.exam
 
 import com.wuji.backend.config.ExamConfig
+import com.wuji.backend.dispenser.exception.NoMoreQuestionsException
 import com.wuji.backend.events.common.SSEEventService
 import com.wuji.backend.events.common.SSEUsersService
 import com.wuji.backend.game.GameRegistry
@@ -159,7 +160,12 @@ class ExamService(
         }
 
         // go to additional questions
-        examQuestionService.getNextQuestion(playerIndex)
+        try {
+            examQuestionService.getNextQuestion(playerIndex)
+        } catch (_: NoMoreQuestionsException) {
+            // No action needed when there are no more questions
+        }
+
         return CompleteExamResponseDto(totalPoints, questionsFeedback)
     }
 }
