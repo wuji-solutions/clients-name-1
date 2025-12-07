@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { styled } from 'styled-components';
 import { BACKEND_ENDPOINT_EXTERNAL } from '../../common/config';
 import theme from '../../common/theme';
-import { CompleteExamResponseDto, ExamQuestion } from '../../common/types';
-import { getParsedDifficultyLevel, lightenColor } from '../../common/utils';
+import { CompleteExamResponseDto, ExamQuestion, TaskImage } from '../../common/types';
+import { getParsedDifficultyLevel, lightenColor, taskImageToSrc } from '../../common/utils';
 import AnswerCard from '../../components/AnswerCard';
 import { ButtonCustom } from '../../components/Button';
 import Timer from '../../components/Timer';
@@ -12,6 +12,7 @@ import { useSSEChannel } from '../../providers/SSEProvider';
 import { service } from '../../service/service';
 import { useError } from '../../providers/ErrorProvider';
 import Divider from '../../components/Divider';
+import ImageWrapper from '../../components/ImageWrapper';
 
 export const Container = styled.div(() => ({
   width: '100%',
@@ -31,7 +32,6 @@ const TimerContainer = styled.div({
 
 const QuestionContainer = styled.div({
   width: '100%',
-  marginTop: '10px',
 });
 
 const QuestionHeader = styled.div({
@@ -70,12 +70,12 @@ const QuestionCategory = styled.div({
 });
 
 const QuestionTask = styled.div({
-  width: 'fit-content',
   maxWidth: '340px',
-  maxHeight: '150px',
   margin: 'auto',
   fontSize: '18px',
   textAlign: 'center',
+  display: 'flex',
+  flexDirection: 'column',
 });
 
 const QuestionDifficulty = styled.div({
@@ -89,13 +89,12 @@ const QuestionDifficulty = styled.div({
 const QuestionAnswerGrid = styled.div<{ isGrid: boolean }>(({ isGrid }) => ({
   width: '99%',
   paddingTop: '10px',
-  paddingBottom: '20px',
+  paddingBottom: '30px',
   margin: 'auto',
   marginTop: '10px',
   boxShadow: `0 3px 0 0 ${theme.palette.main.accent}`,
   overflowY: 'auto',
-  height: '320px',
-  gap: '10px',
+  gap: '30px',
 
   display: 'flex',
   flexDirection: 'column',
@@ -103,8 +102,8 @@ const QuestionAnswerGrid = styled.div<{ isGrid: boolean }>(({ isGrid }) => ({
   ...(isGrid && {
     display: 'grid',
     gridTemplateColumns: 'repeat(2, 1fr)',
-    gridTemplateRows: 'repeat(4, auto)',
-    overflowY: 'auto',
+    gridTemplateRows: 'auto',
+    overflowY: 'visible',
   }),
 }));
 
@@ -161,6 +160,34 @@ const NoMoreQuestions = styled.div({
   textAlign: 'center',
   padding: '20px',
 });
+
+interface QuestionTaskWrapperProps {
+  task: string;
+  images: TaskImage[];
+}
+
+export const QuestionTaskWrapper: React.FC<QuestionTaskWrapperProps> = ({ task, images }) => {
+  const imageList = images.map((image) => {
+    const src = taskImageToSrc(image);
+    return (
+      <img
+        src={src}
+        alt="question"
+        style={{
+          height: '200px',
+          marginTop: '10px',
+          margin: '10px auto 0',
+        }}
+      />
+    );
+  });
+  return (
+    <QuestionTask>
+      {task}
+      {imageList.length > 0 && <ImageWrapper images={imageList} />}
+    </QuestionTask>
+  );
+};
 
 function SSEOnEventListener({ setExamFinished }: { setExamFinished: Function }) {
   const delegate = useSSEChannel(BACKEND_ENDPOINT_EXTERNAL + '/sse/events', {
@@ -359,7 +386,7 @@ function ExamParticipant() {
               {examResults.questionsAnswered.map((data, index) => (
                 <AnswerContainer>
                   <QuestionCategory>{data.question.category}</QuestionCategory>
-                  <QuestionTask>{data.question.task}</QuestionTask>
+                  <QuestionTaskWrapper task={data.question.task} images={data.question.images} />
                   <QuestionAnswerGrid
                     isGrid={false}
                     style={{
@@ -433,12 +460,12 @@ function ExamParticipant() {
               <AdditionalInfo>{`${currentQuestion.questionNumber}/${currentQuestion.totalBaseQuestions}`}</AdditionalInfo>
             )}
             <QuestionCategory>{currentQuestion.category}</QuestionCategory>
-            <QuestionTask>{currentQuestion.task}</QuestionTask>
+            <QuestionTaskWrapper task={currentQuestion.task} images={currentQuestion.images} />
             <QuestionDifficulty>
               {getParsedDifficultyLevel(currentQuestion.difficultyLevel)}
             </QuestionDifficulty>
           </QuestionHeader>
-          <QuestionAnswerGrid isGrid={currentQuestion.answers.length > 4}>
+          <QuestionAnswerGrid isGrid={currentQuestion.answers.length > 3}>
             {currentQuestion.answers.map((answer) => (
               <AnswerCard
                 onClick={() => (disableAnswers ? '' : handleAnswerSelected(answer.id))}

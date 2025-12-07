@@ -7,6 +7,7 @@ import {
   CategoryToDifficulty,
   Pawn,
   Question,
+  TaskImage,
 } from '../../common/types';
 import { useContainerDimensions } from '../../hooks/useContainerDimensions';
 import { service } from '../../service/service';
@@ -15,7 +16,13 @@ import { BACKEND_ENDPOINT_EXTERNAL } from '../../common/config';
 import Dice from '../../components/Dice';
 import Modal from '../../components/Modal';
 import AnswerCard from '../../components/AnswerCard';
-import { darkenColor, getColor, getParsedDifficultyLevel, isMobileView } from '../../common/utils';
+import {
+  darkenColor,
+  getColor,
+  getParsedDifficultyLevel,
+  isMobileView,
+  taskImageToSrc,
+} from '../../common/utils';
 import { QuestionContainer, QuestionHeader } from '../quiz/Quiz';
 import { ButtonCustom } from '../../components/Button';
 import theme from '../../common/theme';
@@ -23,6 +30,7 @@ import Star from '../../components/StarRating';
 import { useError } from '../../providers/ErrorProvider';
 import { getBoardSetup, parsePlayerPositions } from './BoardgameObserver';
 import ArrowIndicator from '../../components/ArrowIndicator';
+import ImageWrapper from '../../components/ImageWrapper';
 
 const mobile = isMobileView();
 
@@ -68,13 +76,15 @@ const BoardQuestionTask = styled.span(() => ({
   fontSize: mobile ? '20px' : '50px',
   margin: 'auto',
   fontWeight: 'bold',
+  display: 'flex',
+  flexDirection: 'column',
 }));
 
 const AnswerGrid = styled.div(() => ({
   display: 'grid',
-  gridTemplateColumns: mobile ? 'repeat(1, 1fr)' : 'repeat(2, 1fr)',
+  gridTemplateColumns: 'repeat(2, 1fr)',
   gap: '35px',
-  padding: '40px',
+  padding: '40px 0',
   justifyItems: 'center',
 }));
 
@@ -269,7 +279,7 @@ const Toast = styled.div<{ visible: boolean }>((props) => ({
   display: 'flex',
   justifyContent: 'center',
   alignContent: 'center',
-  textShadow: '40px'
+  textShadow: '40px',
 }));
 
 export function PointsPopup({ onComplete }: { onComplete: Function }) {
@@ -298,6 +308,36 @@ function SSEOnBoardgameStateChangeListener({ setPositions }: { setPositions: Fun
   }, [delegate]);
 
   return <></>;
+}
+
+interface QuestionTaskWrapperProps {
+  readonly task: string;
+  readonly images: TaskImage[];
+}
+
+function QuestionTaskWrapper({ task, images }: QuestionTaskWrapperProps) {
+  const imageList = images.map((image) => {
+    const src = taskImageToSrc(image);
+    return (
+      <img
+        src={src}
+        alt="question"
+        style={{
+          height: '200px',
+          marginTop: '10px',
+          margin: '10px auto 0',
+        }}
+      />
+    );
+  });
+
+  return (
+    <BoardQuestionTask>
+      {task}
+
+      {imageList.length > 0 && <ImageWrapper images={imageList} />}
+    </BoardQuestionTask>
+  );
 }
 
 function SSEOnEventListener({ setGameFinished }: { setGameFinished: Function }) {
@@ -525,7 +565,7 @@ function BoardgamePlayer() {
           <QuestionContainer>
             <QuestionHeader>
               <BoardQuestionCategory>{currentQuestion.category}</BoardQuestionCategory>
-              <BoardQuestionTask>{currentQuestion.task}</BoardQuestionTask>
+              <QuestionTaskWrapper task={currentQuestion.task} images={currentQuestion.images} />
               <div style={{ margin: 'auto', width: 'fit-content' }}>
                 {getParsedDifficultyLevel(currentQuestion.difficultyLevel)}
               </div>
