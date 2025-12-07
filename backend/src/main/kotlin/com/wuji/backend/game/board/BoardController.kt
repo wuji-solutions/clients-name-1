@@ -4,21 +4,17 @@ import com.wuji.backend.game.GameType
 import com.wuji.backend.game.board.dto.BoardStateDto
 import com.wuji.backend.game.board.dto.MovePlayerResponseDto
 import com.wuji.backend.game.common.GameController
-import com.wuji.backend.game.common.dto.JoinGameRequestDto
 import com.wuji.backend.player.dto.BoardPlayerDto
 import com.wuji.backend.player.dto.BoardPlayerDto.Companion.toBoardPlayerDto
 import com.wuji.backend.player.dto.PlayerDto
 import com.wuji.backend.security.auth.PlayerAuthService
 import com.wuji.backend.security.auth.playerIndex
 import com.wuji.backend.security.validator.RequiresGame
-import jakarta.servlet.http.HttpServletRequest
-import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -27,20 +23,12 @@ import org.springframework.web.bind.annotation.RestController
 @RequiresGame(GameType.BOARD)
 @RequestMapping("/games/board")
 class BoardController(
-    private val playerAuthService: PlayerAuthService,
+    playerAuthService: PlayerAuthService,
     private val boardService: BoardService
-) : GameController {
+) : GameController(playerAuthService) {
 
-    @PostMapping("/join")
-    override fun joinGame(
-        @Valid @RequestBody requestDto: JoinGameRequestDto,
-        request: HttpServletRequest
-    ): ResponseEntity<Any> {
-        val participant =
-            playerAuthService.authenticate(requestDto.index, request)
-        boardService.joinGame(participant.index, participant.nickname)
-
-        return ResponseEntity.ok(participant.nickname)
+    override fun performJoinGame(index: Int, nickname: String) {
+        boardService.joinGame(index, nickname)
     }
 
     @GetMapping("/player")
