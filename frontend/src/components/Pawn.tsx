@@ -4,6 +4,8 @@ import { Group, Circle, RegularPolygon, Text } from 'react-konva';
 import { darkenColor, isMobileView } from '../common/utils';
 import theme from '../common/theme';
 
+const rankingPositions = new Set(['1', '2', '3']);
+
 interface PawnProps {
   id: string;
   x: number;
@@ -12,6 +14,7 @@ interface PawnProps {
   color: string;
   isCurrentPlayer?: boolean;
   nodeRef: (node: Konva.Group | null) => void;
+  position?: string;
 }
 
 const mobile = isMobileView();
@@ -34,7 +37,7 @@ const playIndicatorAnimation = ({ playerRefValue }: { playerRefValue: any }) => 
   tween.play();
 };
 
-const Pawn = ({ id, x, y, scale, color, isCurrentPlayer, nodeRef }: PawnProps) => {
+const Pawn = ({ id, x, y, scale, color, isCurrentPlayer, nodeRef, position }: PawnProps) => {
   const pawnHeight = (mobile ? 22 : 80) * scale;
   const pawnWidth = (mobile ? 12 : 44) * scale;
   const playerIndicatorRef = useRef<any | null>(null);
@@ -53,6 +56,26 @@ const Pawn = ({ id, x, y, scale, color, isCurrentPlayer, nodeRef }: PawnProps) =
   return (
     <Group x={x} y={y} scaleX={scale} scaleY={scale} ref={nodeRef} listening={false}>
       <Group>
+        {position && rankingPositions.has(String(position)) ? (
+          <Group>
+            <Circle radius={20} fill="white" stroke="black" x={0} y={-80} />
+
+            <Text
+              text={String(position)}
+              x={0}
+              y={-80}
+              fontSize={24}
+              fill="black"
+              align="center"
+              verticalAlign="middle"
+              offsetX={7}
+              offsetY={11}
+              fontStyle="bold"
+            />
+          </Group>
+        ) : (
+          <></>
+        )}
         <Circle
           x={0}
           y={-pawnHeight * 0.01}
@@ -67,20 +90,22 @@ const Pawn = ({ id, x, y, scale, color, isCurrentPlayer, nodeRef }: PawnProps) =
           shadowOffset={mobile ? { x: 1, y: 1 } : { x: 2, y: 2 }}
           shadowOpacity={1}
         />
-        { id && <Text
-          text={id.toString()}
-          fontSize={pawnWidth / 2.3}
-          fontStyle='bold'
-          fill="white"
-          align="center"
-          verticalAlign="middle"
-          offsetX={pawnWidth / 4.5}
-          offsetY={pawnWidth / 4.3}
-          shadowColor="black"
-          shadowBlur={1}
-          shadowOffset={{ x: 1, y: 1 }}
-          shadowOpacity={0.7} 
-        />}
+        {id && (
+          <Text
+            text={id.toString()}
+            fontSize={pawnWidth / 2.3}
+            fontStyle="bold"
+            fill="white"
+            align="center"
+            verticalAlign="middle"
+            offsetX={pawnWidth / 4.5}
+            offsetY={pawnWidth / 4.3}
+            shadowColor="black"
+            shadowBlur={1}
+            shadowOffset={{ x: 1, y: 1 }}
+            shadowOpacity={0.7}
+          />
+        )}
       </Group>
 
       <Circle
@@ -114,6 +139,6 @@ const Pawn = ({ id, x, y, scale, color, isCurrentPlayer, nodeRef }: PawnProps) =
       )}
     </Group>
   );
-}
+};
 
 export default Pawn;

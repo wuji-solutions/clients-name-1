@@ -7,8 +7,8 @@ const AnswerCard = styled.div<{ backgroundcolor: string; isselected: boolean | u
     let bg;
     if (usegradient) {
       bg = isselected
-        ? `linear-gradient(135deg, ${darkenColor(base, 0.3)}, ${darkenColor(base, 0.45)})`
-        : `linear-gradient(135deg, ${base}, ${darkenColor(base, 0.25)})`;
+        ? `linear-gradient(135deg, ${darkenColor(base, 0.6)}, ${darkenColor(base, 0.75)})`
+        : `linear-gradient(135deg, ${base}, ${darkenColor(base, 0.75)})`;
     } else {
       bg = isselected ? darkenColor(base, 0.1) :  base;
     }
@@ -24,7 +24,7 @@ const AnswerCard = styled.div<{ backgroundcolor: string; isselected: boolean | u
       margin: 'auto',
       padding: '20px',
       background: bg,
-      boxShadow: `0 5px 1px 1px ${ isselected ? darkenColor(base, 0.16) : darkenColor(base, 0.06)}`,
+      boxShadow: ` ${ isselected ? '0 8px 1px 3px' : '0 5px 1px 1px' } ${ isselected ? darkenColor(base, 0.16) : darkenColor(base, 0.06)}`,
       transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
       cursor: 'pointer',
       transform: isselected ? 'none' : 'translateY(5px)',

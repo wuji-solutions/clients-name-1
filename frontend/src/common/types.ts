@@ -62,7 +62,7 @@ export interface FieldCoordinate {
   scale: number;
 }
 
-interface PlayerState {
+export interface PlayerState {
   index: number;
   nickname: string;
   points: number;

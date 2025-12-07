@@ -23,6 +23,7 @@ import Star from '../../components/StarRating';
 import { useError } from '../../providers/ErrorProvider';
 import { getBoardSetup, parsePlayerPositions } from './BoardgameObserver';
 import ArrowIndicator from '../../components/ArrowIndicator';
+import XShape from '../../components/XComponent';
 
 const mobile = isMobileView();
 
@@ -166,6 +167,9 @@ const Popup = styled.div`
   opacity: 0;
   z-index: 999;
   animation: ${popupToCorner} 2.5s ease-in-out forwards;
+  display: flex;
+  justifyContent: center;
+  alignContent: center;
 `;
 
 const NicknameContainer = styled.div({
@@ -269,18 +273,22 @@ const Toast = styled.div<{ visible: boolean }>((props) => ({
   display: 'flex',
   justifyContent: 'center',
   alignContent: 'center',
-  textShadow: '40px'
+  textShadow: '40px',
 }));
 
-export function PointsPopup({ onComplete }: { onComplete: Function }) {
+export function PointsPopup({ onComplete, popup }: { onComplete: Function; popup: string }) {
   useEffect(() => {
     const timer = setTimeout(onComplete, 1500);
     return () => clearTimeout(timer);
   }, [onComplete]);
 
-  return (
+  return popup === 'correct' ? (
     <Popup>
       <Star style={{ width: '40px', height: '40px' }} />
+    </Popup>
+  ) : (
+    <Popup style={{ background: theme.palette.main.error }}>
+      <XShape style={{ width: '40px', height: '40px' }} />
     </Popup>
   );
 }
@@ -348,7 +356,7 @@ function BoardgamePlayer() {
 
   const [gameFinished, setGameFinished] = useState<boolean>(false);
 
-  const [showAnswerPopup, setShowAnswerPopup] = useState<boolean>(false);
+  const [showAnswerPopup, setShowAnswerPopup] = useState<false | string>(false);
   const { setError } = useError();
 
   useEffect(() => {
@@ -464,7 +472,9 @@ function BoardgamePlayer() {
         setCategoryLevels(answerData.player.categoryToDifficulty);
 
         if (answerCorrect) {
-          setShowAnswerPopup(true);
+          setShowAnswerPopup('correct');
+        } else {
+          setShowAnswerPopup('incorrect');
         }
 
         setIsAnswering(false);
@@ -513,7 +523,9 @@ function BoardgamePlayer() {
     <Container>
       <Toast visible={showLevelUp}>Osiągasz kolejny poziom!</Toast>
       <CategoryLevels categoryLevels={categoryLevels} points={playerPoints} />
-      {showAnswerPopup && <PointsPopup onComplete={() => setShowAnswerPopup(false)} />}
+      {showAnswerPopup && (
+        <PointsPopup popup={showAnswerPopup} onComplete={() => setShowAnswerPopup(false)} />
+      )}
       <SSEOnEventListener setGameFinished={setGameFinished} />
       {isAnswering && (
         <ToggleModalButton onClick={toggleAnswerModal} disabled={modalClosing}>

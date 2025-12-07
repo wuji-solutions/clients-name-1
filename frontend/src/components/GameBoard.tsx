@@ -1,8 +1,8 @@
 import { useRef, useEffect, useMemo, useState } from 'react';
-import { Stage, Layer, Ellipse, Path, Group } from 'react-konva';
+import { Stage, Layer, Ellipse, Path, Group, Text } from 'react-konva';
 import Konva from 'konva';
 import panzoom from 'panzoom';
-import { BoardPositions } from '../common/types';
+import { BoardPositions, PlayerState } from '../common/types';
 import { usePrevious } from '../hooks/usePrevious';
 import { colorPalette, isMobileView } from '../common/utils';
 import Pawn from './Pawn';
@@ -23,6 +23,7 @@ interface Props {
   storedPlayerIndex?: string | null;
   positionUpdateBlock?: boolean;
   observerVersion?: boolean;
+  ranking?: any[];
 }
 
 function GameBoard({
@@ -35,6 +36,7 @@ function GameBoard({
   observerVersion = false,
   boardColorReferences,
   tileStates = [],
+  ranking = [],
 }: Props) {
   const stageRef = useRef<Konva.Stage | null>(null);
   const pawnReferences = useRef<Map<string, Konva.Group>>(new Map());
@@ -43,8 +45,17 @@ function GameBoard({
   const panzoomOptionsRef = useRef<any>(null);
   const previousPositions = usePrevious(positions);
   const [playerIndex, setPlayerIndex] = useState<string | null>(storedPlayerIndex);
+  const [rankingMap, setRankingMap] = useState<Map<string, any>>(new Map());
 
   const mobile = isMobileView();
+
+  useEffect(() => {
+    const result = new Map();
+    for (const entry of ranking) {
+      result.set(entry.nickname, entry);
+    }
+    setRankingMap(result);
+  }, [ranking]);
 
   useEffect(() => {
     if (!storedPlayerIndex && !observerVersion)
@@ -223,6 +234,7 @@ function GameBoard({
                 scale={1}
                 color={colorPalette[Number.parseInt(pawnData.index) % colorPalette.length]}
                 isCurrentPlayer={pawnData.index == playerIndex}
+                position={rankingMap.get(pawnData.nickname)?.position}
                 nodeRef={(node) => {
                   if (node) {
                     pawnReferences.current.set(pawnData.index, node);

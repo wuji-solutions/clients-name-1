@@ -378,7 +378,6 @@ function ExamParticipant() {
                         backgroundcolor={theme.palette.main.primary}
                         isselected={data.selectedAnswerIds.includes(answer.id)}
                         style={{
-                          height: '10px',
                           minHeight: '10px',
                           padding: '10px 10px 20px 10px',
                           marginLeft: 'auto',
