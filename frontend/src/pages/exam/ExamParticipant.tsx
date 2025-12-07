@@ -174,8 +174,7 @@ export const QuestionTaskWrapper: React.FC<QuestionTaskWrapperProps> = ({ task, 
         src={src}
         alt="question"
         style={{
-          minHeight: '75px',
-          maxHeight: '200px',
+          height: '200px',
           marginTop: '10px',
           margin: '10px auto 0',
         }}

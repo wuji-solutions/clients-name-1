@@ -323,8 +323,7 @@ function QuestionTaskWrapper({ task, images }: QuestionTaskWrapperProps) {
         src={src}
         alt="question"
         style={{
-          minHeight: '75px',
-          maxHeight: '200px',
+          height: '200px',
           marginTop: '10px',
           margin: '10px auto 0',
         }}

@@ -25,15 +25,46 @@ export default function ImageWrapper({ images }: ImageWrapperProps) {
       }}
     >
       <div style={{ display: 'inline-block' }}>{images[index]}</div>
-
-      <div style={{ display: 'flex', gap: '16px' }}>
-        <button onClick={prev} aria-label="Previous">
-          {'<-'}
-        </button>
-        <button onClick={next} aria-label="Next">
-          {'->'}
-        </button>
-      </div>
+      {images.length > 1 && (
+        <div
+          style={{
+            display: 'flex',
+            gap: '32px',
+            alignItems: 'center',
+          }}
+        >
+          <button
+            onClick={prev}
+            aria-label="Previous"
+            style={{
+              fontSize: '70px',
+              lineHeight: '1',
+              background: 'none',
+              border: 'none',
+              color: 'white',
+              cursor: 'pointer',
+              padding: '8px',
+            }}
+          >
+            &#8592;
+          </button>
+          <button
+            onClick={next}
+            aria-label="Next"
+            style={{
+              fontSize: '70px',
+              lineHeight: '1',
+              background: 'none',
+              border: 'none',
+              color: 'white',
+              cursor: 'pointer',
+              padding: '8px',
+            }}
+          >
+            &#8594;
+          </button>
+        </div>
+      )}
     </div>
   );
 }
