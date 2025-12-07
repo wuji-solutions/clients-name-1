@@ -36,7 +36,7 @@ class ExamConfigValidator :
             context.disableDefaultConstraintViolation()
             context
                 .buildConstraintViolationWithTemplate(
-                    "Lista wybranych pytań musi być pusta, jeśli losowe pytania są ustawione")
+                    "Liczba wymaganych pytań jest większa niż liczba pytań w pliku")
                 .addPropertyNode("requiredQuestionCount")
                 .addConstraintViolation()
             return false
