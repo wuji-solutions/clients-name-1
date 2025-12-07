@@ -36,14 +36,19 @@ class PlayerAuthService(private val sessionRegistry: SessionRegistry) {
     }
 
     fun removeAuthentication(index: Int) {
-        val principal =
-            sessionRegistry.allPrincipals.find {
-                (it as? Participant)?.index == index
-            }
-        if (principal != null) {
-            sessionRegistry.getAllSessions(principal, false).forEach {
-                sessionRegistry.removeSessionInformation(it.sessionId)
-                it.expireNow()
+        removeAuthenticationBy { (it as? Participant)?.index == index }
+    }
+
+    fun removeAuthentication(nickname: String) {
+        removeAuthenticationBy { (it as? Participant)?.nickname == nickname }
+    }
+
+    private fun removeAuthenticationBy(predicate: (Any) -> Boolean) {
+        sessionRegistry.allPrincipals.find(predicate)?.let { principal ->
+            sessionRegistry.getAllSessions(principal, false).forEach { session
+                ->
+                sessionRegistry.removeSessionInformation(session.sessionId)
+                session.expireNow()
             }
             sessionRegistry.allPrincipals.remove(principal)
         }
