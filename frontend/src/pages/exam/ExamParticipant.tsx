@@ -31,7 +31,7 @@ const TimerContainer = styled.div({
 
 const QuestionContainer = styled.div({
   width: '100%',
-  marginTop: '10px',
+  marginTop: '0px',
 });
 
 const QuestionHeader = styled.div({
@@ -94,8 +94,8 @@ const QuestionAnswerGrid = styled.div<{ isGrid: boolean }>(({ isGrid }) => ({
   marginTop: '10px',
   boxShadow: `0 3px 0 0 ${theme.palette.main.accent}`,
   overflowY: 'auto',
-  height: '320px',
-  gap: '10px',
+  maxHeight: '370px',
+  gap: '15px',
 
   display: 'flex',
   flexDirection: 'column',
@@ -301,6 +301,8 @@ function ExamParticipant() {
           if (!allowGoingBack) setDisableAnswers(true);
           setForceFetchCurrentQuestion(!forceFetchCurrentQuestion);
         }
+        setPlayerCheated(false);
+        sessionStorage.setItem('playerCheated', 'No');
       })
       .catch((error) =>
         setError('Wystąpił błąd podczas wysyłania odpowiedzi:\n' + error.response.data.message)
@@ -452,7 +454,7 @@ function ExamParticipant() {
           </QuestionAnswerGrid>
           <ButtonContainer>
             <ButtonCustom
-              disabled={answerSent}
+              disabled={answerSent || disableAnswers}
               onClick={handleAnswerSent}
               style={{ maxWidth: '160px' }}
             >

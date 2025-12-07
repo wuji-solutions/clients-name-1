@@ -71,7 +71,7 @@ export default function CommonConfig({
         display: 'flex',
         gap: '10px',
         flexDirection: 'column',
-        marginBottom: '10px',
+        marginBottom: '50px',
       }}
     >
       <LabeledCheckboxContainer style={{ position: 'relative' }}>
@@ -79,9 +79,11 @@ export default function CommonConfig({
           <>
             <CenteredLabel>
               Maksymalna liczba graczy
-              <InfoButton tooltip="Ilość graczy która może brać udział w rozgrywce jest związana z ustawieniami systemu.
+              <InfoButton
+                tooltip="Ilość graczy która może brać udział w rozgrywce jest związana z ustawieniami systemu.
               Po wybraniu przycisku 'Zmień' system może poprosić o zezwolenie na zmianę, należy wtedy wybrać opcję 'Tak'
-              " />  
+              "
+              />
             </CenteredLabel>
             <div
               style={{
@@ -106,7 +108,9 @@ export default function CommonConfig({
                 fontSize: '0.75em',
               }}
               disabled={newPeerSize == peerSize}
-              title={newPeerSize == peerSize ? 'Nowa ilość graczy musi różnić się od poprzedniej' : ''}
+              title={
+                newPeerSize == peerSize ? 'Nowa ilość graczy musi różnić się od poprzedniej' : ''
+              }
             >
               Zmień
             </ButtonCustom>
@@ -134,21 +138,6 @@ export default function CommonConfig({
         >
           Wybierz
         </ButtonCustom>
-      </LabeledCheckboxContainer>
-      <LabeledCheckboxContainer>
-        <CenteredLabel>Czas na odpowiedź na pytanie {'(s)'}</CenteredLabel>
-
-        <CustomInput
-          style={{ height: '35px' }}
-          type="number"
-          value={commonSettings.questionDurationSeconds}
-          onChange={(e) =>
-            setCommonSettings({
-              ...commonSettings,
-              questionDurationSeconds: Number.parseInt(e.target.value),
-            })
-          }
-        />
       </LabeledCheckboxContainer>
     </div>
   );

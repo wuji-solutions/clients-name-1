@@ -133,9 +133,11 @@ const DetailValue = styled.div({});
 function SSEOnExamChangeListener({
   setExamState,
   setCheaters,
+  examConfig,
 }: {
   setExamState: Function;
   setCheaters: Function;
+  examConfig: ExamConfig | undefined;
 }) {
   const delegate = useSSEChannel(BACKEND_ENDPOINT + '/sse/exam/admin-events', {
     withCredentials: true,
@@ -150,12 +152,14 @@ function SSEOnExamChangeListener({
 
   useEffect(() => {
     const unsubscribe = delegate.on('player-cheated', (data) => {
-      setCheaters((prev: any) => ({
-        ...prev,
-        [data.nickname]: {
-          ...data,
-        },
-      }));
+      if (examConfig && examConfig.notifyTeacherOnCheating) {
+        setCheaters((prev: any) => ({
+          ...prev,
+          [data.nickname]: {
+            ...data,
+          },
+        }));
+      }
     });
     return unsubscribe;
   }, [delegate]);
@@ -222,7 +226,7 @@ function ExamObserver() {
 
   return (
     <Container>
-      <SSEOnExamChangeListener setExamState={setExamState} setCheaters={setCheaters} />
+      <SSEOnExamChangeListener setExamState={setExamState} setCheaters={setCheaters} examConfig={examConfig} />
       <TimerContainer>
         Pozostały czas:
         <Timer

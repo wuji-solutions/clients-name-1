@@ -122,6 +122,7 @@ function WaitingRoom() {
 
   const joinGame = () => {
     if (!identificator || !gameMode) return;
+    console.log(identificator)
     service
       .joinGame(identificator, gameMode)
       .then((response) => {
@@ -270,7 +271,7 @@ function WaitingRoom() {
         <QRContainer>
           <QRCode
             size={400}
-            value={`http://192.168.137.1:3000/waiting-room?tryb=${gameMode}`} // NOSONAR
+            value={`http://192.168.137.1:3000/#/waiting-room?tryb=${gameMode}`} // NOSONAR
           />
         </QRContainer>
       </QRWrapper>

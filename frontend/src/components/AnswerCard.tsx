@@ -17,7 +17,7 @@ const AnswerCard = styled.div<{ backgroundcolor: string; isselected: boolean | u
       color: isselected ? '#dee0e0' : '#fff',
       borderRadius: '20px',
       minHeight: '15px',
-      maxHeight: '25px',
+      height: 'fit-content',
       width: 'fit-content',
       minWidth: '100px',
       maxWidth: '300px',
@@ -35,11 +35,10 @@ const AnswerCard = styled.div<{ backgroundcolor: string; isselected: boolean | u
       '-webkit-touch-callout': 'none',
       outline: 'none',
       WebkitTapHighlightColor: 'transparent',
+      justifyContent: 'center',
+      alignContent: 'center',
       textAlign: 'center',
-      '& h2': {
-        margin: 0,
-        fontSize: '0.8rem',
-      },
+      fontSize: 'clamp(0.7rem, 1.8vw, 1rem)',
       ...style,
     };
   }
