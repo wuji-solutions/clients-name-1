@@ -8,12 +8,12 @@ class PlayerDispenser(
     val baseQuestions: List<Question>,
     val additionalQuestions: List<Question>,
 ) {
+
     private var currentBaseIndex = 0
 
     // combining it into one list makes traversing it much easier. I left constructor arguments as
     // attributes in case we need to distinguish base questions from additional ones
-    private val combinedQuestions =
-        listOf(baseQuestions, additionalQuestions).flatten()
+    private val combinedQuestions = baseQuestions + additionalQuestions
 
     fun nextQuestion(): Question =
         if (currentBaseIndex < combinedQuestions.lastIndex) {
