@@ -38,3 +38,8 @@ out/
 
 ### Kotlin ###
 .kotlin
+
+
+*.json
+*.py
+*.sh

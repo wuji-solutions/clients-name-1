@@ -1,6 +1,7 @@
 package com.wuji.backend.question.exam.dto
 
 import com.wuji.backend.config.DifficultyLevel
+import com.wuji.backend.question.common.ImageDto
 import com.wuji.backend.question.common.PlayerAnswer
 import com.wuji.backend.question.common.Question
 import com.wuji.backend.question.common.QuestionType
@@ -8,6 +9,7 @@ import com.wuji.backend.question.common.dto.AnswerDto
 import com.wuji.backend.question.common.dto.PlayerAnswerDto
 import com.wuji.backend.question.common.dto.toAnswerDto
 import com.wuji.backend.question.common.dto.toDto
+import com.wuji.backend.question.common.toImageDto
 
 data class ExamQuestionDto(
     val id: Int,
@@ -21,8 +23,7 @@ data class ExamQuestionDto(
     val allowGoingBack: Boolean,
     val playerAlreadyAnswered: Boolean,
     val playerAnswerDto: PlayerAnswerDto?,
-    val imageUrl: String?,
-    val imageBase64: String?
+    val images: List<ImageDto>?,
 )
 
 fun Question.toExamQuestionDto(
@@ -43,5 +44,5 @@ fun Question.toExamQuestionDto(
         questionNumber = questionNumber,
         totalBaseQuestions = totalBaseQuestions,
         allowGoingBack = allowGoingBack,
-        imageUrl = imageUrl,
-        imageBase64 = imageUrl)
+        images = this.images?.map { it.toImageDto() },
+    )

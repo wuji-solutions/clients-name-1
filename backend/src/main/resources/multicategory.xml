@@ -1,0 +1,246 @@
+<?xml version="1.0" ?>
+<quiz>
+    <question type="category">
+        <category>
+            <text>matematyka</text>
+        </category>
+    </question>
+    <question type="multichoice">
+        <name>
+            <text>2+2=?</text>
+        </name>
+        <category>
+            <text>matematyka</text>
+        </category>
+        <questiontext format="plain_text">
+            <text>2+2=?</text>
+        </questiontext>
+        <defaultgrade>1.0000000</defaultgrade>
+        <shuffleanswers>true</shuffleanswers>
+        <single>true</single>
+        <answer fraction="100">
+            <text>4</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="0">
+            <text>3</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="0">
+            <text>2</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="0">
+            <text>5</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+    </question>
+    <question type="multichoice">
+        <name>
+            <text>x2 = 4, x=?</text>
+        </name>
+        <category>
+            <text>matematyka</text>
+        </category>
+        <questiontext format="plain_text">
+            <text>x2 = 4, x=?</text>
+        </questiontext>
+        <defaultgrade>1.0000000</defaultgrade>
+        <shuffleanswers>true</shuffleanswers>
+        <single>false</single>
+        <answer fraction="0">
+            <text>4</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="100">
+            <text>2</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="100">
+            <text>-2</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="0">
+            <text>1</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+    </question>
+    <question type="category">
+        <category>
+            <text>geografia</text>
+        </category>
+    </question>
+    <question type="multichoice">
+        <name>
+            <text>stolica polski</text>
+        </name>
+        <category>
+            <text>geografia</text>
+        </category>
+        <questiontext format="plain_text">
+            <text>stolica polski</text>
+        </questiontext>
+        <defaultgrade>1.0000000</defaultgrade>
+        <shuffleanswers>true</shuffleanswers>
+        <single>true</single>
+        <answer fraction="100">
+            <text>warszawa</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="0">
+            <text>kraków</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="0">
+            <text>poznań</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="0">
+            <text>gniezno</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+    </question>
+    <question type="multichoice">
+        <name>
+            <text>najdłuższa rzeka w polsce</text>
+        </name>
+        <category>
+            <text>geografia</text>
+        </category>
+        <questiontext format="plain_text">
+            <text>najdłuższa rzeka w polsce</text>
+        </questiontext>
+        <defaultgrade>1.0000000</defaultgrade>
+        <shuffleanswers>true</shuffleanswers>
+        <single>true</single>
+        <answer fraction="100">
+            <text>wisła</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="0">
+            <text>warta</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="0">
+            <text>odra</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="0">
+            <text>białucha</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+    </question>
+    <question type="category">
+        <category>
+            <text>matematyka2</text>
+        </category>
+    </question>
+    <question type="multichoice">
+        <name>
+            <text>wzór na pole koła</text>
+        </name>
+        <category>
+            <text>matematyka2</text>
+        </category>
+        <questiontext format="plain_text">
+            <text>wzór na pole koła</text>
+        </questiontext>
+        <defaultgrade>1.0000000</defaultgrade>
+        <shuffleanswers>true</shuffleanswers>
+        <single>true</single>
+        <answer fraction="100">
+            <text>pir2</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="0">
+            <text>2pir</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="0">
+            <text>4/3pir3</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="0">
+            <text>r2</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+    </question>
+    <question type="multichoice">
+        <name>
+            <text>wzór na pole kwadratu</text>
+        </name>
+        <category>
+            <text>matematyka2</text>
+        </category>
+        <questiontext format="plain_text">
+            <text>wzór na pole kwadratu</text>
+        </questiontext>
+        <defaultgrade>1.0000000</defaultgrade>
+        <shuffleanswers>true</shuffleanswers>
+        <single>true</single>
+        <answer fraction="100">
+            <text>a2</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="0">
+            <text>2a</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="0">
+            <text>4a</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+        <answer fraction="0">
+            <text>2a2</text>
+            <feedback format="plain_text">
+                <text/>
+            </feedback>
+        </answer>
+    </question>
+</quiz>

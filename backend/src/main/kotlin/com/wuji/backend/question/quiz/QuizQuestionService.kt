@@ -32,7 +32,13 @@ class QuizQuestionService(
             ?.answers ?: emptyList()
     }
 
-    fun getQuestion() = getCurrentQuestion().toQuizQuestionDto()
+    fun getQuestion(): QuizQuestionDto {
+        if (game.questionDispenser.currentQuestionNumber ==
+            1) { // first question in quiz case
+            currentQuestionStartTime = System.currentTimeMillis()
+        }
+        return getCurrentQuestion().toQuizQuestionDto()
+    }
 
     fun answerQuizQuestion(playerIndex: Int, answerIds: Set<Int>): Boolean {
         val question = getCurrentQuestion()

@@ -32,16 +32,12 @@ class BoardDispenser(
             dispensers[categoryIndex]
                 ?: throw NoSuchElementException(
                     "Brak dispensera dla kategorii ${category}")
-        println("Dispenser has questions: ${dispenser.questions.size}")
         val available =
             dispenser.questions.filter {
                 it.difficultyLevel == difficultyLevel &&
                     previousQuestions.none { question -> question.id == it.id }
             }
-        println("Available questions: ${available.size}")
         if (available.isEmpty()) {
-            println(
-                "No questions left, returning random of this category (not answered yet)")
             val notAnsweredYet =
                 dispenser.questions.filter {
                     previousQuestions.none { question -> question.id == it.id }

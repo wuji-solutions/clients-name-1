@@ -12,6 +12,8 @@ export interface CommonSettings {
 interface Props {
   readonly commonSettings: CommonSettings;
   readonly setCommonSettings: Dispatch<SetStateAction<CommonSettings>>;
+  readonly categoryCount: number;
+  readonly questionCount: number;
 }
 
 const increaseWifiPeerSize = async (setRefreshTrigger: Function, peerSize: number) => {
@@ -33,7 +35,12 @@ const increaseWifiPeerSize = async (setRefreshTrigger: Function, peerSize: numbe
   }
 };
 
-export default function CommonConfig({ commonSettings, setCommonSettings }: Props) {
+export default function CommonConfig({
+  commonSettings,
+  setCommonSettings,
+  categoryCount,
+  questionCount,
+}: Props) {
   const [fileName, setFileName] = useState<string>();
   const [peerSize, setPeerSize] = useState(undefined);
   const [newPeerSize, setNewPeerSize] = useState<number>(0);
@@ -111,11 +118,15 @@ export default function CommonConfig({ commonSettings, setCommonSettings }: Prop
         <div
           style={{
             position: 'absolute',
+            display: 'flex',
+            flexDirection: 'column',
             top: '40px',
             left: '20px',
           }}
         >
-          Wybrane: {fileName ? fileName : 'brak'}
+          <div>Wybrane: {fileName ? fileName : 'brak'}</div>
+          {<div>Ilość pytań: {questionCount ? questionCount : 'brak'}</div>}
+          {<div>Ilość kategorii: {categoryCount ? categoryCount : 'brak'}</div>}
         </div>
         <ButtonCustom
           onClick={openFilePicker}
@@ -123,6 +134,21 @@ export default function CommonConfig({ commonSettings, setCommonSettings }: Prop
         >
           Wybierz
         </ButtonCustom>
+      </LabeledCheckboxContainer>
+      <LabeledCheckboxContainer>
+        <CenteredLabel>Czas na odpowiedź na pytanie {'(s)'}</CenteredLabel>
+
+        <CustomInput
+          style={{ height: '35px' }}
+          type="number"
+          value={commonSettings.questionDurationSeconds}
+          onChange={(e) =>
+            setCommonSettings({
+              ...commonSettings,
+              questionDurationSeconds: Number.parseInt(e.target.value),
+            })
+          }
+        />
       </LabeledCheckboxContainer>
     </div>
   );

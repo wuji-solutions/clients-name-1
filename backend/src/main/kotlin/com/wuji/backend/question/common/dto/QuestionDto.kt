@@ -1,8 +1,10 @@
 package com.wuji.backend.question.common.dto
 
 import com.wuji.backend.config.DifficultyLevel
+import com.wuji.backend.question.common.ImageDto
 import com.wuji.backend.question.common.Question
 import com.wuji.backend.question.common.QuestionType
+import com.wuji.backend.question.common.toImageDto
 
 data class QuestionDto(
     val id: Int,
@@ -11,8 +13,7 @@ data class QuestionDto(
     val task: String,
     val answers: List<AnswerDto>,
     val difficultyLevel: DifficultyLevel,
-    val imageUrl: String?,
-    val imageBase64: String?
+    val images: List<ImageDto>?,
 )
 
 fun Question.toQuestionDto() =
@@ -23,5 +24,4 @@ fun Question.toQuestionDto() =
         task = this.text,
         answers = this.answers.map { it.toAnswerDto() },
         difficultyLevel = this.difficultyLevel,
-        imageUrl = this.imageUrl,
-        imageBase64 = this.imageBase64)
+        images = this.images?.map { it.toImageDto() })

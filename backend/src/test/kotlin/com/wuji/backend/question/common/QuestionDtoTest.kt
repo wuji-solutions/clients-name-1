@@ -21,8 +21,7 @@ class QuestionDtoTest {
                     Answer(3, "3", null)),
             correctAnswerIds = setOf(1),
             difficultyLevel = DifficultyLevel.MEDIUM,
-            imageUrl = "image.com",
-            imageBase64 = "BASE64",
+            listOf(Image("url1", ImageType.URL)),
             tags = listOf("tag1", "tag2"))
 
     @Test
@@ -34,8 +33,9 @@ class QuestionDtoTest {
         assertEquals(question.type, dto.type)
         assertEquals(question.text, dto.task)
         assertEquals(question.difficultyLevel, dto.difficultyLevel)
-        assertEquals(question.imageUrl, dto.imageUrl)
-        assertEquals(question.imageBase64, dto.imageBase64)
+        assertEquals(question.images?.size, dto.images?.size)
+        assertEquals(
+            question.images?.first()?.image, dto.images?.first()?.image)
         assertEquals(question.answers.map { it.toAnswerDto() }, dto.answers)
     }
 }

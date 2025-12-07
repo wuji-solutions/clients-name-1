@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+    <!-- question: 0  -->
+    <question type="category">
+        <category>
+            <text>$module$/top/Default for My second course course question bank</text>
+        </category>
+        <info format="moodle_auto_format">
+            <text>The default category for questions shared in context 'My second course course question bank'.</text>
+        </info>
+        <idnumber></idnumber>
+    </question>
+
+    <!-- question: 2  -->
+    <question type="multichoice">
+        <name>
+            <text>pytanie?</text>
+        </name>
+        <questiontext format="html">
+            <text><![CDATA[<p><img class="img-fluid" src="http://fajne.url.jpg" alt="desc" width="1024" height="684"></p>]]></text>
+        </questiontext>
+        <generalfeedback format="html">
+            <text></text>
+        </generalfeedback>
+        <defaultgrade>1.0000000</defaultgrade>
+        <penalty>0.3333333</penalty>
+        <hidden>0</hidden>
+        <idnumber></idnumber>
+        <single>true</single>
+        <shuffleanswers>true</shuffleanswers>
+        <answernumbering>abc</answernumbering>
+        <showstandardinstruction>0</showstandardinstruction>
+        <correctfeedback format="html">
+            <text><![CDATA[<p>Your answer is correct.</p>]]></text>
+        </correctfeedback>
+        <partiallycorrectfeedback format="html">
+            <text><![CDATA[<p>Your answer is partially correct.</p>]]></text>
+        </partiallycorrectfeedback>
+        <incorrectfeedback format="html">
+            <text><![CDATA[<p>Your answer is incorrect.</p>]]></text>
+        </incorrectfeedback>
+        <shownumcorrect/>
+        <answer fraction="100" format="html">
+            <text><![CDATA[<p>1</p>]]></text>
+            <feedback format="html">
+                <text></text>
+            </feedback>
+        </answer>
+        <answer fraction="0" format="html">
+            <text><![CDATA[<p>2</p>]]></text>
+            <feedback format="html">
+                <text></text>
+            </feedback>
+        </answer>
+    </question>
+
+</quiz>

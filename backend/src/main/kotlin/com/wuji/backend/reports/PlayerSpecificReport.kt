@@ -7,6 +7,7 @@ import com.wuji.backend.player.state.PlayerDetails
 import com.wuji.backend.reports.ReportsService.Companion.FILE_EXTENSION
 import com.wuji.backend.reports.ReportsService.Companion.getGameSubdir
 import com.wuji.backend.reports.common.Report
+import com.wuji.backend.util.ext.toPolish
 import java.io.File
 
 object PlayerSpecificReport : Report {
@@ -56,7 +57,7 @@ object PlayerSpecificReport : Report {
                         answer.question.id,
                         answer.question.text,
                         answer.selectedIds,
-                        answer.isCorrect))
+                        answer.isCorrect.toPolish()))
             }
         }
     }

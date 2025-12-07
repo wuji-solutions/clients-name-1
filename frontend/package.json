@@ -1,13 +1,21 @@
 {
   "homepage": ".",
   "main": "build/electron/main.js",
-  "author": "wuji-solutions",
-  "description": "React-TypeScript-Electron sample with Create React App and Electron Builder",
+  "author": "Tomasz Grzybacz, Szymon Szarek, Bartłomiej Treśka, Hubert Tułacz",
+  "description": "Platforma do przeprowadzania interaktywnych gier i quizów podczas lekcji szkół podstawowych",
   "build": {
+    "appId": "com.wuji-solutions.wuji-studio",
+    "productName": "Quizobara",
     "extends": null,
     "files": [
-      "**/*",
-      "build/**/*"
+      "build/**/*",
+      "electron/**/*",
+      "!**/*.map",
+      "!src/",
+      "!**/.cache",
+      "!**/tests",
+      "!**/test",
+      "!**/*.md"
     ],
     "directories": {
       "buildResources": "assets"
@@ -22,24 +30,12 @@
       }
     ]
   },
-  "name": "frontend",
-  "version": "0.1.0",
+  "name": "quizobara",
+  "version": "0.0.0-dev",
   "private": true,
   "dependencies": {
-    "@testing-library/dom": "^10.4.0",
-    "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.3.0",
-    "@testing-library/user-event": "^13.5.0",
-    "@types/electron-devtools-installer": "^4.0.0",
-    "@types/jest": "^27.5.2",
-    "@types/node": "^16.18.126",
-    "@types/react": "^19.1.4",
-    "@types/react-dom": "^19.1.5",
     "axios": "^1.10.0",
-    "electron-devtools-installer": "^4.0.0",
     "electron-is-dev": "^3.0.1",
-    "electron-reload": "^2.0.0-alpha.1",
-    "electron-squirrel-startup": "^1.0.1",
     "gsap": "^3.13.0",
     "js-cookie": "^3.0.5",
     "konva": "^9.3.22",
@@ -53,9 +49,32 @@
     "react-router-dom": "^7.6.1",
     "react-scripts": "5.0.1",
     "styled-components": "^6.1.18",
+    "tree-kill": "^1.2.2",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4",
     "yarn": "^1.22.22"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^7.10.2",
+    "@electron-forge/maker-deb": "^7.10.2",
+    "@electron-forge/maker-rpm": "^7.10.2",
+    "@electron-forge/maker-squirrel": "^7.10.2",
+    "@electron-forge/maker-zip": "^7.10.2",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.10.2",
+    "@electron-forge/plugin-fuses": "^7.10.2",
+    "@electron/fuses": "^1.8.0",
+    "@types/electron-devtools-installer": "^4.0.0",
+    "@types/js-cookie": "^3.0.6",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "concurrently": "^9.1.2",
+    "cross-env": "^7.0.3",
+    "electron": "^36.2.1",
+    "electron-builder": "^26.0.12",
+    "electron-devtools-installer": "^4.0.0",
+    "electron-reload": "^2.0.0-alpha.1",
+    "prettier": "3.5.3",
+    "wait-on": "^8.0.3"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -65,11 +84,13 @@
     "pretty": "prettier --write \"./**/*.{js,jsx,json,ts,tsx}\"",
     "postinstall": "electron-builder install-app-deps",
     "electron:dev": "yarn build-backend:dev && yarn copy-backend && concurrently \"cross-env BROWSER=none yarn start\" \"wait-on http://localhost:3000 && tsc -p electron -w\" \"wait-on http://localhost:3000 && tsc -p electron && electron .\"",
-    "build-backend": "cd ../backend && ./gradlew nativeCompile",
+    "build-backend": "cd ../backend && ./gradlew bootJar",
     "build-backend:dev": "cd ../backend && ./gradlew bootJar",
+    "build-backend:win": "cd ../backend && gradlew.bat bootJar",
     "copy-backend": "cross-env NODE_ENV=development node backend/copy-backend.js",
+    "copy-backend:build": "cross-env NODE_ENV=production node backend/copy-backend.js",
     "copy-backend:dev": "cross-env NODE_ENV=development node backend/copy-backend.js",
-    "electron:build": "yarn build-backend && yarn copy-backend && yarn build && tsc -p electron && electron-builder",
+    "electron:build": "cross-env NODE_ENV=production yarn build-backend:win && yarn copy-backend && yarn build && tsc -p electron && node scripts/build.js",
     "dist": "electron-builder",
     "package": "electron-forge package",
     "make": "electron-forge make"
@@ -92,39 +113,17 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {
-    "@electron-forge/cli": "^7.10.2",
-    "@electron-forge/maker-deb": "^7.10.2",
-    "@electron-forge/maker-rpm": "^7.10.2",
-    "@electron-forge/maker-squirrel": "^7.10.2",
-    "@electron-forge/maker-zip": "^7.10.2",
-    "@electron-forge/plugin-auto-unpack-natives": "^7.10.2",
-    "@electron-forge/plugin-fuses": "^7.10.2",
-    "@electron/fuses": "^1.8.0",
-    "@types/js-cookie": "^3.0.6",
-    "concurrently": "^9.1.2",
-    "cross-env": "^7.0.3",
-    "electron": "^36.2.1",
-    "prettier": "3.5.3",
-    "wait-on": "^8.0.3"
-  },
   "config": {
     "forge": {
+      "packagerConfig": {
+        "asar": true
+      },
       "makers": [
         {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {}
-        },
-        {
           "name": "@electron-forge/maker-zip",
-          "platforms": ["darwin"]
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
+          "platforms": [
+            "win32"
+          ],
           "config": {}
         }
       ]
