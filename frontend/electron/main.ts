@@ -300,7 +300,14 @@ ipcMain.handle('get-wifimaxpeers', async () => {
         `powershell -NoProfile -Command "(Get-ItemProperty 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\icssvc\\Settings').WifiMaxPeers"`,
         (err, stdout) => {
           if (err) return reject(err);
-          resolve(parseInt(stdout.trim(), 10));
+
+          const value = stdout.trim();
+
+          if (!value) {
+            return resolve(8);
+          }
+          const parsed = parseInt(value, 10);
+          resolve(Number.isNaN(parsed) ? 8 : parsed);
         }
       );
     });
