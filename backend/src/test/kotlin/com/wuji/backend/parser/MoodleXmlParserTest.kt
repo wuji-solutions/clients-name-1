@@ -222,7 +222,7 @@ class MoodleXmlParserTest {
         val inputStream = resource.openStream()
         val questions = MoodleXmlParser.parse(inputStream)
         val question = questions.first()
-        println(question.text)
+
         assertEquals(question.images?.size, 2)
         assertEquals(question.text, "<p>text under img</p>")
         assertEquals(question.images?.first()?.image, "IMAGE1")

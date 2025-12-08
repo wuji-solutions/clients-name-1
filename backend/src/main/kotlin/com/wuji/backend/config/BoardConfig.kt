@@ -8,6 +8,7 @@ data class BoardConfig(
     val pointsPerDifficulty: Map<DifficultyLevel, Int>,
     val rankingPromotionRules: Map<CategoryName, MinCorrectAnswers>,
     val showLeaderboard: Boolean,
+    val numberOfTiles: Int,
 ) : GameConfig
 
 typealias CategoryName = String

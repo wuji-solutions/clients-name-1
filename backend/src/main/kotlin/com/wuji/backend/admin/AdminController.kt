@@ -56,7 +56,7 @@ class AdminController(
             requestDto.name,
             requestDto.config.toBoardConfig(),
             requestDto.config.questionFilePath,
-            requestDto.numberOfTiles)
+            requestDto.config.numberOfTiles)
         authService.clearAllSessions()
         return ResponseEntity.ok().build()
     }

@@ -5,6 +5,5 @@ import jakarta.validation.Valid
 
 data class BoardGameCreateRequestDto(
     val name: String,
-    @field:Valid val config: BoardConfigDto,
-    val numberOfTiles: Int,
+    @field:Valid val config: BoardConfigDto
 )

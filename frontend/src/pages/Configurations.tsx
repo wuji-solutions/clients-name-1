@@ -167,12 +167,7 @@ const getConfig = (
 ) => {
   const config = settingsToConfig(mode, commonSettings, examSettings, boardSettings);
   const createGameDto = { config: config, name: 'Przykładowa gra' };
-  return mode !== 'board'
-    ? createGameDto
-    : {
-        ...createGameDto,
-        numberOfTiles: Object.keys(boardSettings.rankingPromotionRules).length * 3,
-      };
+  return createGameDto;
 };
 
 const openHotspot = () => {
@@ -270,6 +265,7 @@ function Configurations() {
       HARD: 3,
     },
     rankingPromotionRules: {},
+    numberOfTiles: 10
   });
 
   if (user == 'user') {
@@ -513,7 +509,7 @@ function Configurations() {
             <div style={{ position: 'absolute', top: 10, right: 10 }}>
               <InfoButton
                 style={{
-                  width: '350px',
+                  width: '700px',
                   background: 'transparent',
                   border: 'none',
                   boxShadow: 'none',
@@ -523,7 +519,7 @@ function Configurations() {
                 <video
                   autoPlay
                   style={{
-                    width: '150%',
+                    width: '100%',
                     height: 'auto',
                     borderRadius: '8px',
                     border: `3px solid ${theme.palette.main.accent}`,
@@ -566,11 +562,10 @@ function Configurations() {
             <div style={{ position: 'absolute', top: 10, right: 10 }}>
               <InfoButton
                 style={{
-                  width: '500px',
+                  width: '700px',
                   background: 'transparent',
                   border: 'none',
                   boxShadow: 'none',
-                  top: '-200px',
                 }}
                 onHover={() => setMode('board')}
               >
