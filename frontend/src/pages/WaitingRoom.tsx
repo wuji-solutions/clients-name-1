@@ -122,6 +122,7 @@ function WaitingRoom() {
 
   const joinGame = () => {
     if (!identificator || !gameMode) return;
+    Cookies.remove('JSESSIONID');
     service
       .joinGame(identificator, gameMode)
       .then((response) => {
