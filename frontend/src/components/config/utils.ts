@@ -78,6 +78,7 @@ export const applySettingsFromDto = (
         showLeaderboard: dto.showLeaderboard,
         pointsPerDifficulty: dto.pointsPerDifficulty,
         rankingPromotionRules: dto.rankingPromotionRules,
+        numberOfTiles: dto.numberOfTiles
       });
       break;
 

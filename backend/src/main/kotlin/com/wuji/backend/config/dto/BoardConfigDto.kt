@@ -20,6 +20,7 @@ data class BoardConfigDto(
     val rankingPromotionRules: Map<CategoryName, MinCorrectAnswers>,
     @JsonProperty(required = true) val showLeaderboard: Boolean,
     val endImmediatelyAfterTime: Boolean = DEFAULT_END_IMMEDIATELY_AFTER_TIME,
+    @JsonProperty(required = true) val numberOfTiles: Int,
 ) : GameConfigDto()
 
 fun BoardConfigDto.toBoardConfig(): BoardConfig {
@@ -30,7 +31,8 @@ fun BoardConfigDto.toBoardConfig(): BoardConfig {
         endImmediatelyAfterTime = endImmediatelyAfterTime,
         pointsPerDifficulty = pointsPerDifficulty,
         rankingPromotionRules = rankingPromotionRules,
-        showLeaderboard = showLeaderboard)
+        showLeaderboard = showLeaderboard,
+        numberOfTiles = numberOfTiles)
 }
 
 fun BoardConfig.toBoardConfigDto(): BoardConfigDto {
@@ -39,5 +41,6 @@ fun BoardConfig.toBoardConfigDto(): BoardConfigDto {
         endImmediatelyAfterTime = endImmediatelyAfterTime,
         pointsPerDifficulty = pointsPerDifficulty,
         rankingPromotionRules = rankingPromotionRules,
-        showLeaderboard = showLeaderboard)
+        showLeaderboard = showLeaderboard,
+        numberOfTiles = numberOfTiles)
 }

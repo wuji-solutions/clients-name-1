@@ -167,12 +167,7 @@ const getConfig = (
 ) => {
   const config = settingsToConfig(mode, commonSettings, examSettings, boardSettings);
   const createGameDto = { config: config, name: 'Przykładowa gra' };
-  return mode !== 'board'
-    ? createGameDto
-    : {
-        ...createGameDto,
-        numberOfTiles: Object.keys(boardSettings.rankingPromotionRules).length * 3,
-      };
+  return createGameDto;
 };
 
 const openHotspot = () => {
@@ -271,6 +266,7 @@ function Configurations() {
       HARD: 3,
     },
     rankingPromotionRules: {},
+    numberOfTiles: 10
   });
 
   if (user == 'user') {
