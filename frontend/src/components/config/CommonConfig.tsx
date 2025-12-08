@@ -20,9 +20,7 @@ const increaseWifiPeerSize = async (setRefreshTrigger: Function, peerSize: numbe
   try {
     const res = await window.electronAPI.setWifiMaxPeers(peerSize);
     if (res.success) {
-      window.alert('Success — operation completed.');
-      const textContent = (res.stdout || '') + '\n' + (res.stderr || '');
-      console.log(textContent);
+      window.alert('Zmiana liczby graczy powiodła się.');
     } else {
       const textContent = 'Failed: ' + (res.error || 'unknown');
       console.log(textContent);
@@ -42,8 +40,8 @@ export default function CommonConfig({
   questionCount,
 }: Props) {
   const [fileName, setFileName] = useState<string>();
-  const [peerSize, setPeerSize] = useState(undefined);
-  const [newPeerSize, setNewPeerSize] = useState<number>(0);
+  const [peerSize, setPeerSize] = useState<number | null>(null);
+  const [newPeerSize, setNewPeerSize] = useState<number | ''>(0);
   const [refreshTrigger, setRefreshTrigger] = useState(false);
 
   const getWifiPeerSize = async () => {
@@ -96,11 +94,11 @@ export default function CommonConfig({
                 style={{ height: '30px', width: '75px' }}
                 type="number"
                 value={newPeerSize}
-                onChange={(e) => setNewPeerSize(Math.min(parseInt(e.target.value), 120))}
+                onChange={(e) => setNewPeerSize( e.target.value ? Math.min(parseInt(e.target.value), 120) : '')}
               />
             </div>
             <ButtonCustom
-              onClick={() => increaseWifiPeerSize(setRefreshTrigger, newPeerSize)}
+              onClick={() => increaseWifiPeerSize(setRefreshTrigger, newPeerSize != '' ? newPeerSize : 8)}
               style={{
                 position: 'relative',
                 overflow: 'hidden',

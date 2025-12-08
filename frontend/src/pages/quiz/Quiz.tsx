@@ -317,7 +317,7 @@ function Quiz() {
                 ))}
               </AnswerColumn>
 
-              <ButtonCustom disabled={sendingAnswer} onClick={() => handleAnswerSent()}>
+              <ButtonCustom disabled={sendingAnswer} onClick={() => handleAnswerSent()} style={{marginBottom: '10px'}}>
                 Wyślij odpowiedź
               </ButtonCustom>
             </AnswerContainer>
@@ -426,7 +426,7 @@ function Quiz() {
                 Przejdź do kolejnego pytania
               </ButtonCustom>
             )}
-            <ButtonCustom onClick={handleQuizEnd}>Zakończ quiz</ButtonCustom>
+            <ButtonCustom onClick={handleQuizEnd} color={theme.palette.button.info} >Zakończ quiz</ButtonCustom>
           </div>
         </QuestionContainer>
       )}

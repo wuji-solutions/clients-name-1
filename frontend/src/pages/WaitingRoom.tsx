@@ -122,7 +122,6 @@ function WaitingRoom() {
 
   const joinGame = () => {
     if (!identificator || !gameMode) return;
-    console.log(identificator)
     service
       .joinGame(identificator, gameMode)
       .then((response) => {
@@ -168,7 +167,6 @@ function WaitingRoom() {
   };
 
   if (!isAdmin()) {
-    console.log("TRYB: " + gameMode);
     if (!gameMode || !['quiz', 'board', 'exam'].includes(gameMode))
       return (
         <Container>

@@ -302,7 +302,7 @@ function ExamParticipant() {
           setForceFetchCurrentQuestion(!forceFetchCurrentQuestion);
         }
         setPlayerCheated(false);
-        sessionStorage.setItem('playerCheated', 'No');
+        sessionStorage.removeItem('playerCheated');
       })
       .catch((error) =>
         setError('Wystąpił błąd podczas wysyłania odpowiedzi:\n' + error.response.data.message)

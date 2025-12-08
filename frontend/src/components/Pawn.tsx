@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useMemo } from 'react';
 import Konva from 'konva';
 import { Group, Circle, RegularPolygon, Text } from 'react-konva';
 import { darkenColor, isMobileView } from '../common/utils';
@@ -53,19 +53,45 @@ const Pawn = ({ id, x, y, scale, color, isCurrentPlayer, nodeRef, position }: Pa
     return () => clearInterval(interval);
   }, [playerIndicatorRef]);
 
+  const getRankingColors = (position: string | undefined) => {
+    switch(position) {
+      case '1':
+        return {stroke: '#c29102', fill: '#dea602'}
+      case '2':
+        return {stroke: '#8f8e8d', fill: '#b3b2b1'}
+      case '3':
+        return {stroke: '#6b3601', fill: '#8a4a0a'}
+      default:
+        return {stroke: 'gray', fill: 'gray'}
+    }
+  }
+
+  const colors = useMemo(() => getRankingColors(String(position)), [position]);
+
   return (
     <Group x={x} y={y} scaleX={scale} scaleY={scale} ref={nodeRef} listening={false}>
       <Group>
         {position && rankingPositions.has(String(position)) ? (
           <Group>
-            <Circle radius={20} fill="white" stroke="black" x={0} y={-80} />
+            <Circle
+              radius={20}
+              fill={colors.fill}
+              stroke={colors.stroke}
+              strokeWidth={3}
+              x={0}
+              y={-80}
+            />
 
             <Text
               text={String(position)}
               x={0}
               y={-80}
               fontSize={24}
-              fill="black"
+              fill="white"
+              shadowColor="black"
+              shadowBlur={1}
+              shadowOffset={{ x: 1, y: 1 }}
+              shadowOpacity={0.7}
               align="center"
               verticalAlign="middle"
               offsetX={7}
@@ -98,7 +124,7 @@ const Pawn = ({ id, x, y, scale, color, isCurrentPlayer, nodeRef, position }: Pa
             fill="white"
             align="center"
             verticalAlign="middle"
-            offsetX={pawnWidth / 4.5}
+            offsetX={pawnWidth / 8}
             offsetY={pawnWidth / 4.3}
             shadowColor="black"
             shadowBlur={1}

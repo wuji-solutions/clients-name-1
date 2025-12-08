@@ -56,7 +56,6 @@ function SSEOnBoardgameStateChangeListener({ setPositions }: { setPositions: Fun
 }
 
 const parseRankingData = (data: Pawn[]) => {
-  console.log(data.map((playerRankingData, i) => ({ ...playerRankingData, position: i+1 })))
   return data.map((playerRankingData, i) => ({ ...playerRankingData, position: i+1 }));
 };
 

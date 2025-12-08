@@ -37,7 +37,7 @@ const InstructionContainer = styled.div({
   boxShadow: `0px 4px 0 0 ${theme.palette.main.accent}`,
   borderRadius: '15px',
   height: 'fit-content',
-  minHeight: '700px',
+  minHeight: '600px',
   margin: 'auto',
 });
 
@@ -127,11 +127,11 @@ const ModeOption = styled.div<{ active: boolean }>(({ active }) => ({
   padding: '10px',
 
   '&:hover': {
-    backgroundColor: lightenColor(theme.palette.main.background, 0.01),
+    backgroundColor: lightenColor(theme.palette.main.background, 0.05),
   },
 
   backgroundColor: active
-    ? lightenColor(theme.palette.main.background, 0.01)
+    ? lightenColor(theme.palette.main.background, 0.05)
     : theme.palette.main.background,
   transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
   transform: active ? 'none' : 'translateY(10px)',
@@ -194,7 +194,6 @@ function Configurations() {
 
   const toggle = (tab: string) => {
     setTab((prev) => {
-      console.log(prev);
       return prev === '' ? tab : '';
     });
   };
@@ -309,19 +308,15 @@ function Configurations() {
       </ButtonCustom>
       <InstructionContainer>
         <div>
-          {(tab === '' || tab === 'instruction') && (
-            <>
-              <InstructionHeader>
-                Instrukcja uruchomienia
-                <SquareButton onClick={() => toggle('instruction')}>
-                  <ArrowIndicator direction={tab === 'instruction' ? 'down' : 'up'} size={18} />
-                </SquareButton>
-              </InstructionHeader>
-              <div style={{ width: '90%', margin: 'auto' }}>
-                <Divider />
-              </div>
-            </>
-          )}
+          <InstructionHeader>
+            Instrukcja uruchomienia
+            <SquareButton onClick={() => toggle('instruction')}>
+              <ArrowIndicator direction={tab === 'instruction' ? 'down' : 'up'} size={18} />
+            </SquareButton>
+          </InstructionHeader>
+          <div style={{ width: '90%', margin: 'auto' }}>
+            <Divider />
+          </div>
           {tab === 'instruction' && (
             <InstructionContent>
               <span>
@@ -330,13 +325,9 @@ function Configurations() {
                 <span color={theme.palette.main.accent}>Sieć i Internet</span> oraz opcję{' '}
                 <b>Hotspot mobilny</b>
               </span>
-              <span>Możesz szybko przejść do konfiguracji za pomocą poniższego przycisku</span>
-              <ButtonCustom
-                style={{ marginTop: '20px', marginBottom: '20px', width: '180px' }}
-                onClick={openHotspot}
-              >
-                Hotspot
-              </ButtonCustom>
+              <span>
+                Możesz szybko przejść do konfiguracji za pomocą przycisku w zakładce Hotspot
+              </span>
               <span>
                 Upewnij się że Hotspot został włączony, a uczniowie mogą połączyć się z siecią {'('}{' '}
                 za pomocą hasła lub skanując kod QR {')'}
@@ -364,7 +355,12 @@ function Configurations() {
           )}
           {tab === 'hotspot' && (
             <InstructionContent>
-              <span>Hotspot jest aktualnie {hotspotOn ? 'WŁĄCZONY' : 'WYŁĄCZONY'}</span>
+              <ButtonCustom
+                style={{ marginBottom: '10px', width: '180px' }}
+                onClick={openHotspot}
+              >
+                Hotspot
+              </ButtonCustom>
               <span style={{ marginBottom: '20px' }}>
                 Jeżeli kod QR w ustawieniach systemu jest zbyt mały, wpisz w poniższe pola nazwę
                 oraz hasło sieci, oraz klilnij przycisk Pokaż QR
@@ -532,7 +528,7 @@ function Configurations() {
                     borderRadius: '8px',
                     border: `3px solid ${theme.palette.main.accent}`,
                     boxShadow: `0 0 3px 1px ${theme.palette.main.accent}`,
-                    zIndex: 1000
+                    zIndex: 1000,
                   }}
                 >
                   {' '}
