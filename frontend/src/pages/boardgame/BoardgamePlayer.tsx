@@ -24,6 +24,7 @@ import { useError } from '../../providers/ErrorProvider';
 import { getBoardSetup, parsePlayerPositions } from './BoardgameObserver';
 import ArrowIndicator from '../../components/ArrowIndicator';
 import XShape from '../../components/XComponent';
+import ReactMarkdownParser from '../../components/ReactMarkdownParser';
 
 const mobile = isMobileView();
 
@@ -168,8 +169,8 @@ const Popup = styled.div`
   z-index: 999;
   animation: ${popupToCorner} 2.5s ease-in-out forwards;
   display: flex;
-  justifyContent: center;
-  alignContent: center;
+  justifycontent: center;
+  aligncontent: center;
 `;
 
 const NicknameContainer = styled.div({
@@ -537,7 +538,9 @@ function BoardgamePlayer() {
           <QuestionContainer>
             <QuestionHeader>
               <BoardQuestionCategory>{currentQuestion.category}</BoardQuestionCategory>
-              <BoardQuestionTask>{currentQuestion.task}</BoardQuestionTask>
+              <BoardQuestionTask>
+                <ReactMarkdownParser content={currentQuestion.task} />
+              </BoardQuestionTask>
               <div style={{ margin: 'auto', width: 'fit-content' }}>
                 {getParsedDifficultyLevel(currentQuestion.difficultyLevel)}
               </div>
@@ -550,7 +553,7 @@ function BoardgamePlayer() {
                   backgroundcolor={getColor(index)}
                   onClick={() => handleAnswerSelected(answer.id)}
                 >
-                  <h2>{answer.text}</h2>
+                  <ReactMarkdownParser content={answer.text} />
                 </AnswerCard>
               ))}
             </AnswerGrid>

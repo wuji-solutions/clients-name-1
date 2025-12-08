@@ -12,6 +12,7 @@ import { useSSEChannel } from '../../providers/SSEProvider';
 import { service } from '../../service/service';
 import { useError } from '../../providers/ErrorProvider';
 import Divider from '../../components/Divider';
+import ReactMarkdownParser from '../../components/ReactMarkdownParser';
 
 export const Container = styled.div(() => ({
   width: '100%',
@@ -72,7 +73,6 @@ const QuestionCategory = styled.div({
 const QuestionTask = styled.div({
   width: 'fit-content',
   maxWidth: '340px',
-  maxHeight: '150px',
   margin: 'auto',
   fontSize: '18px',
   textAlign: 'center',
@@ -361,7 +361,9 @@ function ExamParticipant() {
               {examResults.questionsAnswered.map((data, index) => (
                 <AnswerContainer>
                   <QuestionCategory>{data.question.category}</QuestionCategory>
-                  <QuestionTask>{data.question.task}</QuestionTask>
+                  <QuestionTask>
+                    <ReactMarkdownParser content={data.question.task} />
+                  </QuestionTask>
                   <QuestionAnswerGrid
                     isGrid={false}
                     style={{
@@ -387,7 +389,7 @@ function ExamParticipant() {
                           transfrom: 'none',
                         }}
                       >
-                        {answer.text}
+                        <ReactMarkdownParser content={answer.text} />
                       </AnswerCard>
                     ))}
                     {data.isCorrect ? (
@@ -434,7 +436,9 @@ function ExamParticipant() {
               <AdditionalInfo>{`${currentQuestion.questionNumber}/${currentQuestion.totalBaseQuestions}`}</AdditionalInfo>
             )}
             <QuestionCategory>{currentQuestion.category}</QuestionCategory>
-            <QuestionTask>{currentQuestion.task}</QuestionTask>
+            <QuestionTask>
+              <ReactMarkdownParser content={currentQuestion.task} />
+            </QuestionTask>
             <QuestionDifficulty>
               {getParsedDifficultyLevel(currentQuestion.difficultyLevel)}
             </QuestionDifficulty>
@@ -447,7 +451,7 @@ function ExamParticipant() {
                 backgroundcolor={theme.palette.main.primary}
                 isselected={selectedAnswers.includes(answer.id)}
               >
-                {answer.text}
+                <ReactMarkdownParser content={answer.text} />
               </AnswerCard>
             ))}
           </QuestionAnswerGrid>

@@ -64,12 +64,6 @@ const smoothCenterOnNode = (
   if (index !== playerIndex) return;
   if (!pzRef.current || !stageRef.current) return;
 
-  if (mobile) {
-    const now = Date.now();
-    if (now - lastCameraUpdate < CAMERA_UPDATE_INTERVAL) return;
-    lastCameraUpdate = now;
-  }
-
   try {
     const rect = stageRef.current.container().getBoundingClientRect();
     const viewX = rect.width / (mobile ? 3.5 : 2.5);
