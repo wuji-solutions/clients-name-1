@@ -1,4 +1,4 @@
-import { useRef, useEffect, useMemo, useState } from 'react';
+import { useRef, useEffect, useMemo, useState, useCallback, memo } from 'react';
 import { Stage, Layer, Ellipse, Path, Group } from 'react-konva';
 import Konva from 'konva';
 import panzoom from 'panzoom';
@@ -23,7 +23,31 @@ interface Props {
   storedPlayerIndex?: string | null;
   positionUpdateBlock?: boolean;
   observerVersion?: boolean;
+  ranking?: any[];
 }
+
+const MemoizedPath = memo(({ 
+  pathData, 
+  fill, 
+  fillPatternImage, 
+  stroke, 
+  strokeWidth, 
+  mobile 
+}: any) => (
+  <Path
+    data={pathData}
+    fill={fill}
+    fillPatternImage={fillPatternImage}
+    fillPatternRepeat="repeat"
+    fillPatternScale={{ x: 1, y: 0.92 }}
+    fillPatternRotation={10}
+    stroke={stroke}
+    strokeWidth={strokeWidth}
+    listening={false}
+    perfectDrawEnabled={false}
+    shadowForStrokeEnabled={false}
+  />
+));
 
 function GameBoard({
   positions,
@@ -35,6 +59,7 @@ function GameBoard({
   observerVersion = false,
   boardColorReferences,
   tileStates = [],
+  ranking = [],
 }: Props) {
   const stageRef = useRef<Konva.Stage | null>(null);
   const pawnReferences = useRef<Map<string, Konva.Group>>(new Map());
@@ -43,8 +68,18 @@ function GameBoard({
   const panzoomOptionsRef = useRef<any>(null);
   const previousPositions = usePrevious(positions);
   const [playerIndex, setPlayerIndex] = useState<string | null>(storedPlayerIndex);
+  const [rankingMap, setRankingMap] = useState<Map<string, any>>(new Map());
+  const [checkerboardLoaded, setCheckerboardLoaded] = useState(false);
 
   const mobile = isMobileView();
+
+  useEffect(() => {
+    const result = new Map();
+    for (const entry of ranking) {
+      result.set(entry.nickname, entry);
+    }
+    setRankingMap(result);
+  }, [ranking]);
 
   useEffect(() => {
     if (!storedPlayerIndex && !observerVersion)
@@ -57,14 +92,14 @@ function GameBoard({
   const BOARD_Y_RADIUS = BOARD_X_RADIUS / 3.5;
   const Y_OFFSET = mobile ? 10 : 45;
 
-  const getInitialZoomValue = () => {
+  const getInitialZoomValue = useCallback(() => {
     if (observerVersion) return 0.9;
     if (mobile) {
       return 1.6;
     } else {
       return 1;
     }
-  };
+  }, [observerVersion, mobile]);
 
   useEffect(() => {
     const stage = stageRef.current;
@@ -102,10 +137,59 @@ function GameBoard({
     }
   }, []);
 
-  // compute field coords
   const fieldCoordinates = useMemo(() => {
     return computeFieldCoordinates(numFields, BOARD_X_RADIUS, BOARD_Y_RADIUS, centerX, centerY);
   }, [width, height, numFields]);
+
+  const checkerboardImage = useMemo(() => {
+    const img = createCheckerboardImage(mobile ? 8 : 18);
+    img.onload = () => setCheckerboardLoaded(true);
+    return img;
+  }, [mobile]);
+
+  const boardPaths = useMemo(() => {
+    const paths = [];
+    const INNER_X_RADIUS = BOARD_X_RADIUS * 0.45;
+    const INNER_Y_RADIUS = (BOARD_Y_RADIUS + 0.35) * 0.45;
+    const OUTER_X_RADIUS = BOARD_X_RADIUS * 1.4;
+    const OUTER_Y_RADIUS = (BOARD_Y_RADIUS + 0.35) * 1.4;
+
+    for (let i = 0; i < numFields; i++) {
+      const angle = ((2 * Math.PI) / numFields) * i;
+      const angleWidth = (2 * Math.PI) / numFields;
+      const startAngle = angle - angleWidth / 2;
+      const endAngle = angle + angleWidth / 2;
+
+      const outerStartX = centerX + OUTER_X_RADIUS * Math.cos(startAngle);
+      const outerStartY = centerY + OUTER_Y_RADIUS * Math.sin(startAngle);
+      const outerEndX = centerX + OUTER_X_RADIUS * Math.cos(endAngle);
+      const outerEndY = centerY + OUTER_Y_RADIUS * Math.sin(endAngle);
+
+      const innerStartX = centerX + INNER_X_RADIUS * Math.cos(startAngle);
+      const innerStartY = centerY + INNER_Y_RADIUS * Math.sin(startAngle);
+      const innerEndX = centerX + INNER_X_RADIUS * Math.cos(endAngle);
+      const innerEndY = centerY + INNER_Y_RADIUS * Math.sin(endAngle);
+
+      const largeArcFlag = angleWidth > Math.PI ? 1 : 0;
+
+      const pathData = `
+        M ${outerStartX} ${outerStartY}
+        A ${BOARD_X_RADIUS} ${BOARD_Y_RADIUS + 0.35} 0 ${largeArcFlag} 1 ${outerEndX} ${outerEndY}
+        L ${innerEndX} ${innerEndY}
+        A ${INNER_X_RADIUS} ${INNER_Y_RADIUS} 0 ${largeArcFlag} 0 ${innerStartX} ${innerStartY}
+        Z
+      `;
+
+      paths.push({
+        key: `path_${i}`,
+        pathData,
+        isStart: i === 0,
+        colorRef: boardColorReferences?.get(tileStates[i]),
+      });
+    }
+
+    return paths;
+  }, [numFields, centerX, centerY, BOARD_X_RADIUS, BOARD_Y_RADIUS, boardColorReferences, tileStates]);
 
   usePawnAnimations({
     positions,
@@ -124,9 +208,17 @@ function GameBoard({
     mobile,
   });
 
+  const handlePawnNodeRef = useCallback((index: string, node: Konva.Group | null) => {
+    if (node) {
+      pawnReferences.current.set(index, node);
+    } else {
+      pawnReferences.current.delete(index);
+    }
+  }, []);
+
   return (
     <Stage width={width} height={height} ref={stageRef}>
-      <Layer>
+      <Layer listening={false}>
         <Ellipse
           x={centerX}
           y={centerY + Y_OFFSET}
@@ -138,8 +230,11 @@ function GameBoard({
           fillRadialGradientEndRadius={BOARD_Y_RADIUS - 50}
           stroke={theme.palette.main.accent}
           strokeWidth={mobile ? 4 : 5}
+          perfectDrawEnabled={false}
+          shadowForStrokeEnabled={false}
         />
         <Group
+          listening={false}
           clipFunc={(ctx) => {
             ctx.ellipse(
               centerX,
@@ -152,62 +247,17 @@ function GameBoard({
             );
           }}
         >
-          {fieldCoordinates.map((coords, i) => {
-            const INNER_X_RADIUS = BOARD_X_RADIUS * 0.45;
-            const INNER_Y_RADIUS = (BOARD_Y_RADIUS + 0.35) * 0.45;
-
-            const angle = ((2 * Math.PI) / numFields) * i;
-            const angleWidth = (2 * Math.PI) / numFields;
-
-            const startAngle = angle - angleWidth / 2;
-            const endAngle = angle + angleWidth / 2;
-
-            const OUTER_X_RADIUS = BOARD_X_RADIUS * 1.4;
-            const OUTER_Y_RADIUS = (BOARD_Y_RADIUS + 0.35) * 1.4;
-
-            const outerStartX = centerX + OUTER_X_RADIUS * Math.cos(startAngle);
-            const outerStartY = centerY + OUTER_Y_RADIUS * Math.sin(startAngle);
-            const outerEndX = centerX + OUTER_X_RADIUS * Math.cos(endAngle);
-            const outerEndY = centerY + OUTER_Y_RADIUS * Math.sin(endAngle);
-
-            const innerStartX = centerX + INNER_X_RADIUS * Math.cos(startAngle);
-            const innerStartY = centerY + INNER_Y_RADIUS * Math.sin(startAngle);
-            const innerEndX = centerX + INNER_X_RADIUS * Math.cos(endAngle);
-            const innerEndY = centerY + INNER_Y_RADIUS * Math.sin(endAngle);
-
-            const largeArcFlag = angleWidth > Math.PI ? 1 : 0;
-            const sweepOuter = 1;
-            const sweepInner = 0;
-
-            const pathData = `
-            M ${outerStartX} ${outerStartY}
-            A ${BOARD_X_RADIUS} ${BOARD_Y_RADIUS + 0.35} 0 ${largeArcFlag} ${sweepOuter} ${outerEndX} ${outerEndY}
-            L ${innerEndX} ${innerEndY}
-            A ${INNER_X_RADIUS} ${INNER_Y_RADIUS} 0 ${largeArcFlag} ${sweepInner} ${innerStartX} ${innerStartY}
-            Z
-          `;
-
-            const checkerboardImage = createCheckerboardImage(mobile ? 8 : 18);
-
-            const checkerboard = i === 0 ? checkerboardImage : undefined;
-
-            const colorReferences = boardColorReferences?.get(tileStates[i]);
-
-            return (
-              <Path
-                key={`path_data_${i}`}
-                data={pathData}
-                fill={i === 0 ? undefined : colorReferences}
-                fillPatternImage={checkerboard}
-                fillPatternRepeat="repeat"
-                fillPatternScale={{ x: 1, y: 0.92 }}
-                fillPatternRotation={10}
-                stroke={theme.palette.main.accent}
-                strokeWidth={mobile ? 2 : 5}
-                listening={false}
-              />
-            );
-          })}
+          {boardPaths.map((path) => (
+            <MemoizedPath
+              key={path.key}
+              pathData={path.pathData}
+              fill={path.isStart ? undefined : path.colorRef}
+              fillPatternImage={path.isStart && checkerboardLoaded ? checkerboardImage : undefined}
+              stroke={theme.palette.main.accent}
+              strokeWidth={mobile ? 2 : 5}
+              mobile={mobile}
+            />
+          ))}
         </Group>
       </Layer>
 
@@ -223,13 +273,8 @@ function GameBoard({
                 scale={1}
                 color={colorPalette[Number.parseInt(pawnData.index) % colorPalette.length]}
                 isCurrentPlayer={pawnData.index == playerIndex}
-                nodeRef={(node) => {
-                  if (node) {
-                    pawnReferences.current.set(pawnData.index, node);
-                  } else {
-                    pawnReferences.current.delete(pawnData.index);
-                  }
-                }}
+                position={rankingMap.get(pawnData.nickname)?.position}
+                nodeRef={(node) => handlePawnNodeRef(pawnData.index, node)}
               />
             );
           })

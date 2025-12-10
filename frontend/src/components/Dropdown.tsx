@@ -60,9 +60,9 @@ const DropdownList = styled.ul<{ open: boolean }>`
   width: 90%;
   max-height: 150px;
   overflow-y: auto;
-  border: 4px solid ${theme.palette.main.accent};
+  border: 4px solid ${darkenColor(theme.palette.main.accent, 0.04)};
   boxShadow: 0 4px 0 0 ${theme.palette.main.accent};
-  background: ${lightenColor( theme.palette.main.accent, 0.02)};
+  background: ${lightenColor( theme.palette.main.accent, 0.05)};
   opacity: ${({ open }) => (open ? 1 : 0)};
   visibility: ${({ open }) => (open ? 'visible' : 'hidden')};
   transform: translateY(${({ open }) => (open ? '0' : '-10px')});
@@ -70,14 +70,14 @@ const DropdownList = styled.ul<{ open: boolean }>`
   z-index: 10;
   color: #fff;
   text-align: center;
-`;
+`;  
 
 const DropdownItem = styled.li`
   padding: 10px;
   cursor: pointer;
 
   &:hover {
-    background: ${lightenColor( theme.palette.main.accent, 0.05)};
+    background: ${lightenColor( theme.palette.main.accent, 0.08)};
   }
 `;
 

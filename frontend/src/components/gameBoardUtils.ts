@@ -9,9 +9,6 @@ export const PERSPECTIVE = 0.35;
 export const MIN_SCALE = 0.6;
 export const MAX_SCALE = 1.2;
 
-/**
- * Create a small checkerboard image using canvas.
- */
 export function createCheckerboardImage(size = 8): HTMLImageElement {
   const canvas = document.createElement('canvas');
   canvas.width = size * 2;
@@ -30,9 +27,6 @@ export function createCheckerboardImage(size = 8): HTMLImageElement {
   return img;
 }
 
-/**
- * Compute the circular/elliptical field coordinates for the board.
- */
 export function computeFieldCoordinates(
   numFields: number,
   BOARD_X_RADIUS: number,
@@ -58,9 +52,6 @@ export function computeFieldCoordinates(
   return coords;
 }
 
-/**
- * Get a pawn's central position inside a field (along radial direction).
- */
 export function getPawnPositionInField(
   fieldCoords: FieldCoordinate,
   centerX: number,
@@ -80,9 +71,6 @@ export function getPawnPositionInField(
   };
 }
 
-/**
- * Position pawns stacked on a field — spacing depends on STACK_OFFSET and the pawn scale.
- */
 export function getStackedPosition(
   baseCoords: FieldCoordinate,
   stackIndex: number,
@@ -105,9 +93,6 @@ export function getStackedPosition(
   };
 }
 
-/**
- * Generate intermediate clockwise indices from `fromIndex` to `toIndex`.
- */
 export function generateClockwisePathIndices(
   fromIndex: number,
   toIndex: number,
@@ -135,9 +120,6 @@ export function generateClockwisePathIndices(
   return stepIndices;
 }
 
-/**
- * Find which field index is closest to a Konva node's absolute position.
- */
 export function findClosestFieldIndex(
   node: Konva.Node,
   fieldCoordinates: FieldCoordinate[],

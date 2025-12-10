@@ -49,6 +49,40 @@ interface ResolvePathPromiseArgs {
   toStackIndex: number;
 }
 
+const smoothCenterOnNode = (
+  playerIndex: string | null,
+  stageRef: RefObject<Konva.Stage | null>,
+  mobile: boolean,
+  pzRef: MutableRefObject<any | null>,
+  node: Konva.Node,
+  index: string,
+  lerp = 0.2
+) => {
+  if (index !== playerIndex) return;
+  if (!pzRef.current || !stageRef.current) return;
+
+  try {
+    const rect = stageRef.current.container().getBoundingClientRect();
+    const viewX = rect.width / (mobile ? 3.5 : 2.5);
+    const viewY = rect.height / (mobile ? 3.5 : 2.5);
+
+    const pawnPos = node.getAbsolutePosition();
+    const transform = pzRef.current.getTransform();
+
+    const targetX = viewX - pawnPos.x * transform.scale;
+    const targetY = viewY - pawnPos.y * transform.scale;
+
+    const newX = transform.x + (targetX - transform.x) * lerp;
+    const newY = transform.y + (targetY - transform.y) * lerp;
+
+    pzRef.current.moveTo(newX, newY);
+    const scale = mobile ? 2 : 1.5;
+    pzRef.current.zoomAbs(viewX, viewY, scale);
+  } catch {
+    // ignore
+  }
+};
+
 const resolvePathPromise = ({
   previousPositions,
   fromIndex,
@@ -91,7 +125,10 @@ const resolvePathPromise = ({
     const stepIndices = generateClockwisePathIndices(fromIndex, toIndex, numFields);
 
     const animatePath = async () => {
-      for (const stepIndex of stepIndices) {
+      const skipSteps = 1;
+      const filteredSteps = stepIndices.filter((_, idx) => idx % skipSteps === 0);
+
+      for (const stepIndex of filteredSteps) {
         const stepCoords = fieldCoordinates[stepIndex];
         if (!stepCoords) continue;
 
@@ -103,7 +140,7 @@ const resolvePathPromise = ({
             y: stepPosition.y,
             scaleX: stepPosition.scale,
             scaleY: stepPosition.scale,
-            duration: 0.25,
+            duration: 0.4,
             easing: Konva.Easings.EaseInOut,
             onUpdate: () => smoothCenterOnNode(playerIndex, stageRef, mobile, pzRef, node, pawnId),
             onFinish: () => stepResolve(),
@@ -127,7 +164,7 @@ const resolvePathPromise = ({
           y: endStackedPos.y,
           scaleX: endStackedPos.scale,
           scaleY: endStackedPos.scale,
-          duration: 0.25,
+          duration: 0.4,
           easing: Konva.Easings.EaseInOut,
           onUpdate: () => smoothCenterOnNode(playerIndex, stageRef, mobile, pzRef, node, pawnId),
           onFinish: () => finalResolve(),
@@ -194,7 +231,7 @@ const resolvePawnDidntMove = ({
         y: stackedPos.y,
         scaleX: stackedPos.scale,
         scaleY: stackedPos.scale,
-        duration: 0.2,
+        duration: 0.4,
         easing: Konva.Easings.EaseOut,
         onUpdate: () => smoothCenterOnNode(playerIndex, stageRef, mobile, pzRef, node, pawnId),
         onFinish: () => resolve(),
@@ -210,54 +247,21 @@ const resolveStopPromise = (
   node: Konva.Node,
   tweensRef: MapRef<any>,
   stopTweenIfExists: Function,
-  pawnData: Pawn
+  pawnData: Pawn,
+  mobile: boolean
 ) => {
   const promise = new Promise<void>((resolve) => {
     const tween = node.to({
       opacity: 0,
       scaleX: 0,
       scaleY: 0,
-      duration: 0.2,
+      duration: 0.4,
       onFinish: () => resolve(),
     });
     tweensRef.current.set(pawnData.index, tween);
   });
 
   promise.then(() => stopTweenIfExists(pawnData.index));
-};
-
-const smoothCenterOnNode = (
-  playerIndex: string | null,
-  stageRef: RefObject<Konva.Stage | null>,
-  mobile: boolean,
-  pzRef: MutableRefObject<any | null>,
-  node: Konva.Node,
-  index: string,
-  lerp = 0.2
-) => {
-  if (index !== playerIndex) return;
-  if (!pzRef.current || !stageRef.current) return;
-
-  try {
-    const rect = stageRef.current.container().getBoundingClientRect();
-    const viewX = rect.width / (mobile ? 3.5 : 2.5);
-    const viewY = rect.height / (mobile ? 3.5 : 2.5);
-
-    const pawnPos = node.getAbsolutePosition();
-    const transform = pzRef.current.getTransform();
-
-    const targetX = viewX - pawnPos.x * transform.scale;
-    const targetY = viewY - pawnPos.y * transform.scale;
-
-    const newX = transform.x + (targetX - transform.x) * lerp;
-    const newY = transform.y + (targetY - transform.y) * lerp;
-
-    pzRef.current.moveTo(newX, newY);
-    const scale = mobile ? 2.5 : 1.5;
-    pzRef.current.zoomAbs(viewX, viewY, scale);
-  } catch {
-    // ignore
-  }
 };
 
 function animatePawns({
@@ -348,7 +352,7 @@ function animatePawns({
         if (!node) return;
         stopTweenIfExists(pawnData.index);
 
-        resolveStopPromise(node, tweensRef, stopTweenIfExists, pawnData);
+        resolveStopPromise(node, tweensRef, stopTweenIfExists, pawnData, mobile);
       }
     });
   });

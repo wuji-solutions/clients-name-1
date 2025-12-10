@@ -30,8 +30,6 @@ abstract class QuestionService {
             PlayerAnswer(
                 question, answerIds, answerTimeInMilliseconds, playerCheated)
         player.details.answers.add(playerAnswer)
-        println(
-            "ANSWERING QUESTION: $question, ANSWER: $answerIds, ARE CORRECT: ${question.areCorrectAnswerIds(answerIds)}")
         return question.areCorrectAnswerIds(answerIds)
     }
 

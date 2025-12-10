@@ -1,7 +1,7 @@
 import { styled } from 'styled-components';
 import { useEffect, useState } from 'react';
 import GameBoard from '../../components/GameBoard';
-import { BoardConfig, BoardPositions, Pawn } from '../../common/types';
+import { BoardConfig, BoardPositions, Pawn, PlayerState } from '../../common/types';
 import { useContainerDimensions } from '../../hooks/useContainerDimensions';
 import { service } from '../../service/service';
 import { useSSEChannel } from '../../providers/SSEProvider';
@@ -55,14 +55,18 @@ function SSEOnBoardgameStateChangeListener({ setPositions }: { setPositions: Fun
   return <></>;
 }
 
+const parseRankingData = (data: Pawn[]) => {
+  return data.map((playerRankingData, i) => ({ ...playerRankingData, position: i+1 }));
+};
+
 function SSEBoardGameRankingChangeListener({ setRanking }: { setRanking: Function }) {
   const delegate = useSSEChannel(BACKEND_ENDPOINT + '/sse/events', {
     withCredentials: true,
   });
 
   useEffect(() => {
-    const unsubscribe = delegate.on('new-ranking-state', (data) => {
-      setRanking(data);
+    const unsubscribe = delegate.on('new-leaderboard-state', (data) => {
+      setRanking(parseRankingData(data));
     });
     return unsubscribe;
   }, [delegate]);
@@ -180,7 +184,7 @@ function BoardgameObserver() {
 
   useEffect(() => {
     service.getPlayerLeaderboard().then((response) => {
-      setPlayerRanking(response.data);
+      setPlayerRanking(parseRankingData(response.data));
     });
   }, []);
 
@@ -222,6 +226,7 @@ function BoardgameObserver() {
             observerVersion={true}
             boardColorReferences={boardColorReferences}
             tileStates={tileStates}
+            ranking={showRanking ? playerRanking : []}
           />
         )}
       </GameContainer>

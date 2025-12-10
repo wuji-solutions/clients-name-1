@@ -48,6 +48,7 @@ body {
   scrollbar-width: thin;
   scrollbar-color: #2d2e30 transparent;
   overflow-x: 'hidden';
+  min-height: '-webkit-fill-available';
 }
 
 body::-webkit-scrollbar {
@@ -83,4 +84,8 @@ button {
 a, 
 input {
   -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  overscroll-behavior-y: contain;
 }

@@ -1,6 +1,6 @@
 import { useState, Dispatch, SetStateAction } from 'react';
 import { DifficultyLevel } from '../../common/types';
-import { CenteredLabel } from '../Fields';
+import { CenteredLabel, CustomInput } from '../Fields';
 import { LabeledCheckboxContainer } from './components/LabeledCheckbox';
 import { ButtonCustom } from '../Button';
 import PerCategoryPromotionModal from './PerCategoryPromotionModal';
@@ -14,6 +14,7 @@ export type BoardSettings = {
   showLeaderboard: boolean;
   pointsPerDifficulty: Record<DifficultyLevel, number>;
   rankingPromotionRules: Record<string, number>;
+  numberOfTiles: number;
 };
 
 interface Props {
@@ -43,6 +44,20 @@ export default function BoardConfig({ settings, setSettings, categoryNames, pars
       >
         Ustawienia planszówki
       </p>
+      <LabeledCheckboxContainer>
+              <CenteredLabel>Liczba pól na planszy</CenteredLabel>
+              <CustomInput
+                style={{ height: '35px' }}
+                type="number"
+                value={settings.numberOfTiles}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    numberOfTiles: Number.parseInt(e.target.value),
+                  })
+                }
+              />
+            </LabeledCheckboxContainer>
       <LabeledCheckboxContainer>
         <CenteredLabel htmlFor="setShowLeaderboard">
           Czy ranking uczniów powinien się wyświetlać

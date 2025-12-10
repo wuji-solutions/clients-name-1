@@ -23,12 +23,13 @@ const Root = styled.div<{ $size: number; $color: string; $rotation: string }>`
   height: ${({ $size }) => $size}px;
   position: relative;
   transform-origin: center center;
+  margin: auto;
 
   &::before {
     content: '';
     position: absolute;
     left: 50%;
-    top: 62.5%;
+    top: 50%;
     width: ${({ $size }) => Math.round($size * 0.45)}px;
     height: ${({ $size }) => Math.round($size * 0.45)}px;
     border-right: ${({ $size }) => Math.max(1, Math.round($size / 6))}px solid ${({ $color }) => $color};
@@ -52,3 +53,12 @@ const ArrowIndicator: React.FC<Props> = ({
 };
 
 export default ArrowIndicator;
+
+export const CustomArrows = () => {
+  return (
+    <div style={{position: 'relative'}}>
+      <Root $size={14} $color={'currentColor'} $rotation={'180deg'} style={{position: 'absolute', left: '-3px', top: '-11px'}}/>
+      <Root $size={14} $color={'currentColor'} $rotation={'0deg'} style={{position: 'absolute', left: '2px', top: '-6px'}}/>
+    </div>
+  )
+}

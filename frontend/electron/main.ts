@@ -1,10 +1,10 @@
 import { app, BrowserWindow, ipcMain, shell, dialog } from 'electron';
 import * as path from 'path';
 import * as os from 'os';
+import { ChildProcessWithoutNullStreams, exec, spawn } from 'child_process';
+import { existsSync, mkdirSync, writeFileSync, unlinkSync, readFileSync } from 'fs';
 import * as http from 'http';
 import * as fs from 'fs';
-import { ChildProcessWithoutNullStreams, exec } from 'child_process';
-import { existsSync, mkdirSync } from 'fs';
 
 let win: BrowserWindow | null = null;
 let child: ChildProcessWithoutNullStreams;
@@ -215,4 +215,188 @@ ipcMain.on('open-hotspot-menu', () => {
   } else {
     console.warn('Platform not supported for opening hotspot settings');
   }
+});
+
+ipcMain.handle('set-wifimaxpeers', async (event, maxPeers) => {
+  try {
+    if (os.platform() !== 'win32') {
+      return { success: false, error: 'Ta opcja jest dostępna tylko na systemach Windows.' };
+    }
+
+    const n = Number(maxPeers);
+    if (!Number.isInteger(n) || n < 1 || n > 255) {
+      return { success: false, error: 'Wartość musi zawierać się pomiędzy 1 a 120.' };
+    }
+
+    const psCommands = [];
+    psCommands.push(`# Set WifiMaxPeers and restart icssvc`);
+    psCommands.push(`$ErrorActionPreference = 'Stop'`);
+    psCommands.push(`$max = ${n}`);
+    psCommands.push(`$regPath = 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\icssvc\\Settings'`);
+    psCommands.push(`If (-not (Test-Path $regPath)) { New-Item -Path $regPath -Force | Out-Null }`);
+    psCommands.push(
+      `Set-ItemProperty -Path $regPath -Name WifiMaxPeers -Value $max -Type DWord -Force`
+    );
+    psCommands.push(`Write-Output "Wrote WifiMaxPeers = $max to $regPath"`);
+    psCommands.push(
+      `Try { Stop-Service -Name icssvc -Force -ErrorAction Stop; Start-Sleep -Seconds 1 } Catch { Write-Output 'Stop-Service failed or service not running.' }`
+    );
+    psCommands.push(`Start-Service -Name icssvc -ErrorAction Stop`);
+    psCommands.push(`Write-Output 'icssvc restarted (if possible).';`);
+
+    const psContent = psCommands.join('\r\n');
+
+    const psPath = path.join(os.tmpdir(), `set-wifimaxpeers-${Date.now()}.ps1`);
+    writeFileSync(psPath, psContent, { encoding: 'utf8' });
+
+    const launcherArgs = [
+      '-NoProfile',
+      '-ExecutionPolicy',
+      'Bypass',
+      '-Command',
+      `Start-Process -FilePath 'powershell.exe' -ArgumentList '-NoProfile -ExecutionPolicy Bypass -File "${psPath}"' -Verb RunAs -Wait`,
+    ];
+
+    const child = spawn('powershell.exe', launcherArgs, { windowsHide: true });
+
+    let stdout = '';
+    let stderr = '';
+
+    child.stdout &&
+      child.stdout.on('data', (d) => {
+        stdout += d.toString();
+      });
+    child.stderr &&
+      child.stderr.on('data', (d) => {
+        stderr += d.toString();
+      });
+
+    const exitCode = await new Promise((resolve) => {
+      child.on('error', (err) => {
+        resolve({ error: true, message: String(err) });
+      });
+      child.on('close', (code) => resolve(code));
+    });
+
+    try {
+      unlinkSync(psPath);
+    } catch (e) {}
+
+    if (exitCode !== 0) {
+      return { success: false, error: `Błąd: ${exitCode}. Stderr: ${stderr}` };
+    }
+
+    return { success: true, stdout, stderr };
+  } catch (err) {
+    console.error(err);
+    return { success: false, error: String(err) };
+  }
+});
+
+ipcMain.handle('get-wifimaxpeers', async () => {
+  try {
+    const value = await new Promise((resolve, reject) => {
+      exec(
+        `powershell -NoProfile -Command "(Get-ItemProperty 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\icssvc\\Settings').WifiMaxPeers"`,
+        (err, stdout) => {
+          if (err) return reject(err);
+
+          const value = stdout.trim();
+
+          if (!value) {
+            return resolve(8);
+          }
+          const parsed = parseInt(value, 10);
+          resolve(Number.isNaN(parsed) ? 8 : parsed);
+        }
+      );
+    });
+    return { success: true, value };
+  } catch (err) {
+    return { success: false, error: String(err) };
+  }
+});
+
+ipcMain.handle('isHotspotOn', async () => {
+  return await new Promise((resolve) => {
+    exec(
+      'powershell "(Get-NetAdapter | Where-Object {$_.InterfaceDescription -like \\"*Microsoft Wi-Fi Direct*\\\"}).Status"',
+      (err, stdout) => {
+        if (err) return resolve(false);
+
+        const status = stdout.trim().toLowerCase();
+        resolve(status === 'up');
+      }
+    );
+  });
+});
+
+ipcMain.handle('enableHotspot', async (_, { ssid, password, adapter }) => {
+  return new Promise((resolve, reject) => {
+    const command = `
+    netsh wlan set hostednetwork mode=allow ssid="${ssid}" key="${password}"
+    netsh wlan start hostednetwork
+    Start-Service icssvc
+    Set-NetConnectionSharing -ConnectionName "${adapter}" -SharingMode Enable -ShareConnectToInternet $true
+    `;
+
+    exec(`powershell -Command "${command}"`, (err, stdout, stderr) => {
+      if (err) return reject(stderr);
+      resolve(stdout);
+    });
+  });
+});
+
+ipcMain.handle('getHotspotAdapter', async () => {
+  return await new Promise((resolve) => {
+    const command = `
+      Get-NetAdapter |
+      Where-Object { $_.Status -eq "Up" } |
+      Select-Object -ExpandProperty Name
+    `;
+
+    exec(`powershell -Command "${command}"`, (err, stdout) => {
+      if (err || !stdout) return resolve(null);
+
+      const adapters = stdout
+        .trim()
+        .split('\n')
+        .map((a) => a.trim());
+
+      const preferredOrder = ['Wi-Fi', 'Ethernet', 'Ethernet 2', 'Cellular'];
+
+      for (const pref of preferredOrder) {
+        const match = adapters.find((a) => a === pref);
+        if (match) return resolve(match);
+      }
+
+      resolve(adapters[0] || null);
+    });
+  });
+});
+
+const configPath = path.join(app.getPath("userData"), "hotspot-config.json");
+
+export function saveHotspotConfig(ssid: string, password: string) {
+  writeFileSync(
+    configPath,
+    JSON.stringify({ ssid, password }, null, 2),
+    "utf8"
+  );
+}
+
+export function loadHotspotConfig() {
+  if (!existsSync(configPath)) {
+    return { ssid: "", password: "" };
+  }
+
+  return JSON.parse(readFileSync(configPath, "utf8"));
+}
+
+ipcMain.handle("configureHotspot", (_, { ssid, password }) => {
+  saveHotspotConfig(ssid, password);
+});
+
+ipcMain.handle("getHotspotConfig", () => {
+  return loadHotspotConfig();
 });

@@ -39,5 +39,6 @@ export const CenteredLabel = styled.label`
   align-items: center;
   height: 50px;
   font-size: 125%;
-  max-width: 350px;
+  max-width: 300px;
+  gap: 10px;
 `;

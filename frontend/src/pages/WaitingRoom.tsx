@@ -21,7 +21,7 @@ const Container = styled.div({
   flexDirection: 'row',
 });
 
-const QRWrapper = styled.div({
+export const QRWrapper = styled.div({
   padding: '10px',
   border: `5px solid ${theme.palette.main.accent}`,
   height: 'fit-content',
@@ -30,12 +30,13 @@ const QRWrapper = styled.div({
   margin: 'auto',
 });
 
-const QRContainer = styled.div({
+export const QRContainer = styled.div({
   margin: 'auto',
   background: '#fff',
   padding: '15px',
   borderRadius: '15px',
   border: '5px solid #fff',
+  position: 'relative',
 });
 
 const ActionButtonContainer = styled.div({
@@ -79,7 +80,6 @@ function SSEOnStartListener({ onGameStart }: { onGameStart: Function }) {
   return <></>;
 }
 
-
 function PlayerKickListener({
   userHandler,
   onKick,
@@ -122,16 +122,22 @@ function WaitingRoom() {
 
   const joinGame = () => {
     if (!identificator || !gameMode) return;
+    Cookies.remove('JSESSIONID');
     service
       .joinGame(identificator, gameMode)
       .then((response) => {
+        if (response.status === 208) {
+          setError('Gracz o takim identyfikatorze dołączył juz do rozgrywki');
+          return;
+        }
         setUsername(response.data);
         sessionStorage.setItem('username', response.data);
         sessionStorage.setItem('userindex', identificator.toString());
       })
-      .catch((error) =>
-        setError('Wystąpił błąd podczas dołączania do gry\n' + error.response.data.message)
-      );
+      .catch((error) => {
+        setError('Wystąpił błąd podczas dołączania do gry\n' + error.response.data.message);
+        setUsername(null);
+      });
   };
 
   const startGame = () => {
@@ -162,7 +168,6 @@ function WaitingRoom() {
   };
 
   if (!isAdmin()) {
-    console.log("TRYB: " + gameMode);
     if (!gameMode || !['quiz', 'board', 'exam'].includes(gameMode))
       return (
         <Container>
@@ -215,6 +220,12 @@ function WaitingRoom() {
 
   return (
     <Container>
+      <ButtonCustom
+        onClick={() => navigate('/konfiguracja')}
+        style={{ position: 'absolute', left: '80px', top: '10px' }}
+      >
+        Powrót
+      </ButtonCustom>
       <div
         style={{
           position: 'absolute',
@@ -239,10 +250,10 @@ function WaitingRoom() {
             borderBottom: `4px solid ${theme.palette.main.accent}`,
           }}
         />
-        <span style={{justifyContent: 'center', textAlign: 'center'}}>
-        {gameMode === 'quiz' && 'QUIZ'}
-        {gameMode === 'exam' && 'SPRAWDZIAN'}
-        {gameMode === 'board' && 'GRA PLANSZOWA'}
+        <span style={{ justifyContent: 'center', textAlign: 'center' }}>
+          {gameMode === 'quiz' && 'QUIZ'}
+          {gameMode === 'exam' && 'SPRAWDZIAN'}
+          {gameMode === 'board' && 'GRA PLANSZOWA'}
         </span>
         <div
           style={{
@@ -259,13 +270,12 @@ function WaitingRoom() {
         <QRContainer>
           <QRCode
             size={400}
-            value={`http://192.168.137.1:3000/waiting-room?tryb=${gameMode}`} // NOSONAR
+            value={`http://192.168.137.1:3000/#/waiting-room?tryb=${gameMode}`} // NOSONAR
           />
         </QRContainer>
       </QRWrapper>
       <ActionButtonContainer>
         <ButtonCustom onClick={() => startGame()}>Zacznij grę</ButtonCustom>
-        <ButtonCustom onClick={() => navigate('/konfiguracja')}>Powrót</ButtonCustom>
       </ActionButtonContainer>
     </Container>
   );

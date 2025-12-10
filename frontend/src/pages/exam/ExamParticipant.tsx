@@ -12,6 +12,7 @@ import { useSSEChannel } from '../../providers/SSEProvider';
 import { service } from '../../service/service';
 import { useError } from '../../providers/ErrorProvider';
 import Divider from '../../components/Divider';
+import ReactMarkdownParser from '../../components/ReactMarkdownParser';
 
 export const Container = styled.div(() => ({
   width: '100%',
@@ -31,7 +32,7 @@ const TimerContainer = styled.div({
 
 const QuestionContainer = styled.div({
   width: '100%',
-  marginTop: '10px',
+  marginTop: '0px',
 });
 
 const QuestionHeader = styled.div({
@@ -72,7 +73,6 @@ const QuestionCategory = styled.div({
 const QuestionTask = styled.div({
   width: 'fit-content',
   maxWidth: '340px',
-  maxHeight: '150px',
   margin: 'auto',
   fontSize: '18px',
   textAlign: 'center',
@@ -94,8 +94,8 @@ const QuestionAnswerGrid = styled.div<{ isGrid: boolean }>(({ isGrid }) => ({
   marginTop: '10px',
   boxShadow: `0 3px 0 0 ${theme.palette.main.accent}`,
   overflowY: 'auto',
-  height: '320px',
-  gap: '10px',
+  maxHeight: '370px',
+  gap: '15px',
 
   display: 'flex',
   flexDirection: 'column',
@@ -301,6 +301,8 @@ function ExamParticipant() {
           if (!allowGoingBack) setDisableAnswers(true);
           setForceFetchCurrentQuestion(!forceFetchCurrentQuestion);
         }
+        setPlayerCheated(false);
+        sessionStorage.removeItem('playerCheated');
       })
       .catch((error) =>
         setError('Wystąpił błąd podczas wysyłania odpowiedzi:\n' + error.response.data.message)
@@ -359,7 +361,9 @@ function ExamParticipant() {
               {examResults.questionsAnswered.map((data, index) => (
                 <AnswerContainer>
                   <QuestionCategory>{data.question.category}</QuestionCategory>
-                  <QuestionTask>{data.question.task}</QuestionTask>
+                  <QuestionTask>
+                    <ReactMarkdownParser content={data.question.task} />
+                  </QuestionTask>
                   <QuestionAnswerGrid
                     isGrid={false}
                     style={{
@@ -376,7 +380,6 @@ function ExamParticipant() {
                         backgroundcolor={theme.palette.main.primary}
                         isselected={data.selectedAnswerIds.includes(answer.id)}
                         style={{
-                          height: '10px',
                           minHeight: '10px',
                           padding: '10px 10px 20px 10px',
                           marginLeft: 'auto',
@@ -386,7 +389,7 @@ function ExamParticipant() {
                           transfrom: 'none',
                         }}
                       >
-                        {answer.text}
+                        <ReactMarkdownParser content={answer.text} />
                       </AnswerCard>
                     ))}
                     {data.isCorrect ? (
@@ -433,7 +436,9 @@ function ExamParticipant() {
               <AdditionalInfo>{`${currentQuestion.questionNumber}/${currentQuestion.totalBaseQuestions}`}</AdditionalInfo>
             )}
             <QuestionCategory>{currentQuestion.category}</QuestionCategory>
-            <QuestionTask>{currentQuestion.task}</QuestionTask>
+            <QuestionTask>
+              <ReactMarkdownParser content={currentQuestion.task} />
+            </QuestionTask>
             <QuestionDifficulty>
               {getParsedDifficultyLevel(currentQuestion.difficultyLevel)}
             </QuestionDifficulty>
@@ -446,13 +451,13 @@ function ExamParticipant() {
                 backgroundcolor={theme.palette.main.primary}
                 isselected={selectedAnswers.includes(answer.id)}
               >
-                {answer.text}
+                <ReactMarkdownParser content={answer.text} />
               </AnswerCard>
             ))}
           </QuestionAnswerGrid>
           <ButtonContainer>
             <ButtonCustom
-              disabled={answerSent}
+              disabled={answerSent || disableAnswers}
               onClick={handleAnswerSent}
               style={{ maxWidth: '160px' }}
             >

@@ -7,8 +7,8 @@ const AnswerCard = styled.div<{ backgroundcolor: string; isselected: boolean | u
     let bg;
     if (usegradient) {
       bg = isselected
-        ? `linear-gradient(135deg, ${darkenColor(base, 0.3)}, ${darkenColor(base, 0.45)})`
-        : `linear-gradient(135deg, ${base}, ${darkenColor(base, 0.25)})`;
+        ? `linear-gradient(135deg, ${darkenColor(base, 0.6)}, ${darkenColor(base, 0.75)})`
+        : `linear-gradient(135deg, ${base}, ${darkenColor(base, 0.75)})`;
     } else {
       bg = isselected ? darkenColor(base, 0.1) :  base;
     }
@@ -17,14 +17,14 @@ const AnswerCard = styled.div<{ backgroundcolor: string; isselected: boolean | u
       color: isselected ? '#dee0e0' : '#fff',
       borderRadius: '20px',
       minHeight: '15px',
-      maxHeight: '25px',
+      height: 'fit-content',
       width: 'fit-content',
       minWidth: '100px',
       maxWidth: '300px',
       margin: 'auto',
       padding: '20px',
       background: bg,
-      boxShadow: `0 5px 1px 1px ${ isselected ? darkenColor(base, 0.16) : darkenColor(base, 0.06)}`,
+      boxShadow: ` ${ isselected ? '0 8px 1px 3px' : '0 5px 1px 1px' } ${ isselected ? darkenColor(base, 0.16) : darkenColor(base, 0.06)}`,
       transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
       cursor: 'pointer',
       transform: isselected ? 'none' : 'translateY(5px)',
@@ -35,11 +35,10 @@ const AnswerCard = styled.div<{ backgroundcolor: string; isselected: boolean | u
       '-webkit-touch-callout': 'none',
       outline: 'none',
       WebkitTapHighlightColor: 'transparent',
+      justifyContent: 'center',
+      alignContent: 'center',
       textAlign: 'center',
-      '& h2': {
-        margin: 0,
-        fontSize: '0.8rem',
-      },
+      fontSize: 'clamp(0.7rem, 1.8vw, 1rem)',
       ...style,
     };
   }

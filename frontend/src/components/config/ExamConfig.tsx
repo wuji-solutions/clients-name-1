@@ -5,7 +5,7 @@ import { LabeledCheckboxContainer } from './components/LabeledCheckbox';
 import './config-styles.css';
 import DifficultyPoints from './components/DifficultyPoints';
 import EnableQuestionConfig from './EnableQuestionConfig';
-import { ButtonCustom } from '../Button';
+import { ButtonCustom, InfoButton } from '../Button';
 import theme from '../../common/theme';
 import ToggleSwitch from '../ToggleSwitch';
 
@@ -138,7 +138,10 @@ export default function ExamConfig({
         />
       </LabeledCheckboxContainer>
       <LabeledCheckboxContainer>
-        <CenteredLabel>Szczegóły pytań w wynikach sprawdzianu</CenteredLabel>
+        <CenteredLabel>
+          Szczegóły pytań w wynikach sprawdzianu
+          <InfoButton tooltip="Uczeń poza liczbą punktów pozna informacje o tym, na które pytania odpowiedział poprwanie" />  
+          </CenteredLabel>
         <ToggleSwitch
           checked={settings.showDetailedFinishFeedback}
           onChange={(e) =>

@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { SSEDelegate } from '../../delegate/SSEDelegate';
 import { getPercentage, getColor, getParsedDifficultyLevel } from '../../common/utils';
 import { useError } from '../../providers/ErrorProvider';
+import ReactMarkdownParser from '../../components/ReactMarkdownParser';
 
 const Container = styled.div(() => ({
   width: '90%',
@@ -312,12 +313,18 @@ function Quiz() {
                     backgroundcolor={getColor(index)}
                     onClick={() => handleAnswerSelected(answer.id)}
                   >
-                    <h2>{answer.text}</h2>
+                    <h3>
+                      <ReactMarkdownParser content={answer.text} />
+                    </h3>
                   </AnswerCard>
                 ))}
               </AnswerColumn>
 
-              <ButtonCustom disabled={sendingAnswer} onClick={() => handleAnswerSent()}>
+              <ButtonCustom
+                disabled={sendingAnswer}
+                onClick={() => handleAnswerSent()}
+                style={{ marginBottom: '10px' }}
+              >
                 Wyślij odpowiedź
               </ButtonCustom>
             </AnswerContainer>
@@ -340,7 +347,9 @@ function Quiz() {
         <QuestionContainer>
           <QuestionHeader>
             <QuestionCategory>{currentQuestion.category}</QuestionCategory>
-            <QuestionTask>{currentQuestion.task}</QuestionTask>
+            <QuestionTask>
+              <ReactMarkdownParser content={currentQuestion.task} />
+            </QuestionTask>
             <QuestionDifficulty>
               {getParsedDifficultyLevel(currentQuestion.difficultyLevel)}
             </QuestionDifficulty>
@@ -365,7 +374,7 @@ function Quiz() {
                       display: 'flex',
                     }}
                   >
-                    {answer.text}
+                    <ReactMarkdownParser content={answer.text} />
                   </span>
                 </AnswerCard>
               ))}
@@ -398,7 +407,7 @@ function Quiz() {
                         display: 'flex',
                       }}
                     >
-                      {answer.answer.text}
+                      <ReactMarkdownParser content={answer.answer.text} />
                     </span>
                   </AnswerCard>
                 </div>
@@ -426,7 +435,9 @@ function Quiz() {
                 Przejdź do kolejnego pytania
               </ButtonCustom>
             )}
-            <ButtonCustom onClick={handleQuizEnd}>Zakończ quiz</ButtonCustom>
+            <ButtonCustom onClick={handleQuizEnd} color={theme.palette.button.info}>
+              Zakończ quiz
+            </ButtonCustom>
           </div>
         </QuestionContainer>
       )}

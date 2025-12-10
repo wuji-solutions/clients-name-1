@@ -17,6 +17,8 @@ const theme = {
       primary: '#2758e8',
       accent: darkenColor('#1349eb', 0.03),
       background: 'secondary',
+      info: '#626770',
+      info_accent: darkenColor('#626770', 0.1),
     },
   },
 };

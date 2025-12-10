@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { QuestionData } from '../common/types';
 import { getColor, getPercentage } from '../common/utils';
 import { useError } from '../providers/ErrorProvider';
+import ReactMarkdownParser from '../components/ReactMarkdownParser';
 
 interface Props {
   data: QuestionData;
@@ -90,12 +91,14 @@ const QuestionCard = ({ data }: Props) => {
 
   return (
     <Card>
-      <Task>{question.task}</Task>
+      <Task>
+        <ReactMarkdownParser content={question.task} />
+      </Task>
       <Category>Kategoria: {question.category}</Category>
       <AnswerList>
         {question.answers.map((answer, index) => (
           <AnswerCard backgroundcolor={getColor(index)} key={answer.id} isselected={false}>
-            {answer.text}
+            <ReactMarkdownParser content={answer.text} />
           </AnswerCard>
         ))}
       </AnswerList>
