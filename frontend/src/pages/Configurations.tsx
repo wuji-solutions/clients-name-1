@@ -159,6 +159,58 @@ const ActionButtonContainer = styled.div({
   gap: '20px',
 });
 
+const CustomVideo = styled.video({
+  width: '100%',
+  height: 'auto',
+  borderRadius: '8px',
+  border: `3px solid ${theme.palette.main.accent}`,
+  boxShadow: `0 0 3px 1px ${theme.palette.main.accent}`,
+});
+
+const Tile = styled.div({
+  borderRadius: '10px',
+  width: '60px',
+  height: '35px',
+});
+
+const ExamIconMain = styled.div({
+  margin: 'auto',
+  marginTop: '20px',
+  width: '60px',
+  height: '65px',
+  borderRadius: '6px',
+  backgroundColor: '#ffffff',
+  border: '1px solid #dcdcdc',
+  boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '10px',
+  justifyContent: 'center',
+  alignItems: 'center',
+  paddingBottom: '10px',
+});
+
+const ExamIconLine = styled.div({
+  width: '60%',
+  height: '10px',
+  borderRadius: '4px',
+  backgroundColor: '#e0e0e0',
+});
+
+const customStyle = {
+  width: '700px',
+  background: 'transparent',
+  border: 'none',
+  boxShadow: 'none',
+};
+
+const HorizontalLine = styled.div({
+  margin: 'auto',
+  height: '10%',
+  width: '50%',
+  borderBottom: `4px solid ${theme.palette.main.accent}`,
+});
+
 const getConfig = (
   mode: mode,
   commonSettings: CommonSettings,
@@ -265,7 +317,7 @@ function Configurations() {
       HARD: 3,
     },
     rankingPromotionRules: {},
-    numberOfTiles: 10
+    numberOfTiles: 10,
   });
 
   if (user == 'user') {
@@ -351,10 +403,7 @@ function Configurations() {
           )}
           {tab === 'hotspot' && (
             <InstructionContent>
-              <ButtonCustom
-                style={{ marginBottom: '10px', width: '180px' }}
-                onClick={openHotspot}
-              >
+              <ButtonCustom style={{ marginBottom: '10px', width: '180px' }} onClick={openHotspot}>
                 Hotspot
               </ButtonCustom>
               <span style={{ marginBottom: '20px' }}>
@@ -383,23 +432,9 @@ function Configurations() {
       </InstructionContainer>
       <ModeContainer>
         <ModeHeader>
-          <div
-            style={{
-              margin: 'auto',
-              height: '10%',
-              width: '50%',
-              borderBottom: `4px solid ${theme.palette.main.accent}`,
-            }}
-          />
+          <HorizontalLine />
           <span>Wybierz tryb rozgrywki</span>
-          <div
-            style={{
-              margin: 'auto',
-              height: '10%',
-              width: '50%',
-              borderBottom: `4px solid ${theme.palette.main.accent}`,
-            }}
-          />
+          <HorizontalLine />
         </ModeHeader>
         <ModeContent>
           <ModeOption active={mode == 'quiz'} onClick={() => setMode('quiz')}>
@@ -413,123 +448,48 @@ function Configurations() {
                 marginTop: '10px',
               }}
             >
-              <div
+              <Tile
                 style={{
                   backgroundColor: '#FF6B6B',
                   boxShadow: `0 3px 1px 1px ${darkenColor('#FF6B6B', 0.2)}`,
-                  borderRadius: '10px',
-                  width: '60px',
-                  height: '35px',
                 }}
               />
-              <div
+              <Tile
                 style={{
                   backgroundColor: '#00ffff',
                   boxShadow: `0 3px 1px 1px ${darkenColor('#00ffff', 0.2)}`,
-                  borderRadius: '10px',
-                  width: '60px',
-                  height: '35px',
                 }}
               />
             </div>
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-              <div
+              <Tile
                 style={{
                   backgroundColor: '#F2D60D',
                   boxShadow: `0 3px 1px 1px ${darkenColor('#F2D60D', 0.2)}`,
-                  borderRadius: '10px',
-                  width: '60px',
-                  height: '35px',
                 }}
               />
             </div>
             <div style={{ position: 'absolute', top: 10, right: 10 }}>
-              <InfoButton
-                style={{
-                  width: '700px',
-                  background: 'transparent',
-                  border: 'none',
-                  boxShadow: 'none',
-                }}
-                onHover={() => setMode('quiz')}
-              >
-                <video
-                  autoPlay
-                  style={{
-                    width: '100%',
-                    height: 'auto',
-                    borderRadius: '8px',
-                    border: `3px solid ${theme.palette.main.accent}`,
-                    boxShadow: `0 0 3px 1px ${theme.palette.main.accent}`,
-                  }}
-                >
+              <InfoButton onHover={() => setMode('quiz')} style={customStyle}>
+                <CustomVideo autoPlay>
                   {' '}
                   <source src="/quiz_example.mp4" type="video/mp4" />{' '}
-                </video>
+                </CustomVideo>
               </InfoButton>
             </div>
           </ModeOption>
           <ModeOption active={mode == 'exam'} onClick={() => setMode('exam')}>
             <ModeOptionHeader>SPRAWDZIAN</ModeOptionHeader>
-            <div
-              style={{
-                margin: 'auto',
-                marginTop: '20px',
-                width: '60px',
-                height: '65px',
-                borderRadius: '6px',
-                backgroundColor: '#ffffff',
-                border: '1px solid #dcdcdc',
-                boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '10px',
-                justifyContent: 'center',
-                alignItems: 'center',
-                paddingBottom: '10px',
-              }}
-            >
-              <div
-                style={{
-                  width: '60%',
-                  height: '10px',
-                  borderRadius: '4px',
-                  backgroundColor: '#e0e0e0',
-                }}
-              />
-              <div
-                style={{
-                  width: '60%',
-                  height: '10px',
-                  borderRadius: '4px',
-                  backgroundColor: '#e0e0e0',
-                }}
-              />
-            </div>
+            <ExamIconMain>
+              <ExamIconLine />
+              <ExamIconLine />
+            </ExamIconMain>
             <div style={{ position: 'absolute', top: 10, right: 10 }}>
-              <InfoButton
-                style={{
-                  width: '700px',
-                  background: 'transparent',
-                  border: 'none',
-                  boxShadow: 'none',
-                }}
-                onHover={() => setMode('exam')}
-              >
-                <video
-                  autoPlay
-                  style={{
-                    width: '100%',
-                    height: 'auto',
-                    borderRadius: '8px',
-                    border: `3px solid ${theme.palette.main.accent}`,
-                    boxShadow: `0 0 3px 1px ${theme.palette.main.accent}`,
-                    zIndex: 1000,
-                  }}
-                >
+              <InfoButton onHover={() => setMode('exam')} style={customStyle}>
+                <CustomVideo autoPlay>
                   {' '}
                   <source src="/exam_example.mp4" type="video/mp4" />{' '}
-                </video>
+                </CustomVideo>
               </InfoButton>
             </div>
           </ModeOption>
@@ -560,28 +520,11 @@ function Configurations() {
               />
             </div>
             <div style={{ position: 'absolute', top: 10, right: 10 }}>
-              <InfoButton
-                style={{
-                  width: '700px',
-                  background: 'transparent',
-                  border: 'none',
-                  boxShadow: 'none',
-                }}
-                onHover={() => setMode('board')}
-              >
-                <video
-                  autoPlay
-                  style={{
-                    width: '100%',
-                    height: 'auto',
-                    borderRadius: '8px',
-                    border: `3px solid ${theme.palette.main.accent}`,
-                    boxShadow: `0 0 3px 1px ${theme.palette.main.accent}`,
-                  }}
-                >
+              <InfoButton onHover={() => setMode('board')} style={customStyle}>
+                <CustomVideo autoPlay>
                   {' '}
                   <source src="/board_example.mp4" type="video/mp4" />{' '}
-                </video>
+                </CustomVideo>
               </InfoButton>
             </div>
           </ModeOption>
