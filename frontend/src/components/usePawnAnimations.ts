@@ -49,9 +49,6 @@ interface ResolvePathPromiseArgs {
   toStackIndex: number;
 }
 
-let lastCameraUpdate = 0;
-const CAMERA_UPDATE_INTERVAL = 50; // ms
-
 const smoothCenterOnNode = (
   playerIndex: string | null,
   stageRef: RefObject<Konva.Stage | null>,

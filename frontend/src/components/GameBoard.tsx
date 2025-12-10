@@ -1,8 +1,8 @@
-import React, { useRef, useEffect, useMemo, useState, useCallback } from 'react';
+import { useRef, useEffect, useMemo, useState, useCallback, memo } from 'react';
 import { Stage, Layer, Ellipse, Path, Group } from 'react-konva';
 import Konva from 'konva';
 import panzoom from 'panzoom';
-import { BoardPositions, PlayerState } from '../common/types';
+import { BoardPositions } from '../common/types';
 import { usePrevious } from '../hooks/usePrevious';
 import { colorPalette, isMobileView } from '../common/utils';
 import Pawn from './Pawn';
@@ -26,8 +26,7 @@ interface Props {
   ranking?: any[];
 }
 
-// Memoized Path component to prevent re-renders
-const MemoizedPath = React.memo(({ 
+const MemoizedPath = memo(({ 
   pathData, 
   fill, 
   fillPatternImage, 
@@ -138,19 +137,16 @@ function GameBoard({
     }
   }, []);
 
-  // compute field coords - only recalculate when dimensions change
   const fieldCoordinates = useMemo(() => {
     return computeFieldCoordinates(numFields, BOARD_X_RADIUS, BOARD_Y_RADIUS, centerX, centerY);
   }, [width, height, numFields]);
 
-  // Memoize checkerboard image creation
   const checkerboardImage = useMemo(() => {
     const img = createCheckerboardImage(mobile ? 8 : 18);
     img.onload = () => setCheckerboardLoaded(true);
     return img;
   }, [mobile]);
 
-  // Pre-calculate all path data to avoid recalculation on every render
   const boardPaths = useMemo(() => {
     const paths = [];
     const INNER_X_RADIUS = BOARD_X_RADIUS * 0.45;
@@ -212,7 +208,6 @@ function GameBoard({
     mobile,
   });
 
-  // Callback for pawn node refs
   const handlePawnNodeRef = useCallback((index: string, node: Konva.Group | null) => {
     if (node) {
       pawnReferences.current.set(index, node);
