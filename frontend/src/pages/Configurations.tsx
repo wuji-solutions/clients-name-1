@@ -234,8 +234,6 @@ function Configurations() {
   const [mode, setMode] = useState<mode>('quiz');
 
   const [tab, setTab] = useState<string>('');
-  const [hotspotOn, setHotspotOn] = useState<boolean>(false);
-  const [hotspotRefresh, setHotspotRefresh] = useState(false);
   const [qrVisible, setQrVisible] = useState(false);
   const [hotspotCredentials, setHotspotCredentails] = useState({ ssid: '', password: '' });
 
@@ -244,21 +242,6 @@ function Configurations() {
       return prev === '' ? tab : '';
     });
   };
-
-  const isHotspotOn = () => {
-    window.electronAPI.isHotspotOn().then((response: boolean) => setHotspotOn(response));
-  };
-
-  useEffect(() => {
-    isHotspotOn();
-    window.electronAPI.getHotspotConfig().then((response) => {
-      setHotspotCredentails(response);
-    });
-  }, [hotspotRefresh]);
-
-  useEffect(() => {
-    isHotspotOn();
-  }, [tab]);
 
   const handleQR = () => {
     window.electronAPI
@@ -404,7 +387,7 @@ function Configurations() {
           {tab === 'hotspot' && (
             <InstructionContent>
               <ButtonCustom style={{ marginBottom: '10px', width: '180px' }} onClick={openHotspot}>
-                Hotspot
+                Ustawienia
               </ButtonCustom>
               <span style={{ marginBottom: '20px' }}>
                 Jeżeli kod QR w ustawieniach systemu jest zbyt mały, wpisz w poniższe pola nazwę
