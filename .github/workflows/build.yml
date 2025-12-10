@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - fix-cd
 
 permissions:
   contents: write
@@ -39,7 +40,6 @@ jobs:
           git config --global url."https://github".insteadOf ssh://git@github
           git config --global url."https://github.com/".insteadOf git@github.com:
           npm install
-          yarn install
         working-directory: frontend
 
       - name: Prevent CI from failing on warnings
@@ -49,7 +49,7 @@ jobs:
         run: echo "APP_VERSION=$(Get-Date -Format 'yyyyMMdd-HHmmss')" >> $env:GITHUB_ENV
 
       - name: Build Electron app
-        run: yarn electron:build
+        run: npm run electron:build
         working-directory: frontend
         env:
           CI: false
