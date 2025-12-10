@@ -25,6 +25,8 @@ import { getBoardSetup, parsePlayerPositions } from './BoardgameObserver';
 import ArrowIndicator from '../../components/ArrowIndicator';
 import XShape from '../../components/XComponent';
 import ReactMarkdownParser from '../../components/ReactMarkdownParser';
+import { useAppContext } from '../../providers/AppContextProvider';
+
 
 const mobile = isMobileView();
 
@@ -310,12 +312,17 @@ function SSEOnBoardgameStateChangeListener({ setPositions }: { setPositions: Fun
 }
 
 function SSEOnEventListener({ setGameFinished }: { setGameFinished: Function }) {
+    const { setUsername, setUserindex } = useAppContext();
   const delegate = useSSEChannel(BACKEND_ENDPOINT_EXTERNAL + '/sse/events', {
     withCredentials: true,
   });
 
   useEffect(() => {
     const unsubscribe = delegate.on('game-finish', () => {
+      setUserindex(null);
+      setUsername(null);
+      sessionStorage.removeItem('userindex');
+      sessionStorage.removeItem('username');
       setGameFinished(true);
     });
     return unsubscribe;

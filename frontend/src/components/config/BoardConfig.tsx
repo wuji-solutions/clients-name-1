@@ -53,7 +53,7 @@ export default function BoardConfig({ settings, setSettings, categoryNames, pars
                 onChange={(e) =>
                   setSettings({
                     ...settings,
-                    numberOfTiles: Number.parseInt(e.target.value),
+                    numberOfTiles: Math.min(Math.max(Number.parseInt(e.target.value), 4), 30),
                   })
                 }
               />

@@ -19,6 +19,7 @@ const theme = {
       background: 'secondary',
       info: '#626770',
       info_accent: darkenColor('#626770', 0.1),
+      error: '#EF4444',
     },
   },
 };

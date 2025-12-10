@@ -163,13 +163,18 @@ const NoMoreQuestions = styled.div({
 });
 
 function SSEOnEventListener({ setExamFinished }: { setExamFinished: Function }) {
+  const { setUsername, setUserindex } = useAppContext();
   const delegate = useSSEChannel(BACKEND_ENDPOINT_EXTERNAL + '/sse/events', {
     withCredentials: true,
   });
 
   useEffect(() => {
     const unsubscribe = delegate.on('game-finish', () => {
+      setUserindex(null);
+      setUsername(null);
       setExamFinished(true);
+      sessionStorage.removeItem('userindex');
+      sessionStorage.removeItem('username');
     });
     return unsubscribe;
   }, [delegate]);

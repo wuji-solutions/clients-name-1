@@ -95,6 +95,18 @@ const QuestionDifficulty = styled.div({
   fontSize: '22px',
 });
 
+const QuizFinishedContainer = styled.div({
+  color: theme.palette.main.info_text,
+  textAlign: 'center',
+  textShadow: 'none',
+  height: '100%',
+  width: '100%',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  fontSize: '22px',
+});
+
 const AnswerProgressBar = ({
   count,
   total,
@@ -163,6 +175,26 @@ function QuestionEndListener({
   return <></>;
 }
 
+function SSEOnEventListener({ setQuizFinished }: { setQuizFinished: Function }) {
+  const { setUsername, setUserindex } = useAppContext();
+  const delegate = useSSEChannel(BACKEND_ENDPOINT_EXTERNAL + '/sse/events', {
+    withCredentials: true,
+  });
+
+  useEffect(() => {
+    const unsubscribe = delegate.on('game-finish', () => {
+      setUserindex(null);
+      setUsername(null);
+      sessionStorage.removeItem('userindex');
+      sessionStorage.removeItem('username');
+      setQuizFinished(true);
+    });
+    return unsubscribe;
+  }, [delegate]);
+
+  return <></>;
+}
+
 function Quiz() {
   const { user, isAdmin } = useAppContext();
   const navigate = useNavigate();
@@ -181,6 +213,7 @@ function Quiz() {
   const [questionEnded, setQuestionEnded] = useState<boolean>(false);
   const [questionStats, setQuestionStats] = useState<QuestionStats | null>(null);
   const { setError } = useError();
+  const [quizFinished, setQuizFinished] = useState(false);
 
   const hasMoreQuestions = currentQuestion
     ? currentQuestion.questionNumber < currentQuestion.totalQuestions
@@ -297,9 +330,18 @@ function Quiz() {
 
   if (!user) return <>View not allowed</>;
 
+  if (quizFinished && !isAdmin()) {
+    return (
+      <Container style={{ height: '80vh' }}>
+          <QuizFinishedContainer>Quiz się zakończył</QuizFinishedContainer>
+      </Container>
+    );
+  }
+
   if (!isAdmin()) {
     return (
       <Container>
+        <SSEOnEventListener setQuizFinished={setQuizFinished} />
         {currentQuestion &&
           (!questionAnswered && !questionEnded ? (
             <AnswerContainer>
@@ -340,7 +382,6 @@ function Quiz() {
       </Container>
     );
   }
-
   return (
     <Container>
       {currentQuestion && (
@@ -435,7 +476,7 @@ function Quiz() {
                 Przejdź do kolejnego pytania
               </ButtonCustom>
             )}
-            <ButtonCustom onClick={handleQuizEnd} color={theme.palette.button.info}>
+            <ButtonCustom onClick={handleQuizEnd} color={questionEnded ? theme.palette.button.error: theme.palette.button.info} disabled={!questionEnded}>
               Zakończ quiz
             </ButtonCustom>
           </div>

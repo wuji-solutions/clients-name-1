@@ -126,11 +126,12 @@ class ExamDispenser {
         val result = mutableListOf<Question>()
         val tmp = questions.toMutableList()
 
-        var difficulties = DifficultyLevel.values().toSet().toMutableSet()
-        var currentDifficulty =
-            difficulties.random().also { difficulties -= it }
+        var difficulties = questions.map { it.difficultyLevel }.toMutableSet()
+        var currentDifficulty : DifficultyLevel
 
         while (tmp.isNotEmpty()) {
+            currentDifficulty =
+                difficulties.random().also { difficulties -= it }
             tmp.first { it.difficultyLevel == currentDifficulty }
                 .also {
                     result.add(it)
@@ -138,9 +139,8 @@ class ExamDispenser {
                 }
 
             if (difficulties.isEmpty())
-                difficulties = DifficultyLevel.values().toSet().toMutableSet()
-            currentDifficulty =
-                difficulties.random().also { difficulties -= it }
+                difficulties = tmp.map { it.difficultyLevel }.toMutableSet()
+
         }
         return result
     }
