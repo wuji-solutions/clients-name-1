@@ -127,7 +127,7 @@ class ExamDispenser {
         val tmp = questions.toMutableList()
 
         var difficulties = questions.map { it.difficultyLevel }.toMutableSet()
-        var currentDifficulty : DifficultyLevel
+        var currentDifficulty: DifficultyLevel
 
         while (tmp.isNotEmpty()) {
             currentDifficulty =
@@ -140,7 +140,6 @@ class ExamDispenser {
 
             if (difficulties.isEmpty())
                 difficulties = tmp.map { it.difficultyLevel }.toMutableSet()
-
         }
         return result
     }

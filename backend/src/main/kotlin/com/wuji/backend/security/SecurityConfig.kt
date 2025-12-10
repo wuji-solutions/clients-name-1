@@ -31,7 +31,9 @@ class SecurityConfig(
         )
 
     private final val publicAuthorized =
-        listOf(AntPathRequestMatcher("/games/*/join", "POST"), AntPathRequestMatcher("/sse/events"))
+        listOf(
+            AntPathRequestMatcher("/games/*/join", "POST"),
+            AntPathRequestMatcher("/sse/events"))
 
     private final val isLocalHostString =
         "hasIpAddress('127.0.0.1') or hasIpAddress('::1')"
