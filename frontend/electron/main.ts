@@ -5,6 +5,7 @@ import { ChildProcessWithoutNullStreams, exec, spawn } from 'child_process';
 import { existsSync, mkdirSync, writeFileSync, unlinkSync, readFileSync } from 'fs';
 import * as http from 'http';
 import * as fs from 'fs';
+import { calculateZoom } from "./calculateZoom";
 
 let win: BrowserWindow | null = null;
 let child: ChildProcessWithoutNullStreams;
@@ -63,6 +64,13 @@ function createWindow() {
       }, 300);
     }
   });
+
+  win.on("resize", () => {
+    if (win === null) return
+    const [_, height] = win.getContentSize();
+    const zoom = calculateZoom(height);
+    win.webContents.setZoomFactor(zoom);
+});
 
   if (!app.isPackaged) {
     win.loadURL('http://localhost:3000');
