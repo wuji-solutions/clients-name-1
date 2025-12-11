@@ -52,6 +52,7 @@ function createWindow() {
       nodeIntegration: true,
       preload: path.join(__dirname, '..', '..', 'electron', 'preload.js'),
     },
+    icon: path.join(__dirname, '..', '..', 'assets/favicon.ico'),
   });
 
   win.on('close', (e) => {
@@ -383,22 +384,43 @@ ipcMain.handle('getHotspotAdapter', async () => {
   });
 });
 
-const configPath = path.join(app.getPath("userData"), "hotspot-config.json");
+function getConfigPath() {
+  return path.join(app.getPath("userData"), "hotspot-config.json");
+}
 
 export function saveHotspotConfig(ssid: string, password: string) {
-  writeFileSync(
-    configPath,
-    JSON.stringify({ ssid, password }, null, 2),
-    "utf8"
-  );
+  try {
+    const userDataPath = app.getPath("userData");
+    const configPath = getConfigPath();
+    
+    mkdirSync(userDataPath, { recursive: true });
+    
+    writeFileSync(
+      configPath,
+      JSON.stringify({ ssid, password }, null, 2),
+      "utf8"
+    );
+    
+    console.log(`Config saved to: ${configPath}`);
+  } catch (error) {
+    console.error("Failed to save config:", error);
+    throw error;
+  }
 }
 
 export function loadHotspotConfig() {
-  if (!existsSync(configPath)) {
+  try {
+    const configPath = getConfigPath();
+    
+    if (!existsSync(configPath)) {
+      return { ssid: "", password: "" };
+    }
+
+    return JSON.parse(readFileSync(configPath, "utf8"));
+  } catch (error) {
+    console.error("Failed to load config:", error);
     return { ssid: "", password: "" };
   }
-
-  return JSON.parse(readFileSync(configPath, "utf8"));
 }
 
 ipcMain.handle("configureHotspot", (_, { ssid, password }) => {

@@ -12,6 +12,8 @@ const theme = {
       error: '#EF4444',
       additional: '#A855F7',
       info_text: lightenColor('#1c2c36', 0.13),
+      logo: '#2758e8',
+      logo_accent: darkenColor('#1349eb', 0.03),
     },
     button: {
       primary: '#2758e8',

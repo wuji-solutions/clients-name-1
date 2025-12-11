@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ButtonCustom } from '../components/Button';
 import { useAppContext } from '../providers/AppContextProvider';
 import AccessRestricted from '../components/AccessRestricted';
+import theme from '../common/theme';
 
 const Container = styled.div({
   width: '100%',
@@ -12,20 +13,25 @@ const Container = styled.div({
 });
 
 const Logo = styled.div({
-  border: '1px solid #000',
   padding: '10px',
   alignContent: 'center',
   textAlign: 'center',
   borderRadius: '10px',
-  width: '290px',
-  height: '70px',
+  width: 'auto',
+  height: '200px',
   marginLeft: 'auto',
   marginRight: 'auto',
   marginTop: 'auto',
   marginBottom: '100px',
   fontSize: '40px',
-  background: '#3727fe',
-  color: '#FFF',
+});
+
+const LogoText = styled.div({
+  color: theme.palette.main.logo,
+  fontWeight: 'x-bold',
+  textShadow:`1px 1px 0 ${theme.palette.main.logo_accent}, -3px 3px 0 ${theme.palette.main.logo_accent}, -1px -1px 0 ${theme.palette.main.logo_accent}, 1px -1px 0 ${theme.palette.main.logo_accent};`,
+
+  fontSize: '100px',
 });
 
 const OptionContainer = styled.div({
@@ -35,6 +41,7 @@ const OptionContainer = styled.div({
   height: '200px',
   marginBottom: 'auto',
 });
+
 
 function Home() {
   const { isAdmin } = useAppContext();
@@ -54,7 +61,9 @@ function Home() {
 
   return (
     <Container>
-      <Logo>LOGO</Logo>
+      <Logo>
+        <LogoText>QUIZZOBARA</LogoText>
+      </Logo>
       <OptionContainer>
         <ButtonCustom onClick={() => navigate('/konfiguracja')}>Rozpocznij</ButtonCustom>
         <ButtonCustom onClick={openRaportMenu} >Raporty</ButtonCustom>
