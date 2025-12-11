@@ -316,7 +316,7 @@ object MoodleXmlParser {
             "2" -> DifficultyLevel.MEDIUM
             "3" -> DifficultyLevel.HARD
             else ->
-                throw UnsupportedQuestionDifficultyException(tag.lowercase())
+                throw UnsupportedQuestionDifficultyException(diff.lowercase())
         }
     }
 
