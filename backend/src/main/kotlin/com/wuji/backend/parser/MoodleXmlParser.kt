@@ -310,11 +310,11 @@ object MoodleXmlParser {
             else -> TextFormat.HTML
         }
 
-    fun getDifficultyFromString(tag: String): DifficultyLevel {
-        return when (tag.lowercase()) {
-            "easy" -> DifficultyLevel.EASY
-            "medium" -> DifficultyLevel.MEDIUM
-            "hard" -> DifficultyLevel.HARD
+    fun getDifficultyFromString(diff: String): DifficultyLevel {
+        return when (diff.lowercase()) {
+            "1" -> DifficultyLevel.EASY
+            "2" -> DifficultyLevel.MEDIUM
+            "3" -> DifficultyLevel.HARD
             else ->
                 throw UnsupportedQuestionDifficultyException(tag.lowercase())
         }
