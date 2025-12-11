@@ -156,7 +156,7 @@ class MoodleXmlParserTest {
                   <text>5</text>
                   <feedback><text>Nope</text></feedback>
                 </answer>
-                <difficulty>MedIUm</difficulty>
+                <difficulty>2</difficulty>
                 <tags>
                   <tag><text>algebra</text></tag>
                 </tags>
@@ -176,7 +176,7 @@ class MoodleXmlParserTest {
                   <text>5</text>
                   <feedback><text>Nope</text></feedback>
                 </answer>
-                <difficulty>hArD</difficulty>
+                <difficulty>3</difficulty>
                 <tags>
                   <tag><text>algebra</text></tag>
                 </tags>
@@ -193,7 +193,7 @@ class MoodleXmlParserTest {
                   <text>5</text>
                   <feedback><text>Nope</text></feedback>
                 </answer>
-                <difficulty>EaSy</difficulty>
+                <difficulty>1</difficulty>
                 <tags>
                   <tag><text>algebra</text></tag>
                 </tags>
