@@ -78,7 +78,7 @@ export default function CommonConfig({
             <CenteredLabel>
               Maksymalna liczba graczy
               <InfoButton
-                tooltip="Ilość graczy która może brać udział w rozgrywce jest związana z ustawieniami systemu.
+                tooltip="Liczba graczy która może brać udział w rozgrywce jest związana z ustawieniami systemu.
               Po wybraniu przycisku 'Zmień' system może poprosić o zezwolenie na zmianę, należy wtedy wybrać opcję 'Tak'
               "
               />
@@ -107,7 +107,7 @@ export default function CommonConfig({
               }}
               disabled={newPeerSize == peerSize}
               title={
-                newPeerSize == peerSize ? 'Nowa ilość graczy musi różnić się od poprzedniej' : ''
+                newPeerSize == peerSize ? 'Nowa liczba graczy musi różnić się od poprzedniej' : ''
               }
             >
               Zmień
@@ -127,8 +127,8 @@ export default function CommonConfig({
           }}
         >
           <div>Wybrane: {fileName ? fileName : 'brak'}</div>
-          {<div>Ilość pytań: {questionCount ? questionCount : 'brak'}</div>}
-          {<div>Ilość kategorii: {categoryCount ? categoryCount : 'brak'}</div>}
+          {<div>Liczba pytań: {questionCount ? questionCount : 'brak'}</div>}
+          {<div>Liczba kategorii: {categoryCount ? categoryCount : 'brak'}</div>}
         </div>
         <ButtonCustom
           onClick={openFilePicker}

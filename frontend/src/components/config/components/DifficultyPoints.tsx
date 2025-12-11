@@ -13,7 +13,7 @@ export default function DifficultyPoints({ settings, setSettings }: Props) {
   return (
     <>
       <LabeledCheckboxContainer>
-        <CenteredLabel>Ilość punktów za pytanie łatwe</CenteredLabel>
+        <CenteredLabel>Liczba punktów za pytanie łatwe</CenteredLabel>
         <Dropdown
           options={['1', '2', '3']}
           selectedValue={String(settings.pointsPerDifficulty.EASY)}
@@ -30,7 +30,7 @@ export default function DifficultyPoints({ settings, setSettings }: Props) {
         />
       </LabeledCheckboxContainer>
       <LabeledCheckboxContainer>
-        <CenteredLabel>Ilość punktów za pytanie średnie</CenteredLabel>
+        <CenteredLabel>Liczba punktów za pytanie średnie</CenteredLabel>
         <Dropdown
           options={['1', '2', '3']}
           selectedValue={String(settings.pointsPerDifficulty.MEDIUM)}
@@ -47,7 +47,7 @@ export default function DifficultyPoints({ settings, setSettings }: Props) {
         />
       </LabeledCheckboxContainer>
       <LabeledCheckboxContainer>
-        <CenteredLabel>Ilość punktów za pytanie trudne</CenteredLabel>
+        <CenteredLabel>Liczba punktów za pytanie trudne</CenteredLabel>
         <Dropdown
           options={['1', '2', '3']}
           selectedValue={String(settings.pointsPerDifficulty.HARD)}

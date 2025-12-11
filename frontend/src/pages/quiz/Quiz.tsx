@@ -394,7 +394,7 @@ function Quiz() {
             <QuestionDifficulty>
               {getParsedDifficultyLevel(currentQuestion.difficultyLevel)}
             </QuestionDifficulty>
-            <h3>Ilość odpowiedzi: {answerCount}</h3>
+            <h3>Liczba odpowiedzi: {answerCount}</h3>
           </QuestionHeader>
           {!questionStats ? (
             <AnswerGrid>

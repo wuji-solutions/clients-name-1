@@ -52,7 +52,7 @@ export default function PerCategoryPromotionModal({
                 Lista kategorii
               </h1>
               <h3 style={{ color: theme.palette.main.info_text, textShadow: 'none', width: '500px' }}>
-                Określ ilość poprawnych odpowiedzi potrzebną do awansu w danej kategorii
+                Określ liczbę poprawnych odpowiedzi potrzebną do awansu w danej kategorii
               </h3>
               <Divider></Divider>
               {categoryList.length === 0 && (

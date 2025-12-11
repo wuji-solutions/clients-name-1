@@ -89,7 +89,7 @@ export default function EnableQuestionConfig({
                       style={{ display: 'flex', margin: '10px', padding: '10px', gap: '20px' }}
                     >
                       <CenteredLabel
-                        style={{ width: '100%', maxWidth: '500px', textAlign: 'left' }}
+                        style={{ width: '100%', maxWidth: '500px', textAlign: 'left', height: 'fit-content' }}
                       >{`${index + 1}. ${question.task}`}</CenteredLabel>
                       <RoundCheckButton
                         selected={containsQuestionId(String(question.id))}
