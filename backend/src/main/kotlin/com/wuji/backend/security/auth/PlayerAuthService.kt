@@ -10,7 +10,10 @@ import org.springframework.security.core.session.SessionRegistry
 import org.springframework.stereotype.Service
 
 @Service
-class PlayerAuthService(private val sessionRegistry: SessionRegistry) {
+class PlayerAuthService(
+    private val sessionRegistry: SessionRegistry,
+    private val nicknameService: NicknameGenerator
+) {
     private val JOINED_ROLE = SimpleGrantedAuthority("JOINED")
 
     fun authenticate(index: Int, request: HttpServletRequest): Participant {
@@ -18,7 +21,7 @@ class PlayerAuthService(private val sessionRegistry: SessionRegistry) {
         if (currentAuth?.authorities?.contains(JOINED_ROLE) == true) {
             return currentAuth.principal as Participant
         }
-        val nickname = NicknameGenerator.generateRandom()
+        val nickname = nicknameService.next()
         val participant = Participant(index, nickname)
         val auth =
             UsernamePasswordAuthenticationToken(

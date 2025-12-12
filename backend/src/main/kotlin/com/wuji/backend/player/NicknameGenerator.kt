@@ -1,31 +1,48 @@
 package com.wuji.backend.player
 
-import java.security.SecureRandom
 import org.springframework.stereotype.Component
 
 @Component
 class NicknameGenerator {
-    // TODO: change to not be repeatable
-    private val rnd: SecureRandom = SecureRandom()
+    private val adjectives =
+        arrayOf(
+            "Szmaragdowy",
+            "Zwinny",
+            "Radosny",
+            "Sprytny",
+            "Pluszowy",
+            "Wesoły",
+            "Słoneczny",
+            "Odważny",
+            "Ciekawski",
+            "Skoczny")
+
+    private val nouns =
+        arrayOf(
+            "Lis",
+            "Pingwin",
+            "Jeż",
+            "Smok",
+            "Dinozaur",
+            "Fenek",
+            "Bóbr",
+            "Zając",
+            "Motyl",
+            "Sokół")
+
+    private val nicknameIds =
+        (0..adjectives.size * nouns.size - 1).toMutableSet()
 
     fun next(): String {
-        return (ADJ[rnd.nextInt(ADJ.size)] +
-            NOUN[rnd.nextInt(NOUN.size)] +
-            (100 + rnd.nextInt(900))) // BystryLis483
-    }
+        if (nicknameIds.isEmpty())
+            nicknameIds.addAll(0..adjectives.size * nouns.size - 1)
 
-    companion object {
-        private val ADJ =
-            arrayOf("Bystry", "Wesoły", "Cichy", "Gorący", "Szmaragdowy")
-        private val NOUN =
-            arrayOf("Lis", "Smok", "Pingwin", "Jeż", "Jednorożec")
+        val id = nicknameIds.random()
+        nicknameIds.remove(id)
 
-        fun generateRandom(): String {
-            return SecureRandom().let { rnd ->
-                (ADJ[rnd.nextInt(ADJ.size)] +
-                    NOUN[rnd.nextInt(NOUN.size)] +
-                    (100 + rnd.nextInt(900)))
-            }
-        }
+        val row = id.div(adjectives.size)
+        val col = id - row * adjectives.size
+
+        return adjectives[row] + nouns[col]
     }
 }
