@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service
 @Service
 class PlayerAuthService(
     private val sessionRegistry: SessionRegistry,
-    private val nicknameService: NicknameGenerator
+    private val nicknameGenerator: NicknameGenerator
 ) {
     private val JOINED_ROLE = SimpleGrantedAuthority("JOINED")
 
@@ -21,7 +21,7 @@ class PlayerAuthService(
         if (currentAuth?.authorities?.contains(JOINED_ROLE) == true) {
             return currentAuth.principal as Participant
         }
-        val nickname = nicknameService.next()
+        val nickname = nicknameGenerator.next()
         val participant = Participant(index, nickname)
         val auth =
             UsernamePasswordAuthenticationToken(
