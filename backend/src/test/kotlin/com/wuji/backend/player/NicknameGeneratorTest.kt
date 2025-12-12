@@ -34,9 +34,9 @@ class NicknameGeneratorTest {
 
     @Test
     fun `should generate valid nickname`() {
-        val service = NicknameGenerator()
+        val generator = NicknameGenerator()
 
-        val nickname = service.next()
+        val nickname = generator.next()
 
         val match =
             adjectives.any { nickname.startsWith(it) } &&
@@ -51,12 +51,12 @@ class NicknameGeneratorTest {
 
     @Test
     fun `should not repeat nickname until pool is exhausted`() {
-        val service = NicknameGenerator()
+        val generator = NicknameGenerator()
 
         val results = mutableSetOf<String>()
 
         repeat(totalNicknames) {
-            val nickname = service.next()
+            val nickname = generator.next()
             assertFalse(
                 nickname in results,
                 "Nickname '$nickname' was repeated before exhaustion")
@@ -68,12 +68,12 @@ class NicknameGeneratorTest {
 
     @Test
     fun `should reset after exhausting all nicknames`() {
-        val service = NicknameGenerator()
+        val generator = NicknameGenerator()
 
-        val firstSet = (1..totalNicknames).map { service.next() }.toSet()
+        val firstSet = (1..totalNicknames).map { generator.next() }.toSet()
         assertEquals(totalNicknames, firstSet.size)
 
-        val secondSet = (1..totalNicknames).map { service.next() }.toSet()
+        val secondSet = (1..totalNicknames).map { generator.next() }.toSet()
         assertEquals(totalNicknames, secondSet.size)
 
         assertTrue(firstSet.minus(secondSet).isEmpty())
@@ -81,14 +81,14 @@ class NicknameGeneratorTest {
 
     @Test
     fun `should generate all possible combinations`() {
-        val service = NicknameGenerator()
+        val generator = NicknameGenerator()
 
         val expected =
             adjectives
                 .flatMap { adj -> nouns.map { noun -> adj + noun } }
                 .toSet()
 
-        val generated = (1..expected.size).map { service.next() }.toSet()
+        val generated = (1..expected.size).map { generator.next() }.toSet()
 
         assertEquals(expected, generated)
     }
