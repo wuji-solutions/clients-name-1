@@ -1,5 +1,7 @@
 package com.wuji.backend.player
 
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
 import org.springframework.stereotype.Component
 
 @Component
@@ -33,16 +35,19 @@ class NicknameGenerator {
     private val nicknameIds =
         (0..adjectives.size * nouns.size - 1).toMutableSet()
 
-    fun next(): String {
-        if (nicknameIds.isEmpty())
-            nicknameIds.addAll(0..adjectives.size * nouns.size - 1)
+    private val lock = ReentrantLock()
 
-        val id = nicknameIds.random()
-        nicknameIds.remove(id)
+    fun next(): String =
+        lock.withLock {
+            if (nicknameIds.isEmpty())
+                nicknameIds.addAll(0..adjectives.size * nouns.size - 1)
 
-        val row = id.div(adjectives.size)
-        val col = id - row * adjectives.size
+            val id = nicknameIds.random()
+            nicknameIds.remove(id)
 
-        return adjectives[row] + nouns[col]
-    }
+            val row = id.div(adjectives.size)
+            val col = id - row * adjectives.size
+
+            return adjectives[row] + nouns[col]
+        }
 }
