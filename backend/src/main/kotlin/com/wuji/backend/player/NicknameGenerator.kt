@@ -1,31 +1,53 @@
 package com.wuji.backend.player
 
-import java.security.SecureRandom
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
 import org.springframework.stereotype.Component
 
 @Component
 class NicknameGenerator {
-    // TODO: change to not be repeatable
-    private val rnd: SecureRandom = SecureRandom()
+    private val adjectives =
+        arrayOf(
+            "Szmaragdowy",
+            "Zwinny",
+            "Radosny",
+            "Sprytny",
+            "Pluszowy",
+            "Wesoły",
+            "Słoneczny",
+            "Odważny",
+            "Ciekawski",
+            "Skoczny")
 
-    fun next(): String {
-        return (ADJ[rnd.nextInt(ADJ.size)] +
-            NOUN[rnd.nextInt(NOUN.size)] +
-            (100 + rnd.nextInt(900))) // BystryLis483
-    }
+    private val nouns =
+        arrayOf(
+            "Lis",
+            "Pingwin",
+            "Jeż",
+            "Smok",
+            "Dinozaur",
+            "Fenek",
+            "Bóbr",
+            "Zając",
+            "Motyl",
+            "Sokół")
 
-    companion object {
-        private val ADJ =
-            arrayOf("Bystry", "Wesoły", "Cichy", "Gorący", "Szmaragdowy")
-        private val NOUN =
-            arrayOf("Lis", "Smok", "Pingwin", "Jeż", "Jednorożec")
+    private val nicknameIds =
+        (0..adjectives.size * nouns.size - 1).toMutableSet()
 
-        fun generateRandom(): String {
-            return SecureRandom().let { rnd ->
-                (ADJ[rnd.nextInt(ADJ.size)] +
-                    NOUN[rnd.nextInt(NOUN.size)] +
-                    (100 + rnd.nextInt(900)))
-            }
+    private val lock = ReentrantLock()
+
+    fun next(): String =
+        lock.withLock {
+            if (nicknameIds.isEmpty())
+                nicknameIds.addAll(0..adjectives.size * nouns.size - 1)
+
+            val id = nicknameIds.random()
+            nicknameIds.remove(id)
+
+            val row = id.div(adjectives.size)
+            val col = id - row * adjectives.size
+
+            return adjectives[row] + nouns[col]
         }
-    }
 }

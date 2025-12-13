@@ -42,10 +42,27 @@ class BoardDispenser(
                 dispenser.questions.filter {
                     previousQuestions.none { question -> question.id == it.id }
                 }
-            if (notAnsweredYet.isEmpty()) throw NoMoreQuestionsException()
+            if (notAnsweredYet.isEmpty())
+                return getQuestionFromRandomCategory(previousQuestions)
             return notAnsweredYet.random()
         }
 
         return available.random()
+    }
+
+    private fun getQuestionFromRandomCategory(
+        previousQuestions: Set<Question>
+    ): Question {
+        val categoryIndices = dispensers.keys.shuffled()
+
+        for (i in categoryIndices) {
+            val dispenser = dispensers[i] ?: throw NoSuchElementException()
+            val available =
+                dispenser.questions.filter {
+                    previousQuestions.none { question -> question.id == it.id }
+                }
+            if (available.isNotEmpty()) return available.random()
+        }
+        throw NoMoreQuestionsException()
     }
 }
