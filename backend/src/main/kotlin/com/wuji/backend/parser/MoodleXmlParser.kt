@@ -169,7 +169,7 @@ object MoodleXmlParser {
 
     private fun parseAnswer(reader: XMLStreamReader): Pair<Answer, Boolean> {
         reader.requireStart("answer")
-        val fraction = reader.getAttr("fraction")?.toIntOrNull()
+        val fraction = reader.getAttr("fraction")?.toDoubleOrNull()
         var text: String? = null
         var fb: String? = null
         while (reader.nextTagOrEnd("answer")) {
@@ -301,10 +301,7 @@ object MoodleXmlParser {
     fun TextFormat.Companion.from(attr: String?): TextFormat =
         when (attr?.lowercase()) {
             "html",
-            "moodle_auto_format" ->
-                TextFormat
-                    .HTML // TODO: testing? prob should get a moodle question file from some
-            // professor
+            "moodle_auto_format" -> TextFormat.HTML
             "plain_text" -> PLAIN_TEXT
             "markdown" -> TextFormat.MARKDOWN
             else -> TextFormat.HTML
