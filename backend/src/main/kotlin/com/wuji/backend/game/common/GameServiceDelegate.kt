@@ -19,6 +19,7 @@ import com.wuji.backend.player.state.Player
 import com.wuji.backend.player.state.PlayerDetails
 import com.wuji.backend.reports.ReportsService
 import com.wuji.backend.security.auth.PlayerAuthService
+import kotlin.concurrent.thread
 import org.springframework.stereotype.Service
 
 @SuppressWarnings("kotlin:S6514")
@@ -70,7 +71,19 @@ class GameServiceDelegate(
     override fun finishGame() {
         currentService.finishGame()
         ReportsService().writeReports(gameRegistry.game)
-        authService.clearAllSessions()
+
+        thread(start = true, isDaemon = true) {
+            val startTime = System.currentTimeMillis()
+            while (getGameState() != GameState.FINISHED &&
+                System.currentTimeMillis() - startTime <= 60 * 1000L) {
+                try {
+                    Thread.sleep(1 * 1000L)
+                } catch (_: InterruptedException) {
+                    return@thread
+                }
+            }
+            authService.clearAllSessions()
+        }
     }
 
     override fun kickPlayer(index: Int) {
