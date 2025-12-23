@@ -565,6 +565,7 @@ function BoardgamePlayer() {
               ))}
             </AnswerGrid>
             <ButtonCustom onClick={() => handleAnswerSent()}>Wyślij odpowiedź</ButtonCustom>
+            <div style={{marginBottom: '100px'}} />
           </QuestionContainer>
         </Modal>
       )}

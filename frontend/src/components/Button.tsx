@@ -247,3 +247,31 @@ export const SquareButton = styled.div(() => ({
     backgroundColor: theme.palette.main.accent,
   },
 }));
+
+export const RejoinButton = styled.button({
+  width: '33px',
+  height: '33px',
+  marginLeft: 'auto',
+  marginRight: 'auto',
+  background: theme.palette.main.panel,
+  color: '#FFF',
+  border: `3px solid ${darkenColor(theme.palette.main.panel, 0.1)}`,
+  borderRadius: '50%',
+  boxShadow: `0 2px 0 0 ${darkenColor(theme.palette.main.panel, 0.1)}`,
+  '&:hover': {
+    background: darkenColor(theme.palette.main.panel, 0.1),
+    boxShadow: `0 3px 0 0 ${darkenColor(theme.palette.main.panel, 0.2)}`,
+    cursor: 'pointer',
+  },
+  '-webkit-transition-duration': '0.2s',
+  transitionDuration: '0.2s',
+  padding: '7px',
+  fontSize: '10px',
+  fontWeight: '700',
+
+  position: 'absolute',
+  left: '20px',
+  top: '20px',
+  zIndex: '9999',
+
+});

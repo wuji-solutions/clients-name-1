@@ -78,8 +78,8 @@ export default function CommonConfig({
             <CenteredLabel>
               Maksymalna liczba graczy
               <InfoButton
-                tooltip="Liczba graczy która może brać udział w rozgrywce jest związana z ustawieniami systemu.
-              Po wybraniu przycisku 'Zmień' system może poprosić o zezwolenie na zmianę, należy wtedy wybrać opcję 'Tak'
+                tooltip="To ustawienie ma znaczenie podczas gry za pomocą Hotspotu mobilnego.
+                 W przypadku gdy liczba graczy przekracza 12, zaleca się grę przez WiFi.
               "
               />
             </CenteredLabel>
@@ -94,11 +94,15 @@ export default function CommonConfig({
                 style={{ height: '30px', width: '75px' }}
                 type="number"
                 value={newPeerSize}
-                onChange={(e) => setNewPeerSize( e.target.value ? Math.min(parseInt(e.target.value), 120) : '')}
+                onChange={(e) =>
+                  setNewPeerSize(e.target.value ? Math.min(parseInt(e.target.value), 120) : '')
+                }
               />
             </div>
             <ButtonCustom
-              onClick={() => increaseWifiPeerSize(setRefreshTrigger, newPeerSize != '' ? newPeerSize : 8)}
+              onClick={() =>
+                increaseWifiPeerSize(setRefreshTrigger, newPeerSize != '' ? newPeerSize : 8)
+              }
               style={{
                 position: 'relative',
                 overflow: 'hidden',

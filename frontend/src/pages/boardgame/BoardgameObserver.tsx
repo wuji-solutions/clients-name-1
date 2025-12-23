@@ -9,10 +9,14 @@ import { BACKEND_ENDPOINT } from '../../common/config';
 import { Container, GameContainer } from './BoardgamePlayer';
 import { boardgameColorPalette, darkenColor } from '../../common/utils';
 import theme from '../../common/theme';
-import { ButtonCustom } from '../../components/Button';
+import { ButtonCustom, RejoinButton } from '../../components/Button';
 import { useNavigate } from 'react-router-dom';
 import { useError } from '../../providers/ErrorProvider';
 import { getModeConfig } from '../../service/configService';
+import qr_icon from '../../resources/qr_icon.png';
+import { QRContainer, QRWrapper } from '../WaitingRoom';
+import QRCode from 'react-qr-code';
+import Modal from '../../components/Modal';
 
 export function parsePlayerPositions(
   positions: [{ tileIndex: number; players: [Pawn]; category: string }]
@@ -56,7 +60,7 @@ function SSEOnBoardgameStateChangeListener({ setPositions }: { setPositions: Fun
 }
 
 const parseRankingData = (data: Pawn[]) => {
-  return data.map((playerRankingData, i) => ({ ...playerRankingData, position: i+1 }));
+  return data.map((playerRankingData, i) => ({ ...playerRankingData, position: i + 1 }));
 };
 
 function SSEBoardGameRankingChangeListener({ setRanking }: { setRanking: Function }) {
@@ -164,6 +168,15 @@ function BoardgameObserver() {
   const [boardgameConfig, setBoardgameConfig] = useState<BoardConfig>();
   const [showRanking, setShowRanking] = useState<boolean>(false);
 
+  const [showRejoin, setShowRejoin] = useState(false);
+  const [deviceIP, setDeviceIP] = useState<string>('');
+
+  useEffect(() => {
+    window.electronAPI.getIP().then((response) => {
+      setDeviceIP(response);
+    });
+  }, []);
+
   useEffect(() => {
     getModeConfig().then((response) => {
       const configData: BoardConfig = response.data;
@@ -205,6 +218,34 @@ function BoardgameObserver() {
 
   return (
     <Container>
+      <div
+        style={{
+          left: '50px',
+          position: 'absolute',
+        }}
+      >
+        <RejoinButton onClick={() => setShowRejoin(!showRejoin)}>
+          <div style={{ position: 'relative' }}>
+            <img
+              src={qr_icon}
+              alt={'↪'}
+              style={{ width: '20px', left: '-3px', top: '-10px', position: 'absolute' }}
+            />
+          </div>
+        </RejoinButton>
+      </div>
+      {showRejoin && (
+        <Modal>
+          <QRWrapper>
+            <QRContainer>
+              <QRCode
+                size={400}
+                value={`http://${deviceIP}:3000/#/gra/planszowa`} // NOSONAR
+              />
+            </QRContainer>
+          </QRWrapper>
+        </Modal>
+      )}
       <ActionButtonContainer>
         <ButtonCustom onClick={handleExamEnd} disabled={gameFinished}>
           Zakończ

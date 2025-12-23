@@ -340,7 +340,7 @@ function Configurations() {
       <InstructionContainer>
         <div>
           <InstructionHeader>
-            Instrukcja uruchomienia
+            Instrukcja
             <SquareButton onClick={() => toggle('instruction')}>
               <ArrowIndicator direction={tab === 'instruction' ? 'down' : 'up'} size={18} />
             </SquareButton>
@@ -351,21 +351,16 @@ function Configurations() {
           {tab === 'instruction' && (
             <InstructionContent>
               <span>
-                Za pomocą przycisku start lub wyszukiwarki aplikacji znajdź <h4>USTAWIENIA</h4>{' '}
-                Następnie wybierz zakładkę{' '}
-                <span color={theme.palette.main.accent}>Sieć i Internet</span> oraz opcję{' '}
-                <b>Hotspot mobilny</b>
+                Upewnij się, że jesteś połączony z siecią WiFi lub został uruchomiony mobilny Hotspot.
               </span>
               <span>
-                Możesz szybko przejść do konfiguracji za pomocą przycisku w zakładce Hotspot
+                Upewnij się, że uczniowie są połączeni z tą samą siecią WiFi lub Hotspotem.
               </span>
               <span>
-                Upewnij się że Hotspot został włączony, a uczniowie mogą połączyć się z siecią {'('}{' '}
-                za pomocą hasła lub skanując kod QR {')'}
+                Wybierz tryb gry oraz konfigurację, a następnie kliknij przycik 'Otwórz poczekalnię'.
               </span>
               <span>
-                Kiedy wszystko będzie gotowe, możesz otworzyć poczekalnię, w której będzie widoczny
-                kod QR pozwalający uczniom na dołączenie do rozgrywki
+                Na kolejnym ekranie pojawi się kod QR za pomocą którego uczniowie będą mogli dołączyć do gry.
               </span>
             </InstructionContent>
           )}

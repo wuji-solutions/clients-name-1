@@ -217,6 +217,9 @@ function PlayerList() {
           )}
         </div>
       </Header>
+      <span style={{margin: 'auto', fontSize: '20px'}}>
+        Liczba graczy: {players.length}
+      </span>
       <PlayerContainer>
         {players.map((player) => (
           <PlayerEntry key={player.nickname} isNew={newPlayers.has(player.nickname)}>

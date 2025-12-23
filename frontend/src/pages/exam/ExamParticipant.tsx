@@ -281,6 +281,8 @@ function ExamParticipant() {
       setCurrentQuestion(response.data);
       setExamResults(null);
       setDisableAnswers(false);
+    }).catch(() => {
+      setCurrentQuestion(null);
     });
   };
 
