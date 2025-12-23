@@ -131,7 +131,7 @@ const AnswerProgressBar = ({
       >
         <span>Odpowiedziało osób:</span>
         <span>
-          {percent}% ({count})
+          {percent.toFixed(2)}% ({count})
         </span>
       </div>
       <div

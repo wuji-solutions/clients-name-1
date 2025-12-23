@@ -39,8 +39,8 @@ function startStaticServer() {
     });
   });
 
-  server.listen(3000, () => {
-    console.log('Static server running on http://localhost:3000');
+  server.listen(3000, '0.0.0.0', () => {
+    console.log('Static server running on port 3000');
   });
 }
 
@@ -430,3 +430,19 @@ ipcMain.handle("configureHotspot", (_, { ssid, password }) => {
 ipcMain.handle("getHotspotConfig", () => {
   return loadHotspotConfig();
 });
+
+function getLocalIp() {
+  const interfaces = os.networkInterfaces();
+  for (const name of Object.keys(interfaces)) {
+    for (const iface of interfaces[name] || []) {
+      if (iface.family === 'IPv4' && !iface.internal) {
+        return iface.address;
+      }
+    }
+  }
+  return 'localhost';
+}
+
+ipcMain.handle("getDeviceIP", () => {
+  return getLocalIp();
+})
