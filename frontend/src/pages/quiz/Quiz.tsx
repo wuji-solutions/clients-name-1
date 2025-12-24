@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import { BACKEND_ENDPOINT, BACKEND_ENDPOINT_EXTERNAL } from '../../common/config';
 import { Question, QuestionStats, QuizQuestion } from '../../common/types';
-import { ButtonCustom } from '../../components/Button';
+import { ButtonCustom, RejoinButton } from '../../components/Button';
 import { useAppContext } from '../../providers/AppContextProvider';
 import { useSSEChannel } from '../../providers/SSEProvider';
 import { service } from '../../service/service';
@@ -13,6 +13,10 @@ import { SSEDelegate } from '../../delegate/SSEDelegate';
 import { getPercentage, getColor, getParsedDifficultyLevel } from '../../common/utils';
 import { useError } from '../../providers/ErrorProvider';
 import ReactMarkdownParser from '../../components/ReactMarkdownParser';
+import qr_icon from '../../resources/qr_icon.png';
+import { QRContainer, QRWrapper } from '../WaitingRoom';
+import QRCode from 'react-qr-code';
+import Modal from '../../components/Modal';
 
 const Container = styled.div(() => ({
   width: '90%',
@@ -131,7 +135,7 @@ const AnswerProgressBar = ({
       >
         <span>Odpowiedziało osób:</span>
         <span>
-          {percent}% ({count})
+          {percent.toFixed(2)}% ({count})
         </span>
       </div>
       <div
@@ -231,6 +235,16 @@ function Quiz() {
     });
     return unsubscribe;
   }, [user]);
+
+  const [showRejoin, setShowRejoin] = useState(false);
+  const [deviceIP, setDeviceIP] = useState<string>('');
+
+  useEffect(() => {
+    if (!isAdmin()) return;
+    window.electronAPI.getIP().then((response) => {
+      setDeviceIP(response);
+    });
+  }, []);
 
   useEffect(() => {
     if (!isAdmin()) return;
@@ -333,7 +347,7 @@ function Quiz() {
   if (quizFinished && !isAdmin()) {
     return (
       <Container style={{ height: '80vh' }}>
-          <QuizFinishedContainer>Quiz się zakończył</QuizFinishedContainer>
+        <QuizFinishedContainer>Quiz się zakończył</QuizFinishedContainer>
       </Container>
     );
   }
@@ -384,6 +398,34 @@ function Quiz() {
   }
   return (
     <Container>
+      <div
+        style={{
+          left: '50px',
+          position: 'absolute',
+        }}
+      >
+        <RejoinButton onClick={() => setShowRejoin(!showRejoin)}>
+          <div style={{ position: 'relative' }}>
+            <img
+              src={qr_icon}
+              alt={'↪'}
+              style={{ width: '20px', left: '-3px', top: '-10px', position: 'absolute' }}
+            />
+          </div>
+        </RejoinButton>
+      </div>
+      {showRejoin && (
+        <Modal>
+          <QRWrapper>
+            <QRContainer>
+              <QRCode
+                size={400}
+                value={`http://${deviceIP}:3000/#/gra/quiz`} // NOSONAR
+              />
+            </QRContainer>
+          </QRWrapper>
+        </Modal>
+      )}
       {currentQuestion && (
         <QuestionContainer>
           <QuestionHeader>
@@ -476,7 +518,11 @@ function Quiz() {
                 Przejdź do kolejnego pytania
               </ButtonCustom>
             )}
-            <ButtonCustom onClick={handleQuizEnd} color={questionEnded ? theme.palette.button.error: theme.palette.button.info} disabled={!questionEnded}>
+            <ButtonCustom
+              onClick={handleQuizEnd}
+              color={questionEnded ? theme.palette.button.error : theme.palette.button.info}
+              disabled={!questionEnded}
+            >
               Zakończ quiz
             </ButtonCustom>
           </div>

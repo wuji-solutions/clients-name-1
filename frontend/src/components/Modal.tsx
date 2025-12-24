@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import styled, { keyframes, css } from "styled-components";
 
 const fadeIn = keyframes`
@@ -32,31 +32,57 @@ const ModalOverlay = styled.div<ModalProps>`
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  overflow-y: auto;
   z-index: 1000;
-  padding-bottom: constant(safe-area-inset-bottom);
-  padding-bottom: env(safe-area-inset-bottom);
-  height: calc(100vh + env(safe-area-inset-bottom));
+
+  overflow: hidden;
+
+  height: 100dvh;
   width: 100%;
+
+  padding-bottom: env(safe-area-inset-bottom);
 
   animation: ${({ isClosing }) =>
     isClosing
       ? css`${fadeOut} 0.5s ease forwards`
-      : css`${fadeIn} 1s ease forwards`};
+      : css`${fadeIn} 0.3s ease forwards`};
 `;
 
 const ModalContent = styled.div<ModalProps>`
   margin-top: 2rem;
+
+  max-height: calc(100dvh - 2rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+
   animation: ${({ isClosing }) =>
     isClosing
       ? css`${slideUp} 0.5s ease forwards`
-      : css`${slideDown} 1.5s ease forwards`};
-`
+      : css`${slideDown} 0.5s ease forwards`};
+`;
 
-function Modal({ children, isClosing }: { children: ReactNode, isClosing?: boolean }) {
+function Modal({ children, isClosing }: { children: ReactNode; isClosing?: boolean }) {
+
+  useEffect(() => {
+    const scrollY = window.scrollY;
+
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = "100%";
+
+    return () => {
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
+      window.scrollTo(0, scrollY);
+    };
+  }, []);
+
   return (
-    <ModalOverlay>
-      <ModalContent isClosing={isClosing}>{children}</ModalContent>
+    <ModalOverlay isClosing={isClosing}>
+      <ModalContent isClosing={isClosing}>
+        {children}
+      </ModalContent>
     </ModalOverlay>
   );
 }

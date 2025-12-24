@@ -114,11 +114,19 @@ function WaitingRoom() {
   const { isAdmin, username, setUsername } = useAppContext();
   const [identificator, setIdentificator] = useState<number | null>(null);
   const [playerKicked, setPlayerKicked] = useState(false);
+  const [deviceIP, setDeviceIP] = useState<string>('');
   const { setError } = useError();
   const hash = globalThis.location.hash;
   const queryString = hash.split("?")[1] || "";
   const gameMode = new URLSearchParams(queryString).get("tryb");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isAdmin()) return;
+    window.electronAPI.getIP().then((response) => {
+      setDeviceIP(response);
+    })
+  }, [])
 
   const joinGame = () => {
     if (!identificator || !gameMode) return;
@@ -270,7 +278,7 @@ function WaitingRoom() {
         <QRContainer>
           <QRCode
             size={400}
-            value={`http://192.168.137.1:3000/#/waiting-room?tryb=${gameMode}`} // NOSONAR
+            value={`http://${deviceIP}:3000/#/waiting-room?tryb=${gameMode}`} // NOSONAR
           />
         </QRContainer>
       </QRWrapper>

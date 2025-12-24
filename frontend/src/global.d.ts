@@ -14,6 +14,7 @@ declare global {
       configureHotspot: (ssid: string, password: string) => Promise<any>;
       getHotspotConfig: () => Promise<{ ssid: string; password: string }>;
       quitApp: () => void;
+      getIP: () => Promise<string>;
     };
   }
 }

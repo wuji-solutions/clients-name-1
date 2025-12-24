@@ -4,12 +4,16 @@ import { styled } from 'styled-components';
 import { BACKEND_ENDPOINT } from '../../common/config';
 import theme from '../../common/theme';
 import { ExamConfig, ExamState } from '../../common/types';
-import { ButtonCustom } from '../../components/Button';
+import { ButtonCustom, RejoinButton } from '../../components/Button';
 import Timer from '../../components/Timer';
 import { useSSEChannel } from '../../providers/SSEProvider';
 import { getModeConfig } from '../../service/configService';
 import { service } from '../../service/service';
 import { useError } from '../../providers/ErrorProvider';
+import Modal from '../../components/Modal';
+import qr_icon from '../../resources/qr_icon.png';
+import { QRContainer, QRWrapper } from '../WaitingRoom';
+import QRCode from 'react-qr-code';
 
 const Container = styled.div(() => ({
   width: 'calc(100%-20px)',
@@ -183,6 +187,14 @@ function ExamObserver() {
   const [gracePeriodRemaining, setGracePeriodRemaining] = useState<number>();
   const endTimeRef = useRef<number | null>(null);
   const [allowExit, setAllowExit] = useState(false);
+  const [showRejoin, setShowRejoin] = useState(false);
+  const [deviceIP, setDeviceIP] = useState<string>('');
+
+  useEffect(() => {
+    window.electronAPI.getIP().then((response) => {
+      setDeviceIP(response);
+    });
+  }, []);
 
   useEffect(() => {
     if (!gracePeriod) return;
@@ -226,7 +238,39 @@ function ExamObserver() {
 
   return (
     <Container>
-      <SSEOnExamChangeListener setExamState={setExamState} setCheaters={setCheaters} examConfig={examConfig} />
+      <div
+        style={{
+          left: '50px',
+          position: 'absolute',
+        }}
+      >
+        <RejoinButton onClick={() => setShowRejoin(!showRejoin)}>
+          <div style={{ position: 'relative' }}>
+            <img
+              src={qr_icon}
+              alt={'↪'}
+              style={{ width: '20px', left: '-3px', top: '-10px', position: 'absolute' }}
+            />
+          </div>
+        </RejoinButton>
+      </div>
+      {showRejoin && (
+        <Modal>
+          <QRWrapper>
+            <QRContainer>
+              <QRCode
+                size={400}
+                value={`http://${deviceIP}:3000/#/sprawdzian`} // NOSONAR
+              />
+            </QRContainer>
+          </QRWrapper>
+        </Modal>
+      )}
+      <SSEOnExamChangeListener
+        setExamState={setExamState}
+        setCheaters={setCheaters}
+        examConfig={examConfig}
+      />
       <TimerContainer>
         Pozostały czas:
         <Timer
